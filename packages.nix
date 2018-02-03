@@ -153,5 +153,10 @@ in {
     steam
     camingo-code
     google-drive-ocamlfuse
+    asciinema
+    ttyrec
+    tdesktop
+    st
+    httping
   ];
 }

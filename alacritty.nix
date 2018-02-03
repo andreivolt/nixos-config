@@ -27,14 +27,14 @@ in {
     font:
       # The normal (roman) font face to use.
       normal:
-        family: Anonymous Pro
+        family: Roboto Mono
 
       bold:
-        family: Anonymous Pro
+        family: Roboto Mono
         style: Bold
 
       italic:
-        family: Anonymous Pro
+        family: Roboto Mono
         style: Italic
 
       size: 11.0
