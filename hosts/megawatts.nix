@@ -18,12 +18,6 @@
     "fs.file-max" = "524280";
   };
 
-  networking.firewall.allowedTCPPorts = [
-    80 443
-    10000
-    9999
-  ];
-
   systemd.services.docker-nginx-proxy.enable = true;
 
   systemd.services.docker-nginx-proxy-companion.enable = false;
