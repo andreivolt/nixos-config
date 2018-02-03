@@ -29,81 +29,28 @@ in {
     defaultLocale = "en_US.UTF-8";
   };
 
-  nixpkgs.config = {
-    packageOverrides = pkgs: rec {
-      st = pkgs.stdenv.lib.overrideDerivation pkgs.st (oldAttrs : {
-          configFile = ''
-          static const char *colorname[] = {
-
-          /* 8 normal colors */
-          [0] = "#3c3e42", /* black   */
-          [1] = "#dd6880", /* red     */
-          [2] = "#83b879", /* green   */
-          [3] = "#dec790", /* yellow  */
-          [4] = "#95b5e4", /* blue    */
-          [5] = "#c1a3e0", /* magenta */
-          [6] = "#64c1d4", /* cyan    */
-          [7] = "#9a9da3", /* white   */
-
-          /* 8 bright colors */
-          [8]  = "#4f5558", /* black   */
-          [9]  = "#de889a", /* red     */
-          [10] = "#99c490", /* green   */
-          [11] = "#e7d09a", /* yellow  */
-          [12] = "#a0beea", /* blue    */
-          [13] = "#cbacea", /* magenta */
-          [14] = "#88d1df", /* cyan    */
-          [15] = "#b4b7bb", /* white   */
-
-          /* special colors */
-          [256] = "#212121", /* background */
-          [257] = "#aeb1b7", /* foreground */
-          };
-
-          /*
-           * default colors (colorname index)
-           * foreground, background, cursor
-           */
-          static unsigned int defaultfg = 257;
-          static unsigned int defaultbg = 256;
-          static unsigned int defaultcs = 257;
-
-          /*
-           * colors used, when the specific fg == defaultfg. so in reverse mode this
-           * will reverse too. another logic would only make the simple feature too
-           * complex.
-           */
-          static unsigned int defaultitalic = 7;
-          static unsigned int defaultunderline = 7;
-
-          static char font[] = "GohuFont:pixelsize=12:antialias=false";
-          '';
-      });
+  system = {
+    stateVersion = "18.03";
+    autoUpgrade = {
+      enable = true;
+      channel = "https://nixos.org/channels/nixos-unstable";
     };
-    };
+  };
 
-    system = {
-      stateVersion = "18.03";
-      autoUpgrade = {
-        enable = true;
-        channel = "https://nixos.org/channels/nixos-unstable";
-      };
-    };
+  nixpkgs.config.allowUnfree = true;
 
-    nixpkgs.config.allowUnfree = true;
-
-    users.users.avo = {
-      uid = 1000;
-      isNormalUser = true;
-      shell = pkgs.zsh;
-      extraGroups = [
-        "adbusers"
-        "wheel"
-      ];
-      openssh.authorizedKeys.keys = [
-        "${builtins.readFile ./ssh-keys/avo.pub}"
-      ];
-    };
+  users.users.avo = {
+    uid = 1000;
+    isNormalUser = true;
+    shell = pkgs.zsh;
+    extraGroups = [
+      "adbusers"
+      "wheel"
+    ];
+    openssh.authorizedKeys.keys = [
+      "${builtins.readFile ./ssh-keys/avo.pub}"
+    ];
+  };
 
   programs.zsh = {
     enable = true;
@@ -146,7 +93,6 @@ in {
 
   networking.wireless = {
     enable = true;
-    networks = { };
   };
 
   networking.firewall.allowedTCPPorts = [

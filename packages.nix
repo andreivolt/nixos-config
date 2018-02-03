@@ -99,7 +99,6 @@ in {
     psmisc
     pv
     python
-    python27Packages.goobook
     python27Packages.setuptools
     python35Packages.pygments
     recode
@@ -147,8 +146,6 @@ in {
     redis
     hack-font
     profont
-    steam-run
-    steam
     camingo-code
     google-drive-ocamlfuse
     asciinema
