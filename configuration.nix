@@ -165,4 +165,11 @@ in {
       };
     };
   };
+
+  programs.ssh.extraConfig = ''
+    Host *
+      ControlMaster auto
+      ControlPersist 0
+      ControlPath /tmp/ssh-%C
+  '';
 }
