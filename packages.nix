@@ -2,9 +2,8 @@
 
 let
   docker-compose-completions = pkgs.callPackage ./packages/docker-compose-completions.nix {};
-
   docx2txt = pkgs.callPackage ./packages/docx2txt.nix {};
-
+  libinput-gestures = pkgs.callPackage ./packages/libinput-gestures/default.nix {};
   miller = pkgs.callPackage ./packages/miller.nix {};
 
 in {
