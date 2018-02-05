@@ -20,7 +20,7 @@
         -v /usr/share/nginx/html \
         -v /var/run/docker.sock:/tmp/docker.sock:ro \
         --label com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true \
-        jwilder/nginx-proxy:alpine
+        jwilder/nginx-proxy
     '';
   };
 }
