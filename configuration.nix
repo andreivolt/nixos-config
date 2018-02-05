@@ -10,7 +10,7 @@ in {
     [
       (./hosts + "/${hostName}.nix")
       ./dnsmasq.nix
-      ./docker.nix
+      ./docker-gc.nix
       ./udiskie.nix
       ./hardware-configuration.nix
       ./ipfs.nix
@@ -78,6 +78,7 @@ in {
     shell = pkgs.zsh;
     extraGroups = [
       "adbusers"
+      "docker"
       "wheel"
     ];
     openssh.authorizedKeys.keys = [
@@ -172,4 +173,8 @@ in {
       ControlPersist 0
       ControlPath /tmp/ssh-%C
   '';
+
+  virtualisation.docker.enable = true;
+
+  systemd.services.docker-gc.enable = true;
 }
