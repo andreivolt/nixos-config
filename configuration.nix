@@ -3,8 +3,6 @@
 let
   hostName = "${builtins.readFile ./.hostname}";
 
-  libinput-gestures = pkgs.callPackage ../packages/libinput-gestures/default.nix {};
-
 in {
   imports =
     [
@@ -15,14 +13,11 @@ in {
       ./ipfs.nix
       ./libvirt.nix
       ./packages.nix
-      ./ssh.nix
-      ./adb.nix
       ./alacritty.nix
       ./autocutsel.nix
       ./docker-nginx-proxy.nix
       ./printing.nix
       ./redshift.nix
-      ./socks-proxy.nix
     ];
 
   services.udisks2.enable = true;
