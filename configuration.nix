@@ -8,7 +8,6 @@ let
 in {
   imports =
     [
-      (./hosts + "/${hostName}.nix")
       ./dnsmasq.nix
       ./docker-gc.nix
       ./udiskie.nix
