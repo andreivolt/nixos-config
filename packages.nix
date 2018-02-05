@@ -39,7 +39,6 @@ in {
     dosfstools
     dropbox-cli
     dunst
-    dunst
     emacs
     enscript
     exiv2
