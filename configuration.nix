@@ -119,7 +119,7 @@ in {
     vistafonts
   ];
 
-  networking.wireless.enable = true;
+  #networking.wireless.enable = true;
 
   networking.firewall.allowedTCPPorts = [
     80 443
@@ -171,4 +171,8 @@ in {
   virtualisation.docker.enable = true;
 
   systemd.services.docker-gc.enable = true;
+
+  services.openvpn.servers = {
+    us = { config = '' config /home/avo/.openvpn.conf ''; };
+  };
 }

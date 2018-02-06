@@ -1,6 +1,7 @@
 @compositor/x0
 chart-stream
 create-react-native-app
+exp
 firebase-tools
 heroku-cli
 livescript
@@ -10,6 +11,7 @@ nodemon
 now
 peerflix
 ramda-cli
+react-native-cli
 ttystudio
 wscat
 xml2json
