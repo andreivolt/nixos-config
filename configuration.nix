@@ -10,8 +10,6 @@ in {
       ./docker-gc.nix
       ./udiskie.nix
       ./hardware-configuration.nix
-      ./ipfs.nix
-      ./libvirt.nix
       ./packages.nix
       ./alacritty.nix
       ./autocutsel.nix
@@ -73,6 +71,8 @@ in {
     extraGroups = [
       "adbusers"
       "docker"
+      "ipfs"
+      "libvirtd"
       "wheel"
     ];
     openssh.authorizedKeys.keys = [
@@ -175,4 +175,12 @@ in {
   services.openvpn.servers = {
     us = { config = '' config /home/avo/.openvpn.conf ''; };
   };
+
+  networking.enableIPv6 = false;
+
+  services.ipfs.enable = true;
+  environment.variables."IPFS_PATH" = "/var/lib/ipfs/.ipfs";
+
+  virtualisation.libvirtd.enable = true;
+  environment.variables."LIBVIRT_DEFAULT_URI" = "qemu:///system";
 }
