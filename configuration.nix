@@ -183,4 +183,20 @@ in {
 
   virtualisation.libvirtd.enable = true;
   environment.variables."LIBVIRT_DEFAULT_URI" = "qemu:///system";
+
+  services.dnsmasq = {
+    enable = true;
+    servers = ["8.8.8.8" "8.8.4.4"];
+
+    extraConfig = ''
+      address=/test/127.0.0.1
+    '';
+  };
+
+  services.redshift = {
+    enable = true;
+    latitude = "48.85";
+    longitude = "2.35";
+    temperature.night = 2500;
+  };
 }
