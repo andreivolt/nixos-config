@@ -27,7 +27,8 @@ in {
     binutils
     boot
     camingo-code
-    chromium
+    chromiumBeta
+    google-chrome
     cups
     curl
     dateutils
