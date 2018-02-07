@@ -13,8 +13,6 @@ in {
       ./alacritty.nix
       ./autocutsel.nix
       ./docker-nginx-proxy.nix
-      ./printing.nix
-      ./redshift.nix
     ];
 
   services.udisks2.enable = true;
