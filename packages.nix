@@ -10,7 +10,6 @@ in {
   environment.systemPackages = with pkgs; [
     #bitcoin
     #csvtotable
-    #uzbl
     #x_x
     (lowPrio moreutils) # prefer GNU parallel
     (lowPrio texlive.combined.scheme-full)
