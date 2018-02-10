@@ -15,11 +15,16 @@ in {
       ./docker-nginx-proxy.nix
     ];
 
-  services.udisks2.enable = true;
-
-  services.unclutter-xfixes.enable = true;
-
-  services.emacs.enable = true;
+  services = {
+    udisks2.enable = true;
+    unclutter-xfixes.enable = true;
+    emacs.enable = true;
+    offlineimap.enable = true;
+    tor = {
+      enable = true;
+      torsocks.enable = true;
+    };
+  };
 
   systemd.services.docker-nginx-proxy.enable = true;
 
@@ -77,6 +82,8 @@ in {
     ];
   };
 
+  networking.hostName = hostName;
+
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -85,15 +92,6 @@ in {
   environment.variables."EDITOR" = "vim";
 
   security.sudo.wheelNeedsPassword = false;
-
-  services.offlineimap.enable = true;
-
-  services.tor = {
-    enable = true;
-    torsocks.enable = true;
-  };
-
-  networking.hostName = hostName;
 
   environment.etc."/tsocks.conf".text = ''
     server = 127.0.0.1
@@ -127,6 +125,7 @@ in {
 
   services.xserver = {
     enable = true;
+
     layout = "fr";
 
     libinput = {
