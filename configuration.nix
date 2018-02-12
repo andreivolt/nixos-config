@@ -6,13 +6,13 @@ let
 in {
   imports =
     [
-      ./docker-gc.nix
-      ./udiskie.nix
-      ./hardware-configuration.nix
-      ./packages.nix
       ./alacritty.nix
       ./autocutsel.nix
+      ./docker-gc.nix
       ./docker-nginx-proxy.nix
+      ./hardware-configuration.nix
+      ./packages.nix
+      ./udiskie.nix
     ];
 
   services = {
@@ -93,19 +93,13 @@ in {
 
   security.sudo.wheelNeedsPassword = false;
 
-  environment.etc."/tsocks.conf".text = ''
-    server = 127.0.0.1
-    server_port = 19999
-    server_type = 5
-  '';
-
   services.avahi = {
     enable = true;
     publish.enable = true;
     nssmdns = true;
   };
 
-  fonts.fontconfig.ultimate.enable = false;
+  #fonts.fontconfig.ultimate.enable = false;
 
   fonts.fonts = with pkgs; [
     corefonts
@@ -116,12 +110,7 @@ in {
 
   #networking.wireless.enable = true;
 
-  networking.firewall.allowedTCPPorts = [
-    80 443
-    10000
-    9999
-    19000 19001
-  ];
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   services.xserver = {
     enable = true;
@@ -169,7 +158,10 @@ in {
   systemd.services.docker-gc.enable = true;
 
   services.openvpn.servers = {
-    us = { config = '' config /home/avo/.openvpn.conf ''; };
+    us = {
+      config = '' config /home/avo/.openvpn.conf '';
+      autoStart = false;
+    };
   };
 
   networking.enableIPv6 = false;
@@ -193,7 +185,7 @@ in {
     enable = true;
     latitude = "48.85";
     longitude = "2.35";
-    temperature.night = 2500;
+    temperature.night = 4000;
   };
 
   services.printing = {
