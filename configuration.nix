@@ -15,16 +15,46 @@ in {
       ./udiskie.nix
     ];
 
+  networking = {
+    hostName = hostName;
+    enableIPv6 = false;
+    #wireless.enable = true;
+    firewall.allowedTCPPorts = [ 80 443 ];
+  }
+
+  time.timeZone = "Europe/Paris";
+
+  i18n = {
+    consoleKeyMap = "fr";
+    defaultLocale = "en_US.UTF-8";
+  };
+
+
   services = {
     udisks2.enable = true;
     unclutter-xfixes.enable = true;
     emacs.enable = true;
     offlineimap.enable = true;
-    tor = {
+    tor.enable = true;
+    avahi = {
       enable = true;
-      torsocks.enable = true;
+      publish.enable = true;
+      nssmdns = true;
+    };
+    openvpn.servers = {
+      us = {
+        config = '' config /home/avo/.openvpn.conf '';
+        autoStart = false;
+      };
+    };
+    redshift = {
+      enable = true;
+      latitude = "48.85";
+      longitude = "2.35";
+      temperature.night = 4000;
     };
   };
+
 
   systemd.services.docker-nginx-proxy.enable = true;
 
@@ -47,15 +77,7 @@ in {
    };
   };
 
-  time.timeZone = "Europe/Paris";
-
-  i18n = {
-    consoleKeyMap = "fr";
-    defaultLocale = "en_US.UTF-8";
-  };
-
   system = {
-    stateVersion = "18.03";
     autoUpgrade = {
       enable = true;
       channel = "https://nixos.org/channels/nixos-unstable";
@@ -82,8 +104,6 @@ in {
     ];
   };
 
-  networking.hostName = hostName;
-
   programs.zsh = {
     enable = true;
     enableCompletion = true;
@@ -92,12 +112,6 @@ in {
   environment.variables."EDITOR" = "vim";
 
   security.sudo.wheelNeedsPassword = false;
-
-  services.avahi = {
-    enable = true;
-    publish.enable = true;
-    nssmdns = true;
-  };
 
   #fonts.fontconfig.ultimate.enable = false;
 
@@ -108,12 +122,11 @@ in {
     vistafonts
   ];
 
-  #networking.wireless.enable = true;
-
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
 
   services.xserver = {
     enable = true;
+
+    videoDrivers = [ "nvidia" ];
 
     layout = "fr";
 
@@ -157,14 +170,6 @@ in {
 
   systemd.services.docker-gc.enable = true;
 
-  services.openvpn.servers = {
-    us = {
-      config = '' config /home/avo/.openvpn.conf '';
-      autoStart = false;
-    };
-  };
-
-  networking.enableIPv6 = false;
 
   services.ipfs.enable = true;
   environment.variables."IPFS_PATH" = "/var/lib/ipfs/.ipfs";
@@ -179,13 +184,6 @@ in {
     extraConfig = ''
       address=/test/127.0.0.1
     '';
-  };
-
-  services.redshift = {
-    enable = true;
-    latitude = "48.85";
-    longitude = "2.35";
-    temperature.night = 4000;
   };
 
   services.printing = {
