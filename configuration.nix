@@ -29,6 +29,12 @@ in {
     defaultLocale = "en_US.UTF-8";
   };
 
+  system = {
+    autoUpgrade = {
+      enable = true;
+      channel = "https://nixos.org/channels/nixos-unstable";
+    };
+  };
 
   services = {
     udisks2.enable = true;
@@ -53,10 +59,57 @@ in {
       longitude = "2.35";
       temperature.night = 4000;
     };
+    xserver = {
+      enable = true;
+
+      videoDrivers = [ "nvidia" ];
+
+      layout = "fr";
+
+      libinput = {
+        enable = true;
+        naturalScrolling = true;
+        accelSpeed = "0.4";
+      };
+
+      displayManager = {
+        auto = {
+          enable = true;
+          user = "avo";
+        };
+        sessionCommands = ''
+          ${pkgs.sxhkd}/bin/sxhkd &
+          ${pkgs.dropbox}/bin/dropbox start &
+          ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
+        '';
+      };
+
+      windowManager = {
+        default = "xmonad";
+        xmonad  = {
+          enable = true;
+          enableContribAndExtras = true;
+          extraPackages = haskellPackages: [
+            haskellPackages.xmobar
+          ];
+        };
+      };
+    };
+    dnsmasq = {
+      enable = true;
+      servers = ["8.8.8.8" "8.8.4.4"];
+
+      extraConfig = ''
+        address=/test/127.0.0.1
+      '';
+    };
   };
 
 
-  systemd.services.docker-nginx-proxy.enable = true;
+  systemd.services = {
+    docker-nginx-proxy.enable = true;
+    docker-gc.enable = true;
+  };
 
   nixpkgs.config.zathura.useMupdf = true;
 
@@ -83,13 +136,6 @@ in {
       enable = true;
       package = pkgs.pulseaudioFull;
    };
-  };
-
-  system = {
-    autoUpgrade = {
-      enable = true;
-      channel = "https://nixos.org/channels/nixos-unstable";
-    };
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -122,51 +168,12 @@ in {
   security.sudo.wheelNeedsPassword = false;
 
   #fonts.fontconfig.ultimate.enable = false;
-
   fonts.fonts = with pkgs; [
     corefonts
     google-fonts
     liberation_ttf
     vistafonts
   ];
-
-
-  services.xserver = {
-    enable = true;
-
-    videoDrivers = [ "nvidia" ];
-
-    layout = "fr";
-
-    libinput = {
-      enable = true;
-      naturalScrolling = true;
-      accelSpeed = "0.4";
-    };
-
-    displayManager = {
-      auto = {
-        enable = true;
-        user = "avo";
-      };
-      sessionCommands = ''
-        ${pkgs.sxhkd}/bin/sxhkd &
-        ${pkgs.dropbox}/bin/dropbox start &
-        ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
-      '';
-    };
-
-    windowManager = {
-      default = "xmonad";
-      xmonad  = {
-        enable = true;
-        enableContribAndExtras = true;
-        extraPackages = haskellPackages: [
-          haskellPackages.xmobar
-        ];
-      };
-    };
-  };
 
   programs.ssh.extraConfig = ''
     Host *
@@ -177,23 +184,11 @@ in {
 
   virtualisation.docker.enable = true;
 
-  systemd.services.docker-gc.enable = true;
-
-
   services.ipfs.enable = true;
   environment.variables."IPFS_PATH" = "/var/lib/ipfs/.ipfs";
 
   virtualisation.libvirtd.enable = true;
   environment.variables."LIBVIRT_DEFAULT_URI" = "qemu:///system";
-
-  services.dnsmasq = {
-    enable = true;
-    servers = ["8.8.8.8" "8.8.4.4"];
-
-    extraConfig = ''
-      address=/test/127.0.0.1
-    '';
-  };
 
   services.printing = {
     enable = true;

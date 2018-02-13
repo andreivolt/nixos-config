@@ -163,7 +163,6 @@ in {
     tmate
     tmux
     torbrowser
-    torsocks
     traceroute
     tree
     tsocks
