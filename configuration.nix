@@ -145,6 +145,7 @@ in {
         address=/test/127.0.0.1
       '';
     };
+    openssh.enable = true;
   };
 
   users.users.avo = {
@@ -202,4 +203,6 @@ in {
     liberation_ttf
     vistafonts
   ];
+
+  networking.bridges = { br0 = { interfaces = [ "enp0s31f6" ]; }; };
 }
