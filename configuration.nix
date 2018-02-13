@@ -15,12 +15,21 @@ in {
       ./udiskie.nix
     ];
 
-  networking = {
-    hostName = hostName;
-    enableIPv6 = false;
-    #wireless.enable = true;
-    firewall.allowedTCPPorts = [ 80 443 ];
+  boot.loader.timeout = 1;
+
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_watches" = 100000;
+    "vm.swappiness" = 1;
+    "vm.vfs_cache_pressure" = 50;
   };
+
+  #boot.kernelParams = [ "intel_iommu=on" ];
+  #boot.kernelModules = [
+  #  "vfio"
+  #  "vfio_pci"
+  #  "vfio_iommu_type1"
+  #];
+  #boot.extraModprobeConfig = "options vfio-pci ids=8086:a12f";
 
   time.timeZone = "Europe/Paris";
 
@@ -36,7 +45,29 @@ in {
     };
   };
 
+  nixpkgs.config = {
+    allowUnfree = true;
+    zathura.useMupdf = true;
+  };
+
+  hardware = {
+    bluetooth.enable = true;
+
+    pulseaudio = {
+      enable = true;
+      package = pkgs.pulseaudioFull;
+   };
+  };
+
+  networking = {
+    hostName = hostName;
+    enableIPv6 = false;
+    #wireless.enable = true;
+    firewall.allowedTCPPorts = [ 80 443 ];
+  };
+
   services = {
+    ipfs.enable = true;
     udisks2.enable = true;
     unclutter-xfixes.enable = true;
     emacs.enable = true;
@@ -95,6 +126,17 @@ in {
         };
       };
     };
+    printing = {
+      enable = true;
+      clientConf = ''
+        <Printer default>
+          UUID urn:uuid:3c151d9e-3d44-3a04-59f9-5cdfbb513438
+          Info DCPL2520DW
+          MakeModel everywhere
+          DeviceURI ipp://192.168.1.15/ipp/print
+        </Printer>
+      '';
+    };
     dnsmasq = {
       enable = true;
       servers = ["8.8.8.8" "8.8.4.4"];
@@ -104,43 +146,6 @@ in {
       '';
     };
   };
-
-
-  systemd.services = {
-    docker-nginx-proxy.enable = true;
-    docker-gc.enable = true;
-  };
-
-  nixpkgs.config.zathura.useMupdf = true;
-
-  boot.loader.timeout = 1;
-
-  boot.kernel.sysctl = {
-    "fs.inotify.max_user_watches" = 100000;
-    "vm.swappiness" = 1;
-    "vm.vfs_cache_pressure" = 50;
-  };
-
-  #boot.kernelParams = [ "intel_iommu=on" ];
-  #boot.kernelModules = [
-  #  "vfio"
-  #  "vfio_pci"
-  #  "vfio_iommu_type1"
-  #];
-  #boot.extraModprobeConfig = "options vfio-pci ids=8086:a12f";
-
-  hardware = {
-    bluetooth.enable = true;
-
-    pulseaudio = {
-      enable = true;
-      package = pkgs.pulseaudioFull;
-   };
-  };
-
-  nixpkgs.config.allowUnfree = true;
-
-  programs.adb.enable = true;
 
   users.users.avo = {
     uid = 1000;
@@ -158,14 +163,37 @@ in {
     ];
   };
 
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
+  security.sudo.wheelNeedsPassword = false;
+
+  virtualisation = {
+    docker.enable = true;
+    libvirtd.enable = true;
   };
 
-  environment.variables."EDITOR" = "vim";
+  environment.variables = {
+    "IPFS_PATH" = "/var/lib/ipfs/.ipfs";
+    "LIBVIRT_DEFAULT_URI" = "qemu:///system";
+    "EDITOR" = "vim";
+  };
 
-  security.sudo.wheelNeedsPassword = false;
+  systemd.services = {
+    docker-nginx-proxy.enable = true;
+    docker-gc.enable = true;
+  };
+
+  programs = {
+    adb.enable = true;
+    ssh.extraConfig = ''
+      Host *
+        ControlMaster auto
+        ControlPersist 0
+        ControlPath /tmp/ssh-%C
+    '';
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+    };
+  };
 
   #fonts.fontconfig.ultimate.enable = false;
   fonts.fonts = with pkgs; [
@@ -174,31 +202,4 @@ in {
     liberation_ttf
     vistafonts
   ];
-
-  programs.ssh.extraConfig = ''
-    Host *
-      ControlMaster auto
-      ControlPersist 0
-      ControlPath /tmp/ssh-%C
-  '';
-
-  virtualisation.docker.enable = true;
-
-  services.ipfs.enable = true;
-  environment.variables."IPFS_PATH" = "/var/lib/ipfs/.ipfs";
-
-  virtualisation.libvirtd.enable = true;
-  environment.variables."LIBVIRT_DEFAULT_URI" = "qemu:///system";
-
-  services.printing = {
-    enable = true;
-    clientConf = ''
-      <Printer default>
-        UUID urn:uuid:3c151d9e-3d44-3a04-59f9-5cdfbb513438
-        Info DCPL2520DW
-        MakeModel everywhere
-        DeviceURI ipp://192.168.1.15/ipp/print
-      </Printer>
-    '';
-  };
 }
