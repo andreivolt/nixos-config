@@ -20,7 +20,7 @@ in {
     enableIPv6 = false;
     #wireless.enable = true;
     firewall.allowedTCPPorts = [ 80 443 ];
-  }
+  };
 
   time.timeZone = "Europe/Paris";
 
@@ -67,6 +67,14 @@ in {
     "vm.swappiness" = 1;
     "vm.vfs_cache_pressure" = 50;
   };
+
+  #boot.kernelParams = [ "intel_iommu=on" ];
+  #boot.kernelModules = [
+  #  "vfio"
+  #  "vfio_pci"
+  #  "vfio_iommu_type1"
+  #];
+  #boot.extraModprobeConfig = "options vfio-pci ids=8086:a12f";
 
   hardware = {
     bluetooth.enable = true;
@@ -144,6 +152,7 @@ in {
       sessionCommands = ''
         ${pkgs.sxhkd}/bin/sxhkd &
         ${pkgs.dropbox}/bin/dropbox start &
+        ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
       '';
     };
 

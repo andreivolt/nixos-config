@@ -27,7 +27,6 @@ in {
     boot
     camingo-code
     chromiumBeta
-    google-chrome
     cups
     curl
     dateutils
@@ -37,6 +36,7 @@ in {
     docker_compose docker-compose-completions
     docx2txt
     dosfstools
+    fastlane
     dropbox-cli
     dunst
     emacs
@@ -60,6 +60,7 @@ in {
     gnumake
     go-pup
     go_1_6
+    google-chrome
     google-cloud-sdk
     google-drive-ocamlfuse
     gradle
@@ -118,6 +119,7 @@ in {
     openssl
     pandoc
     parallel perlPackages.DBDSQLite
+    pciutils
     pdfgrep
     pdftk
     perlPackages.HTMLParser
