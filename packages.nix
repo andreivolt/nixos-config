@@ -176,7 +176,7 @@ in {
     vimHugeX
     virt-viewer
     w3m
-    watchman
+    #watchman
     wdiff
     weechat
     wget
@@ -200,5 +200,6 @@ in {
     youtube-dl
     zathura
     zip
+    patchelf
   ];
 }
