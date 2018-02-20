@@ -4,14 +4,14 @@ let
   hostName = "${builtins.readFile ./.hostname}";
 
 in {
+#  let
+#    makeConfig { name, fg, bg }
+#  in map makeConfig
+#    [ { name = "example.org"; root = "/sites/example.org"; }
+
   environment.etc."alacritty.yml".text = ''
     env:
       TERM: xterm-256color
-
-    window:
-      dimensions:
-        columns: 80
-        lines: 24
 
     dpi:
       x: 96.0
@@ -52,6 +52,8 @@ in {
       primary:
         background: '0x000000'
         foreground: '0xeaeaea'
+        #background: '0xeeeeee'
+        #foreground: '0x111111'
 
       cursor:
         text: '0x000000'

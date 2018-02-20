@@ -166,7 +166,12 @@ in {
   security.sudo.wheelNeedsPassword = false;
 
   virtualisation = {
-    docker.enable = true;
+    docker = {
+      enable = true;
+	    extraOptions = "--experimental";
+      autoPrune.enable = true;
+    };
+
     libvirtd.enable = true;
   };
 
@@ -178,7 +183,6 @@ in {
 
   systemd.services = {
     docker-nginx-proxy.enable = true;
-    docker-gc.enable = true;
   };
 
   programs = {

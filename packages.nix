@@ -5,11 +5,16 @@ let
   docx2txt = pkgs.callPackage ./packages/docx2txt.nix {};
   libinput-gestures = pkgs.callPackage ./packages/libinput-gestures/default.nix {};
   miller = pkgs.callPackage ./packages/miller.nix {};
+  wsta = pkgs.callPackage ./packages/wsta.nix {};
 
 in {
   environment.systemPackages = with pkgs; [
+    #androidsdk
     #bitcoin
     #csvtotable
+    #fastlane
+    #mitmproxy
+    #wsta
     #x_x
     (lowPrio moreutils) # prefer GNU parallel
     (lowPrio texlive.combined.scheme-full)
@@ -17,7 +22,6 @@ in {
     alacritty
     alsaPlugins
     alsaUtils
-    androidsdk
     antiword
     aria
     asciinema
@@ -42,7 +46,6 @@ in {
     enscript
     exiv2
     expect
-    fastlane
     ffcast
     ffmpeg
     file
@@ -72,6 +75,7 @@ in {
     html2text
     httpie
     httping
+    hy
     iftop
     imagemagick
     inkscape
@@ -87,6 +91,7 @@ in {
     libnotify
     libreoffice-fresh
     libxls
+    lighttable
     linuxPackages.perf
     lsof
     mailutils
@@ -95,7 +100,6 @@ in {
     mediainfo
     megatools
     miller
-    #mitmproxy
     mongodb
     mongodb-tools
     mpv
