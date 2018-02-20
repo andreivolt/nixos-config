@@ -8,7 +8,6 @@ in {
     [
       ./alacritty.nix
       ./autocutsel.nix
-      ./docker-gc.nix
       ./docker-nginx-proxy.nix
       ./hardware-configuration.nix
       ./packages.nix
@@ -71,7 +70,7 @@ in {
     udisks2.enable = true;
     unclutter-xfixes.enable = true;
     emacs.enable = true;
-    offlineimap.enable = true;
+    #offlineimap.enable = true;
     tor.enable = true;
     avahi = {
       enable = true;

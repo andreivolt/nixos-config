@@ -36,13 +36,13 @@ in {
     docker_compose docker-compose-completions
     docx2txt
     dosfstools
-    fastlane
     dropbox-cli
     dunst
     emacs
     enscript
     exiv2
     expect
+    fastlane
     ffcast
     ffmpeg
     file
@@ -82,6 +82,7 @@ in {
     jq
     lastpass-cli
     leiningen
+    libevent
     libinput-gestures
     libnotify
     libreoffice-fresh
@@ -94,6 +95,7 @@ in {
     mediainfo
     megatools
     miller
+    #mitmproxy
     mongodb
     mongodb-tools
     mpv
@@ -101,6 +103,7 @@ in {
     mupdf
     mutt
     neomutt
+    neovim
     netcat
     nethogs
     netpbm
@@ -119,6 +122,7 @@ in {
     openssl
     pandoc
     parallel perlPackages.DBDSQLite
+    patchelf
     pciutils
     pdfgrep
     pdftk
@@ -176,7 +180,7 @@ in {
     vimHugeX
     virt-viewer
     w3m
-    #watchman
+    watchman
     wdiff
     weechat
     wget
@@ -200,6 +204,5 @@ in {
     youtube-dl
     zathura
     zip
-    patchelf
   ];
 }

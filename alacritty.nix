@@ -8,13 +8,10 @@ in {
     env:
       TERM: xterm-256color
 
-    dimensions:
-      columns: 80
-      lines: 24
-
-    padding:
-      x: ${if hostName == "watts" then "20" else "10"}
-      y: 20
+    window:
+      dimensions:
+        columns: 80
+        lines: 24
 
     dpi:
       x: 96.0
@@ -27,20 +24,20 @@ in {
     font:
       # The normal (roman) font face to use.
       normal:
-        family: Roboto Mono
+        family: Source Code Pro
 
       bold:
-        family: Roboto Mono
+        family: Source Code Pro
         style: Bold
 
       italic:
-        family: Roboto Mono
+        family: Source Code Pro
         style: Italic
 
-      size: 11.0
+      size: 12.0
 
       offset:
-        x: ${if hostName == "watts" then "-17" else "-8"}
+        x: 0.0
         y: 0.0
 
       glyph_offset:
