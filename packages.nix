@@ -9,15 +9,14 @@ let
 
 in {
   environment.systemPackages = with pkgs; [
-    #androidsdk
-    #bitcoin
+    #(lowPrio texlive.combined.scheme-full)
     #csvtotable
-    #fastlane
-    #mitmproxy
+    #docx2txt
+    #go_1_6
+    #kitty
     #wsta
     #x_x
     (lowPrio moreutils) # prefer GNU parallel
-    (lowPrio texlive.combined.scheme-full)
     acpi
     alacritty
     alsaPlugins
@@ -25,12 +24,16 @@ in {
     antiword
     aria
     asciinema
+    aspell
+    aspellDicts.en
     awscli
     azure-cli
     binutils
+    bitcoin
     boot
-    camingo-code
-    chromiumBeta
+    #chromiumDev
+    chromium
+    clojure
     cups
     curl
     dateutils
@@ -38,21 +41,17 @@ in {
     dnsutils
     docker-machine
     docker_compose docker-compose-completions
-    docx2txt
     dosfstools
     dropbox-cli
     dunst
-    emacs
     enscript
     exiv2
     expect
     ffcast
     ffmpeg
     file
-    fira-code
     firefox-devedition-bin
     fzf
-    gcc
     gcolor2
     geoipWithDatabase
     ghc
@@ -61,15 +60,12 @@ in {
     git
     gitAndTools.hub
     gnumake
+    gnupg
     go-pup
-    go_1_6
-    google-chrome
     google-cloud-sdk
     google-drive-ocamlfuse
-    gradle
     graphicsmagick
     graphviz
-    hack-font
     haskellPackages.xmobar
     highlight
     html2text
@@ -100,12 +96,12 @@ in {
     mediainfo
     megatools
     miller
+    mitmproxy
     mongodb
     mongodb-tools
     mpv
     msmtp
     mupdf
-    mutt
     neomutt
     neovim
     netcat
@@ -136,7 +132,6 @@ in {
     ponymix
     poppler_utils
     postgresql
-    profont
     psmisc
     pv
     python

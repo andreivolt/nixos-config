@@ -16,3 +16,4 @@ ttystudio
 wscat
 xml2json
 yarn
+vmd

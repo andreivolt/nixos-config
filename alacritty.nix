@@ -24,21 +24,22 @@ in {
     font:
       # The normal (roman) font face to use.
       normal:
-        family: Source Code Pro
+        family: Input Mono Light
+        style: Regular
 
       bold:
-        family: Source Code Pro
-        style: Bold
+        family: Input Mono Light
+        style: Regular
 
       italic:
-        family: Source Code Pro
+        family: Input Mono Light
         style: Italic
 
-      size: 12.0
+      size: 11.0
 
       offset:
         x: 0.0
-        y: 0.0
+        y: 4.0
 
       glyph_offset:
         x: 0.0

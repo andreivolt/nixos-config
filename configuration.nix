@@ -63,13 +63,21 @@ in {
     enableIPv6 = false;
     #wireless.enable = true;
     firewall.allowedTCPPorts = [ 80 443 ];
+    hosts = { "127.0.0.1" = [ hostName ]; };
   };
+
+  nixpkgs.config.permittedInsecurePackages = [
+    "webkitgtk-2.4.11"
+  ];
 
   services = {
     ipfs.enable = true;
     udisks2.enable = true;
     unclutter-xfixes.enable = true;
-    emacs.enable = true;
+    emacs = {
+      enable = true;
+      package = pkgs.emacs.override{ withXwidgets = true; };
+    };
     #offlineimap.enable = true;
     tor.enable = true;
     avahi = {
@@ -125,6 +133,7 @@ in {
         };
       };
     };
+    compton.enable = true;
     printing = {
       enable = true;
       clientConf = ''
@@ -168,7 +177,7 @@ in {
   virtualisation = {
     docker = {
       enable = true;
-	    extraOptions = "--experimental";
+      extraOptions = "--experimental";
       autoPrune.enable = true;
     };
 
@@ -203,8 +212,8 @@ in {
   fonts.fonts = with pkgs; [
     corefonts
     google-fonts
-    liberation_ttf
     vistafonts
+    input-fonts
   ];
 
   networking.bridges = { br0 = { interfaces = [ "enp0s31f6" ]; }; };
