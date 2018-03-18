@@ -24,22 +24,22 @@ in {
     font:
       # The normal (roman) font face to use.
       normal:
-        family: Input Mono Light
+        family: Source Code Pro
         style: Regular
 
       bold:
-        family: Input Mono Light
-        style: Regular
+        family: Source Code Pro
+        style: Bold
 
       italic:
-        family: Input Mono Light
+        family: Source Code Pro
         style: Italic
 
-      size: 11.0
+      size: 10.5
 
       offset:
         x: 0.0
-        y: 4.0
+        y: 0.0
 
       glyph_offset:
         x: 0.0
@@ -49,26 +49,31 @@ in {
 
     custom_cursor_colors: true
 
+    padding:
+      x: 10
+      y: 10
+
     colors:
       primary:
-        background: '0x000000'
-        foreground: '0xeaeaea'
-        #background: '0xeeeeee'
-        #foreground: '0x111111'
+        #background: '0x000000'
+        #foreground: '0xeaeaea'
+        background: '0x1a172b'
+        foreground: '0xcbe3e7'
 
       cursor:
         text: '0x000000'
         cursor: '0xffffff'
 
       normal:
-        black:   '0x000000'
-        red:     '0xd54e53'
-        green:   '0xb9ca4a'
-        yellow:  '0xe6c547'
-        blue:    '0x7aa6da'
-        magenta: '0xc397d8'
-        cyan:    '0x70c0ba'
-        white:   '0xffffff'
+        black:   '0x1e1c31'
+        white:   '0xcbe3e7'
+        blue:    '0x65b2ff'
+        cyan:    '0x63f2f1'
+        green:   '0x62d196'
+        grey:    '0xa6b3cc'
+        magenta: '0x906cff'
+        red:     '0xff5458'
+        yellow:  '0xffb378'
 
       bright:
         black:   '0x333333'

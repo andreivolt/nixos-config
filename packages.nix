@@ -9,13 +9,15 @@ let
 
 in {
   environment.systemPackages = with pkgs; [
-    #(lowPrio texlive.combined.scheme-full)
+    (lowPrio texlive.combined.scheme-full)
+    #chromiumDev
     #csvtotable
-    #docx2txt
     #go_1_6
-    #kitty
+    #neovim
+    #t
     #wsta
     #x_x
+    (lowPrio gcc)
     (lowPrio moreutils) # prefer GNU parallel
     acpi
     alacritty
@@ -27,20 +29,18 @@ in {
     aspell
     aspellDicts.en
     awscli
-    azure-cli
     binutils
     bitcoin
     boot
-    #chromiumDev
     chromium
     clojure
-    cups
     curl
     dateutils
     direnv
     dnsutils
     docker-machine
     docker_compose docker-compose-completions
+    docx2txt
     dosfstools
     dropbox-cli
     dunst
@@ -54,7 +54,7 @@ in {
     fzf
     gcolor2
     geoipWithDatabase
-    ghc
+    (lowPrio ghc)
     ghostscript
     gist
     git
@@ -66,7 +66,6 @@ in {
     google-drive-ocamlfuse
     graphicsmagick
     graphviz
-    haskellPackages.xmobar
     highlight
     html2text
     httpie
@@ -80,6 +79,7 @@ in {
     jdk
     jo
     jq
+    kitty
     lastpass-cli
     leiningen
     libevent
@@ -94,7 +94,6 @@ in {
     maim
     mariadb
     mediainfo
-    megatools
     miller
     mitmproxy
     mongodb
@@ -103,22 +102,18 @@ in {
     msmtp
     mupdf
     neomutt
-    neovim
     netcat
     nethogs
-    netpbm
     ngrep
     nix-prefetch-scripts
     nix-zsh-completions
     nixops
     nmap
-    nodejs-8_x
+    nodejs
     notmuch
     notmuch-addrlookup
     notmuch-mutt
     ntfs3g
-    ocrad
-    offlineimap
     openssl
     pandoc
     parallel perlPackages.DBDSQLite
@@ -135,10 +130,8 @@ in {
     psmisc
     pv
     python
-    python27Packages.setuptools
     python35Packages.pygments
     recode
-    redis
     redshift
     remarshal
     ripgrep
@@ -147,18 +140,15 @@ in {
     rsync
     ruby
     rxvt_unicode-with-plugins
-    scrot
     setroot
     slop
     socat
     sqlite
     sshuttle
-    st
     stack
     strace
     sxhkd
     sxiv
-    t
     tcpdump
     tdesktop
     telnet
@@ -191,12 +181,12 @@ in {
     xdotool
     xfce.thunar
     xlsx2csv
-    xmind
     xml2
     xorg.xev
     xorg.xinput
     xorg.xrandr
     xorg.xset
+    xrandr-invert-colors
     xsel
     xurls
     yarn

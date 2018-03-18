@@ -22,6 +22,7 @@ in {
     "vm.vfs_cache_pressure" = 50;
   };
 
+
   #boot.kernelParams = [ "intel_iommu=on" ];
   #boot.kernelModules = [
   #  "vfio"
@@ -133,7 +134,16 @@ in {
         };
       };
     };
-    compton.enable = true;
+    compton = {
+      enable = true;
+      extraOptions = ''
+        blur-background = true;
+        blur-background-frame = true;
+        blur-background-fixed = true;
+        blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
+      '';
+      shadow = true;
+    };
     printing = {
       enable = true;
       clientConf = ''
