@@ -73,31 +73,40 @@ in {
 
   services = {
     ipfs.enable = true;
+
     udisks2.enable = true;
+
     unclutter-xfixes.enable = true;
+
     emacs = {
       enable = true;
       package = pkgs.emacs.override{ withXwidgets = true; };
     };
+
     #offlineimap.enable = true;
+
     tor.enable = true;
+
     avahi = {
       enable = true;
       publish.enable = true;
       nssmdns = true;
     };
+
     openvpn.servers = {
       us = {
         config = '' config /home/avo/.openvpn.conf '';
         autoStart = false;
       };
     };
+
     redshift = {
       enable = true;
       latitude = "48.85";
       longitude = "2.35";
       temperature.night = 4000;
     };
+
     xserver = {
       enable = true;
 
@@ -117,6 +126,11 @@ in {
           user = "avo";
         };
         sessionCommands = ''
+          /run/current-system/sw/bin/nvidia-settings --assign CurrentMetaMode='\
+            DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},\
+            DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},\
+            DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On},\
+          '
           ${pkgs.sxhkd}/bin/sxhkd &
           ${pkgs.dropbox}/bin/dropbox start &
           ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
@@ -128,9 +142,7 @@ in {
         xmonad  = {
           enable = true;
           enableContribAndExtras = true;
-          extraPackages = haskellPackages: [
-            haskellPackages.xmobar
-          ];
+          extraPackages = haskellPackages: [ haskellPackages.xmobar ];
         };
       };
     };
@@ -198,10 +210,6 @@ in {
     "IPFS_PATH" = "/var/lib/ipfs/.ipfs";
     "LIBVIRT_DEFAULT_URI" = "qemu:///system";
     "EDITOR" = "vim";
-  };
-
-  systemd.services = {
-    docker-nginx-proxy.enable = true;
   };
 
   programs = {
