@@ -6,11 +6,12 @@ let
 in {
   imports =
     [
+      ./hardware-configuration.nix
+      ./packages.nix
+
       ./alacritty.nix
       ./autocutsel.nix
       ./docker-nginx-proxy.nix
-      ./hardware-configuration.nix
-      ./packages.nix
       ./udiskie.nix
     ];
 
@@ -21,7 +22,6 @@ in {
     "vm.swappiness" = 1;
     "vm.vfs_cache_pressure" = 50;
   };
-
 
   #boot.kernelParams = [ "intel_iommu=on" ];
   #boot.kernelModules = [
@@ -47,6 +47,7 @@ in {
 
   nixpkgs.config = {
     allowUnfree = true;
+
     zathura.useMupdf = true;
   };
 
@@ -102,8 +103,7 @@ in {
 
     redshift = {
       enable = true;
-      latitude = "48.85";
-      longitude = "2.35";
+      latitude = "48.85"; longitude = "2.35";
       temperature.night = 4000;
     };
 
@@ -131,9 +131,9 @@ in {
             DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},\
             DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On},\
           '
+          ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
           ${pkgs.sxhkd}/bin/sxhkd &
           ${pkgs.dropbox}/bin/dropbox start &
-          ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
         '';
       };
 
@@ -214,12 +214,14 @@ in {
 
   programs = {
     adb.enable = true;
+
     ssh.extraConfig = ''
       Host *
         ControlMaster auto
         ControlPersist 0
         ControlPath /tmp/ssh-%C
     '';
+
     zsh = {
       enable = true;
       enableCompletion = true;
