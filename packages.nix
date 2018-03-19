@@ -9,7 +9,6 @@ let
 
 in {
   environment.systemPackages = with pkgs; [
-    (lowPrio texlive.combined.scheme-full)
     #chromiumDev
     #csvtotable
     #go_1_6
@@ -18,7 +17,9 @@ in {
     #wsta
     #x_x
     (lowPrio gcc)
+    (lowPrio ghc)
     (lowPrio moreutils) # prefer GNU parallel
+    (lowPrio texlive.combined.scheme-full)
     acpi
     alacritty
     alsaPlugins
@@ -54,7 +55,6 @@ in {
     fzf
     gcolor2
     geoipWithDatabase
-    (lowPrio ghc)
     ghostscript
     gist
     git
@@ -66,6 +66,7 @@ in {
     google-drive-ocamlfuse
     graphicsmagick
     graphviz
+    haskellPackages.hindent
     highlight
     html2text
     httpie
@@ -109,7 +110,7 @@ in {
     nix-zsh-completions
     nixops
     nmap
-    nodejs
+    nodejs-8_x
     notmuch
     notmuch-addrlookup
     notmuch-mutt
