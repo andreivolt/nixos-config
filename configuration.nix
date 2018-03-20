@@ -61,11 +61,11 @@ in {
   };
 
   networking = {
-    hostName = hostName;
     enableIPv6 = false;
-    #wireless.enable = true;
     firewall.allowedTCPPorts = [ 80 443 ];
+    hostName = hostName;
     hosts = { "127.0.0.1" = [ hostName ]; };
+    #wireless.enable = true;
   };
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -81,7 +81,7 @@ in {
 
     emacs = {
       enable = true;
-      package = pkgs.emacs.override{ withXwidgets = true; };
+      package = pkgs.emacs.override { withXwidgets = true; };
     };
 
     #offlineimap.enable = true;
@@ -90,8 +90,8 @@ in {
 
     avahi = {
       enable = true;
-      publish.enable = true;
       nssmdns = true;
+      publish.enable = true;
     };
 
     openvpn.servers = {

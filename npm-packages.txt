@@ -8,8 +8,9 @@ lumo-cljs
 peerflix
 ramda-cli
 react-native-cli
+tern
 ttystudio
+vmd
 wscat
 xml2json
 yarn
-vmd

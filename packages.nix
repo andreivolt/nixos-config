@@ -11,8 +11,6 @@ in {
   environment.systemPackages = with pkgs; [
     #chromiumDev
     #csvtotable
-    #go_1_6
-    #neovim
     #t
     #wsta
     #x_x
@@ -62,6 +60,7 @@ in {
     gnumake
     gnupg
     go-pup
+    go_1_6
     google-cloud-sdk
     google-drive-ocamlfuse
     graphicsmagick
@@ -103,6 +102,7 @@ in {
     msmtp
     mupdf
     neomutt
+    neovim
     netcat
     nethogs
     ngrep
