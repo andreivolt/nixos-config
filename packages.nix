@@ -59,8 +59,8 @@ in {
     gitAndTools.hub
     gnumake
     gnupg
+    go
     go-pup
-    go_1_6
     google-cloud-sdk
     google-drive-ocamlfuse
     graphicsmagick
