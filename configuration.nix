@@ -54,6 +54,11 @@ in {
   hardware = {
     bluetooth.enable = true;
 
+    opengl = {
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+
     pulseaudio = {
       enable = true;
       package = pkgs.pulseaudioFull;
@@ -235,6 +240,10 @@ in {
     vistafonts
     input-fonts
   ];
+
+  powerManagement.resumeCommands = ''
+    rm /tmp/ssh*
+  '';
 
   networking.bridges = { br0 = { interfaces = [ "enp0s31f6" ]; }; };
 }

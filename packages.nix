@@ -89,6 +89,7 @@ in {
     libxls
     lighttable
     linuxPackages.perf
+    lm_sensors
     lsof
     mailutils
     maim
