@@ -57,6 +57,7 @@ in {
     gist
     git
     gitAndTools.hub
+    gnome3.gtk
     gnumake
     gnupg
     go
@@ -66,6 +67,7 @@ in {
     graphicsmagick
     graphviz
     haskellPackages.hindent
+    haskellPackages.xmobar
     highlight
     html2text
     httpie
@@ -147,7 +149,6 @@ in {
     socat
     sqlite
     sshuttle
-    stack
     strace
     sxhkd
     sxiv

@@ -21,6 +21,7 @@ in {
     "fs.inotify.max_user_watches" = 100000;
     "vm.swappiness" = 1;
     "vm.vfs_cache_pressure" = 50;
+    "kernel.core_pattern" = "|/run/current-stystem/sw/bin/false";
   };
 
   #boot.kernelParams = [ "intel_iommu=on" ];
@@ -147,7 +148,6 @@ in {
         xmonad  = {
           enable = true;
           enableContribAndExtras = true;
-          extraPackages = haskellPackages: [ haskellPackages.xmobar ];
         };
       };
     };
