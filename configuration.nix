@@ -90,7 +90,7 @@ in {
       package = pkgs.emacs.override { withXwidgets = true; };
     };
 
-    #offlineimap.enable = true;
+    offlineimap.enable = true;
 
     tor.enable = true;
 

@@ -49,9 +49,10 @@ in {
 
     custom_cursor_colors: true
 
-    padding:
-      x: 10
-      y: 10
+    window:
+      padding:
+        x: 10
+        y: 10
 
     colors:
       primary:
