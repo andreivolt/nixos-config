@@ -166,7 +166,6 @@ in {
     w3m
     watchman
     wdiff
-    weechat
     wget
     whois
     wireshark
