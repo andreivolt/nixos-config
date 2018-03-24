@@ -99,8 +99,7 @@ in {
     mediainfo
     miller
     mitmproxy
-    mongodb
-    mongodb-tools
+    mitmproxy
     mpv
     msmtp
     mupdf
@@ -126,11 +125,9 @@ in {
     pdfgrep
     pdftk
     perlPackages.HTMLParser
-    pgcli
     pianobar
     ponymix
     poppler_utils
-    postgresql
     psmisc
     pv
     python
@@ -142,7 +139,6 @@ in {
     rlwrap
     rofi
     rsync
-    ruby
     rxvt_unicode-with-plugins
     setroot
     slop
@@ -177,6 +173,7 @@ in {
     weechat
     wget
     whois
+    wireshark
     wmctrl
     xbindkeys
     xclip
