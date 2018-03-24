@@ -9,7 +9,7 @@ let
 
 in {
   environment.systemPackages = with pkgs; [
-    #chromiumDev
+    #chromiumBeta
     #csvtotable
     #t
     #wsta
@@ -25,8 +25,7 @@ in {
     antiword
     aria
     asciinema
-    aspell
-    aspellDicts.en
+    aspell aspellDicts.en aspellDicts.fr
     awscli
     binutils
     bitcoin
@@ -40,7 +39,6 @@ in {
     docker-machine
     docker_compose docker-compose-completions
     docx2txt
-    dosfstools
     dropbox-cli
     dunst
     enscript
@@ -99,7 +97,6 @@ in {
     mediainfo
     miller
     mitmproxy
-    mitmproxy
     mpv
     msmtp
     mupdf
@@ -130,7 +127,6 @@ in {
     poppler_utils
     psmisc
     pv
-    python
     python35Packages.pygments
     recode
     redshift
