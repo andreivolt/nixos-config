@@ -100,7 +100,6 @@ in {
     mpv
     msmtp
     mupdf
-    neomutt
     neovim
     netcat
     nethogs
@@ -111,8 +110,6 @@ in {
     nmap
     nodejs-8_x
     notmuch
-    notmuch-addrlookup
-    notmuch-mutt
     ntfs3g
     openssl
     pandoc
