@@ -71,7 +71,7 @@ in {
     firewall.allowedTCPPorts = [ 80 443 ];
     hostName = hostName;
     hosts = { "127.0.0.1" = [ hostName ]; };
-    #wireless.enable = true;
+    wireless.enable = true;
   };
 
   nixpkgs.config.permittedInsecurePackages = [

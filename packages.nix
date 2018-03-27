@@ -11,7 +11,6 @@ in {
   environment.systemPackages = with pkgs; [
     #chromiumBeta
     #csvtotable
-    #t
     #wsta
     #x_x
     (lowPrio gcc)
@@ -141,6 +140,7 @@ in {
     strace
     sxhkd
     sxiv
+    t
     tcpdump
     tdesktop
     telnet
