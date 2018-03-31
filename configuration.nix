@@ -9,7 +9,6 @@ in {
       ./hardware-configuration.nix
       ./packages.nix
 
-      ./alacritty.nix
       ./autocutsel.nix
       ./docker-nginx-proxy.nix
       ./udiskie.nix
@@ -132,12 +131,12 @@ in {
           user = "avo";
         };
         sessionCommands = ''
-          /run/current-system/sw/bin/nvidia-settings --assign CurrentMetaMode='\
-            DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},\
-            DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},\
-            DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On},\
-          '
           ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
+          /run/current-system/sw/bin/nvidia-settings --assign CurrentMetaMode='
+            DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},
+            DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},
+            DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On}
+          '
           ${pkgs.sxhkd}/bin/sxhkd &
           ${pkgs.dropbox}/bin/dropbox start &
         '';
