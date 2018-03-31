@@ -123,7 +123,9 @@ in {
     poppler_utils
     psmisc
     pv
+    python
     python35Packages.pygments
+    ranger
     recode
     redshift
     remarshal
