@@ -92,7 +92,6 @@ in {
     lsof
     mailutils
     maim
-    mariadb
     mediainfo
     miller
     mitmproxy
@@ -107,7 +106,7 @@ in {
     nix-zsh-completions
     nixops
     nmap
-    nodejs-8_x
+    nodejs-8_x yarn
     notmuch
     ntfs3g
     openssl
@@ -183,7 +182,6 @@ in {
     xrandr-invert-colors
     xsel
     xurls
-    yarn
     youtube-dl
     zathura
     zip

@@ -232,13 +232,15 @@ in {
     };
   };
 
-  #fonts.fontconfig.ultimate.enable = false;
-  fonts.fonts = with pkgs; [
-    corefonts
-    google-fonts
-    vistafonts
-    input-fonts
-  ];
+  fonts = {
+    fontconfig.ultimate.enable = false;
+    fonts = with pkgs; [
+      corefonts
+      google-fonts
+      vistafonts
+      input-fonts
+    ];
+  };
 
   powerManagement.resumeCommands = ''
     rm /tmp/ssh*
