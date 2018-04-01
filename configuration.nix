@@ -45,8 +45,19 @@ in {
     };
   };
 
+  nix = {
+    buildCores = 0;
+    gc.automatic = true;
+    optimise.automatic = true;
+  };
+
   nixpkgs.config = {
     allowUnfree = true;
+
+    #overlays = [ (self: super: {
+    #  openssh = super.openssh.override { hpnSupport = true; withKerberos = true; kerberos = self.libkrb5; };
+    #  };
+    #) ];
 
     zathura.useMupdf = true;
   };
@@ -91,7 +102,7 @@ in {
 
     offlineimap.enable = true;
 
-    tor.enable = true;
+    tor.client.enable = true;
 
     avahi = {
       enable = true;
@@ -213,11 +224,12 @@ in {
   environment.variables = {
     "IPFS_PATH" = "/var/lib/ipfs/.ipfs";
     "LIBVIRT_DEFAULT_URI" = "qemu:///system";
-    "EDITOR" = "vim";
   };
 
   programs = {
     adb.enable = true;
+
+    #vim.defaultEditor = true;
 
     ssh.extraConfig = ''
       Host *
