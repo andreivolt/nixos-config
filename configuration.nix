@@ -81,7 +81,6 @@ in {
     firewall.allowedTCPPorts = [ 80 443 ];
     hostName = hostName;
     hosts = { "127.0.0.1" = [ hostName ]; };
-    wireless.enable = true;
   };
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -170,6 +169,7 @@ in {
         blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
       '';
       shadow = true;
+      shadowExclude = [ "class_g = 'kitty'" ];
     };
     printing = {
       enable = true;
@@ -228,8 +228,6 @@ in {
 
   programs = {
     adb.enable = true;
-
-    #vim.defaultEditor = true;
 
     ssh.extraConfig = ''
       Host *

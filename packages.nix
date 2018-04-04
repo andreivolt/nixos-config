@@ -11,6 +11,7 @@ in {
   environment.systemPackages = with pkgs; [
     #chromiumBeta
     #csvtotable
+    #miller
     #wsta
     #x_x
     (lowPrio gcc)
@@ -36,7 +37,7 @@ in {
     direnv
     dnsutils
     docker-machine
-    docker_compose docker-compose-completions
+    docker_compose docker-compose-zsh-completions
     docx2txt
     dropbox-cli
     dunst
@@ -58,7 +59,6 @@ in {
     gnumake
     gnupg
     go
-    go-pup
     google-cloud-sdk
     google-drive-ocamlfuse
     graphicsmagick
@@ -81,7 +81,6 @@ in {
     kitty
     lastpass-cli
     leiningen
-    libevent
     libinput-gestures
     libnotify
     libreoffice-fresh
@@ -93,7 +92,6 @@ in {
     mailutils
     maim
     mediainfo
-    miller
     mitmproxy
     mpv
     msmtp
@@ -121,9 +119,10 @@ in {
     ponymix
     poppler_utils
     psmisc
+    pup
     pv
     python
-    python35Packages.pygments
+    pythonPackages.pygments
     ranger
     recode
     redshift
@@ -166,6 +165,7 @@ in {
     wdiff
     wget
     whois
+    wirelesstools wpa_supplicant
     wireshark
     wmctrl
     xbindkeys
