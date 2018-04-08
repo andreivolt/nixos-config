@@ -5,10 +5,10 @@ let
   docx2txt = pkgs.callPackage ./packages/docx2txt.nix {};
   libinput-gestures = pkgs.callPackage ./packages/libinput-gestures/default.nix {};
   wsta = pkgs.callPackage ./packages/wsta.nix {};
+  lumo = pkgs.callPackage /home/avo/proj/nixpkgs/pkgs/development/interpreters/clojure/lumo.nix {};
 
 in {
   environment.systemPackages = with pkgs; [
-    #chromium
     #chromiumBeta
     #csvtotable
     #wsta
@@ -29,6 +29,7 @@ in {
     binutils
     bitcoin
     boot
+    chromium
     clojure
     curl
     dateutils
@@ -87,6 +88,7 @@ in {
     linuxPackages.perf
     lm_sensors
     lsof
+    lumo
     mailutils
     maim
     mediainfo
@@ -101,6 +103,7 @@ in {
     ngrep
     nix-prefetch-scripts
     nix-zsh-completions
+    nixfmt
     nixops
     nmap
     nodejs-8_x yarn
@@ -134,9 +137,11 @@ in {
     setroot
     slop
     socat
+    speechd
     sqlite
     sshuttle
     strace
+    svox
     sxhkd
     sxiv
     t
@@ -176,6 +181,7 @@ in {
     xml2
     xorg.xev
     xorg.xinput
+    xorg.xmodmap
     xorg.xrandr
     xorg.xset
     xrandr-invert-colors
