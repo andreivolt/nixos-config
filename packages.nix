@@ -4,14 +4,13 @@ let
   docker-compose-zsh-completions = pkgs.callPackage ./packages/docker-compose-zsh-completions.nix {};
   docx2txt = pkgs.callPackage ./packages/docx2txt.nix {};
   libinput-gestures = pkgs.callPackage ./packages/libinput-gestures/default.nix {};
-  miller = pkgs.callPackage ./packages/miller.nix {};
   wsta = pkgs.callPackage ./packages/wsta.nix {};
 
 in {
   environment.systemPackages = with pkgs; [
+    #chromium
     #chromiumBeta
     #csvtotable
-    #miller
     #wsta
     #x_x
     (lowPrio gcc)
@@ -30,7 +29,6 @@ in {
     binutils
     bitcoin
     boot
-    chromium
     clojure
     curl
     dateutils
@@ -92,6 +90,7 @@ in {
     mailutils
     maim
     mediainfo
+    miller
     mitmproxy
     mpv
     msmtp
