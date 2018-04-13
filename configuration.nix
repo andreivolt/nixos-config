@@ -181,19 +181,20 @@ in {
       };
 
       displayManager = {
-        auto = {
+        lightdm = {
           enable = true;
-          user = "avo";
+          autoLogin.user = "avo";
+          autoLogin.enable = true;
         };
-        sessionCommands = ''
-          ${pkgs.xorg.xrandr} --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
-          /run/current-system/sw/bin/nvidia-settings --assign CurrentMetaMode='
-            DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},
-            DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},
-            DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On}
-          '
-          ${pkgs.sxhkd}/bin/sxhkd &
-          ${pkgs.dropbox}/bin/dropbox start &
+        sessionCommands = with pkgs; ''
+          xrandr --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
+          #nvidia-settings --assign CurrentMetaMode='
+          #  DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},
+          #  DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},
+          #  DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On}
+          #' &
+          xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42 &
+          dropbox start &
         '';
       };
 
@@ -205,6 +206,7 @@ in {
         };
       };
     };
+
     compton = {
       enable = true;
       extraOptions = ''
@@ -212,10 +214,16 @@ in {
         blur-background-frame = true;
         blur-background-fixed = true;
         blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
+        clear-shadow = true
       '';
       shadow = true;
-      shadowExclude = [ "class_g = 'kitty'" ];
+      shadowExclude = [
+        "class_g = 'kitty' && class_i != 'scratchpad'"
+        "class_g = 'Alacritty'"
+        "i:e:xmobar"
+      ];
     };
+
     printing = {
       enable = true;
       clientConf = ''
@@ -271,6 +279,11 @@ in {
     "LIBVIRT_DEFAULT_URI" = "qemu:///system";
   };
 
+  environment.etc."X11/Xresources".text = ''
+      Xcursor.theme: Adwaita
+      Xcursor.size: 42
+  '';
+
   programs = {
     adb.enable = true;
 
@@ -300,6 +313,9 @@ in {
   powerManagement.resumeCommands = ''
     rm /tmp/ssh*
   '';
+
+  environment.profileRelativeEnvVars.XCURSOR_PATH = [ "/share/icons" ];
+  environment.sessionVariables.GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
 
   networking.bridges = { br0 = { interfaces = [ "enp0s31f6" ]; }; };
 }

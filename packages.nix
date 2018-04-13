@@ -13,7 +13,6 @@ in {
     #csvtotable
     #wsta
     #x_x
-    (lowPrio gcc)
     (lowPrio ghc)
     (lowPrio moreutils) # prefer GNU parallel
     (lowPrio texlive.combined.scheme-full)
@@ -54,6 +53,7 @@ in {
     gist
     git
     gitAndTools.hub
+    gnome3.adwaita-icon-theme
     gnome3.gtk
     gnumake
     gnupg
@@ -62,10 +62,12 @@ in {
     google-drive-ocamlfuse
     graphicsmagick
     graphviz
+    haskellPackages.brittany
     haskellPackages.hindent
     haskellPackages.xmobar
     highlight
     html2text
+    htop
     httpie
     httping
     hy
@@ -103,7 +105,6 @@ in {
     ngrep
     nix-prefetch-scripts
     nix-zsh-completions
-    nixfmt
     nixops
     nmap
     nodejs-8_x yarn
@@ -135,14 +136,16 @@ in {
     rsync
     rxvt_unicode-with-plugins
     setroot
+    seturgent
     slop
     socat
     speechd
     sqlite
     sshuttle
+    stack
+    steam
     strace
     svox
-    sxhkd
     sxiv
     t
     tcpdump
@@ -181,7 +184,6 @@ in {
     xml2
     xorg.xev
     xorg.xinput
-    xorg.xmodmap
     xorg.xrandr
     xorg.xset
     xrandr-invert-colors
