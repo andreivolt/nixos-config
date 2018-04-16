@@ -3,6 +3,8 @@
 let
   hostName = "${builtins.readFile ./.hostname}";
 
+  wsta = pkgs.callPackage ./packages/wsta.nix {};
+
   emacs26 = with pkgs; stdenv.lib.overrideDerivation
     (emacs25.override { srcRepo = true; }) (attrs: rec {
       name = "emacs-${version}${versionModifier}";
@@ -125,7 +127,6 @@ in {
     enableIPv6 = false;
     firewall.allowedTCPPorts = [ 80 443 ];
     hostName = hostName;
-    hosts = { "127.0.0.1" = [ hostName ]; };
   };
 
   nixpkgs.config.permittedInsecurePackages = [
@@ -159,12 +160,6 @@ in {
         config = '' config /home/avo/.openvpn.conf '';
         autoStart = false;
       };
-    };
-
-    redshift = {
-      enable = true;
-      latitude = "48.85"; longitude = "2.35";
-      temperature.night = 4000;
     };
 
     xserver = {
@@ -209,19 +204,19 @@ in {
 
     compton = {
       enable = true;
+      shadow = true;
+      shadowOffsets = [ (-20) (-20) ];
+      shadowOpacity = "0.9";
+      shadowExclude = [
+        "i:e:xmobar"
+      ];
       extraOptions = ''
         blur-background = true;
         blur-background-frame = true;
         blur-background-fixed = true;
         blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
-        clear-shadow = true
+        clear-shadow = true;
       '';
-      shadow = true;
-      shadowExclude = [
-        "class_g = 'kitty' && class_i != 'scratchpad'"
-        "class_g = 'Alacritty'"
-        "i:e:xmobar"
-      ];
     };
 
     printing = {

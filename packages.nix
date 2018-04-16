@@ -64,7 +64,7 @@ in {
     graphviz
     haskellPackages.brittany
     haskellPackages.hindent
-    haskellPackages.xmobar
+    haskellPackages.stylish-haskell
     highlight
     html2text
     htop
@@ -79,7 +79,6 @@ in {
     jdk
     jo
     jq
-    kitty
     lastpass-cli
     leiningen
     libinput-gestures
@@ -107,7 +106,7 @@ in {
     nix-zsh-completions
     nixops
     nmap
-    nodejs-8_x yarn
+    nodejs-9_x yarn
     notmuch
     ntfs3g
     openssl
@@ -126,7 +125,7 @@ in {
     pv
     python
     pythonPackages.pygments
-    ranger
+    lf
     recode
     redshift
     remarshal
@@ -134,7 +133,6 @@ in {
     rlwrap
     rofi
     rsync
-    rxvt_unicode-with-plugins
     setroot
     seturgent
     slop
