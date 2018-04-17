@@ -1,19 +1,23 @@
-{ pkgs ? (import <nixpkgs> {})
-, stdenv ? pkgs.stdenv
-}:
+{ stdenv, fetchurl, openssl }:
 
+stdenv.mkDerivation rec {
+  name = "wsta-${version}";
+  version = "0.5.0";
 
-pkgs.rustPlatform.buildRustPackage rec {
-  name = "wsta";
-
-  buildInputs = [ pkgs.rustc pkgs.cargo pkgs.openssl ];
-
-  src = pkgs.fetchFromGitHub {
-    owner = "esphen";
-    repo = "wsta";
-    rev = "edecc66da55b203906dfe765a44de7e6d29b92f5";
-    sha256 = "03jbapndj2szajbr2vbn9mjzfdm4akwhb4a0mwxilcwpkpk8bxb4";
+  src = fetchurl {
+      url = "https://github.com/esphen/wsta/releases/download/${version}/wsta-${version}-x86_64-unknown-linux-gnu.tar.gz";
+      sha256 = "0csvkwyv60smpyqlr6wvn6lmgsi4bpw2iyw1ggz38nwplrgabbrj";
   };
 
-  cargoSha256 = "0ad0a1zi9finad5jzicshvj7nnspjd86njkgqqd5hkhmqf1nm0ng";
+  dontStrip = true;
+
+  buildInputs = [ openssl ] ;
+
+  sourceRoot = ".";
+
+  installPhase = ''
+    patchelf --interpreter $(cat $NIX_CC/nix-support/dynamic-linker) --set-rpath ${stdenv.lib.makeLibraryPath [ openssl ]} wsta
+    mkdir -p $out/bin
+    mv wsta $out/bin
+  '';
 }

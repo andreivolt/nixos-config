@@ -9,13 +9,12 @@ let
 
 in {
   environment.systemPackages = with pkgs; [
-    #chromiumBeta
     #csvtotable
-    #wsta
+    wsta
     #x_x
-    (lowPrio ghc)
-    (lowPrio moreutils) # prefer GNU parallel
-    (lowPrio texlive.combined.scheme-full)
+    ghc
+    (stdenv.lib.overrideDerivation moreutils (attrs: rec { postFixup = "rm $out/bin/parallel"; })) # prefer GNU parallel
+    texlive.combined.scheme-full
     acpi
     alacritty
     alsaPlugins
@@ -118,7 +117,6 @@ in {
     pdftk
     perlPackages.HTMLParser
     pianobar
-    ponymix
     poppler_utils
     psmisc
     pup
@@ -160,7 +158,6 @@ in {
     units
     unoconv
     unzip
-    urlview
     usbutils
     vaapiVdpau
     vimHugeX
