@@ -3,10 +3,6 @@
 let
   hostName = "${builtins.readFile ./.hostname}";
 
-  wsta = pkgs.callPackage ./packages/wsta.nix {};
-
-  emacs26 = pkgs.callPackage ./packages/emacs26.nix {};
-
 in {
   imports =
     [
@@ -64,6 +60,7 @@ in {
     #) ];
 
     #chromium.enableWideVine = true;
+    overlays = <nixpkgs-overlays>;
 
     zathura.useMupdf = true;
   };
@@ -99,10 +96,7 @@ in {
 
     unclutter-xfixes.enable = true;
 
-    emacs = {
-      enable = true;
-      package = emacs26;
-    };
+    emacs.enable = true;
 
     offlineimap.enable = true;
 
@@ -189,6 +183,7 @@ in {
         </Printer>
       '';
     };
+
     dnsmasq = {
       enable = true;
       servers = ["8.8.8.8" "8.8.4.4"];
@@ -197,6 +192,7 @@ in {
         address=/test/127.0.0.1
       '';
     };
+
     openssh.enable = true;
   };
 
@@ -233,6 +229,7 @@ in {
     "LIBVIRT_DEFAULT_URI" = "qemu:///system";
   };
 
+  # cursor
   environment.etc."X11/Xresources".text = ''
       Xcursor.theme: Adwaita
       Xcursor.size: 42
@@ -268,8 +265,10 @@ in {
     rm /tmp/ssh*
   '';
 
+  # cursor
   environment.profileRelativeEnvVars.XCURSOR_PATH = [ "/share/icons" ];
   environment.sessionVariables.GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
 
+  # libvirt
   networking.bridges = { br0 = { interfaces = [ "enp0s31f6" ]; }; };
 }

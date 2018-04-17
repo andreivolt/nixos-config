@@ -1,6 +1,6 @@
-{ stdenv, fetchurl, openssl }:
+self: super:
 
-stdenv.mkDerivation rec {
+wsta = stdenv.mkDerivation rec {
   name = "wsta-${version}";
   version = "0.5.0";
 
