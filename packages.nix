@@ -9,9 +9,9 @@ let
 in {
   environment.systemPackages = with pkgs; [
     #csvtotable
-    wsta
     #x_x
     ghc
+    wsta
     (stdenv.lib.overrideDerivation moreutils (attrs: rec { postFixup = "rm $out/bin/parallel"; })) # prefer GNU parallel
     texlive.combined.scheme-full
     acpi

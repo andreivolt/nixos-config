@@ -60,7 +60,7 @@ in {
     #) ];
 
     #chromium.enableWideVine = true;
-    overlays = <nixpkgs-overlays>;
+    overlays = [ (import ./nixpkgs-overlays/default.nix) ];
 
     zathura.useMupdf = true;
   };

@@ -1,4 +1,4 @@
-self: super:
+self: super: {
 
 wsta = stdenv.mkDerivation rec {
   name = "wsta-${version}";
@@ -20,4 +20,6 @@ wsta = stdenv.mkDerivation rec {
     mkdir -p $out/bin
     mv wsta $out/bin
   '';
+}
+
 }
