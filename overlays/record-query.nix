@@ -1,8 +1,6 @@
-{ pkgs ? (import <nixpkgs> {})
-, stdenv ? pkgs.stdenv
-}:
+self: pkgs: rec {
 
-pkgs.rustPlatform.buildRustPackage rec {
+record-query = with pkgs; pkgs.rustPlatform.buildRustPackage rec {
   name = "record-query";
   src = pkgs.fetchFromGitHub {
     owner = "dflemstr";
@@ -18,4 +16,6 @@ pkgs.rustPlatform.buildRustPackage rec {
   configurePhase = ''
     export LIBCLANG_PATH="${pkgs.llvmPackages.clang-unwrapped}/lib"
   '';
+};
+
 }

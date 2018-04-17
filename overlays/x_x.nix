@@ -1,8 +1,6 @@
-{ pkgs ? (import <nixpkgs> {})
-, stdenv ? pkgs.stdenv
-}:
+self: pkgs: rec {
 
-pkgs.python35Packages.buildPythonPackage {
+x_x = with pkgs; pkgs.python35Packages.buildPythonPackage {
   name = "x_x";
   src = pkgs.fetchFromGitHub {
     owner = "kristianperkins";
@@ -11,3 +9,5 @@ pkgs.python35Packages.buildPythonPackage {
     sha256 = "1h9bj19pa6p49rw9knzfn2v1pzgyk9aicmzzgxp5x96d38ry2zab";
   };
 };
+
+}

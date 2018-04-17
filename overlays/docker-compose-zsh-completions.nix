@@ -1,11 +1,9 @@
-{ pkgs ? (import <nixpkgs> {})
-, stdenv ? pkgs.stdenv
-}:
+self: pkgs: rec {
 
-stdenv.mkDerivation {
+docker-compose-zsh-completions = with pkgs; stdenv.mkDerivation rec {
   name = "docker-compose-zsh-completions";
 
-  src = pkgs.fetchFromGitHub {
+  src = fetchFromGitHub {
     owner = "docker";
     repo = "compose";
     rev = "36772b555c976d81daca120ac15320fe13a605ee";
@@ -16,4 +14,6 @@ stdenv.mkDerivation {
     mkdir -p $out/share/zsh/site-functions
     cp contrib/completion/zsh/_docker-compose $out/share/zsh/site-functions
   '';
+};
+
 }

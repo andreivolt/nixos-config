@@ -1,12 +1,6 @@
 { config, pkgs, ... }:
 
-let
-  docker-compose-zsh-completions = pkgs.callPackage ./packages/docker-compose-zsh-completions.nix {};
-  docx2txt = pkgs.callPackage ./packages/docx2txt.nix {};
-  libinput-gestures = pkgs.callPackage ./packages/libinput-gestures/default.nix {};
-  lumo = pkgs.callPackage /home/avo/proj/nixpkgs/pkgs/development/interpreters/clojure/lumo.nix {};
-
-in {
+{
   environment.systemPackages = with pkgs; [
     #csvtotable
     #x_x

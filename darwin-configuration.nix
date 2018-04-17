@@ -3,12 +3,11 @@
 {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
-  environment.systemPackages =
-    [
-      pkgs.nodejs
-      pkgs.fastlane
-      pkgs.ruby_2_5
-    ];
+  environment.systemPackages = with pkgs; [
+      nodejs
+      fastlane
+      ruby_2_5
+  ];
 
   environment.variables = {
     "LC_ALL" = "en_us.UTF-8";

@@ -1,6 +1,6 @@
-self: super:
+self: pkgs: rec {
 
-wsta = stdenv.mkDerivation rec {
+wsta = with pkgs; stdenv.mkDerivation rec {
   name = "wsta-${version}";
   version = "0.5.0";
 
@@ -8,8 +8,6 @@ wsta = stdenv.mkDerivation rec {
       url = "https://github.com/esphen/wsta/releases/download/${version}/wsta-${version}-x86_64-unknown-linux-gnu.tar.gz";
       sha256 = "0csvkwyv60smpyqlr6wvn6lmgsi4bpw2iyw1ggz38nwplrgabbrj";
   };
-
-  dontStrip = true;
 
   buildInputs = [ openssl ] ;
 
@@ -20,4 +18,6 @@ wsta = stdenv.mkDerivation rec {
     mkdir -p $out/bin
     mv wsta $out/bin
   '';
+};
+
 }

@@ -3,6 +3,12 @@
 let
   hostName = "${builtins.readFile ./.hostname}";
 
+  overlays =
+    let path = "/etc/nixos/overlays"; content = builtins.readDir path; in
+      map (n: import (path + ("/" + n)))
+          (builtins.filter (n: builtins.match ".*\\.nix" n != null)
+                           (builtins.attrNames content));
+
 in {
   imports =
     [
@@ -20,7 +26,7 @@ in {
     "fs.inotify.max_user_watches" = 100000;
     "vm.swappiness" = 1;
     "vm.vfs_cache_pressure" = 50;
-    "kernel.core_pattern" = "|/run/current-stystem/sw/bin/false";
+    "kernel.core_pattern" = "|/run/current-system/sw/bin/false"; # disable core dumps
   };
 
   #boot.kernelParams = [ "intel_iommu=on" ];
@@ -51,6 +57,8 @@ in {
     optimise.automatic = true;
   };
 
+  nixpkgs.overlays = overlays;
+
   nixpkgs.config = {
     allowUnfree = true;
 
@@ -60,7 +68,6 @@ in {
     #) ];
 
     #chromium.enableWideVine = true;
-    overlays = [ (import ./nixpkgs-overlays/default.nix) ];
 
     zathura.useMupdf = true;
   };
@@ -208,7 +215,7 @@ in {
       "wheel"
     ];
     openssh.authorizedKeys.keys = [
-      "${builtins.readFile ./ssh-keys/avo.pub}"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2lzQAHzKnmiCQ9Ocb2PTMAQH9HR2x7KO7SV+og2a1nRH+T9bfQjgMW7SuPFbPN7Y4SoAgeBo+FFy7EczxyB7BW+z0u8uHlTJkQ4M1jmj5CQxdkuY/JLkbfJGhSw4eB4iJL7hhxwPvME9DgvdfN4ncxQZWiwrS0diLmydtUXcrEq1uqcaaTijJRADQpTxGUoEi9gNQDCHOWpPfKWAr6APS34MfWAfrc97n862xSPmwHFuCKuHG7WBzBhCSEPCFAI/mo+Wf9L6KWgz0jRRdwCPkMAxoYHmfZZqqRyoILr9CGKSFaN57kJevTMHDzoQgEskMS5Ln3qyFPvggpWWfGODL avo@watts"
     ];
   };
 
