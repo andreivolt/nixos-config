@@ -3,14 +3,9 @@ chart-stream
 create-react-native-app
 firebase-tools
 heroku-cli
-livescript
-lumo-cljs
-peerflix
 ramda-cli
 react-native-cli
 tern
 ttystudio
 vmd
-wscat
 xml2json
-yarn

@@ -8,14 +8,13 @@
     acpi lm_sensors pciutils usbutils
     alacritty
     alsaPlugins alsaUtils
-    antiword docx2txt html2text libxls pdfgrep remarshal unoconv xlsx2csv
+    antiword csvtotable docx2txt html2text libxls pdfgrep remarshal unoconv x_x xlsx2csv
     aria wget
     asciinema gist tmate ttyrec
     aspell aspellDicts.en aspellDicts.fr
     awscli google-cloud-sdk
     bitcoin
     boot clojure leiningen lighttable lumo
-    csvtotable
     curl httpie wsta
     dateutils
     direnv
@@ -34,9 +33,8 @@
     git gitAndTools.hub
     gnome3.adwaita-icon-theme
     gnupg lastpass-cli
-    go go2nix
     google-drive-ocamlfuse
-    google-play-music-desktop-player mpc_cli pianobar youtube-dl
+    google-play-music-desktop-player mpc_cli peerflix pianobar youtube-dl
     graphicsmagick imagemagick
     graphviz
     htop iotop linuxPackages.perf psmisc
@@ -58,7 +56,7 @@
     netcat socat telnet
     nix-prefetch-scripts patchelf
     nix-zsh-completions
-    nodejs-9_x yarn
+    nodejs-9_x
     ntfs3g
     openssl
     perlPackages.HTMLParser recode
@@ -81,7 +79,6 @@
     virt-viewer
     wirelesstools wpa_supplicant
     wmctrl xdotool
-    x_x
     xclip xsel
     xdg_utils
     xorg.xev xorg.xinput
