@@ -132,8 +132,7 @@ in {
       displayManager = {
         lightdm = {
           enable = true;
-          autoLogin.user = "avo";
-          autoLogin.enable = true;
+          autoLogin = { enable = true; user = "avo"; };
         };
         sessionCommands = with pkgs; ''
           xrandr --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
@@ -146,14 +145,6 @@ in {
           dropbox start &
         '';
       };
-
-      windowManager = {
-        default = "xmonad";
-        xmonad  = {
-          enable = true;
-          enableContribAndExtras = true;
-        };
-      };
     };
 
     compton = {
@@ -162,7 +153,7 @@ in {
       shadowOffsets = [ (-20) (-20) ];
       shadowOpacity = "0.9";
       shadowExclude = [
-        "i:e:xmobar"
+        ''!focused && !(_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") && !(_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL")''
       ];
       extraOptions = ''
         blur-background = true;
@@ -255,7 +246,7 @@ in {
   fonts = {
     fontconfig.ultimate.enable = false;
     enableCoreFonts = true;
-    extraFonts = with pkgs; [
+    fonts = with pkgs; [
       google-fonts
       vistafonts
       input-fonts

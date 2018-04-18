@@ -34,7 +34,7 @@
     gnome3.adwaita-icon-theme
     gnupg lastpass-cli
     google-drive-ocamlfuse
-    google-play-music-desktop-player mpc_cli peerflix pianobar youtube-dl
+    google-play-music-desktop-player mpc_cli nodePackages.peerflix pianobar youtube-dl
     graphicsmagick imagemagick
     graphviz
     htop iotop linuxPackages.perf psmisc
