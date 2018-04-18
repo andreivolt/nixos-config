@@ -29,13 +29,7 @@ in {
     "kernel.core_pattern" = "|/run/current-system/sw/bin/false"; # disable core dumps
   };
 
-  #boot.kernelParams = [ "intel_iommu=on" ];
-  #boot.kernelModules = [
-  #  "vfio"
-  #  "vfio_pci"
-  #  "vfio_iommu_type1"
-  #];
-  #boot.extraModprobeConfig = "options vfio-pci ids=8086:a12f";
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   time.timeZone = "Europe/Paris";
 
@@ -87,6 +81,17 @@ in {
 
   services = {
     ipfs.enable = true;
+
+    mopidy = {
+      enable = true;
+      extensionPackages = [ pkgs.mopidy-gmusic ];
+      configuration = ''
+        [gmusic]
+        username = username
+        password = "${builtins.readFile /home/avo/.google-passwd.txt}";
+        bitrate = 320
+      '';
+    };
 
     udisks2.enable = true;
 
@@ -249,8 +254,8 @@ in {
 
   fonts = {
     fontconfig.ultimate.enable = false;
-    fonts = with pkgs; [
-      corefonts
+    enableCoreFonts = true;
+    extraFonts = with pkgs; [
       google-fonts
       vistafonts
       input-fonts

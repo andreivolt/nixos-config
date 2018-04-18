@@ -2,10 +2,9 @@
 
 {
   environment.systemPackages = with pkgs; [
-    # (chromium.override {} enableWideVine = true; })
-    #csvtotable
-    #x_x
-    (stdenv.lib.overrideDerivation moreutils (attrs: rec { postFixup = "rm $out/bin/parallel"; })) # prefer GNU parallel
+    #gron
+    (neovim.override { vimAlias = true; })
+    (stdenv.lib.overrideDerivation moreutils (attrs: rec { postInstall = moreutils.postInstall + "; rm $out/bin/parallel"; })) # prefer GNU parallel
     acpi lm_sensors pciutils usbutils
     alacritty
     alsaPlugins alsaUtils
@@ -16,7 +15,7 @@
     awscli google-cloud-sdk
     bitcoin
     boot clojure leiningen lighttable lumo
-    chromium firefox-devedition-bin torbrowser w3m
+    csvtotable
     curl httpie wsta
     dateutils
     direnv
@@ -28,14 +27,16 @@
     exiv2 file mediainfo binutils
     ffcast maim slop
     ffmpeg
-    fzf highlight
+    firefox-devedition-bin google-chrome-dev torbrowser w3m
+    fzf highlight pythonPackages.pygments
     gcolor2
     ghc haskellPackages.brittany haskellPackages.hindent haskellPackages.stylish-haskell stack
     git gitAndTools.hub
     gnome3.adwaita-icon-theme
-    gnupg
-    go
+    gnupg lastpass-cli
+    go go2nix
     google-drive-ocamlfuse
+    google-play-music-desktop-player mpc_cli pianobar youtube-dl
     graphicsmagick imagemagick
     graphviz
     htop iotop linuxPackages.perf psmisc
@@ -45,7 +46,6 @@
     inotify-tools watchman
     jdk
     jq jo
-    lastpass-cli
     lf tree xfce.thunar
     libinput-gestures
     libreoffice-fresh
@@ -55,7 +55,6 @@
     mitmproxy ngrep tcpdump wireshark
     mpv vaapiVdpau
     mupdf poppler_utils (zathura.override { useMupdf = true; })
-    neovim
     netcat socat telnet
     nix-prefetch-scripts patchelf
     nix-zsh-completions
@@ -63,9 +62,7 @@
     ntfs3g
     openssl
     perlPackages.HTMLParser recode
-    pianobar youtube-dl
     pv parallel perlPackages.DBDSQLite expect wdiff
-    pythonPackages.pygments
     redshift
     ripgrep
     rlwrap
@@ -84,6 +81,7 @@
     virt-viewer
     wirelesstools wpa_supplicant
     wmctrl xdotool
+    x_x
     xclip xsel
     xdg_utils
     xorg.xev xorg.xinput
