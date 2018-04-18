@@ -59,18 +59,7 @@ in {
 
   nixpkgs.overlays = overlays;
 
-  nixpkgs.config = {
-    allowUnfree = true;
-
-    #overlays = [ (self: super: {
-    #  openssh = super.openssh.override { hpnSupport = true; withKerberos = true; kerberos = self.libkrb5; };
-    #  };
-    #) ];
-
-    #chromium.enableWideVine = true;
-
-    zathura.useMupdf = true;
-  };
+  nixpkgs.config.allowUnfree = true;
 
   hardware = {
     bluetooth.enable = true;

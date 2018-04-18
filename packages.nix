@@ -2,183 +2,92 @@
 
 {
   environment.systemPackages = with pkgs; [
+    # (chromium.override {} enableWideVine = true; })
     #csvtotable
     #x_x
-    ghc
-    wsta
     (stdenv.lib.overrideDerivation moreutils (attrs: rec { postFixup = "rm $out/bin/parallel"; })) # prefer GNU parallel
-    texlive.combined.scheme-full
-    acpi
+    acpi lm_sensors pciutils usbutils
     alacritty
-    alsaPlugins
-    alsaUtils
-    antiword
-    aria
-    asciinema
+    alsaPlugins alsaUtils
+    antiword docx2txt html2text libxls pdfgrep remarshal unoconv xlsx2csv
+    aria wget
+    asciinema gist tmate ttyrec
     aspell aspellDicts.en aspellDicts.fr
-    awscli
-    binutils
+    awscli google-cloud-sdk
     bitcoin
-    boot
-    chromium
-    clojure
-    curl
+    boot clojure leiningen lighttable lumo
+    chromium firefox-devedition-bin torbrowser w3m
+    curl httpie wsta
     dateutils
     direnv
-    dnsutils
-    docker-machine
-    docker_compose docker-compose-zsh-completions
-    docx2txt
+    dnsutils geoipWithDatabase nmap traceroute whois
+    docker-compose-zsh-completions docker-machine docker_compose nixops
     dropbox-cli
-    dunst
-    enscript
-    exiv2
-    expect
-    ffcast
+    dunst libnotify ntfy
+    enscript ghostscript pandoc pdftk texlive.combined.scheme-full
+    exiv2 file mediainfo binutils
+    ffcast maim slop
     ffmpeg
-    file
-    firefox-devedition-bin
-    fzf
+    fzf highlight
     gcolor2
-    geoipWithDatabase
-    ghostscript
-    gist
-    git
-    gitAndTools.hub
+    ghc haskellPackages.brittany haskellPackages.hindent haskellPackages.stylish-haskell stack
+    git gitAndTools.hub
     gnome3.adwaita-icon-theme
-    gnome3.gtk
-    gnumake
     gnupg
     go
-    google-cloud-sdk
     google-drive-ocamlfuse
-    graphicsmagick
+    graphicsmagick imagemagick
     graphviz
-    haskellPackages.brittany
-    haskellPackages.hindent
-    haskellPackages.stylish-haskell
-    highlight
-    html2text
-    htop
-    httpie
-    httping
+    htop iotop linuxPackages.perf psmisc
+    httping iftop nethogs
     hy
-    iftop
-    imagemagick
     inkscape
-    inotify-tools
-    iotop
+    inotify-tools watchman
     jdk
-    jo
-    jq
+    jq jo
     lastpass-cli
-    leiningen
+    lf tree xfce.thunar
     libinput-gestures
-    libnotify
     libreoffice-fresh
-    libxls
-    lighttable
-    linuxPackages.perf
-    lm_sensors
-    lsof
-    lumo
-    mailutils
-    maim
-    mediainfo
-    miller
-    mitmproxy
-    mpv
-    msmtp
-    mupdf
+    lsof strace
+    mailutils msmtp notmuch
+    miller pup xml2
+    mitmproxy ngrep tcpdump wireshark
+    mpv vaapiVdpau
+    mupdf poppler_utils (zathura.override { useMupdf = true; })
     neovim
-    netcat
-    nethogs
-    ngrep
-    nix-prefetch-scripts
+    netcat socat telnet
+    nix-prefetch-scripts patchelf
     nix-zsh-completions
-    nixops
-    nmap
     nodejs-9_x yarn
-    notmuch
     ntfs3g
     openssl
-    pandoc
-    parallel perlPackages.DBDSQLite
-    patchelf
-    pciutils
-    pdfgrep
-    pdftk
-    perlPackages.HTMLParser
-    pianobar
-    poppler_utils
-    psmisc
-    pup
-    pv
-    python
+    perlPackages.HTMLParser recode
+    pianobar youtube-dl
+    pv parallel perlPackages.DBDSQLite expect wdiff
     pythonPackages.pygments
-    lf
-    recode
     redshift
-    remarshal
     ripgrep
     rlwrap
     rofi
     rsync
-    setroot
-    seturgent
-    slop
-    socat
-    speechd
+    setroot seturgent xorg.xset
     sqlite
-    sshuttle
-    stack
+    sshuttle tsocks
     steam
-    strace
-    svox
     sxiv
-    t
-    tcpdump
-    tdesktop
-    telnet
+    t tdesktop
     tesseract
-    tmate
     tmux
-    torbrowser
-    traceroute
-    tree
-    tsocks
-    ttyrec
     units
-    unoconv
-    unzip
-    usbutils
-    vaapiVdpau
-    vimHugeX
+    unzip zip
     virt-viewer
-    w3m
-    watchman
-    wdiff
-    wget
-    whois
     wirelesstools wpa_supplicant
-    wireshark
-    wmctrl
-    xbindkeys
-    xclip
+    wmctrl xdotool
+    xclip xsel
     xdg_utils
-    xdotool
-    xfce.thunar
-    xlsx2csv
-    xml2
-    xorg.xev
-    xorg.xinput
-    xorg.xrandr
-    xorg.xset
-    xrandr-invert-colors
-    xsel
+    xorg.xev xorg.xinput
+    xorg.xrandr xrandr-invert-colors
     xurls
-    youtube-dl
-    zathura
-    zip
   ];
 }
