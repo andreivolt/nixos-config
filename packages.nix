@@ -26,7 +26,7 @@
     exiv2 file mediainfo binutils
     ffcast maim slop
     ffmpeg
-    firefox-devedition-bin google-chrome-dev torbrowser w3m
+    firefox-devedition-bin google-chrome-dev qutebrowser torbrowser w3m
     fzf highlight pythonPackages.pygments
     gcolor2
     ghc haskellPackages.brittany haskellPackages.hindent haskellPackages.stylish-haskell stack
@@ -34,7 +34,7 @@
     gnome3.adwaita-icon-theme
     gnupg lastpass-cli
     google-drive-ocamlfuse
-    google-play-music-desktop-player mpc_cli nodePackages.peerflix pianobar youtube-dl
+    google-play-music-desktop-player mpc_cli mpv nodePackages.peerflix pianobar vaapiVdpau youtube-dl
     graphicsmagick imagemagick
     graphviz
     htop iotop linuxPackages.perf psmisc
@@ -51,7 +51,6 @@
     mailutils msmtp notmuch
     miller pup xml2
     mitmproxy ngrep tcpdump wireshark
-    mpv vaapiVdpau
     mupdf poppler_utils (zathura.override { useMupdf = true; })
     netcat socat telnet
     nix-prefetch-scripts patchelf

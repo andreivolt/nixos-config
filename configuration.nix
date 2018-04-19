@@ -51,9 +51,10 @@ in {
     optimise.automatic = true;
   };
 
-  nixpkgs.overlays = overlays;
-
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs = {
+    overlays = overlays;
+    config.allowUnfree = true;
+  };
 
   hardware = {
     bluetooth.enable = true;
@@ -120,6 +121,8 @@ in {
       enable = true;
 
       videoDrivers = [ "nvidia" ];
+
+      xkbOptions = "ctrl:nocaps";
 
       layout = "fr";
 
