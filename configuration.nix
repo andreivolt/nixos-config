@@ -3,6 +3,8 @@
 let
   hostName = "${builtins.readFile ./.hostname}";
 
+  theme = import ./challenger-deep-theme.nix;
+
   overlays =
     let path = "/etc/nixos/overlays"; content = builtins.readDir path; in
       map (n: import (path + ("/" + n)))
@@ -15,9 +17,7 @@ in {
       ./hardware-configuration.nix
       ./packages.nix
 
-      ./autocutsel.nix
       ./docker-nginx-proxy.nix
-      ./udiskie.nix
     ];
 
   boot.loader.timeout = 1;
@@ -34,7 +34,7 @@ in {
   time.timeZone = "Europe/Paris";
 
   i18n = {
-    consoleKeyMap = "fr";
+    consoleUseXkbConfig = true;
     defaultLocale = "en_US.UTF-8";
   };
 
@@ -80,16 +80,21 @@ in {
     "webkitgtk-2.4.11"
   ];
 
+  hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
+
   services = {
     ipfs.enable = true;
+
+    devmon.enable = true;
 
     mopidy = {
       enable = true;
       extensionPackages = [ pkgs.mopidy-gmusic ];
       configuration = ''
         [gmusic]
-        username = username
-        password = "${builtins.readFile /home/avo/.google-passwd.txt}";
+        deviceid = 0123456789abcdef
+        username = andreivolt
+        password = ${builtins.readFile /home/avo/.google-passwd.txt}
         bitrate = 320
       '';
     };
@@ -132,20 +137,44 @@ in {
         accelSpeed = "0.4";
       };
 
-      displayManager = {
-        lightdm = {
+      xrandrHeads = [ "DP-2" "DP-4" "DP-0" ];
+
+      windowManager = {
+        default = "xmonad";
+        xmonad  = {
           enable = true;
-          autoLogin = { enable = true; user = "avo"; };
+          enableContribAndExtras = true;
+        };
+      };
+
+      desktopManager.xterm.enable = false;
+
+      displayManager = {
+        auto = {
+          enable = true;
+          user = "avo";
         };
         sessionCommands = with pkgs; ''
-          xrandr --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4 &
-          #nvidia-settings --assign CurrentMetaMode='
-          #  DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},
-          #  DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},
-          #  DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On}
-          #' &
-          xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42 &
-          dropbox start &
+          ${xorg.xrandr}/bin/xrandr --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4
+
+          ${linuxPackages.nvidia_x11}/bin/nvidia-settings --assign CurrentMetaMode='
+            DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},
+            DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},
+            DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On, Rotation=left}
+          '
+
+          ${xlibs.xsetroot}/bin/xsetroot -cursor_name left_ptr
+
+          ${dropbox}/bin/dropbox start &
+
+          export XDG_CACHE_HOME=~/.cache
+          export QT_AUTO_SCREEN_SCALE_FACTOR=1
+
+          wallpaper=~/tmp/footer_lodyas/footer_lodyas.png; ${setroot}/bin/setroot --tiled $wallpaper --tiled $wallpaper --tiled $wallpaper
+
+          ${xorg.xrdb}/bin/xrdb -merge -I$HOME ~/.Xresources
+
+          ~/.local/bin/xmonad &
         '';
       };
     };
@@ -153,15 +182,22 @@ in {
     compton = {
       enable = true;
       shadow = true;
-      shadowOffsets = [ (-20) (-20) ];
-      shadowOpacity = "0.9";
-      shadowExclude = [
-        ''!focused && !(_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") && !(_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL")''
-      ];
+      shadowOffsets = [ (-15) (-5) ];
+      shadowOpacity = "0.8";
+      # shadowExclude = [
+      #   ''
+      #     !(XMONAD_FLOATING_WINDOW ||
+      #       (_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") ||
+      #       (_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL"))
+      #   ''
+      # ];
       extraOptions = ''
         blur-background = true;
         blur-background-frame = true;
         blur-background-fixed = true;
+        blur-background-exclude = [
+          "class_g = 'slop'";
+        ];
         blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
         clear-shadow = true;
       '';
@@ -222,12 +258,13 @@ in {
   environment.variables = {
     "IPFS_PATH" = "/var/lib/ipfs/.ipfs";
     "LIBVIRT_DEFAULT_URI" = "qemu:///system";
+    "LIBVA_DRIVER_NAME" = "vdpau";
   };
 
   # cursor
   environment.etc."X11/Xresources".text = ''
-      Xcursor.theme: Adwaita
-      Xcursor.size: 42
+    Xcursor.theme: Adwaita
+    Xcursor.size: 42
   '';
 
   programs = {
@@ -247,12 +284,39 @@ in {
   };
 
   fonts = {
-    fontconfig.ultimate.enable = false;
+    fontconfig = {
+      ultimate.enable = false;
+      defaultFonts = {
+        monospace = ["Source Code Pro"];
+      };
+    };
     enableCoreFonts = true;
     fonts = with pkgs; [
+      emacs-all-the-icons-fonts
+      font-awesome-ttf
       google-fonts
+      hack-font
+      hasklig
+      (iosevka.override {
+        set = "custom";
+        weights = ["light"];
+        design = [
+          "termlig"
+          "v-asterisk-low"
+          "v-at-short"
+          "v-i-zshaped"
+          "v-tilde-low"
+          "v-underscore-low"
+          "v-zero-dotted"
+          "v-zshaped-l"
+        ];
+      })
+      material-icons
+      nerdfonts
+      overpass
+      powerline-fonts
+      ubuntu_font_family
       vistafonts
-      input-fonts
     ];
   };
 
@@ -264,6 +328,34 @@ in {
   environment.profileRelativeEnvVars.XCURSOR_PATH = [ "/share/icons" ];
   environment.sessionVariables.GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
 
-  # libvirt
-  networking.bridges = { br0 = { interfaces = [ "enp0s31f6" ]; }; };
+  environment.etc."xmobar/xmobarrc".text = (import ./xmobarrc.nix { inherit theme; });
+
+  systemd.user.services =
+    let
+      emacsDaemon = name : {
+        enable = true;
+        wantedBy = [ "default.target" ];
+        serviceConfig = {
+          Type      = "forking";
+          Restart   = "always";
+          ExecStart = ''${pkgs.bash}/bin/bash -c 'source ${config.system.build.setEnvironment}; exec ${pkgs.emacs}/bin/emacs --daemon=${name} --eval "(+avo/${name})"' '';
+          ExecStop  = "${pkgs.emacs}/bin/emacsclient -s ${name} --eval (kill-emacs)";
+        };
+      };
+    in {
+      ircEmacsDaemon = emacsDaemon "irc";
+      mailEmacsDaemon = emacsDaemon "mail";
+      editorEmacsDaemon = emacsDaemon "scratchpad";
+
+      dunst = {
+        enable = true;
+        description = "Lightweight and customizable notification daemon";
+        wantedBy = [ "graphical-session.target" ];
+        path = [ pkgs.dunst ];
+        serviceConfig = {
+          Restart = "always";
+          ExecStart = "${pkgs.dunst}/bin/dunst";
+        };
+      };
+    };
 }
