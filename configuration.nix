@@ -152,7 +152,7 @@ in {
         {
           output = "DP-2";
           monitorConfig = ''
-            Option "metamodes" "nvidia-auto-select +2160+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotation=left}"
+            Option "metamodes" "nvidia-auto-select +2160+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotate=left}"
             Option "AllowIndirectGLXProtocol" "off"
             Option "TripleBuffer" "on"
           '';
@@ -161,7 +161,7 @@ in {
           output = "DP-4";
           primary = true;
           monitorConfig = ''
-            Option "metamodes" "nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotation=left}"
+            Option "metamodes" "nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
             Option "AllowIndirectGLXProtocol" "off"
             Option "TripleBuffer" "on"
           '';
@@ -191,15 +191,6 @@ in {
           enable = true;
           user = "avo";
         };
-        sessionCommands = with pkgs; ''
-
-          export XDG_CACHE_HOME=~/.cache
-          export QT_AUTO_SCREEN_SCALE_FACTOR=1
-
-          ${xorg.xrdb}/bin/xrdb -merge -I$HOME ~/.Xresources
-
-          ~/.local/bin/xmonad &
-        '';
       };
     };
 
@@ -208,13 +199,13 @@ in {
       shadow = true;
       shadowOffsets = [ (-15) (-5) ];
       shadowOpacity = "0.8";
-      # shadowExclude = [
-      #   ''
-      #     !(XMONAD_FLOATING_WINDOW ||
-      #       (_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") ||
-      #       (_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL"))
-      #   ''
-      # ];
+      shadowExclude = [
+        ''
+          !(XMONAD_FLOATING_WINDOW ||
+            (_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") ||
+            (_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL"))
+        ''
+      ];
       extraOptions = ''
         blur-background = true;
         blur-background-frame = true;
@@ -283,13 +274,61 @@ in {
       unclutter.enable = true;
     };
 
+    xresources.properties = {
+      "Xft.dpi"       = 192;
+      "Xft.hintstyle" = "hintfull";
+      "Xcursor.theme" = "Adwaita";
+      "Xcursor.size"  = 42;
+      # "*.font" = "xft:Source Code Pro:size=11";
+
+      "*.foreground"  = theme.foreground;
+      "*.background"  = theme.background;
+      "*.borderColor" = theme.background;
+      "*.cursorColor" = theme.foreground;
+      "*.colorUL"     = theme.white;
+      "*.color0"      = theme.black;
+      "*.color8"      = theme.gray;
+      "*.color1"      = theme.red;
+      "*.color9"      = theme.lightRed;
+      "*.color2"      = theme.green;
+      "*.color10"     = theme.lightGreen;
+      "*.color3"      = theme.yellow;
+      "*.color11"     = theme.lightYellow;
+      "*.color4"      = theme.blue;
+      "*.color12"     = theme.lightBlue;
+      "*.color5"      = theme.magenta;
+      "*.color13"     = theme.lightMagenta;
+      "*.color6"      = theme.cyan;
+      "*.color14"     = theme.lightCyan;
+
+      "rofi.font"     = "Abel 24";
+      "rofi.theme"    = "Pop-Dark";
+    };
+
     home = {
       packages = with pkgs; [];
       sessionVariables = {
         ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
-        COLUMNS                     = "100";
+        BLOCK_SIZE                  = "\'1";
+        BOOT_JVM_OPTIONS            = "'-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none'";
+        BROWSER                     = "qutebrowser";
+        COLUMNS                     = 100;
         EDITOR                      = "${pkgs.emacs}/bin/emacsclient";
+        GPG_AGENT_INFO              = "$HOME/.gnupg/S.gpg-agent";
+        PAGER                       = "less";
+        PATH                        = "~/bin:~/.local/bin:~/.npm-packages/bin:$PATH";
         QT_AUTO_SCREEN_SCALE_FACTOR = 1;
+        SSH_AUTH_SOCK               = "$XDG_RUNTIME_DIR/ssh-agent.socket";
+      };
+
+      file = {
+        ".cups/lpoptions".source = dotfiles/cups/lpoptions;
+        ".curlc".source = dotfiles/curlrc;
+        ".inputrc".source = dotfiles/inputrc;
+        ".mailrc".source = dotfiles/mailrc;
+        ".npmrc".source = dotfiles/npmrc;
+        ".tmux.conf".source = dotfiles/tmux.conf;
+        ".stylish-yaskell.yaml".source = dotfiles/stylish-haskell.yaml;
       };
     };
 
@@ -303,20 +342,126 @@ in {
           profile = opengl-hq
           no-audio-display
         '';
+
+        "alacritty/alacritty.yml".text = (import ./alacritty.nix { inherit theme; });
+
+        "xmobar/xmobarrc".text = (import ./xmobarrc.nix { inherit theme; });
+        "xmobar/bin/online-indicator".text = ''
+          color=$(is-online && echo ${theme.green} || echo ${theme.red})
+          symbol=$(is-online && echo ﯱ || echo ﯱ)
+
+          echo "<fc=$color>$symbol</fc>"
+        '';
+
+        "youtube-dl.conf".text = ''
+           --output %(title)s.%(ext)s
+        '';
+
+        "nvim/init.vim".text = ''
+          set runtimepath^=~/.vim runtimepath+=~/.vim/after
+          let &packpath = &runtimepath
+          source ~/.vim/vimrc
+        '';
+
+        "zathura/zathurarc".text = ''
+          set incremental-search true
+        '';
+
+        "user-dirs.dirs".text = ''
+          XDG_DOWNLOAD_DIR="$HOME/tmp"
+          XDG_DESKTOP_DIR="$HOME/tmp"
+        '';
+
+        "mimeapps.list".text = ''
+           [Default Applications]
+           x-scheme-handler/http=qutebrowser.desktop
+           x-scheme-handler/https=qutebrowser.desktop
+           x-scheme-handler/ftp=qutebrowser.desktop
+           text/html=qutebrowser.desktop
+           application/xhtml+xml=qutebrowser.deskop
+           application/vnd.openxmlformats-officedocument.wordprocessingml.document=writer.desktop;libreoffice-writer.desktop;
+           application/pdf=mupdf.desktop;zathura-pdf-mupdf.desktop;
+           text/plain=emacs.desktop;
+           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=calc.desktop;
+           application/xml=emacs.desktop;
+           x-scheme-handler/magnet=userapp-transmission-gtk-NWT3FZ.desktop;
+        '';
+
+        "brittany/config.yaml".text = ''
+          conf_debug:
+            dconf_roundtrip_exactprint_only: false
+            dconf_dump_bridoc_simpl_par: false
+            dconf_dump_ast_unknown: false
+            dconf_dump_bridoc_simpl_floating: false
+            dconf_dump_config: false
+            dconf_dump_bridoc_raw: false
+            dconf_dump_bridoc_final: false
+            dconf_dump_bridoc_simpl_alt: false
+            dconf_dump_bridoc_simpl_indent: false
+            dconf_dump_annotations: false
+            dconf_dump_bridoc_simpl_columns: false
+            dconf_dump_ast_full: false
+          conf_forward:
+            options_ghc: []
+          conf_errorHandling:
+            econf_ExactPrintFallback: ExactPrintFallbackModeInline
+            econf_Werror: false
+            econf_omit_output_valid_check: false
+            econf_produceOutputOnErrors: false
+          conf_preprocessor:
+            ppconf_CPPMode: CPPModeAbort
+            ppconf_hackAroundIncludes: false
+          conf_version: 1
+          conf_layout:
+            lconfig_a
+        '';
       };
     };
 
     xsession = {
+      enable = true;
+
       windowManager.command = "xmonad";
+
       initExtra = ''
         xsetroot -xcf /run/current-system/sw/share/icons/Adwaita/cursors/left_ptr 42
-        setroot ~/data/wallpapers/{pillars-of-creation_blue.jpg,pillars-of-creation_blue.jpg,pillars-of-creation_blue.jpg}
-        xrdb -merge -I$HOME ~/.Xresources
+
+        wallpaper=~/data/wallpapers/matterhorn.jpg; setroot -z $wallpaper -z $wallpaper -z $wallpaper
       '';
     };
 
     programs = {
       home-manager.enable = true;
+
+      htop = {
+        enable = true;
+        fields = [
+          "USER"
+          "PRIORITY"
+          "STATE"
+          "PERCENT_CPU"
+          "PERCENT_MEM"
+          "TIME"
+          "IO_READ_RATE"
+          "IO_WRITE_RATE"
+          "STARTTIME"
+          "COMM"
+        ];
+        accountGuestInCpuMeter = false;
+        colorScheme = 6;
+        hideUserlandThreads = true;
+        meters = {
+          left = [
+            "Memory"
+            "CPU"
+            "LoadAverage"
+          ];
+          right = [
+            "Tasks"
+            "Uptime"
+          ];
+        };
+      };
 
       git = {
         enable = true;
@@ -401,9 +546,6 @@ in {
           share = true;
         };
 
-        sessionVariables = {
-        };
-
         initExtra = ''
           setopt \
             extended_history \
@@ -418,7 +560,8 @@ in {
 
           unset RPS1
 
-          for i (~/.functions.d/*) source $i
+          diff() { wdiff -n $@ | colordiff }
+          open() { setsid xdg-open $* &>/dev/null }
 
           alias -g C='| wc -l'
           alias -g L='| less -R'
@@ -461,13 +604,6 @@ in {
 
           eval "$(direnv hook zsh)"
         '';
-
-        # plugins = [
-        #   { name = "zsh-powerlevel9k";
-        #     file = "powerlevel9k.zsh-theme";
-        #     src = pkgs.zsh-powerlevel9k.src;
-        #   }
-        # ];
       };
     };
   };
@@ -489,12 +625,6 @@ in {
     "LIBVIRT_DEFAULT_URI" = "qemu:///system";
     "LIBVA_DRIVER_NAME" = "vdpau";
   };
-
-  # cursor
-  environment.etc."X11/Xresources".text = ''
-    Xcursor.theme: Adwaita
-    Xcursor.size: 42
-  '';
 
   programs = {
     adb.enable = true;
@@ -546,12 +676,6 @@ in {
   powerManagement.resumeCommands = ''
     rm /tmp/ssh*
   '';
-
-  # cursor
-  environment.profileRelativeEnvVars.XCURSOR_PATH = [ "/share/icons" ];
-  environment.sessionVariables.GTK_PATH = "${config.system.path}/lib/gtk-3.0:${config.system.path}/lib/gtk-2.0";
-
-  environment.etc."xmobar/xmobarrc".text = (import ./xmobarrc.nix { inherit theme; });
 
   systemd.user.services =
     let

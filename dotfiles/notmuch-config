@@ -1,0 +1,18 @@
+[user]
+name=Andrei Vladescu-Olt
+primary_email=andrei@avolt.net
+other_email=andrei.volt@gmail.com
+
+[new]
+tags=unread;inbox;
+ignore=
+
+[search]
+exclude_tags=deleted;spam;
+
+[maildir]
+synchronize_flags=true
+
+[addressbook]
+path=/home/avo/.notmuch-abook.db
+backend=sqlite3
