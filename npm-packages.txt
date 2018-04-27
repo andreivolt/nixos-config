@@ -1,10 +1,8 @@
 @compositor/x0
 chart-stream
-create-react-native-app
 firebase-tools
 heroku-cli
 ramda-cli
-react-native-cli
 tern
 ttystudio
 vmd
