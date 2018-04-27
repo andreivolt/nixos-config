@@ -4,10 +4,9 @@ let
   hostName = "${builtins.getEnv "HOST"}";
 
   theme = import ./challenger-deep-theme.nix;
-
-  myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net"
-
   proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
+
+  myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
 
   overlays =
     let path = ./overlays; in with builtins;
