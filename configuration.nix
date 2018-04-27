@@ -351,11 +351,11 @@ in {
           set sendmail=${pkgs.msmtp}/bin/msmtp"
         '';
 
-        ".npmrc".source = ''
+        ".npmrc".text = ''
           prefix=~/.npm-packages"
         '';
 
-        ".tmux.conf".source = ''
+        ".tmux.conf".text = ''
           set -g @plugin 'tmux-plugins/tpm'
 
           set -g @plugin 'tmux-plugins/tmux-resurrect'
