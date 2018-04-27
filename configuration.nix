@@ -426,7 +426,7 @@ in {
       windowManager.command = "xmonad";
 
       initExtra = ''
-        xsetroot -xcf ${pkgs.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42
+        xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42
 
         wallpaper=~/data/wallpapers/matterhorn.jpg; setroot -z $wallpaper -z $wallpaper -z $wallpaper
       '';
