@@ -123,9 +123,7 @@ settings:
   fonts.messages.warning:
     global: 10pt ${monospaceFont}
   fonts.monospace:
-    global: '"${monospaceFont}", Terminus, Monospace, "DejaVu Sans Mono", Monaco, "Bitstream
-      Vera Sans Mono", "Andale Mono", "Courier New", Courier, "Liberation Mono", monospace,
-      Fixed, Consolas, Terminal'
+    global: '"${monospaceFont}"'
   fonts.statusbar:
     global: 10pt ${monospaceFont}
   fonts.tabs:
