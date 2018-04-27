@@ -468,9 +468,9 @@ in {
           no-audio-display
         '';
 
-        "alacritty/alacritty.yml".text = (import ./alacritty.nix { inherit theme monospaceFont; });
+        "alacritty/alacritty.yml".text = import ./alacritty.nix { inherit theme monospaceFont; };
 
-        "xmobar/xmobarrc".text = (import ./xmobarrc.nix { inherit theme; font = proportionalFont; });
+        "xmobar/xmobarrc".text = import ./xmobarrc.nix { inherit theme; font = proportionalFont; };
         "xmobar/bin/online-indicator".text = ''
           color=$(is-online && echo ${theme.green} || echo ${theme.red})
           symbol=$(is-online && echo ﯱ || echo ﯱ)
@@ -491,6 +491,8 @@ in {
         "zathura/zathurarc".text = ''
           set incremental-search true
         '';
+
+        "qutebrowser/autoconfig.yml".text = import ./qutebrowser.nix { inherit theme proportionalFont monospaceFont pkgs; };
 
         "user-dirs.dirs".text = ''
           XDG_DOWNLOAD_DIR="$HOME/tmp"
