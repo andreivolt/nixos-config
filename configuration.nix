@@ -711,10 +711,9 @@ in {
 
           ################################################################################
 
-          # autoload -U compinit; compinit
-          # setopt glob_complete
-          # zstyle ':completion:*' menu select
-          # zstyle ':completion:*' rehash true
+          setopt glob_complete
+          zstyle ':completion:*' menu select
+          zstyle ':completion:*' rehash true
 
           setopt \
             extended_glob \
