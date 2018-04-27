@@ -94,7 +94,7 @@ in {
 
     mopidy = {
       enable = true;
-      extensionPackages = [ pkgs.mopidy-gmusic ];
+      extensionPackages = with pkgs; [ mopidy-gmusic ];
       configuration = ''
         [gmusic]
         deviceid = 0123456789abcdef
@@ -426,7 +426,7 @@ in {
       windowManager.command = "xmonad";
 
       initExtra = ''
-        xsetroot -xcf /run/current-system/sw/share/icons/Adwaita/cursors/left_ptr 42
+        xsetroot -xcf ${pkgs.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42
 
         wallpaper=~/data/wallpapers/matterhorn.jpg; setroot -z $wallpaper -z $wallpaper -z $wallpaper
       '';
