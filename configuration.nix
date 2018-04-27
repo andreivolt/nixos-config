@@ -324,13 +324,139 @@ in {
       };
 
       file = {
-        ".cups/lpoptions".source = dotfiles/cups/lpoptions;
-        ".curlc".source = dotfiles/curlrc;
-        ".inputrc".source = dotfiles/inputrc;
-        ".mailrc".source = dotfiles/mailrc;
-        ".npmrc".source = dotfiles/npmrc;
-        ".tmux.conf".source = dotfiles/tmux.conf;
-        ".stylish-yaskell.yaml".source = dotfiles/stylish-haskell.yaml;
+        ".cups/lpoptions".text = ''
+           Default default
+        '';
+
+        ".curlc".text = ''
+          user-agent mozilla
+          silent
+          globoff
+        '';
+
+        ".inputrc".text = ''
+          set editing-mode vi
+
+          set completion-ignore-case on
+          set show-all-if-ambiguous  on
+
+          set keymap vi
+          C-r: reverse-search-history
+          C-f: forward-search-history
+          C-l: clear-screen
+          v:   rlwrap-call-editor
+        '';
+
+        ".mailrc".text = ''
+          set sendmail=${pkgs.msmtp}/bin/msmtp"
+        '';
+
+        ".npmrc".source = ''
+          prefix=~/.npm-packages"
+        '';
+
+        ".tmux.conf".source = ''
+          set -g @plugin 'tmux-plugins/tpm'
+
+          set -g @plugin 'tmux-plugins/tmux-resurrect'
+          set -g @resurrect-strategy-vim 'session'
+          set -g @resurrect-capture-pane-contents 'on'
+
+          set -g @plugin 'tmux-plugins/tmux-continuum'
+          set -g @continuum-restore 'on'
+          set -g @continuum-boot 'on'
+
+          set -g @plugin 'tmux-plugins/tmux-sensible'
+
+          set -g @plugin 'tmux-plugins/tmux-pain-control'
+
+          set -g @plugin 'nhdaly/tmux-better-mouse-mode'
+          set -g @scroll-speed-num-lines-per-scroll 1
+
+          set -g @plugin 'tmux-plugins/tmux-copycat'
+          set -g @plugin 'tmux-plugins/tmux-yank'
+          set -g @yank_selection 'primary'
+
+          run '~/.tmux/plugins/tpm/tpm'
+
+
+          set -g base-index 1
+          set -g renumber-windows on
+
+          set -g monitor-activity on
+
+          set -g set-titles on
+          set -g set-titles-string "#T"
+
+          set -g status-style bg=colour238,fg=colour252
+          set -g status-left ' #S '
+          set -g status-left-length 100
+          set -g status-right '#h'
+          set -g window-status-format ' #I: #W '
+          set -g window-status-current-format ' #I: #W '
+          setw -g window-status-current-style bg=black,fg=white
+          setw -g window-status-activity-style bg=yellow
+
+          set -g prefix C-a
+
+          setw -g mode-keys vi
+          set -g mode-keys vi
+
+          bind C-o previous-window
+          bind C-i next-window
+          bind x choose-session
+          bind s split-window -v
+          bind v split-window -h
+
+          bind -T copy-mode-vi v send -X begin-selection
+          bind -T copy-mode-vi C-v send -X rectangle-toggle
+          bind -T copy-mode-vi y send -X copy-selection
+          unbind p
+          bind p paste-buffer
+
+          set -g mouse on
+        '';
+
+        ".stylish-yaskell.yaml".text = ''
+          steps:
+            - simple_align:
+                cases: true
+                top_level_patterns: true
+                records: true
+            - imports:
+                align: global
+                list_align: after_alias
+                pad_module_names: true
+                long_list_align: inline
+                empty_list_align: inherit
+                list_padding: 4
+                separate_lists: true
+                space_surround: false
+            - language_pragmas:
+                style: vertical
+                align: true
+                remove_redundant: true
+            - trailing_whitespace: {}
+          columns: 80
+          newline: native
+        '';
+
+        ".notmuch-config".text = ''
+          [user]
+          name=${myName}
+          primary_email=${myEmail}
+          other_email=andrei.volt@gmail.com
+
+          [new]
+          tags=unread;inbox;
+          ignore=
+
+          [search]
+          exclude_tags=deleted;spam;
+
+          [maildir]
+          synchronize_flags=true
+        '';
       };
     };
 

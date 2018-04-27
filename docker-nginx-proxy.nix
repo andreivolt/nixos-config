@@ -1,17 +1,17 @@
 { config, pkgs, ... }:
 
 {
-  systemd.services.docker-nginx-proxy = {
+  systemd.services.docker-nginx-proxy = with pkgs; {
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
     requires = [ "docker.service" ];
-    postStop = "${pkgs.docker}/bin/docker rm -f nginx-proxy 2>/dev/null || true";
+    postStop = "${docker}/bin/docker rm -f nginx-proxy 2>/dev/null || true";
     script = ''
-      ${pkgs.docker}/bin/docker rm -f nginx-proxy 2>/dev/null || true
+      ${docker}/bin/docker rm -f nginx-proxy 2>/dev/null || true
 
-      ${pkgs.docker}/bin/docker network inspect nginx-proxy || ${pkgs.docker}/bin/docker network create nginx-proxy
+      ${docker}/bin/docker network inspect nginx-proxy || ${docker}/bin/docker network create nginx-proxy
 
-      ${pkgs.docker}/bin/docker run --rm -p 80:80 -p 443:443 \
+      ${docker}/bin/docker run --rm -p 80:80 -p 443:443 \
         --name nginx-proxy \
         --network nginx-proxy \
         -v /var/lib/docker-nginx-proxy.vhost.d:/etc/nginx/vhost.d:ro \
