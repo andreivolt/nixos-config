@@ -82,10 +82,6 @@ in {
     hostName = hostName;
   };
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "webkitgtk-2.4.11"
-  ];
-
   hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
 
   services = {
