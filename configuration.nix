@@ -5,6 +5,8 @@ let
 
   theme = import ./challenger-deep-theme.nix;
 
+  myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net"
+
   proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
 
   overlays =
@@ -594,8 +596,8 @@ in {
       git = {
         enable = true;
 
-        userName  = "Andrei Vladescu-Olt";
-        userEmail = "andrei@avolt.net";
+        userName  = myName;
+        userEmail = myEmail;
 
         aliases = {
           "am" = "commit --amend -C HEAD";
