@@ -5,7 +5,7 @@ let
 
   theme = import ./challenger-deep-theme.nix;
 
-  proportionalFont = "Abel"; monospaceFont = "Source Code Pro"
+  proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
 
   overlays =
     let path = ./overlays; in with builtins;
