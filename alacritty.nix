@@ -1,4 +1,4 @@
-{ theme }:
+{ theme, monospaceFont }:
 
 ''
 dpi:
@@ -11,15 +11,15 @@ draw_bold_text_with_bright_colors: true
 
 font:
   normal:
-    family: Source Code Pro
+    family: ${monospaceFont}
     style: Regular
 
   bold:
-    family: Source Code Pro
+    family: ${monospaceFont}
     style: Bold
 
   italic:
-    family: Source Code Pro
+    family: ${monospaceFont}
     style: Italic
 
   size: 12

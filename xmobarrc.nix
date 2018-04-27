@@ -1,8 +1,8 @@
-{ theme }:
+{ theme, font }:
 
 ''
 Config {
-    font = "xft:Abel:size=10.5,SauceCodePro Nerd Font:size:6"
+    font = "xft:${font}:size=10.5,SauceCodePro Nerd Font:size:6"
   , bgColor = "${theme.background}"
   , fgColor = "${theme.gray}"
   , overrideRedirect = False

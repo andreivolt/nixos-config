@@ -5,6 +5,8 @@ let
 
   theme = import ./challenger-deep-theme.nix;
 
+  proportionalFont = "Abel"; monospaceFont = "Source Code Pro"
+
   overlays =
     let path = ./overlays; in with builtins;
     map (n: import (path + ("/" + n)))
@@ -279,7 +281,7 @@ in {
       "Xft.hintstyle" = "hintfull";
       "Xcursor.theme" = "Adwaita";
       "Xcursor.size"  = 42;
-      # "*.font" = "xft:Source Code Pro:size=11";
+      # "*.font" = "xft:${monospaceFont}:size=11";
 
       "*.foreground"  = theme.foreground;
       "*.background"  = theme.background;
@@ -301,7 +303,7 @@ in {
       "*.color6"      = theme.cyan;
       "*.color14"     = theme.lightCyan;
 
-      "rofi.font"     = "Abel 24";
+      "rofi.font"     = "${proportionalFont} 24";
       "rofi.theme"    = "Pop-Dark";
     };
 
@@ -343,9 +345,9 @@ in {
           no-audio-display
         '';
 
-        "alacritty/alacritty.yml".text = (import ./alacritty.nix { inherit theme; });
+        "alacritty/alacritty.yml".text = (import ./alacritty.nix { inherit theme monospaceFont; });
 
-        "xmobar/xmobarrc".text = (import ./xmobarrc.nix { inherit theme; });
+        "xmobar/xmobarrc".text = (import ./xmobarrc.nix { inherit theme; font = proportionalFont; });
         "xmobar/bin/online-indicator".text = ''
           color=$(is-online && echo ${theme.green} || echo ${theme.red})
           symbol=$(is-online && echo ﯱ || echo ﯱ)
@@ -639,7 +641,7 @@ in {
     fontconfig = {
       ultimate.enable = false;
       defaultFonts = {
-        monospace = ["Source Code Pro"];
+        monospace = [ monospaceFont ];
       };
     };
     enableCoreFonts = true;
