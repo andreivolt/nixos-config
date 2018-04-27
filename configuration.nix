@@ -684,6 +684,10 @@ in {
 
           setopt interactive_comments
 
+          setopt \
+            extended_glob \
+            no_case_glob
+
           if [[ $TERM != eterm-color && $TERM != dumb ]]; then
             preexec() { print -Pn "\e]0;$1\a" }
           fi
@@ -714,10 +718,6 @@ in {
           setopt glob_complete
           zstyle ':completion:*' menu select
           zstyle ':completion:*' rehash true
-
-          setopt \
-            extended_glob \
-            no_case_glob
 
           ################################################################################
 
