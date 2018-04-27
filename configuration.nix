@@ -1,15 +1,16 @@
 { config, pkgs, ... }:
 
 let
-  hostName = "${builtins.readFile ./.hostname}";
+  hostName = "${builtins.getEnv "HOST"}";
 
   theme = import ./challenger-deep-theme.nix;
 
   overlays =
-    let path = "/etc/nixos/overlays"; content = builtins.readDir path; in
-      map (n: import (path + ("/" + n)))
-          (builtins.filter (n: builtins.match ".*\\.nix" n != null)
-                           (builtins.attrNames content));
+    let path = ./overlays; in with builtins;
+    map (n: import (path + ("/" + n)))
+        (filter (n: match ".*\\.nix" n != null ||
+                    pathExists (path + ("/" + n + "/default.nix")))
+                (attrNames (readDir path)));
 
 in {
   imports =
@@ -18,6 +19,8 @@ in {
       ./packages.nix
 
       ./docker-nginx-proxy.nix
+
+      "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
     ];
 
   boot.loader.timeout = 1;
@@ -99,9 +102,12 @@ in {
       '';
     };
 
-    udisks2.enable = true;
+    bitlbee = {
+      enable = true;
+      libpurple_plugins = with pkgs; [ telegram-purple ];
+    };
 
-    unclutter-xfixes.enable = true;
+    zerotierone.enable = true;
 
     emacs.enable = true;
 
@@ -117,13 +123,18 @@ in {
 
     openvpn.servers = {
       us = {
-        config = '' config /home/avo/.openvpn.conf '';
+        config = '' config /home/avo/.config/openvpn/conf '';
         autoStart = false;
       };
     };
 
     xserver = {
       enable = true;
+
+      # displayManager.sddm.enable = true;
+      # windowManager.sway.enable = true;
+
+      #dpi = 276;
 
       videoDrivers = [ "nvidia" ];
 
@@ -137,7 +148,33 @@ in {
         accelSpeed = "0.4";
       };
 
-      xrandrHeads = [ "DP-2" "DP-4" "DP-0" ];
+      xrandrHeads = [
+        {
+          output = "DP-2";
+          monitorConfig = ''
+            Option "metamodes" "nvidia-auto-select +2160+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotation=left}"
+            Option "AllowIndirectGLXProtocol" "off"
+            Option "TripleBuffer" "on"
+          '';
+        }
+        {
+          output = "DP-4";
+          primary = true;
+          monitorConfig = ''
+            Option "metamodes" "nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotation=left}"
+            Option "AllowIndirectGLXProtocol" "off"
+            Option "TripleBuffer" "on"
+          '';
+        }
+        {
+          output = "DP-0";
+          monitorConfig = ''
+            Option "metamodes" "nvidia-auto-select +3840+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+            Option "AllowIndirectGLXProtocol" "off"
+            Option "TripleBuffer" "on"
+          '';
+        }
+      ];
 
       windowManager = {
         default = "xmonad";
@@ -155,22 +192,9 @@ in {
           user = "avo";
         };
         sessionCommands = with pkgs; ''
-          ${xorg.xrandr}/bin/xrandr --output DP-4 --auto --primary --output DP-2 --left-of DP-4 --auto --output DP-0 --above DP-4
-
-          ${linuxPackages.nvidia_x11}/bin/nvidia-settings --assign CurrentMetaMode='
-            DP-0: nvidia-auto-select +3840+0 {ForceCompositionPipeline=On},
-            DP-2: nvidia-auto-select +0+2160 {ForceCompositionPipeline=On},
-            DP-4: nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On, Rotation=left}
-          '
-
-          ${xlibs.xsetroot}/bin/xsetroot -cursor_name left_ptr
-
-          ${dropbox}/bin/dropbox start &
 
           export XDG_CACHE_HOME=~/.cache
           export QT_AUTO_SCREEN_SCALE_FACTOR=1
-
-          wallpaper=~/tmp/footer_lodyas/footer_lodyas.png; ${setroot}/bin/setroot --tiled $wallpaper --tiled $wallpaper --tiled $wallpaper
 
           ${xorg.xrdb}/bin/xrdb -merge -I$HOME ~/.Xresources
 
@@ -243,6 +267,211 @@ in {
     ];
   };
 
+  home-manager.users.avo = rec {
+    services = {
+      gpg-agent = {
+        enable = true;
+        defaultCacheTtl = 1800;
+        enableSshSupport = true;
+      };
+
+      dunst = {
+        enable = true;
+        settings = import ./dunstrc.nix { inherit theme; };
+      };
+
+      unclutter.enable = true;
+    };
+
+    home = {
+      packages = with pkgs; [];
+      sessionVariables = {
+        ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
+        COLUMNS                     = "100";
+        EDITOR                      = "${pkgs.emacs}/bin/emacsclient";
+        QT_AUTO_SCREEN_SCALE_FACTOR = 1;
+      };
+    };
+
+    xdg = {
+      enable = true;
+
+      configFile = {
+        "mpv/mpv.conf".text = ''
+          ao = pulse
+          hwdec = vdpau
+          profile = opengl-hq
+          no-audio-display
+        '';
+      };
+    };
+
+    xsession = {
+      windowManager.command = "xmonad";
+      initExtra = ''
+        xsetroot -xcf /run/current-system/sw/share/icons/Adwaita/cursors/left_ptr 42
+        setroot ~/data/wallpapers/{pillars-of-creation_blue.jpg,pillars-of-creation_blue.jpg,pillars-of-creation_blue.jpg}
+        xrdb -merge -I$HOME ~/.Xresources
+      '';
+    };
+
+    programs = {
+      home-manager.enable = true;
+
+      git = {
+        enable = true;
+
+        userName  = "Andrei Vladescu-Olt";
+        userEmail = "andrei@avolt.net";
+
+        aliases = {
+          "am" = "commit --amend -C HEAD";
+          "ap" = "add -p";
+          "ci" = "commit";
+          "co" = "checkout";
+          "dc" = "diff --cached";
+          "di" = "diff";
+          "root" = "!pwd";
+          "st" = "status --short";
+        };
+
+        extraConfig = {
+          include = { path = "~/.gitconfig-private"; };
+          core = {
+            editor = "";
+            pager = "diff-so-fancy | less --tabs=4 -RFX";
+          };
+
+          #ghi.token = "!${pkgs.pass}/bin/pass api.github.com | head -1";
+        };
+
+        ignores = [
+          "*~"
+          "tags"
+          ".#*"
+          ".env*"
+          ".nrepl*"
+        ];
+      };
+
+      ssh = {
+        enable = true;
+
+        controlMaster  = "auto";
+        controlPath    = "/tmp/ssh-%u-%r@%h:%p";
+        controlPersist = "0";
+      };
+
+      zsh = rec {
+        enable = true;
+
+        enableCompletion = false;
+        enableAutosuggestions = true;
+
+        shellAliases = {
+          "R"               = "ramda";
+          "browser-history" = "qutebrowser-history";
+          "e"               = "emacsclient -s scratchpad --no-wait";
+          "fzf"             = "fzf --color bw";
+          "gc"              = "git clone";
+          "gdax"            = "webapp https://www.gdax.com/trade/BTC-USD";
+          "git"             = "hub";
+          "gr"              = "cd $(git root)";
+          "grep"            = "grep --colorauto";
+          "http"            = "http --pretty format";
+          "j"               = "jobs -d | paste - -";
+          "l"               = "ls";
+          "la"              = "ls -a";
+          "ls"              = "ls --group-directories-first --classify --dereference-command-line -v";
+          "mkdir"           = "mkdir -p";
+          "rg"              = "rg --smart-case --colors match:bg:yellow --colors match:fg:black";
+          "rm"              = "timeout 3 rm -Iv --one-file-system";
+          "stack"           = "stack --nix";
+          "tree"            = "tree -F --dirsfirst";
+          "vi"              = "nvim";
+          "vpnoff"          = "sudo systemctl stop openvpn-us";
+          "vpnon"           = "sudo systemctl start openvpn-us";
+        };
+
+        history = rec {
+          size = 99999;
+          save = size;
+          path = ".zsh_history";
+          ignoreDups = true;
+          share = true;
+        };
+
+        sessionVariables = {
+        };
+
+        initExtra = ''
+          setopt \
+            extended_history \
+            hist_ignore_space \
+            hist_reduce_blanks
+
+          setopt interactive_comments
+
+          if [[ $TERM != eterm-color && $TERM != dumb ]]; then
+            preexec() { print -Pn "\e]0;$1\a" }
+          fi
+
+          unset RPS1
+
+          for i (~/.functions.d/*) source $i
+
+          alias -g C='| wc -l'
+          alias -g L='| less -R'
+          alias -g H='| head'
+          alias -g T='| tail'
+          alias -g Y='| xsel -b'
+          alias -g DN='2>/dev/null'
+          alias -g FZ='| fzf | xargs'
+
+          alias ..='cd ..'
+          alias ...='cd .. && cd ..';
+          alias ....='cd .. && cd .. && cd ..';
+
+          source ~/.zsh.d/rlwrap.zsh
+          bindkey -M viins '^x' insert-rlwrap
+          bindkey -M vicmd '^x' insert-rlwrap
+
+          ################################################################################
+
+          # autoload -U compinit; compinit
+          # setopt glob_complete
+          # zstyle ':completion:*' menu select
+          # zstyle ':completion:*' rehash true
+
+          setopt \
+            extended_glob \
+            no_case_glob
+
+          ################################################################################
+
+          source ~/.zplug/init.zsh
+          zplug 'willghatch/zsh-hooks'; zplug load
+          zplug 'andreivolt/zsh-prompt-lean'
+          zplug 'andreivolt/zsh-vim-mode', defer:2; zplug load
+          zplug 'zdharma/fast-syntax-highlighting'
+          zplug 'hlissner/zsh-autopair', defer:2
+          zplug 'chisui/zsh-nix-shell'
+          zplug 'chrismwendt/auto-nix-shell'
+          zplug load
+
+          eval "$(direnv hook zsh)"
+        '';
+
+        # plugins = [
+        #   { name = "zsh-powerlevel9k";
+        #     file = "powerlevel9k.zsh-theme";
+        #     src = pkgs.zsh-powerlevel9k.src;
+        #   }
+        # ];
+      };
+    };
+  };
+
   security.sudo.wheelNeedsPassword = false;
 
   virtualisation = {
@@ -269,13 +498,6 @@ in {
 
   programs = {
     adb.enable = true;
-
-    ssh.extraConfig = ''
-      Host *
-        ControlMaster auto
-        ControlPersist 0
-        ControlPath /tmp/ssh-%C
-    '';
 
     zsh = {
       enable = true;
@@ -315,6 +537,7 @@ in {
       nerdfonts
       overpass
       powerline-fonts
+      terminus_font
       ubuntu_font_family
       vistafonts
     ];
@@ -347,14 +570,17 @@ in {
       mailEmacsDaemon = emacsDaemon "mail";
       editorEmacsDaemon = emacsDaemon "scratchpad";
 
-      dunst = {
+      dropbox = {
         enable = true;
-        description = "Lightweight and customizable notification daemon";
-        wantedBy = [ "graphical-session.target" ];
-        path = [ pkgs.dunst ];
+        description = "Dropbox service";
+        after = [ "network.target" ];
+        wantedBy = [ "default.target" ];
+        path = [ pkgs.dropbox ];
         serviceConfig = {
-          Restart = "always";
-          ExecStart = "${pkgs.dunst}/bin/dunst";
+          Type      = "forking";
+          Restart   = "always";
+          ExecStart = "${pkgs.dropbox}/bin/dropbox start";
+          ExecStop  = "${pkgs.dropbox}/bin/dropbox stop";
         };
       };
     };
