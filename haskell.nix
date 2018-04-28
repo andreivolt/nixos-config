@@ -1,5 +1,19 @@
+{ pkgs, ... }:
+
 {
-  home-manager.users.avo.home.file = {
+  environment.systemPackages = (with pkgs.haskellPackages; [
+   apply-refact
+   brittany
+   ghc
+   hindent
+   hlint
+   hoogle
+   stack
+   stylish-haskell
+   #exe = haskell.lib.justStaticExecutables
+  ]);
+
+  home-manager.users.avo.xdg.configFile = {
     "brittany/config.yaml".text = ''
       conf_debug:
         dconf_roundtrip_exactprint_only: false
@@ -28,7 +42,9 @@
       conf_layout:
         lconfig_a
     '';
+  };
 
+  home-manager.users.avo.home.file = {
     ".stylish-yaskell.yaml".text = ''
       steps:
         - simple_align:
@@ -54,4 +70,3 @@
     '';
   };
 }
-

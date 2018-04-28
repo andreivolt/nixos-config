@@ -352,17 +352,11 @@ in
     whois
   ] ++
   [
-    isync # https:++wiki.archlinux.org/index.php/Isync https:++gist.github.com/au/a271c09e8233f19ffb01da7f017c7269 https:++github.com/kzar/davemail
-    mailutils
-    msmtp
-    notmuch
-    procmail
-  ] ++
-  [
     byzanz
     ffcast
     maim
     slop
+    haskellPackages.xmonad-extras
   ] ++
   [
     fatrace
@@ -370,14 +364,6 @@ in
     lsof
     ltrace
     strace
-  ] ++
-  [
-    boot
-    clojure
-    leiningen
-    lighttable
-    lumo
-    # https:++github.com/uswitch/ej
   ] ++
   [
     notify-desktop
@@ -447,16 +433,5 @@ in
     iw
     wirelesstools
     wpa_supplicant
-  ] ++
-  (with haskellPackages; [
-   apply-refact
-   brittany
-   ghc
-   hindent
-   hlint
-   hoogle
-   stack
-   stylish-haskell
-   #exe = haskell.lib.justStaticExecutables
-  ]);
+  ];
 }

@@ -6,7 +6,7 @@ let
   makeEmacsDaemon = name: (import ./make-emacs-daemon.nix { inherit config pkgs; name = name; });
 
   theme = import ./challenger-deep-theme.nix;
-  proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
+  proportionalFont = "Abel"; monospaceFont = "Source Code Pro"; fontSize = 11;
 
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
 
@@ -21,12 +21,14 @@ in {
   imports =
     [
       ./hardware-configuration.nix
-      ./packages.nix
-
-      ./docker-nginx-proxy.nix
 
       ./home-manager/nixos
+
+      ./packages.nix
+      ./docker-nginx-proxy.nix
+      ./clojure.nix
       ./haskell.nix
+      ./email.nix
     ];
 
   boot.loader.timeout = 1;
@@ -133,8 +135,6 @@ in {
       # displayManager.sddm.enable = true;
       # windowManager.sway.enable = true;
 
-      #dpi = 276;
-
       videoDrivers = [ "nvidia" ];
 
       libinput = {
@@ -170,14 +170,6 @@ in {
           '';
         }
       ];
-
-      windowManager = {
-        default = "xmonad";
-        xmonad  = {
-          enable = true;
-          enableContribAndExtras = true;
-        };
-      };
 
       desktopManager.xterm.enable = false;
 
@@ -318,7 +310,7 @@ in {
         COLUMNS                     = 100;
         EDITOR                      = "${pkgs.emacs}/bin/emacsclient";
         PAGER                       = "less";
-        PATH                        = "$PATH:~/bin:~/.local/bin:~/.npm-packages/bin";
+        PATH                        = "$PATH:$HOME/bin:$HOME/.local/bin:$HOME/.npm-packages/bin";
         QT_AUTO_SCREEN_SCALE_FACTOR = 1;
         SSH_AUTH_SOCK               = "$XDG_RUNTIME_DIR/ssh-agent.socket";
       };
@@ -358,10 +350,6 @@ in {
 
         ".bitcoin/bitcoin.conf".text = ''
           prune=550
-        '';
-
-        ".mailrc".text = ''
-          set sendmail=${pkgs.msmtp}/bin/msmtp"
         '';
 
         ".npmrc".text = ''
@@ -446,7 +434,6 @@ in {
           bind v split-window -h
         '';
 
-
         ".local/share/rofi/themes/avo.rasi".text = import ./rofi-theme.nix { inherit theme; };
 
         "bin/qutebrowser-open" = {
@@ -456,59 +443,7 @@ in {
           executable = true;
         };
 
-        ".boot/profile.boot".text = ''
-          (deftask cider
-            "CIDER profile"
-            []
-            (comp
-              (do
-               (require 'boot.repl)
-               (swap! @(resolve 'boot.repl/*default-dependencies*)
-                       concat '[[org.clojure/tools.nrepl "0.2.12"]
-                                [cider/cider-nrepl "0.15.0"]
-                                [refactor-nrepl "2.3.1"]])
-               (swap! @(resolve 'boot.repl/*default-middleware*)
-                       concat '[cider.nrepl/cider-middleware
-                               refactor-nrepl.middleware/wrap-refactor])
-               identity)))
-        '';
-
-        ".notmuch-config".text = ''
-          [user]
-          name=${myName}
-          primary_email=${myEmail}
-          other_email=andrei.volt@gmail.com
-
-          [new]
-          tags=unread;inbox;
-          ignore=
-
-          [search]
-          exclude_tags=deleted;spam;
-
-          [maildir]
-          synchronize_flags=true
-        '';
-
         ".gist".text = builtins.getEnv "GIST_TOKEN";
-
-        ".mailcap".text = ''
-          application/doc; plaintextify < %s; copiousoutput
-          application/msword; plaintextify < %s; copiousoutput
-          application/pdf; zathura %s pdf
-          application/vnd.ms-powerpoint; libreoffice %s
-          application/vnd.ms-powerpoint; ppt2txt '%s'; copiousoutput; description=MS PowerPoint presentation;
-          application/vnd.openxmlformats-officedocument.presentationml.presentation; libreoffice %s
-          application/vnd.openxmlformats-officedocument.presentationml.presentation; plaintextifypptx2txt < %s; copiousoutput
-          application/vnd.openxmlformats-officedocument.presentationml.slideshow; libreoffice %s
-          application/vnd.openxmlformats-officedocument.presentationml.slideshow; plaintextify < %s
-          application/vnd.openxmlformats-officedocument.spreadsheetmleet; plaintextify < %s xls
-          application/vnd.openxmlformats-officedocument.wordprocessingml.document; plaintextify < %s; copiousoutput
-          image; sxiv %s
-          text/html; qutebrowser-open;
-          text/html; w3m -o display_link=true -o display_link_number=true -dump -I %{charset} -cols 72 -T text/html %s; nametemplate=%s.html; copiousoutput
-          text/plain; view-attachment %s txt
-        '';
       };
     };
 
@@ -523,40 +458,7 @@ in {
           no-audio-display
         '';
 
-        "offlineimap/config".text = ''
-          [general]
-          accounts = avolt.net
-          fsync = false
-          maxconnections = 10
-          autorefresh = 0.5
-          quick = 10
-
-          [Account avolt.net]
-          localrepository = avolt.net_local
-          postsynchook = ${pkgs.notmuch}/bin/notmuch new
-          realdelete = yes
-          remoterepository = avolt.net_remote
-
-          [Repository avolt.net_local]
-          localfolders = ~/mail/avolt.net
-          type = Maildir
-          nametrans = lambda folder: folder == 'INBOX' and 'INBOX' or ('INBOX.' + folder)
-
-          [Repository avolt.net_remote]
-          type = Gmail
-          nametrans = lambda folder: {'[Gmail]/All Mail': 'archive',}.get(folder, folder)
-          folderfilter = lambda folder: folder == '[Gmail]/All Mail'
-          realdelete = yes
-          remoteuser = andrei@avolt.net
-          remotepass = ${builtins.getEnv "AVOLT_GOOGLE_PASSWORD"}
-          sslcacertfile = /etc/ssl/certs/ca-certificates.crt
-          synclabels = yes
-
-          keepalive = 60
-          holdconnectionopen = yes
-        '';
-
-        "alacritty/alacritty.yml".text = import ./alacritty.nix { inherit theme monospaceFont; };
+        "alacritty/alacritty.yml".text = import ./alacritty.nix { inherit theme monospaceFont; fontSize = toString fontSize; };
 
         "xmobar/xmobarrc".text = import ./xmobarrc.nix { inherit theme; font = proportionalFont; };
         "xmobar/bin/online-indicator" = {
