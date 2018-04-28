@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 let
-  remarshal = pkgs.callPackage /home/avo/proj/nixpkgs/pkgs/development/tools/remarshal/default.nix {};
   neovim = pkgs.neovim.override { vimAlias = true; };
   moreutils = (pkgs.stdenv.lib.overrideDerivation pkgs.moreutils (attrs: rec { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; })); # prefer GNU parallel
   zathura = pkgs.zathura.override { useMupdf = true; };
@@ -33,12 +32,9 @@ in
     optipng
     # imagemin-cli
 
-    gifsicle
-
-    iptraf-ng
-
     lbdb
     lsyncd
+
     mosh
 
     ngrok
@@ -71,10 +67,6 @@ in
 
     unison
 
-    weechat
-    pidgin
-    # https:++github.com/wee-slack/wee-slack
-    # telegramircd
 
     x11_ssh_askpass
 
@@ -98,10 +90,6 @@ in
 
     dateutils
 
-    dropbox-cli
-
-    ffmpeg
-
     gcolor2
 
     gnupg
@@ -109,14 +97,10 @@ in
     lastpass-cli
     openssl
 
-    google-drive-ocamlfuse
-    graphicsmagick
-    imagemagick
     graphviz
 
     psmisc
     hy
-    inkscape
 
     inotify-tools
     watchman
@@ -168,8 +152,8 @@ in
     sxiv
     # pqiv
 
-    t
-    tdesktop
+    # https:++github.com/wee-slack/wee-slack
+    # telegramircd
 
     tesseract
 
@@ -184,10 +168,18 @@ in
     surfraw
   ] ++
   [
+    ffmpeg
+    gifsicle
+    graphicsmagick
+    imagemagick
+    inkscape
+  ] ++
+  [
     cabal2nix
     nix-prefetch-scripts
     nix-repl
     nix-zsh-completions
+    nodePackages.node2nix
     patchelf
   ] ++
   [
@@ -217,6 +209,12 @@ in
     google-cloud-sdk
     nixops
     virt-viewer
+  ] ++
+  [
+    t
+    tdesktop
+    weechat
+    pidgin
   ] ++
   [
     # https:++github.com/noctuid/tdrop
@@ -288,14 +286,6 @@ in
     tmux
     reptyr
   ] ++
-  (with gitAndTools; [
-    # haskellPackages.github-backup
-    diff-so-fancy
-    git
-    git-imerge
-    hub
-    tig
-  ]) ++
   [
     httping
     iftop
@@ -314,7 +304,6 @@ in
     sysstat
   ] ++
   [
-    chromium
     firefox-devedition-bin
     google-chrome-dev
     qutebrowser
@@ -356,7 +345,6 @@ in
     ffcast
     maim
     slop
-    haskellPackages.xmonad-extras
   ] ++
   [
     fatrace

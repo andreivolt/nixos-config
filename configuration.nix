@@ -7,7 +7,7 @@ let
 
   theme = import ./challenger-deep-theme.nix;
   proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
-  fontSize = 11; launcherFontSize = 32;
+  fontSize = 10; launcherFontSize = "28";
 
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
 
@@ -29,7 +29,9 @@ in {
       ./docker-nginx-proxy.nix
       ./clojure.nix
       ./haskell.nix
+      ./git.nix
       ./email.nix
+      ./google-drive-ocamlfuse-service.nix
     ];
 
   boot.loader.timeout = 1;
@@ -126,8 +128,12 @@ in {
 
     openvpn.servers = {
       us = {
-        config = '' config /home/avo/.config/openvpn/conf '';
+        config = "config ${config.users.users.avo.home}/.config/openvpn/conf";
         autoStart = false;
+        authUserPass = {
+          username = builtins.getEnv "OPENVPN_USERNAME";
+          password = builtins.getEnv "OPENVPN_PASSWORD";
+        };
       };
     };
 
@@ -136,6 +142,8 @@ in {
 
       # displayManager.sddm.enable = true;
       # windowManager.sway.enable = true;
+      layout = "fr";
+      xkbOptions = "ctrl:nocaps";
 
       videoDrivers = [ "nvidia" ];
 
@@ -145,33 +153,26 @@ in {
         accelSpeed = "0.4";
       };
 
-      xrandrHeads = [
-        {
-          output = "DP-2";
-          monitorConfig = ''
-            Option "metamodes" "nvidia-auto-select +2160+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotate=left}"
-            Option "AllowIndirectGLXProtocol" "off"
-            Option "TripleBuffer" "on"
-          '';
-        }
-        {
-          output = "DP-4";
-          primary = true;
-          monitorConfig = ''
-            Option "metamodes" "nvidia-auto-select +3840+2160 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
-            Option "AllowIndirectGLXProtocol" "off"
-            Option "TripleBuffer" "on"
-          '';
-        }
-        {
-          output = "DP-0";
-          monitorConfig = ''
-            Option "metamodes" "nvidia-auto-select +3840+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
-            Option "AllowIndirectGLXProtocol" "off"
-            Option "TripleBuffer" "on"
-          '';
-        }
-      ];
+      xrandrHeads =
+        let withNvidiaTearingFix = { position, rotation ? "normal" }: ''
+          Option "metamodes" "nvidia-auto-select ${position} {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotate=${rotation}}"
+          Option "AllowIndirectGLXProtocol" "off"
+          Option "TripleBuffer" "on"
+        ''; in [
+          {
+            output = "DP-2";
+            monitorConfig = withNvidiaTearingFix { position = "+2160+0"; rotation = "left"; };
+          }
+          {
+            output = "DP-4";
+            primary = true;
+            monitorConfig = withNvidiaTearingFix { position = "+3840+2160"; };
+          }
+          {
+            output = "DP-0";
+            monitorConfig = withNvidiaTearingFix { position = "+3840+0"; };
+          }
+        ];
 
       desktopManager.xterm.enable = false;
 
@@ -242,22 +243,17 @@ in {
       "libvirtd"
       "wheel"
     ];
-    openssh.authorizedKeys.keys = [
-      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2lzQAHzKnmiCQ9Ocb2PTMAQH9HR2x7KO7SV+og2a1nRH+T9bfQjgMW7SuPFbPN7Y4SoAgeBo+FFy7EczxyB7BW+z0u8uHlTJkQ4M1jmj5CQxdkuY/JLkbfJGhSw4eB4iJL7hhxwPvME9DgvdfN4ncxQZWiwrS0diLmydtUXcrEq1uqcaaTijJRADQpTxGUoEi9gNQDCHOWpPfKWAr6APS34MfWAfrc97n862xSPmwHFuCKuHG7WBzBhCSEPCFAI/mo+Wf9L6KWgz0jRRdwCPkMAxoYHmfZZqqRyoILr9CGKSFaN57kJevTMHDzoQgEskMS5Ln3qyFPvggpWWfGODL avo@watts"
-    ];
+    openssh.authorizedKeys.keyFiles = [ ./avo.pub ];
   };
 
   home-manager.users.avo = rec {
     services = {
-      gpg-agent = {
-        enable = true;
-        defaultCacheTtl = 1800;
-        enableSshSupport = true;
-      };
-
       dunst = {
         enable = true;
-        settings = import ./dunstrc.nix { inherit theme; font = proportionalFont; };
+        settings = import ./dunstrc.nix {
+          inherit theme;
+          font = proportionalFont;
+        };
       };
 
       unclutter.enable = true;
@@ -274,29 +270,22 @@ in {
 
       "*.font"        = "xft:${monospaceFont}:size=${toString fontSize}";
 
-      "*.foreground"  = theme.foreground;
-      "*.background"  = theme.background;
-      "*.borderColor" = theme.background;
-      "*.cursorColor" = theme.foreground;
-      "*.colorUL"     = theme.white;
-      "*.color0"      = theme.black;
-      "*.color8"      = theme.gray;
-      "*.color1"      = theme.red;
-      "*.color9"      = theme.lightRed;
-      "*.color2"      = theme.green;
-      "*.color10"     = theme.lightGreen;
-      "*.color3"      = theme.yellow;
-      "*.color11"     = theme.lightYellow;
-      "*.color4"      = theme.blue;
-      "*.color12"     = theme.lightBlue;
-      "*.color5"      = theme.magenta;
-      "*.color13"     = theme.lightMagenta;
-      "*.color6"      = theme.cyan;
-      "*.color14"     = theme.lightCyan;
-
-      "rofi.font"     = "${proportionalFont} ${toString launcherFontSize}";
+      "rofi.font"     = "${proportionalFont} ${launcherFontSize}";
       "rofi.theme"    = "avo";
-    };
+    } // (with theme; {
+      "*.background" = background; "*.foreground" = foreground;
+      "*.color0"     = black;      "*.color8"     = gray;
+      "*.color1"     = red;        "*.color9"     = lightRed;
+      "*.color2"     = green;      "*.color10"    = lightGreen;
+      "*.color3"     = yellow;     "*.color11"    = lightYellow;
+      "*.color4"     = blue;       "*.color12"    = lightBlue;
+      "*.color5"     = magenta;    "*.color13"    = lightMagenta;
+      "*.color6"     = cyan;       "*.color14"    = lightCyan;
+
+      "*.borderColor" = background;
+      "*.colorUL"     = white;
+      "*.cursorColor" = foreground;
+    });
 
     home = {
       packages = with pkgs; [];
@@ -310,10 +299,10 @@ in {
         ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
         BLOCK_SIZE                  = "\'1";
         BOOT_JVM_OPTIONS            = "-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none";
-        BROWSER                     = "qutebrowser-open";
+        BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
         COLUMNS                     = 100;
-        EDITOR                      = "${pkgs.emacs}/bin/emacsclient";
-        PAGER                       = "less";
+        EDITOR                      = "${pkgs.emacs}/bin/emacsclient -t -c";
+        PAGER                       = "less -FXR";
         PATH                        = lib.concatStringsSep ":" [
                                         "$PATH"
                                         "$HOME/bin"
@@ -374,7 +363,7 @@ in {
 
         ".aws/credentials".text = lib.generators.toINI {} {
           default = {
-            aws_access_key_id = builtins.getEnv "AWS_ACCESS_KEY_ID";
+            aws_access_key_id     = builtins.getEnv "AWS_ACCESS_KEY_ID";
             aws_secret_access_key = builtins.getEnv "AWS_SECRET_ACCESS_KEY";
           };
         };
@@ -409,45 +398,39 @@ in {
           set -g @plugin 'tmux-plugins/tmux-copycat'
           set -g @plugin 'tmux-plugins/tmux-yank'
           set -g @yank_selection 'primary'
-          bind -T copy-mode-vi v send -X begin-selection
+          bind -T copy-mode-vi v   send -X begin-selection
           bind -T copy-mode-vi C-v send -X rectangle-toggle
-          bind -T copy-mode-vi y send -X copy-selection
+          bind -T copy-mode-vi y   send -X copy-selection
           unbind p
-          bind p paste-buffer
+          bind   p paste-buffer
 
           run '~/.tmux/plugins/tpm/tpm'
 
-          set -g base-index 1
-          set -g renumber-windows on
-          set -g monitor-activity on
-          set -g set-titles on
-          set -g set-titles-string "#T"
-          set -g status-style bg='${theme.background}',fg='${theme.foreground}'
-          set -g status-left ' #S '
-          set -g status-left-length 100
-          set -g status-right '''
-          set -g window-status-format ' #I: #W '
-          set -g window-status-current-format ' #I: #W '
-          setw -g window-status-current-style bg='${theme.black}',fg='${theme.white}'
+          set  -g base-index 1
+          set  -g renumber-windows on
+          set  -g monitor-activity on
+          set  -g set-titles on
+          set  -g set-titles-string "#T"
+
+          set  -g status-style                 bg='${theme.background}',fg='${theme.foreground}'
+          set  -g status-left                  '''
+          set  -g status-right                 ' #S '
+          set  -g window-status-format         ' #I: #W '
+          set  -g window-status-current-format ' #I: #W '
+          setw -g window-status-current-style  bg='${theme.black}',fg='${theme.white}'
           setw -g window-status-activity-style bg='${theme.yellow}'
 
-          set -g prefix C-a
+          set  -g prefix C-a
           setw -g mode-keys vi
-          set -g mode-keys vi
+          set  -g mode-keys vi
 
           bind C-o previous-window
           bind C-i next-window
-          bind x choose-session
-          bind s split-window -v
-          bind v split-window -h
+          bind s   split-window -v
+          bind v   split-window -h
         '';
 
         ".local/share/rofi/themes/avo.rasi".text = import ./rofi-theme.nix { inherit theme; };
-
-        "bin/qutebrowser-open" = {
-          text = "${pkgs.qutebrowser}/share/qutebrowser/scripts/open_url_in_instance.sh $1";
-          executable = true;
-        };
 
         ".gist".text = builtins.getEnv "GIST_TOKEN";
       };
@@ -468,7 +451,7 @@ in {
           lib.generators.toYAML {} (
             import ./alacritty.nix {
               inherit theme monospaceFont;
-              fontSize = toString fontSize;
+              fontSize = fontSize;
           });
 
         "xmobar/xmobarrc".text =
@@ -490,11 +473,6 @@ in {
            --output %(title)s.%(ext)s
         '';
 
-        "openvpn/auth.txt".text = ''
-          ${builtins.getEnv "VPN_USER"}
-          ${builtins.getEnv "VPN_PASSWORD"}
-        '';
-
         "nixpkgs/config.nix".text = lib.generators.toPretty {} {
           allowUnfree = true;
         };
@@ -509,14 +487,13 @@ in {
           set incremental-search true
         '';
 
-        "hub".text = lib.generators.toYAML {} {
-          "github.com" = {
-            user = "andreivolt";
-            oauth_token = builtins.getEnv "GITHUB_OAUTH_TOKEN";
+        "qutebrowser/autoconfig.yml".text =
+          import ./qutebrowser.nix {
+            inherit theme
+                    proportionalFont
+                    monospaceFont
+                    pkgs;
           };
-        };
-
-        "qutebrowser/autoconfig.yml".text = import ./qutebrowser.nix { inherit theme proportionalFont monospaceFont pkgs; };
 
         "virt-viewer/settings".text = lib.generators.toINI {} {
           virt-viewer = {
@@ -537,7 +514,7 @@ in {
              "text/html"                                                               = "qutebrowser.desktop";
              "application/xhtml+xml"                                                   = "qutebrowser.deskop";
              "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "libreoffice-writer.desktop";
-             "application/pdf"                                                         = "zathura-pdf-mupdf.desktop";
+             "application/pdf"                                                         = "zathura.desktop";
              "text/plain"                                                              = "emacs.desktop";
              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"       = "calc.desktop";
              "application/xml"                                                         = "emacs.desktop";
@@ -550,11 +527,13 @@ in {
     xsession = {
       enable = true;
       windowManager.command = "xmonad";
-      initExtra = let wallpaperPath = "~/data/wallpapers/matterhorn.jpg"; in ''
-        xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42
+      initExtra =
+        let wallpaperPath = "~/data/wallpapers/matterhorn.jpg";
+        in with pkgs; ''
+          ${xorg.xsetroot}/bin/xsetroot -xcf ${gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42
 
-        setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
-      '';
+          ${setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
+        '';
     };
 
     programs = {
@@ -590,41 +569,6 @@ in {
         };
       };
 
-      git = {
-        enable = true;
-
-        userName  = myName;
-        userEmail = myEmail;
-
-        aliases = {
-          "am" = "commit --amend -C HEAD";
-          "ap" = "add -p";
-          "ci" = "commit";
-          "co" = "checkout";
-          "dc" = "diff --cached";
-          "di" = "diff";
-          "root" = "!pwd";
-          "st" = "status --short";
-        };
-
-        extraConfig = {
-          core = {
-            editor = "emacsclient -nw";
-            pager = "diff-so-fancy | less --tabs=4 -RFX";
-          };
-
-          ghi.token = builtins.getEnv "GHI_TOKEN";
-        };
-
-        ignores = [
-          "*~"
-          "tags"
-          ".#*"
-          ".env*"
-          ".nrepl*"
-        ];
-      };
-
       ssh = {
         enable = true;
 
@@ -642,25 +586,26 @@ in {
         shellAliases = {
           R               = "ramda";
           browser-history = "qutebrowser-history";
-          e               = "emacsclient -s scratchpad --no-wait";
-          fzf             = "fzf --color bw";
-          gc              = "git clone";
-          gdax            = "webapp https://www.gdax.com/trade/BTC-USD";
-          git             = "hub";
-          gr              = "cd $(git root)";
+          e               = "${pkgs.emacs}/bin/emacsclient -s scratchpad --no-wait";
+          fzf             = "${pkgs.fzf}/bin/fzf --color bw";
+          gc              = "${pkgs.gitAndTools.hub}/bin/hub clone";
+          git             = "${pkgs.gitAndTools.hub}/bin/hub";
+          gr              = "cd $(${pkgs.git}/bin/git root)";
           grep            = "grep --color=auto";
           j               = "jobs -d | paste - -";
           l               = "ls";
           la              = "ls -a";
           ls              = "ls --group-directories-first --classify --dereference-command-line -v";
           mkdir           = "mkdir -p";
-          rg              = "rg --smart-case --colors match:bg:yellow --colors match:fg:black";
-          rm              = "timeout 3 rm -Iv --one-file-system";
-          stack           = "stack --nix";
-          tree            = "tree -F --dirsfirst";
-          vi              = "nvim";
+          rg              = "${pkgs.ripgrep}/bin/rg --smart-case --colors match:bg:yellow --colors match:fg:black";
+          stack           = "${pkgs.stack}/bin/stack --nix";
+          tree            = "${pkgs.tree}/bin/tree -F --dirsfirst";
+          vi              = "${pkgs.neovim}/bin/nvim";
           vpnoff          = "sudo systemctl stop openvpn-us";
           vpnon           = "sudo systemctl start openvpn-us";
+        } // {
+          gdax            = "webapp https://www.gdax.com/trade/BTC-USD";
+          pandora         = "webapp https://www.pandora.com/my-music";
         };
 
         history = rec {

@@ -1,4 +1,4 @@
-{ pkgs, myName, myEmail, ... }:
+{ pkgs, myName, myEmail, lib, ... }:
 
 let
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
@@ -18,7 +18,7 @@ in {
         accounts = "avolt.net";
         fsync = false;
         maxconnections = 10;
-        autorefresh = 0.5;
+        autorefresh = "0.5";
         quick = 10;
       };
 
