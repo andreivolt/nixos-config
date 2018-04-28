@@ -1,7 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 let
   hostName = "${builtins.getEnv "HOST"}";
+
+  makeEmacsDaemon = name: (import ./make-emacs-daemon.nix { inherit config pkgs; name = name; });
 
   theme = import ./challenger-deep-theme.nix;
   proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
@@ -23,7 +25,8 @@ in {
 
       ./docker-nginx-proxy.nix
 
-      "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
+      ./home-manager/nixos
+      ./haskell.nix
     ];
 
   boot.loader.timeout = 1;
@@ -263,7 +266,9 @@ in {
         settings = import ./dunstrc.nix { inherit theme; font = proportionalFont; };
       };
 
-      unclutter.enable = false;
+      unclutter.enable = true;
+
+      dropbox.enable = true;
     };
 
     xresources.properties = {
@@ -309,12 +314,11 @@ in {
         ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
         BLOCK_SIZE                  = "\'1";
         BOOT_JVM_OPTIONS            = "-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none";
-        BROWSER                     = "qutebrowser";
+        BROWSER                     = "qutebrowser-open";
         COLUMNS                     = 100;
         EDITOR                      = "${pkgs.emacs}/bin/emacsclient";
-        GPG_AGENT_INFO              = "$HOME/.gnupg/S.gpg-agent";
         PAGER                       = "less";
-        PATH                        = "~/bin:~/.local/bin:~/.npm-packages/bin:$PATH";
+        PATH                        = "$PATH:~/bin:~/.local/bin:~/.npm-packages/bin";
         QT_AUTO_SCREEN_SCALE_FACTOR = 1;
         SSH_AUTH_SOCK               = "$XDG_RUNTIME_DIR/ssh-agent.socket";
       };
@@ -442,29 +446,6 @@ in {
           bind v split-window -h
         '';
 
-        ".stylish-yaskell.yaml".text = ''
-          steps:
-            - simple_align:
-                cases: true
-                top_level_patterns: true
-                records: true
-            - imports:
-                align: global
-                list_align: after_alias
-                pad_module_names: true
-                long_list_align: inline
-                empty_list_align: inherit
-                list_padding: 4
-                separate_lists: true
-                space_surround: false
-            - language_pragmas:
-                style: vertical
-                align: true
-                remove_redundant: true
-            - trailing_whitespace: {}
-          columns: 80
-          newline: native
-        '';
 
         ".local/share/rofi/themes/avo.rasi".text = import ./rofi-theme.nix { inherit theme; };
 
@@ -512,24 +493,19 @@ in {
         ".gist".text = builtins.getEnv "GIST_TOKEN";
 
         ".mailcap".text = ''
-          application/doc; antiword %s; copiousoutput
-          application/msword; antiword %s; copiousoutput
-          application/pdf; view-attachment %s pdf
+          application/doc; plaintextify < %s; copiousoutput
+          application/msword; plaintextify < %s; copiousoutput
+          application/pdf; zathura %s pdf
           application/vnd.ms-powerpoint; libreoffice %s
           application/vnd.ms-powerpoint; ppt2txt '%s'; copiousoutput; description=MS PowerPoint presentation;
           application/vnd.openxmlformats-officedocument.presentationml.presentation; libreoffice %s
-          application/vnd.openxmlformats-officedocument.presentationml.presentation; pptx2txt '%s'; copiousoutput; description=MS PowerPoint presentation;
+          application/vnd.openxmlformats-officedocument.presentationml.presentation; plaintextifypptx2txt < %s; copiousoutput
           application/vnd.openxmlformats-officedocument.presentationml.slideshow; libreoffice %s
-          application/vnd.openxmlformats-officedocument.presentationml.slideshow; view-attachment %s
-          application/vnd.openxmlformats-officedocument.spreadsheetmleet; view-attachment %s xls
+          application/vnd.openxmlformats-officedocument.presentationml.slideshow; plaintextify < %s
+          application/vnd.openxmlformats-officedocument.spreadsheetmleet; plaintextify < %s xls
           application/vnd.openxmlformats-officedocument.wordprocessingml.document; plaintextify < %s; copiousoutput
-          image/gif; view-attachment %s gif
-          image/jpeg; view-attachment %s jpg
-          image/jpg; view-attachment %s jpg
-          image/png; view-attachment %s png
-          image/svg+xml; view-attachment %s svg
-          image/x-png; view-attachment %s png
-          text/html; firefox-devedition %s;
+          image; sxiv %s
+          text/html; qutebrowser-open;
           text/html; w3m -o display_link=true -o display_link_number=true -dump -I %{charset} -cols 72 -T text/html %s; nametemplate=%s.html; copiousoutput
           text/plain; view-attachment %s txt
         '';
@@ -557,7 +533,7 @@ in {
 
           [Account avolt.net]
           localrepository = avolt.net_local
-          postsynchook = /run/current-system/sw/bin/notmuch new
+          postsynchook = ${pkgs.notmuch}/bin/notmuch new
           realdelete = yes
           remoterepository = avolt.net_remote
 
@@ -652,34 +628,6 @@ in {
            x-scheme-handler/magnet=userapp-transmission-gtk-NWT3FZ.desktop;
         '';
 
-        "brittany/config.yaml".text = ''
-          conf_debug:
-            dconf_roundtrip_exactprint_only: false
-            dconf_dump_bridoc_simpl_par: false
-            dconf_dump_ast_unknown: false
-            dconf_dump_bridoc_simpl_floating: false
-            dconf_dump_config: false
-            dconf_dump_bridoc_raw: false
-            dconf_dump_bridoc_final: false
-            dconf_dump_bridoc_simpl_alt: false
-            dconf_dump_bridoc_simpl_indent: false
-            dconf_dump_annotations: false
-            dconf_dump_bridoc_simpl_columns: false
-            dconf_dump_ast_full: false
-          conf_forward:
-            options_ghc: []
-          conf_errorHandling:
-            econf_ExactPrintFallback: ExactPrintFallbackModeInline
-            econf_Werror: false
-            econf_omit_output_valid_check: false
-            econf_produceOutputOnErrors: false
-          conf_preprocessor:
-            ppconf_CPPMode: CPPModeAbort
-            ppconf_hackAroundIncludes: false
-          conf_version: 1
-          conf_layout:
-            lconfig_a
-        '';
       };
     };
 
@@ -807,68 +755,84 @@ in {
           path = ".zsh_history";
           ignoreDups = true;
           share = true;
+          extended = true;
+          ignoreSpace = true;
+          reduceBlanks = true;
         };
 
-        initExtra = ''
-          setopt \
-            extended_history \
-            hist_ignore_space \
-            hist_reduce_blanks
+        setTerminalTitle = true;
 
-          setopt interactive_comments
+        glob = {
+          extended = true;
+          case = false;
+          complete = true;
+        };
 
-          setopt \
-            extended_glob \
-            no_case_glob
+        enableInteractiveComments = true;
 
-          if [[ $TERM != eterm-color && $TERM != dumb ]]; then
-            preexec() { print -Pn "\e]0;$1\a" }
-          fi
+        enableDirenv = true;
 
-          unset RPS1
+        initExtra =
+          let
+            globalAliasesStr = lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (k: v: "alias -g ${k}='${v}'") globalAliases
+            );
 
-          diff() { wdiff -n $@ | colordiff }
-          open() { setsid xdg-open $* &>/dev/null }
-          +x() { chmod +x "$*" }
+            globalAliases = {
+              C   = "| wc -l";
+              L   = "| less -R";
+              H   = "| head";
+              T   = "| tail";
+              Y   = "| xsel -b";
+              DN  = "2>/dev/null";
+              FZ  = "| fzf | xargs";
+              FZV = "| fzf | parallel -X --tty $EDITOR";
+            };
 
-          alias -g C='| wc -l'
-          alias -g L='| less -R'
-          alias -g H='| head'
-          alias -g T='| tail'
-          alias -g Y='| xsel -b'
-          alias -g DN='2>/dev/null'
-          alias -g FZ='| fzf | xargs'
+            autoRlwrap = ''
+              #zplug 'andreivolt/zsh-auto-rlwrap'
+              #bindkey -M viins '^x' insert-rlwrap
+              #bindkey -M vicmd '^x' insert-rlwrap
+            '';
 
-          alias ..='cd ..'
-          alias ...='cd .. && cd ..';
-          alias ....='cd .. && cd .. && cd ..';
+            functions = ''
+              diff() { wdiff -n $@ | colordiff }
+              open() { setsid xdg-open "$*" &>/dev/null }
+              +x() { chmod +x "$*" }
+            '';
 
-          #zplug 'andreivolt/zsh-auto-rlwrap'
-          #bindkey -M viins '^x' insert-rlwrap
-          #bindkey -M vicmd '^x' insert-rlwrap
+            cdAliases = ''
+              alias ..='cd ..'
+              alias ...='cd .. && cd ..';
+              alias ....='cd .. && cd .. && cd ..';
+            '';
 
-          ################################################################################
+            completion = ''
+              zstyle ':completion:*' menu select
+              zstyle ':completion:*' rehash true
+            '';
 
-          setopt glob_complete
-          zstyle ':completion:*' menu select
-          zstyle ':completion:*' rehash true
+            plugins = ''
+              source ~/.zplug/init.zsh
+              zplug 'willghatch/zsh-hooks'; zplug load
+              zplug 'andreivolt/zsh-prompt-lean'
+              zplug 'andreivolt/zsh-vim-mode', defer:2; zplug load
+              zplug 'zdharma/fast-syntax-highlighting'
+              zplug 'hlissner/zsh-autopair', defer:2
+              zplug 'chisui/zsh-nix-shell'
+              zplug 'chrismwendt/auto-nix-shell'
+              zplug load
+            '';
+          in ''
+            ${cdAliases}
+            ${globalAliasesStr}
+            ${autoRlwrap}
+            ${functions}
+            ${completion}
+            ${plugins}
 
-          ################################################################################
-
-          source ~/.zplug/init.zsh
-          zplug 'willghatch/zsh-hooks'; zplug load
-          zplug 'andreivolt/zsh-prompt-lean'
-          zplug 'andreivolt/zsh-vim-mode', defer:2; zplug load
-          zplug 'zdharma/fast-syntax-highlighting'
-          zplug 'hlissner/zsh-autopair', defer:2
-          zplug 'chisui/zsh-nix-shell'
-          zplug 'chrismwendt/auto-nix-shell'
-          zplug load
-
-          eval "$(direnv hook zsh)"
-
-          source ~/.private
-        '';
+            source ~/.private
+         '';
       };
     };
   };
@@ -893,11 +857,6 @@ in {
 
   programs = {
     adb.enable = true;
-
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-    };
   };
 
   fonts = {
@@ -905,6 +864,7 @@ in {
       ultimate.enable = false;
       defaultFonts = {
         monospace = [ monospaceFont ];
+        sansSerif = [ proportionalFont ];
       };
     };
     enableCoreFonts = true;
@@ -914,20 +874,7 @@ in {
       google-fonts
       hack-font
       hasklig
-      (iosevka.override {
-        set = "custom";
-        weights = ["light"];
-        design = [
-          "termlig"
-          "v-asterisk-low"
-          "v-at-short"
-          "v-i-zshaped"
-          "v-tilde-low"
-          "v-underscore-low"
-          "v-zero-dotted"
-          "v-zshaped-l"
-        ];
-      })
+      iosevka-custom
       material-icons
       nerdfonts
       overpass
@@ -942,35 +889,9 @@ in {
     rm /tmp/ssh*
   '';
 
-  systemd.user.services =
-    let
-      emacsDaemon = name : {
-        enable = true;
-        wantedBy = [ "default.target" ];
-        serviceConfig = {
-          Type      = "forking";
-          Restart   = "always";
-          ExecStart = ''${pkgs.bash}/bin/bash -c 'source ${config.system.build.setEnvironment}; exec ${pkgs.emacs}/bin/emacs --daemon=${name} --eval "(+avo/${name})"' '';
-          ExecStop  = "${pkgs.emacs}/bin/emacsclient -s ${name} --eval (kill-emacs)";
-        };
-      };
-    in {
-      ircEmacsDaemon = emacsDaemon "irc";
-      mailEmacsDaemon = emacsDaemon "mail";
-      editorEmacsDaemon = emacsDaemon "scratchpad";
-
-      dropbox = {
-        enable = true;
-        description = "Dropbox service";
-        after = [ "network.target" ];
-        wantedBy = [ "default.target" ];
-        path = [ pkgs.dropbox ];
-        serviceConfig = {
-          Type      = "forking";
-          Restart   = "always";
-          ExecStart = "${pkgs.dropbox}/bin/dropbox start";
-          ExecStop  = "${pkgs.dropbox}/bin/dropbox stop";
-        };
-      };
-    };
+  systemd.user.services = {
+    ircEmacsDaemon = makeEmacsDaemon "irc";
+    mailEmacsDaemon = makeEmacsDaemon "mail";
+    editorEmacsDaemon = makeEmacsDaemon "scratchpad";
+  };
 }
