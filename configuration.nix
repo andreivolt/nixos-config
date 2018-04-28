@@ -96,7 +96,7 @@ in {
         [gmusic]
         deviceid = 0123456789abcdef
         username = andreivolt
-        password = ${builtins.readFile /home/avo/.google-passwd.txt}
+        password = ${builtins.getEnv "ANDREIVOLT_GOOGLE_PASSWORD"}
         bitrate = 320
       '';
     };
@@ -267,7 +267,7 @@ in {
 
       dunst = {
         enable = true;
-        settings = import ./dunstrc.nix { inherit theme; };
+        settings = import ./dunstrc.nix { inherit theme; font = proportionalFont; };
       };
 
       unclutter.enable = true;
@@ -331,6 +331,15 @@ in {
           globoff
         '';
 
+        ".httpie/config.json".text = ''
+          {
+            "default_options": [
+              "--pretty",
+              "format"
+            ]
+          }
+        '';
+
         ".inputrc".text = ''
           set editing-mode vi
 
@@ -350,6 +359,21 @@ in {
 
         ".npmrc".text = ''
           prefix=~/.npm-packages"
+        '';
+
+        ".ghci".text = ''
+          :set prompt "λ "
+        '';
+
+        ".aws/config".text = ''
+          [default]
+          region = eu-west-1
+        '';
+
+        ".aws/credentials".text = ''
+          [default]
+          aws_access_key_id = ${builtins.getEnv "AWS_ACCESS_KEY_ID"}
+          aws_secret_access_key = ${builtins.getEnv "AWS_SECRET_ACCESS_KEY"}
         '';
 
         ".tmux.conf".text = ''
@@ -454,6 +478,31 @@ in {
           [maildir]
           synchronize_flags=true
         '';
+
+        ".gist".text = builtins.getEnv "GIST_TOKEN";
+
+        ".mailcap".text = ''
+          application/doc; antiword %s; copiousoutput
+          application/msword; antiword %s; copiousoutput
+          application/pdf; view-attachment %s pdf
+          application/vnd.ms-powerpoint; libreoffice %s
+          application/vnd.ms-powerpoint; ppt2txt '%s'; copiousoutput; description=MS PowerPoint presentation;
+          application/vnd.openxmlformats-officedocument.presentationml.presentation; libreoffice %s
+          application/vnd.openxmlformats-officedocument.presentationml.presentation; pptx2txt '%s'; copiousoutput; description=MS PowerPoint presentation;
+          application/vnd.openxmlformats-officedocument.presentationml.slideshow; libreoffice %s
+          application/vnd.openxmlformats-officedocument.presentationml.slideshow; view-attachment %s
+          application/vnd.openxmlformats-officedocument.spreadsheetmleet; view-attachment %s xls
+          application/vnd.openxmlformats-officedocument.wordprocessingml.document; plaintextify < %s; copiousoutput
+          image/gif; view-attachment %s gif
+          image/jpeg; view-attachment %s jpg
+          image/jpg; view-attachment %s jpg
+          image/png; view-attachment %s png
+          image/svg+xml; view-attachment %s svg
+          image/x-png; view-attachment %s png
+          text/html; firefox-devedition %s;
+          text/html; w3m -o display_link=true -o display_link_number=true -dump -I %{charset} -cols 72 -T text/html %s; nametemplate=%s.html; copiousoutput
+          text/plain; view-attachment %s txt
+        '';
       };
     };
 
@@ -468,15 +517,51 @@ in {
           no-audio-display
         '';
 
+        "offlineimap/config".text = ''
+          [general]
+          accounts = avolt.net
+          fsync = false
+          maxconnections = 10
+          autorefresh = 0.5
+          quick = 10
+
+          [Account avolt.net]
+          localrepository = avolt.net_local
+          postsynchook = /run/current-system/sw/bin/notmuch new
+          realdelete = yes
+          remoterepository = avolt.net_remote
+
+          [Repository avolt.net_local]
+          localfolders = ~/mail/avolt.net
+          type = Maildir
+          nametrans = lambda folder: folder == 'INBOX' and 'INBOX' or ('INBOX.' + folder)
+
+          [Repository avolt.net_remote]
+          type = Gmail
+          nametrans = lambda folder: {'[Gmail]/All Mail': 'archive',}.get(folder, folder)
+          folderfilter = lambda folder: folder == '[Gmail]/All Mail'
+          realdelete = yes
+          remoteuser = andrei@avolt.net
+          remotepass = ${builtins.getEnv "AVOLT_GOOGLE_PASSWORD"}
+          sslcacertfile = /etc/ssl/certs/ca-certificates.crt
+          synclabels = yes
+
+          keepalive = 60
+          holdconnectionopen = yes
+        '';
+
         "alacritty/alacritty.yml".text = import ./alacritty.nix { inherit theme monospaceFont; };
 
         "xmobar/xmobarrc".text = import ./xmobarrc.nix { inherit theme; font = proportionalFont; };
-        "xmobar/bin/online-indicator".text = ''
-          color=$(is-online && echo ${theme.green} || echo ${theme.red})
-          symbol=$(is-online && echo ﯱ || echo ﯱ)
+        "xmobar/bin/online-indicator" = {
+          text = ''
+            color=$(is-online && echo '${theme.green}' || echo '${theme.red}')
+            symbol=$(is-online && echo ﯱ || echo ﯱ)
 
-          echo "<fc=$color>$symbol</fc>"
-        '';
+            echo "<fc=$color>$symbol</fc>"
+          '';
+          executable = true;
+        };
 
         "youtube-dl.conf".text = ''
            --output %(title)s.%(ext)s
@@ -608,13 +693,12 @@ in {
         };
 
         extraConfig = {
-          include = { path = "~/.gitconfig-private"; };
           core = {
-            editor = "";
+            editor = "emacsclient -nw";
             pager = "diff-so-fancy | less --tabs=4 -RFX";
           };
 
-          #ghi.token = "!${pkgs.pass}/bin/pass api.github.com | head -1";
+          ghi.token = builtins.getEnv "GHI_TOKEN";
         };
 
         ignores = [
@@ -649,8 +733,7 @@ in {
           "gdax"            = "webapp https://www.gdax.com/trade/BTC-USD";
           "git"             = "hub";
           "gr"              = "cd $(git root)";
-          "grep"            = "grep --colorauto";
-          "http"            = "http --pretty format";
+          "grep"            = "grep --color=auto";
           "j"               = "jobs -d | paste - -";
           "l"               = "ls";
           "la"              = "ls -a";
@@ -693,6 +776,7 @@ in {
 
           diff() { wdiff -n $@ | colordiff }
           open() { setsid xdg-open $* &>/dev/null }
+          +x() { chmod +x "$*" }
 
           alias -g C='| wc -l'
           alias -g L='| less -R'
@@ -706,9 +790,9 @@ in {
           alias ...='cd .. && cd ..';
           alias ....='cd .. && cd .. && cd ..';
 
-          source ~/.zsh.d/rlwrap.zsh
-          bindkey -M viins '^x' insert-rlwrap
-          bindkey -M vicmd '^x' insert-rlwrap
+          #zplug 'andreivolt/zsh-auto-rlwrap'
+          #bindkey -M viins '^x' insert-rlwrap
+          #bindkey -M vicmd '^x' insert-rlwrap
 
           ################################################################################
 
@@ -729,6 +813,8 @@ in {
           zplug load
 
           eval "$(direnv hook zsh)"
+
+          source ~/.private
         '';
       };
     };

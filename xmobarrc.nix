@@ -34,7 +34,7 @@ Config {
     , Run Com "/home/avo/.config/xmobar/bin/online-indicator" [] "is-online" 100
   ]
   , sepChar = "%"
-  , alignSep = "}{theme."
-  , template = "   %StdinReader% }{theme.   %dynnetwork%          %memory% MiB          %multicpu%         %is-online%   "
+  , alignSep = "}{"
+  , template = "   %StdinReader% }{   %dynnetwork%          %memory% MiB          %multicpu%         %is-online%   "
 }
 ''

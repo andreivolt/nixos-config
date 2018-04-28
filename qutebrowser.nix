@@ -26,25 +26,29 @@ settings:
         e: spawn emacsbrowseurl {url}
         m: spawn --userscript ${pkgs.qutebrowser}/share/qutebrowser/userscripts/view_in_mpv
           {url}
-        yd: yank domain
-        yp: yank pretty-url
-        yt: yank title -s
-        yy: yank
   colors.completion.category.bg:
-    global: 'qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #888888, stop:1 #505050)'
+    global: 'qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 ${theme.black}, stop:1 ${theme.darkGray})'
   colors.completion.even.bg:
-    global: '${theme.lightWhite}'
+    global: '${theme.darkGray}'
   colors.completion.fg:
     global:
-    - black
-    - black
-    - white
+    - '${theme.white}'
+    - '${theme.white}'
+    - '${theme.white}'
   colors.completion.odd.bg:
-    global: '${theme.white}
+    global: '${theme.black}'
   colors.completion.scrollbar.bg:
-    global: '${theme.foreground}
+    global: '${theme.black}'
   colors.completion.scrollbar.fg:
-    global: '${theme.lightestGray}
+    global: '${theme.darkGray}'
+  colors.completion.match.fg:
+    global: '${theme.yellow}'
+  colors.completion.item.selected.bg:
+    global: '${theme.cyan}'
+  colors.completion.item.selected.border.top:
+    global: '${theme.cyan}'
+  colors.completion.item.selected.border.bottom:
+    global: '${theme.cyan}'
   colors.prompts.bg:
     global: '${theme.gray}'
   colors.prompts.border:
@@ -62,25 +66,23 @@ settings:
   colors.statusbar.url.fg:
     global: '${theme.white}'
   colors.tabs.bar.bg:
-    global: '#e8e8e8'
+    global: '${theme.background}'
   colors.tabs.even.bg:
-    global: '#e8e8e8'
+    global: '${theme.darkGray}'
   colors.tabs.even.fg:
-    global: '${theme.black}'
-  colors.tabs.indicator.start:
-    global: '#0000aa'
+    global: '${theme.white}'
   colors.tabs.odd.bg:
-    global: '#e8e8e8'
-  colors.tabs.odd.fg:
     global: '${theme.black}'
+  colors.tabs.odd.fg:
+    global: '${theme.white}'
   colors.tabs.selected.even.bg:
-    global: '#94a1c0'
+    global: '${theme.cyan}'
   colors.tabs.selected.even.fg:
-    global: '${theme.white}'
+    global: '${theme.black}'
   colors.tabs.selected.odd.bg:
-    global: '#94a1c0'
+    global: '${theme.cyan}'
   colors.tabs.selected.odd.fg:
-    global: '${theme.white}'
+    global: '${theme.black}'
   colors.webpage.bg:
     global: '${theme.white}'
   completion.height:
@@ -108,6 +110,8 @@ settings:
     global: bold 10pt ${monospaceFont}
   fonts.completion.entry:
     global: 10pt ${proportionalFont}
+  fonts.prompts:
+    global: 10pt ${proportionalFont}
   fonts.debug_console:
     global: 10pt ${monospaceFont}
   fonts.downloads:
@@ -125,7 +129,7 @@ settings:
   fonts.monospace:
     global: '"${monospaceFont}"'
   fonts.statusbar:
-    global: 10pt ${monospaceFont}
+    global: 10pt ${proportionalFont}
   fonts.tabs:
     global: 10pt ${proportionalFont}
   fonts.web.family.standard:

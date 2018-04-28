@@ -5,7 +5,9 @@ let
   neovim = pkgs.neovim.override { vimAlias = true; };
   moreutils = (pkgs.stdenv.lib.overrideDerivation pkgs.moreutils (attrs: rec { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; })); # prefer GNU parallel
   zathura = pkgs.zathura.override { useMupdf = true; };
-
+  parallel = (pkgs.stdenv.lib.overrideDerivation pkgs.parallel (attrs: rec {
+               nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];
+             }));
 in
 {
   environment.systemPackages = with pkgs; [
@@ -135,9 +137,9 @@ in
     ntfs3g
 
     expect
+
     lr
     parallel
-    perlPackages.DBDSQLite
     pv
     xe
     nq

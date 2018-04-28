@@ -1,4 +1,4 @@
-{ theme }:
+{ theme, font }:
 
 {
   global = {
@@ -7,7 +7,7 @@
     browser = "qutebrowser";
     dmenu = "rofi -dmenu";
     follow = "keyboard";
-    font = "Roboto Condensed 16";
+    font = "${font} 16";
     format = "<b>%s</b>: %b";
     frame_color = "${theme.background}";
     frame_width = "1";
