@@ -39,10 +39,7 @@ in {
 
   time.timeZone = "Europe/Paris";
 
-  i18n = {
-    consoleUseXkbConfig = true;
-    defaultLocale = "en_US.UTF-8";
-  };
+  i18n.defaultLocale = "en_US.UTF-8";
 
   system = {
     autoUpgrade = {
@@ -136,10 +133,6 @@ in {
       #dpi = 276;
 
       videoDrivers = [ "nvidia" ];
-
-      xkbOptions = "ctrl:nocaps";
-
-      layout = "fr";
 
       libinput = {
         enable = true;
@@ -270,7 +263,7 @@ in {
         settings = import ./dunstrc.nix { inherit theme; font = proportionalFont; };
       };
 
-      unclutter.enable = true;
+      unclutter.enable = false;
     };
 
     xresources.properties = {
@@ -301,15 +294,21 @@ in {
       "*.color14"     = theme.lightCyan;
 
       "rofi.font"     = "${proportionalFont} 24";
-      "rofi.theme"    = "Pop-Dark";
+      "rofi.theme"    = "avo";
     };
 
     home = {
       packages = with pkgs; [];
+
+      keyboard = {
+        layout = "fr";
+        options = [ "ctrl:nocaps" ];
+      };
+
       sessionVariables = {
         ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
         BLOCK_SIZE                  = "\'1";
-        BOOT_JVM_OPTIONS            = "'-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none'";
+        BOOT_JVM_OPTIONS            = "-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none";
         BROWSER                     = "qutebrowser";
         COLUMNS                     = 100;
         EDITOR                      = "${pkgs.emacs}/bin/emacsclient";
@@ -325,7 +324,7 @@ in {
            Default default
         '';
 
-        ".curlc".text = ''
+        ".curlrc".text = ''
           user-agent mozilla
           silent
           globoff
@@ -353,6 +352,10 @@ in {
           v:   rlwrap-call-editor
         '';
 
+        ".bitcoin/bitcoin.conf".text = ''
+          prune=550
+        '';
+
         ".mailrc".text = ''
           set sendmail=${pkgs.msmtp}/bin/msmtp"
         '';
@@ -376,16 +379,24 @@ in {
           aws_secret_access_key = ${builtins.getEnv "AWS_SECRET_ACCESS_KEY"}
         '';
 
+        ".trc".text = ''
+          ---
+          configuration:
+            default_profile:
+            - andreivolt
+            - ${builtins.getEnv "TWITTER_CONSUMER_KEY"}
+          profiles:
+            andreivolt:
+              ${builtins.getEnv "TWITTER_CONSUMER_KEY"}:
+                username: andreivolt
+                consumer_key: ${builtins.getEnv "TWITTER_CONSUMER_KEY"}
+                consumer_secret: ${builtins.getEnv "TWITTER_CONSUMER_SECRET"}
+                token: ${builtins.getEnv "TWITTER_TOKEN"}
+                secret: ${builtins.getEnv "TWITTER_SECRET"}
+        '';
+
         ".tmux.conf".text = ''
           set -g @plugin 'tmux-plugins/tpm'
-
-          set -g @plugin 'tmux-plugins/tmux-resurrect'
-          set -g @resurrect-strategy-vim 'session'
-          set -g @resurrect-capture-pane-contents 'on'
-
-          set -g @plugin 'tmux-plugins/tmux-continuum'
-          set -g @continuum-restore 'on'
-          set -g @continuum-boot 'on'
 
           set -g @plugin 'tmux-plugins/tmux-sensible'
 
@@ -393,33 +404,34 @@ in {
 
           set -g @plugin 'nhdaly/tmux-better-mouse-mode'
           set -g @scroll-speed-num-lines-per-scroll 1
+          set -g mouse on
 
           set -g @plugin 'tmux-plugins/tmux-copycat'
           set -g @plugin 'tmux-plugins/tmux-yank'
           set -g @yank_selection 'primary'
+          bind -T copy-mode-vi v send -X begin-selection
+          bind -T copy-mode-vi C-v send -X rectangle-toggle
+          bind -T copy-mode-vi y send -X copy-selection
+          unbind p
+          bind p paste-buffer
 
           run '~/.tmux/plugins/tpm/tpm'
 
-
           set -g base-index 1
           set -g renumber-windows on
-
           set -g monitor-activity on
-
           set -g set-titles on
           set -g set-titles-string "#T"
-
           set -g status-style bg=colour238,fg=colour252
           set -g status-left ' #S '
           set -g status-left-length 100
-          set -g status-right '#h'
+          set -g status-right '''
           set -g window-status-format ' #I: #W '
           set -g window-status-current-format ' #I: #W '
           setw -g window-status-current-style bg=black,fg=white
           setw -g window-status-activity-style bg=yellow
 
           set -g prefix C-a
-
           setw -g mode-keys vi
           set -g mode-keys vi
 
@@ -428,14 +440,6 @@ in {
           bind x choose-session
           bind s split-window -v
           bind v split-window -h
-
-          bind -T copy-mode-vi v send -X begin-selection
-          bind -T copy-mode-vi C-v send -X rectangle-toggle
-          bind -T copy-mode-vi y send -X copy-selection
-          unbind p
-          bind p paste-buffer
-
-          set -g mouse on
         '';
 
         ".stylish-yaskell.yaml".text = ''
@@ -460,6 +464,32 @@ in {
             - trailing_whitespace: {}
           columns: 80
           newline: native
+        '';
+
+        ".local/share/rofi/themes/avo.rasi".text = import ./rofi-theme.nix { inherit theme; };
+
+        "bin/qutebrowser-open" = {
+          text = ''
+            ${pkgs.qutebrowser}/share/qutebrowser/scripts/open_url_in_instance.sh $1
+          '';
+          executable = true;
+        };
+
+        ".boot/profile.boot".text = ''
+          (deftask cider
+            "CIDER profile"
+            []
+            (comp
+              (do
+               (require 'boot.repl)
+               (swap! @(resolve 'boot.repl/*default-dependencies*)
+                       concat '[[org.clojure/tools.nrepl "0.2.12"]
+                                [cider/cider-nrepl "0.15.0"]
+                                [refactor-nrepl "2.3.1"]])
+               (swap! @(resolve 'boot.repl/*default-middleware*)
+                       concat '[cider.nrepl/cider-middleware
+                               refactor-nrepl.middleware/wrap-refactor])
+               identity)))
         '';
 
         ".notmuch-config".text = ''
@@ -567,17 +597,40 @@ in {
            --output %(title)s.%(ext)s
         '';
 
-        "nvim/init.vim".text = ''
-          set runtimepath^=~/.vim runtimepath+=~/.vim/after
-          let &packpath = &runtimepath
-          source ~/.vim/vimrc
+        "openvpn/auth.txt".text = ''
+          ${builtins.getEnv "VPN_USER"}
+          ${builtins.getEnv "VPN_PASSWORD"}
+        '';
+
+        "nixpkgs/config.nix".text = ''
+          {
+            allowUnfree = true;
+          }
+        '';
+
+        "pianobar/config".text = ''
+          user = andrei.volt@gmail.com
+          password = ${builtins.getEnv "PANDORA_PASSWORD"}
+          audio_quality = high
         '';
 
         "zathura/zathurarc".text = ''
           set incremental-search true
         '';
 
+        "hub".text = ''
+          ---
+          github.com:
+          - user: andreivolt
+            oauth_token: ${builtins.getEnv "GITHUB_OAUTH_TOKEN"}
+        '';
+
         "qutebrowser/autoconfig.yml".text = import ./qutebrowser.nix { inherit theme proportionalFont monospaceFont pkgs; };
+
+        "virt-viewer/settings".text = ''
+          [virt-viewer]
+          ask-quit=false
+        '';
 
         "user-dirs.dirs".text = ''
           XDG_DOWNLOAD_DIR="$HOME/tmp"
