@@ -13,37 +13,41 @@ in {
   ]);
 
   home-manager.users.avo.xdg.configFile = {
-    "offlineimap/config".text = ''
-      [general]
-      accounts = avolt.net
-      fsync = false
-      maxconnections = 10
-      autorefresh = 0.5
-      quick = 10
+    "offlineimap/config".text = lib.generators.toINI {} {
+      general = {
+        accounts = "avolt.net";
+        fsync = false;
+        maxconnections = 10;
+        autorefresh = 0.5;
+        quick = 10;
+      };
 
-      [Account avolt.net]
-      localrepository = avolt.net_local
-      postsynchook = ${pkgs.notmuch}/bin/notmuch new
-      realdelete = yes
-      remoterepository = avolt.net_remote
+      "Account avolt.net" = {
+        localrepository = "avolt.net_local";
+        postsynchook = "${pkgs.notmuch}/bin/notmuch new";
+        realdelete = "yes";
+        remoterepository = "avolt.net_remote";
+      };
 
-      [Repository avolt.net_local]
-      localfolders = ~/mail/avolt.net
-      type = Maildir
-      nametrans = lambda folder: folder == 'INBOX' and 'INBOX' or ('INBOX.' + folder)
+      "Repository avolt.net_local" = {
+        localfolders = "~/mail/avolt.net";
+        type = "Maildir";
+        nametrans = "lambda folder: folder == 'INBOX' and 'INBOX' or ('INBOX.' + folder)";
+      };
 
-      [Repository avolt.net_remote]
-      type = Gmail
-      nametrans = lambda folder: {'[Gmail]/All Mail': 'archive',}.get(folder, folder)
-      folderfilter = lambda folder: folder == '[Gmail]/All Mail'
-      realdelete = yes
-      remoteuser = andrei@avolt.net
-      remotepass = ${builtins.getEnv "AVOLT_GOOGLE_PASSWORD"}
-      sslcacertfile = /etc/ssl/certs/ca-certificates.crt
-      synclabels = yes
-      keepalive = 60
-      holdconnectionopen = yes
-    '';
+      "Repository avolt.net_remote" = {
+        type = "Gmail";
+        nametrans = "lambda folder: {'[Gmail]/All Mail': 'archive',}.get(folder, folder)";
+        folderfilter = "lambda folder: folder == '[Gmail]/All Mail'";
+        realdelete = "yes";
+        remoteuser = "andrei@avolt.net";
+        remotepass = builtins.getEnv "AVOLT_GOOGLE_PASSWORD";
+        sslcacertfile = "/etc/ssl/certs/ca-certificates.crt";
+        synclabels = "yes";
+        keepalive = 60;
+        holdconnectionopen = "yes";
+      };
+    };
   };
 
   home-manager.users.avo.home.file = {
@@ -69,21 +73,25 @@ in {
       set sendmail=${pkgs.msmtp}/bin/msmtp"
     '';
 
-    ".notmuch-config".text = ''
-      [user]
-      name=${myName}
-      primary_email=${myEmail}
-      other_email=andrei.volt@gmail.com
+    ".notmuch-config".text = lib.generators.toINI {} {
+      user = {
+        name = myName;
+        primary_email = myEmail;
+        other_email = "andrei.volt@gmail.com";
+      };
 
-      [new]
-      tags=unread;inbox;
-      ignore=
+      new = {
+        tags = "unread;inbox;";
+        ignore = "";
+      };
 
-      [search]
-      exclude_tags=deleted;spam;
+      search = {
+        exclude_tags = "deleted;spam;";
+      };
 
-      [maildir]
-      synchronize_flags=true
-    '';
+      maildir = {
+        synchronize_flags = true;
+      };
+    };
   };
 }

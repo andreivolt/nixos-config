@@ -6,7 +6,8 @@ let
   makeEmacsDaemon = name: (import ./make-emacs-daemon.nix { inherit config pkgs; name = name; });
 
   theme = import ./challenger-deep-theme.nix;
-  proportionalFont = "Abel"; monospaceFont = "Source Code Pro"; fontSize = 11;
+  proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
+  fontSize = 11; launcherFontSize = 32;
 
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
 
@@ -94,13 +95,14 @@ in {
     mopidy = {
       enable = true;
       extensionPackages = with pkgs; [ mopidy-gmusic ];
-      configuration = ''
-        [gmusic]
-        deviceid = 0123456789abcdef
-        username = andreivolt
-        password = ${builtins.getEnv "ANDREIVOLT_GOOGLE_PASSWORD"}
-        bitrate = 320
-      '';
+      configuration = lib.generators.toINI {} {
+        gmusic = {
+          deviceid = "0123456789abcdef";
+          username = "andreivolt";
+          password = builtins.getEnv "ANDREIVOLT_GOOGLE_PASSWORD";
+          bitrate = 320;
+        };
+      };
     };
 
     bitlbee = {
@@ -266,9 +268,11 @@ in {
     xresources.properties = {
       "Xft.dpi"       = 192;
       "Xft.hintstyle" = "hintfull";
+
       "Xcursor.theme" = "Adwaita";
       "Xcursor.size"  = 42;
-      # "*.font" = "xft:${monospaceFont}:size=11";
+
+      "*.font"        = "xft:${monospaceFont}:size=${toString fontSize}";
 
       "*.foreground"  = theme.foreground;
       "*.background"  = theme.background;
@@ -290,7 +294,7 @@ in {
       "*.color6"      = theme.cyan;
       "*.color14"     = theme.lightCyan;
 
-      "rofi.font"     = "${proportionalFont} 24";
+      "rofi.font"     = "${proportionalFont} ${toString launcherFontSize}";
       "rofi.theme"    = "avo";
     };
 
@@ -310,7 +314,12 @@ in {
         COLUMNS                     = 100;
         EDITOR                      = "${pkgs.emacs}/bin/emacsclient";
         PAGER                       = "less";
-        PATH                        = "$PATH:$HOME/bin:$HOME/.local/bin:$HOME/.npm-packages/bin";
+        PATH                        = lib.concatStringsSep ":" [
+                                        "$PATH"
+                                        "$HOME/bin"
+                                        "$HOME/.local/bin"
+                                        "$HOME/.npm-packages/bin"
+                                      ];
         QT_AUTO_SCREEN_SCALE_FACTOR = 1;
         SSH_AUTH_SOCK               = "$XDG_RUNTIME_DIR/ssh-agent.socket";
       };
@@ -326,14 +335,11 @@ in {
           globoff
         '';
 
-        ".httpie/config.json".text = ''
-          {
-            "default_options": [
-              "--pretty",
-              "format"
-            ]
-          }
-        '';
+        ".httpie/config.json".text = lib.generators.toJSON {} {
+          default_options = [
+            "--pretty" "format"
+          ];
+        };
 
         ".inputrc".text = ''
           set editing-mode vi
@@ -348,28 +354,30 @@ in {
           v:   rlwrap-call-editor
         '';
 
-        ".bitcoin/bitcoin.conf".text = ''
-          prune=550
-        '';
+        ".bitcoin/bitcoin.conf".text = lib.generators.toKeyValue {} {
+          prune = 550;
+        };
 
-        ".npmrc".text = ''
-          prefix=~/.npm-packages"
-        '';
+        ".nmprc".text = lib.generators.toKeyValue {} {
+          prefix = "~/.npm-packages";
+        };
 
         ".ghci".text = ''
           :set prompt "λ "
         '';
 
-        ".aws/config".text = ''
-          [default]
-          region = eu-west-1
-        '';
+        ".aws/config".text = lib.generators.toINI {} {
+          default = {
+            region = "eu-west-1";
+          };
+        };
 
-        ".aws/credentials".text = ''
-          [default]
-          aws_access_key_id = ${builtins.getEnv "AWS_ACCESS_KEY_ID"}
-          aws_secret_access_key = ${builtins.getEnv "AWS_SECRET_ACCESS_KEY"}
-        '';
+        ".aws/credentials".text = lib.generators.toINI {} {
+          default = {
+            aws_access_key_id = builtins.getEnv "AWS_ACCESS_KEY_ID";
+            aws_secret_access_key = builtins.getEnv "AWS_SECRET_ACCESS_KEY";
+          };
+        };
 
         ".trc".text = ''
           ---
@@ -414,14 +422,14 @@ in {
           set -g monitor-activity on
           set -g set-titles on
           set -g set-titles-string "#T"
-          set -g status-style bg=colour238,fg=colour252
+          set -g status-style bg='${theme.background}',fg='${theme.foreground}'
           set -g status-left ' #S '
           set -g status-left-length 100
           set -g status-right '''
           set -g window-status-format ' #I: #W '
           set -g window-status-current-format ' #I: #W '
-          setw -g window-status-current-style bg=black,fg=white
-          setw -g window-status-activity-style bg=yellow
+          setw -g window-status-current-style bg='${theme.black}',fg='${theme.white}'
+          setw -g window-status-activity-style bg='${theme.yellow}'
 
           set -g prefix C-a
           setw -g mode-keys vi
@@ -437,9 +445,7 @@ in {
         ".local/share/rofi/themes/avo.rasi".text = import ./rofi-theme.nix { inherit theme; };
 
         "bin/qutebrowser-open" = {
-          text = ''
-            ${pkgs.qutebrowser}/share/qutebrowser/scripts/open_url_in_instance.sh $1
-          '';
+          text = "${pkgs.qutebrowser}/share/qutebrowser/scripts/open_url_in_instance.sh $1";
           executable = true;
         };
 
@@ -451,16 +457,25 @@ in {
       enable = true;
 
       configFile = {
-        "mpv/mpv.conf".text = ''
-          ao = pulse
-          hwdec = vdpau
-          profile = opengl-hq
-          no-audio-display
-        '';
+        "mpv/mpv.conf".text = lib.generators.toKeyValue {} {
+          ao = "pulse";
+          hwdec = "vdpau";
+          profile = "opengl-hq";
+          audio-display = "no";
+        };
 
-        "alacritty/alacritty.yml".text = import ./alacritty.nix { inherit theme monospaceFont; fontSize = toString fontSize; };
+        "alacritty/alacritty.yml".text =
+          lib.generators.toYAML {} (
+            import ./alacritty.nix {
+              inherit theme monospaceFont;
+              fontSize = toString fontSize;
+          });
 
-        "xmobar/xmobarrc".text = import ./xmobarrc.nix { inherit theme; font = proportionalFont; };
+        "xmobar/xmobarrc".text =
+           import ./xmobarrc.nix {
+             inherit theme;
+             font = proportionalFont;
+           };
         "xmobar/bin/online-indicator" = {
           text = ''
             color=$(is-online && echo '${theme.green}' || echo '${theme.red}')
@@ -480,68 +495,65 @@ in {
           ${builtins.getEnv "VPN_PASSWORD"}
         '';
 
-        "nixpkgs/config.nix".text = ''
-          {
-            allowUnfree = true;
-          }
-        '';
+        "nixpkgs/config.nix".text = lib.generators.toPretty {} {
+          allowUnfree = true;
+        };
 
-        "pianobar/config".text = ''
-          user = andrei.volt@gmail.com
-          password = ${builtins.getEnv "PANDORA_PASSWORD"}
-          audio_quality = high
-        '';
+        "pianobar/config".text = lib.generators.toKeyValue {} {
+          user = "andrei.volt@gmail.com";
+          password = builtins.getEnv "PANDORA_PASSWORD";
+          audio_quality = "high";
+        };
 
         "zathura/zathurarc".text = ''
           set incremental-search true
         '';
 
-        "hub".text = ''
-          ---
-          github.com:
-          - user: andreivolt
-            oauth_token: ${builtins.getEnv "GITHUB_OAUTH_TOKEN"}
-        '';
+        "hub".text = lib.generators.toYAML {} {
+          "github.com" = {
+            user = "andreivolt";
+            oauth_token = builtins.getEnv "GITHUB_OAUTH_TOKEN";
+          };
+        };
 
         "qutebrowser/autoconfig.yml".text = import ./qutebrowser.nix { inherit theme proportionalFont monospaceFont pkgs; };
 
-        "virt-viewer/settings".text = ''
-          [virt-viewer]
-          ask-quit=false
-        '';
+        "virt-viewer/settings".text = lib.generators.toINI {} {
+          virt-viewer = {
+            ask-quit = false;
+          };
+        };
 
-        "user-dirs.dirs".text = ''
-          XDG_DOWNLOAD_DIR="$HOME/tmp"
-          XDG_DESKTOP_DIR="$HOME/tmp"
-        '';
+        "user-dirs.dirs".text = lib.generators.toKeyValue {} {
+          XDG_DOWNLOAD_DIR = "$HOME/tmp";
+          XDG_DESKTOP_DIR  = "$HOME/tmp";
+        };
 
-        "mimeapps.list".text = ''
-           [Default Applications]
-           x-scheme-handler/http=qutebrowser.desktop
-           x-scheme-handler/https=qutebrowser.desktop
-           x-scheme-handler/ftp=qutebrowser.desktop
-           text/html=qutebrowser.desktop
-           application/xhtml+xml=qutebrowser.deskop
-           application/vnd.openxmlformats-officedocument.wordprocessingml.document=writer.desktop;libreoffice-writer.desktop;
-           application/pdf=mupdf.desktop;zathura-pdf-mupdf.desktop;
-           text/plain=emacs.desktop;
-           application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=calc.desktop;
-           application/xml=emacs.desktop;
-           x-scheme-handler/magnet=userapp-transmission-gtk-NWT3FZ.desktop;
-        '';
-
+        "mimeapps.list".text = lib.generators.toINI {} {
+           "Default Applications" = {
+             "x-scheme-handler/http"                                                   = "qutebrowser.desktop";
+             "x-scheme-handler/https"                                                  = "qutebrowser.desktop";
+             "x-scheme-handler/ftp"                                                    = "qutebrowser.desktop";
+             "text/html"                                                               = "qutebrowser.desktop";
+             "application/xhtml+xml"                                                   = "qutebrowser.deskop";
+             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "libreoffice-writer.desktop";
+             "application/pdf"                                                         = "zathura-pdf-mupdf.desktop";
+             "text/plain"                                                              = "emacs.desktop";
+             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"       = "calc.desktop";
+             "application/xml"                                                         = "emacs.desktop";
+             "x-scheme-handler/magnet"                                                 = "userapp-transmission-gtk-NWT3FZ.desktop";
+           };
+         };
       };
     };
 
     xsession = {
       enable = true;
-
       windowManager.command = "xmonad";
-
-      initExtra = ''
+      initExtra = let wallpaperPath = "~/data/wallpapers/matterhorn.jpg"; in ''
         xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42
 
-        wallpaper=~/data/wallpapers/matterhorn.jpg; setroot -z $wallpaper -z $wallpaper -z $wallpaper
+        setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
       '';
     };
 
@@ -628,27 +640,27 @@ in {
         enableAutosuggestions = true;
 
         shellAliases = {
-          "R"               = "ramda";
-          "browser-history" = "qutebrowser-history";
-          "e"               = "emacsclient -s scratchpad --no-wait";
-          "fzf"             = "fzf --color bw";
-          "gc"              = "git clone";
-          "gdax"            = "webapp https://www.gdax.com/trade/BTC-USD";
-          "git"             = "hub";
-          "gr"              = "cd $(git root)";
-          "grep"            = "grep --color=auto";
-          "j"               = "jobs -d | paste - -";
-          "l"               = "ls";
-          "la"              = "ls -a";
-          "ls"              = "ls --group-directories-first --classify --dereference-command-line -v";
-          "mkdir"           = "mkdir -p";
-          "rg"              = "rg --smart-case --colors match:bg:yellow --colors match:fg:black";
-          "rm"              = "timeout 3 rm -Iv --one-file-system";
-          "stack"           = "stack --nix";
-          "tree"            = "tree -F --dirsfirst";
-          "vi"              = "nvim";
-          "vpnoff"          = "sudo systemctl stop openvpn-us";
-          "vpnon"           = "sudo systemctl start openvpn-us";
+          R               = "ramda";
+          browser-history = "qutebrowser-history";
+          e               = "emacsclient -s scratchpad --no-wait";
+          fzf             = "fzf --color bw";
+          gc              = "git clone";
+          gdax            = "webapp https://www.gdax.com/trade/BTC-USD";
+          git             = "hub";
+          gr              = "cd $(git root)";
+          grep            = "grep --color=auto";
+          j               = "jobs -d | paste - -";
+          l               = "ls";
+          la              = "ls -a";
+          ls              = "ls --group-directories-first --classify --dereference-command-line -v";
+          mkdir           = "mkdir -p";
+          rg              = "rg --smart-case --colors match:bg:yellow --colors match:fg:black";
+          rm              = "timeout 3 rm -Iv --one-file-system";
+          stack           = "stack --nix";
+          tree            = "tree -F --dirsfirst";
+          vi              = "nvim";
+          vpnoff          = "sudo systemctl stop openvpn-us";
+          vpnon           = "sudo systemctl start openvpn-us";
         };
 
         history = rec {
@@ -732,9 +744,9 @@ in {
             ${functions}
             ${completion}
             ${plugins}
-
-            source ~/.private
          '';
+
+         profileExtra = "source ~/.private";
       };
     };
   };
@@ -752,9 +764,9 @@ in {
   };
 
   environment.variables = {
-    "IPFS_PATH" = "/var/lib/ipfs/.ipfs";
-    "LIBVIRT_DEFAULT_URI" = "qemu:///system";
-    "LIBVA_DRIVER_NAME" = "vdpau";
+    IPFS_PATH = "/var/lib/ipfs/.ipfs";
+    LIBVIRT_DEFAULT_URI = "qemu:///system";
+    LIBVA_DRIVER_NAME = "vdpau";
   };
 
   programs = {
