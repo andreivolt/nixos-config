@@ -10,6 +10,15 @@
     # https:++github.com/uswitch/ej
   ];
 
+  home-manager.users.avo.home.sessionVariables = {
+    BOOT_JVM_OPTIONS = ''
+                         -client \
+                         -XX:+TieredCompilation \
+                         -XX:TieredStopAtLevel=1 \
+                         -Xverify:none
+                       '';
+  };
+
   home-manager.users.avo.home.file = {
     ".boot/profile.boot".text = ''
       (deftask cider

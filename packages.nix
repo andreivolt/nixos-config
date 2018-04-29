@@ -10,6 +10,7 @@ let
 in
 {
   environment.systemPackages = with pkgs; [
+    xorg.xmessage
     # fovea
     # incron
     # mpris-ctl
@@ -208,7 +209,6 @@ in
     docker_compose
     google-cloud-sdk
     nixops
-    virt-viewer
   ] ++
   [
     t
@@ -248,6 +248,7 @@ in
     google-play-music-desktop-player
     mpc_cli
     mpv
+    # https://github.com/hoyon/mpv-mpris
     nodePackages.peerflix
     pianobar
     playerctl
@@ -408,6 +409,7 @@ in
     # antigen-hs
     # autojump
     # https:++github.com/rupa/z
+    # https://github.com/zplug/zplug
     fzf
     grc
     highlight

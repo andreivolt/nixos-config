@@ -47,7 +47,16 @@
     };
   };
 
+  home-manager.users.avo.programs.zsh.shellAliases = {
+    stack = "${pkgs.stack}/bin/stack --nix";
+  };
+
   home-manager.users.avo.home.file = {
+    ".ghci".text = ''
+      :set prompt "λ "
+    '';
+
+
     ".stylish-yaskell.yaml".text = lib.generators.toYAML {} {
       columns = 80;
       newline = "native";

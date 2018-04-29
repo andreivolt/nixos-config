@@ -1,8 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 let
-  hostName = "${builtins.getEnv "HOST"}";
-
   makeEmacsDaemon = name: (import ./make-emacs-daemon.nix { inherit config pkgs; name = name; });
 
   theme = import ./challenger-deep-theme.nix;
@@ -25,13 +23,14 @@ in {
 
       ./home-manager/nixos
 
-      ./packages.nix
-      ./docker-nginx-proxy.nix
       ./clojure.nix
-      ./haskell.nix
-      ./git.nix
+      ./docker.nix
       ./email.nix
+      ./git.nix
       ./google-drive-ocamlfuse-service.nix
+      ./haskell.nix
+      ./libvirt.nix
+      ./packages.nix
     ];
 
   boot.loader.timeout = 1;
@@ -84,7 +83,7 @@ in {
   networking = {
     enableIPv6 = false;
     firewall.allowedTCPPorts = [ 80 443 ];
-    hostName = hostName;
+    hostName = builtins.getEnv "HOST";
   };
 
   hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
@@ -238,7 +237,6 @@ in {
     shell = pkgs.zsh;
     extraGroups = [
       "adbusers"
-      "docker"
       "ipfs"
       "libvirtd"
       "wheel"
@@ -262,11 +260,8 @@ in {
     };
 
     xresources.properties = {
-      "Xft.dpi"       = 192;
-      "Xft.hintstyle" = "hintfull";
-
       "Xcursor.theme" = "Adwaita";
-      "Xcursor.size"  = 42;
+      "Xcursor.size"  = 32;
 
       "*.font"        = "xft:${monospaceFont}:size=${toString fontSize}";
 
@@ -298,11 +293,17 @@ in {
       sessionVariables = {
         ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
         BLOCK_SIZE                  = "\'1";
-        BOOT_JVM_OPTIONS            = "-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1 -Xverify:none";
         BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
         COLUMNS                     = 100;
-        EDITOR                      = "${pkgs.emacs}/bin/emacsclient -t -c";
-        PAGER                       = "less -FXR";
+        EDITOR                      = ''
+                                        ${pkgs.emacs}/bin/emacsclient \
+                                        --tty \
+                                        --create-frame'';
+        PAGER                       = ''
+                                        less \
+                                        --quit-if-one-screen \
+                                        --no-init \
+                                        --RAW-CONTROL-CHARS'';
         PATH                        = lib.concatStringsSep ":" [
                                         "$PATH"
                                         "$HOME/bin"
@@ -310,7 +311,7 @@ in {
                                         "$HOME/.npm-packages/bin"
                                       ];
         QT_AUTO_SCREEN_SCALE_FACTOR = 1;
-        SSH_AUTH_SOCK               = "$XDG_RUNTIME_DIR/ssh-agent.socket";
+        GREP_COLOR                  = "43;30";
       };
 
       file = {
@@ -327,6 +328,7 @@ in {
         ".httpie/config.json".text = lib.generators.toJSON {} {
           default_options = [
             "--pretty" "format"
+            "--session" "default"
           ];
         };
 
@@ -351,10 +353,6 @@ in {
           prefix = "~/.npm-packages";
         };
 
-        ".ghci".text = ''
-          :set prompt "λ "
-        '';
-
         ".aws/config".text = lib.generators.toINI {} {
           default = {
             region = "eu-west-1";
@@ -368,21 +366,28 @@ in {
           };
         };
 
-        ".trc".text = ''
-          ---
-          configuration:
-            default_profile:
-            - andreivolt
-            - ${builtins.getEnv "TWITTER_CONSUMER_KEY"}
-          profiles:
-            andreivolt:
-              ${builtins.getEnv "TWITTER_CONSUMER_KEY"}:
-                username: andreivolt
-                consumer_key: ${builtins.getEnv "TWITTER_CONSUMER_KEY"}
-                consumer_secret: ${builtins.getEnv "TWITTER_CONSUMER_SECRET"}
-                token: ${builtins.getEnv "TWITTER_TOKEN"}
-                secret: ${builtins.getEnv "TWITTER_SECRET"}
-        '';
+        ".trc".text =
+          let
+            username       = "andreivolt";
+            consumerKey    = builtins.getEnv "TWITTER_CONSUMER_KEY";
+            consumerSecret = builtins.getEnv "TWITTER_CONSUMER_SECRET";
+            token          = builtins.getEnv "TWITTER_TOKEN";
+            secret         = builtins.getEnv "TWITTER_SECRET";
+          in ''
+            ---
+            configuration:
+              default_profile:
+              - ${username}
+              - ${consumerKey}
+            profiles:
+              ${username}:
+                ${consumerKey}:
+                  username: ${username}
+                  consumer_key: ${consumerKey}
+                  consumer_secret: ${consumerSecret}
+                  token: ${token}
+                  secret: ${secret}
+          '';
 
         ".tmux.conf".text = ''
           set -g @plugin 'tmux-plugins/tpm'
@@ -440,13 +445,6 @@ in {
       enable = true;
 
       configFile = {
-        "mpv/mpv.conf".text = lib.generators.toKeyValue {} {
-          ao = "pulse";
-          hwdec = "vdpau";
-          profile = "opengl-hq";
-          audio-display = "no";
-        };
-
         "alacritty/alacritty.yml".text =
           lib.generators.toYAML {} (
             import ./alacritty.nix {
@@ -460,8 +458,8 @@ in {
              font = proportionalFont;
            };
         "xmobar/bin/online-indicator" = {
-          text = ''
-            color=$(is-online && echo '${theme.green}' || echo '${theme.red}')
+          text = with theme; ''
+            color=$(is-online && echo '${green}' || echo '${red}')
             symbol=$(is-online && echo ﯱ || echo ﯱ)
 
             echo "<fc=$color>$symbol</fc>"
@@ -477,12 +475,6 @@ in {
           allowUnfree = true;
         };
 
-        "pianobar/config".text = lib.generators.toKeyValue {} {
-          user = "andrei.volt@gmail.com";
-          password = builtins.getEnv "PANDORA_PASSWORD";
-          audio_quality = "high";
-        };
-
         "zathura/zathurarc".text = ''
           set incremental-search true
         '';
@@ -494,12 +486,6 @@ in {
                     monospaceFont
                     pkgs;
           };
-
-        "virt-viewer/settings".text = lib.generators.toINI {} {
-          virt-viewer = {
-            ask-quit = false;
-          };
-        };
 
         "user-dirs.dirs".text = lib.generators.toKeyValue {} {
           XDG_DOWNLOAD_DIR = "$HOME/tmp";
@@ -526,11 +512,11 @@ in {
 
     xsession = {
       enable = true;
-      windowManager.command = "xmonad";
+      windowManager.command = "~/.local/bin/xmonad";
       initExtra =
         let wallpaperPath = "~/data/wallpapers/matterhorn.jpg";
         in with pkgs; ''
-          ${xorg.xsetroot}/bin/xsetroot -xcf ${gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 42
+          # ${xorg.xsetroot}/bin/xsetroot -xcf ${gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 32
 
           ${setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
         '';
@@ -538,6 +524,27 @@ in {
 
     programs = {
       home-manager.enable = true;
+
+      pianobar = {
+        enable = true;
+
+        config = {
+          user = "andrei.volt@gmail.com";
+          password = builtins.getEnv "PANDORA_PASSWORD";
+          audio_quality = "high";
+        };
+     };
+
+      mpv = {
+        enable = true;
+
+        config = {
+          ao = "pulse";
+          hwdec = "vdpau";
+          profile = "opengl-hq";
+          audio-display = "no";
+        };
+      };
 
       htop = {
         enable = true;
@@ -598,7 +605,6 @@ in {
           ls              = "ls --group-directories-first --classify --dereference-command-line -v";
           mkdir           = "mkdir -p";
           rg              = "${pkgs.ripgrep}/bin/rg --smart-case --colors match:bg:yellow --colors match:fg:black";
-          stack           = "${pkgs.stack}/bin/stack --nix";
           tree            = "${pkgs.tree}/bin/tree -F --dirsfirst";
           vi              = "${pkgs.neovim}/bin/nvim";
           vpnoff          = "sudo systemctl stop openvpn-us";
@@ -633,20 +639,19 @@ in {
 
         initExtra =
           let
-            globalAliasesStr = lib.concatStringsSep "\n" (
-              lib.mapAttrsToList (k: v: "alias -g ${k}='${v}'") globalAliases
-            );
-
-            globalAliases = {
-              C   = "| wc -l";
-              L   = "| less -R";
-              H   = "| head";
-              T   = "| tail";
-              Y   = "| xsel -b";
-              DN  = "2>/dev/null";
-              FZ  = "| fzf | xargs";
-              FZV = "| fzf | parallel -X --tty $EDITOR";
-            };
+            globalAliasesStr =
+              let toStr = x: lib.concatStringsSep "\n"
+                             (lib.mapAttrsToList (k: v: "alias -g ${k}='${v}'") x);
+              in toStr {
+                C  = "| wc -l";
+                L  = "| less -R";
+                H  = "| head";
+                T  = "| tail";
+                Y  = "| ${pkgs.xsel}/bin/xsel -b";
+                N  = "2>/dev/null";
+                F  = "| ${pkgs.fzf}/bin/fzf | xargs";
+                FE = "| ${pkgs.fzf}/bin/fzf | ${pkgs.parallel}/bin/parallel -X --tty $EDITOR";
+              };
 
             autoRlwrap = ''
               #zplug 'andreivolt/zsh-auto-rlwrap'
@@ -655,7 +660,7 @@ in {
             '';
 
             functions = ''
-              diff() { wdiff -n $@ | colordiff }
+              diff() { ${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff }
               open() { setsid xdg-open "$*" &>/dev/null }
               +x() { chmod +x "$*" }
             '';
@@ -663,7 +668,7 @@ in {
             cdAliases = ''
               alias ..='cd ..'
               alias ...='cd .. && cd ..';
-              alias ....='cd .. && cd .. && cd ..';
+              alias ....='cd .. && cd .. && cd ..'
             '';
 
             completion = ''
@@ -691,31 +696,24 @@ in {
             ${plugins}
          '';
 
-         profileExtra = "source ~/.private";
+         profileExtra = "source ~/.private.env";
       };
     };
   };
 
   security.sudo.wheelNeedsPassword = false;
 
-  virtualisation = {
-    docker = {
-      enable = true;
-      extraOptions = "--experimental";
-      autoPrune.enable = true;
-    };
-
-    libvirtd.enable = true;
-  };
-
   environment.variables = {
     IPFS_PATH = "/var/lib/ipfs/.ipfs";
-    LIBVIRT_DEFAULT_URI = "qemu:///system";
     LIBVA_DRIVER_NAME = "vdpau";
   };
 
   programs = {
     adb.enable = true;
+    zsh = {
+      enable = true;
+      enableCompletion = true;
+    };
   };
 
   fonts = {
