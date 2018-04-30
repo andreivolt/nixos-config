@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   environment.systemPackages = (with pkgs.haskellPackages; [
@@ -13,7 +13,12 @@
    #exe = haskell.lib.justStaticExecutables
   ]);
 
+
   home-manager.users.avo.xdg.configFile = {
+    "ghc/ghci.conf".text = ''
+      :set prompt "λ "
+    '';
+
     "brittany/config.yaml".text = lib.generators.toYAML {} {
       conf_debug = {
         dconf_dump_annotations = false;
@@ -45,19 +50,8 @@
       };
       conf_version = 1;
     };
-  };
 
-  home-manager.users.avo.programs.zsh.shellAliases = {
-    stack = "${pkgs.stack}/bin/stack --nix";
-  };
-
-  home-manager.users.avo.home.file = {
-    ".ghci".text = ''
-      :set prompt "λ "
-    '';
-
-
-    ".stylish-yaskell.yaml".text = lib.generators.toYAML {} {
+    "stylish-yaskell/config.yaml".text = lib.generators.toYAML {} {
       columns = 80;
       newline = "native";
       steps = [
@@ -92,5 +86,10 @@
         }
       ];
     };
+  };
+
+  home-manager.users.avo.programs.zsh.shellAliases = {
+    stack = "${pkgs.stack}/bin/stack --nix";
+    ghci = "ghci --script ${config.home-manager.users.avo.xdg.configHome}/ghc/ghci.conf";
   };
 }

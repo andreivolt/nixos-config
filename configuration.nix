@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  makeEmacsDaemon = name: (import ./make-emacs-daemon.nix { inherit config pkgs; name = name; });
+  makeEmacsDaemon = import ./make-emacs-daemon.nix;
 
   theme = import ./challenger-deep-theme.nix;
   proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
@@ -23,14 +23,18 @@ in {
 
       ./home-manager/nixos
 
+      ./android.nix
       ./clojure.nix
       ./docker.nix
       ./email.nix
       ./git.nix
       ./google-drive-ocamlfuse-service.nix
+      ./gui.nix
       ./haskell.nix
+      ./ipfs.nix
       ./libvirt.nix
       ./packages.nix
+      ./shell.nix
     ];
 
   boot.loader.timeout = 1;
@@ -43,6 +47,8 @@ in {
   };
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+  environment.pathsToLink = [ "/share/zsh" ];
 
   time.timeZone = "Europe/Paris";
 
@@ -77,6 +83,9 @@ in {
     pulseaudio = {
       enable = true;
       package = pkgs.pulseaudioFull;
+      extraClientConf = ''
+        auth-cookie = "/tmp/pulse/esd-auth-cookie";
+      '';
    };
   };
 
@@ -89,8 +98,6 @@ in {
   hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
 
   services = {
-    ipfs.enable = true;
-
     devmon.enable = true;
 
     mopidy = {
@@ -114,8 +121,6 @@ in {
     zerotierone.enable = true;
 
     emacs.enable = true;
-
-    offlineimap.enable = true;
 
     tor.client.enable = true;
 
@@ -234,17 +239,11 @@ in {
   users.users.avo = {
     uid = 1000;
     isNormalUser = true;
-    shell = pkgs.zsh;
-    extraGroups = [
-      "adbusers"
-      "ipfs"
-      "libvirtd"
-      "wheel"
-    ];
+    extraGroups = [ "wheel" ];
     openssh.authorizedKeys.keyFiles = [ ./avo.pub ];
   };
 
-  home-manager.users.avo = rec {
+  home-manager.users.avo = let home_directory = builtins.getEnv "HOME"; in rec {
     services = {
       dunst = {
         enable = true;
@@ -258,29 +257,6 @@ in {
 
       dropbox.enable = true;
     };
-
-    xresources.properties = {
-      "Xcursor.theme" = "Adwaita";
-      "Xcursor.size"  = 32;
-
-      "*.font"        = "xft:${monospaceFont}:size=${toString fontSize}";
-
-      "rofi.font"     = "${proportionalFont} ${launcherFontSize}";
-      "rofi.theme"    = "avo";
-    } // (with theme; {
-      "*.background" = background; "*.foreground" = foreground;
-      "*.color0"     = black;      "*.color8"     = gray;
-      "*.color1"     = red;        "*.color9"     = lightRed;
-      "*.color2"     = green;      "*.color10"    = lightGreen;
-      "*.color3"     = yellow;     "*.color11"    = lightYellow;
-      "*.color4"     = blue;       "*.color12"    = lightBlue;
-      "*.color5"     = magenta;    "*.color13"    = lightMagenta;
-      "*.color6"     = cyan;       "*.color14"    = lightCyan;
-
-      "*.borderColor" = background;
-      "*.colorUL"     = white;
-      "*.cursorColor" = foreground;
-    });
 
     home = {
       packages = with pkgs; [];
@@ -308,63 +284,28 @@ in {
                                         "$PATH"
                                         "$HOME/bin"
                                         "$HOME/.local/bin"
-                                        "$HOME/.npm-packages/bin"
+                                        "${xdg.cacheHome}/npm/packages/bin"
                                       ];
         QT_AUTO_SCREEN_SCALE_FACTOR = 1;
         GREP_COLOR                  = "43;30";
+        GNUPGHOME                   = "${xdg.configHome}/gnupg";
+        HTTPIE_CONFIG_DIR           = "${xdg.configHome}/httpie";
+        INPUTRC                     = "${xdg.configHome}/readline/inputrc";
+        LESSHISTFILE                = "${xdg.cacheHome}/less/history";
+        LIBVA_DRIVER_NAME           = "vdpau";
+        NPM_CONFIG_USERCONFIG       = "${xdg.configHome}/npm/config";
+        PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
+        RLWRAP_HOME                 = "${xdg.cacheHome}/rlwrap";
+        SSH_AUTH_SOCK               = "${xdg.configHome}/gnupg/S.gpg-agent.ssh";
+        STACK_ROOT                  = "${xdg.dataHome}/stack";
+        WWW_HOME                    = "${xdg.cacheHome}/w3m";
+        ZPLUG_HOME                  = "${xdg.cacheHome}/zplug";
       };
 
       file = {
         ".cups/lpoptions".text = ''
            Default default
         '';
-
-        ".curlrc".text = ''
-          user-agent mozilla
-          silent
-          globoff
-        '';
-
-        ".httpie/config.json".text = lib.generators.toJSON {} {
-          default_options = [
-            "--pretty" "format"
-            "--session" "default"
-          ];
-        };
-
-        ".inputrc".text = ''
-          set editing-mode vi
-
-          set completion-ignore-case on
-          set show-all-if-ambiguous  on
-
-          set keymap vi
-          C-r: reverse-search-history
-          C-f: forward-search-history
-          C-l: clear-screen
-          v:   rlwrap-call-editor
-        '';
-
-        ".bitcoin/bitcoin.conf".text = lib.generators.toKeyValue {} {
-          prune = 550;
-        };
-
-        ".nmprc".text = lib.generators.toKeyValue {} {
-          prefix = "~/.npm-packages";
-        };
-
-        ".aws/config".text = lib.generators.toINI {} {
-          default = {
-            region = "eu-west-1";
-          };
-        };
-
-        ".aws/credentials".text = lib.generators.toINI {} {
-          default = {
-            aws_access_key_id     = builtins.getEnv "AWS_ACCESS_KEY_ID";
-            aws_secret_access_key = builtins.getEnv "AWS_SECRET_ACCESS_KEY";
-          };
-        };
 
         ".trc".text =
           let
@@ -444,39 +385,21 @@ in {
     xdg = {
       enable = true;
 
+      configHome = "${home_directory}/.config";
+      dataHome   = "${home_directory}/.local/share";
+      cacheHome  = "${home_directory}/.cache";
+
       configFile = {
-        "alacritty/alacritty.yml".text =
-          lib.generators.toYAML {} (
-            import ./alacritty.nix {
-              inherit theme monospaceFont;
-              fontSize = fontSize;
-          });
-
-        "xmobar/xmobarrc".text =
-           import ./xmobarrc.nix {
-             inherit theme;
-             font = proportionalFont;
-           };
-        "xmobar/bin/online-indicator" = {
-          text = with theme; ''
-            color=$(is-online && echo '${green}' || echo '${red}')
-            symbol=$(is-online && echo ﯱ || echo ﯱ)
-
-            echo "<fc=$color>$symbol</fc>"
-          '';
-          executable = true;
+        "bitcoin/bitcoin.conf".text = lib.generators.toKeyValue {} {
+          prune = 550;
         };
+
+        "mitmproxy/config.yaml".text = ''
+           CA_DIR: ${xdg.configHome}/mitmproxy/certs
+        '';
 
         "youtube-dl.conf".text = ''
            --output %(title)s.%(ext)s
-        '';
-
-        "nixpkgs/config.nix".text = lib.generators.toPretty {} {
-          allowUnfree = true;
-        };
-
-        "zathura/zathurarc".text = ''
-          set incremental-search true
         '';
 
         "qutebrowser/autoconfig.yml".text =
@@ -486,6 +409,19 @@ in {
                     monospaceFont
                     pkgs;
           };
+
+        "readline/inputrc".text = ''
+          set editing-mode vi
+
+          set completion-ignore-case on
+          set show-all-if-ambiguous  on
+
+          set keymap vi
+          C-r: reverse-search-history
+          C-f: forward-search-history
+          C-l: clear-screen
+          v:   rlwrap-call-editor
+        '';
 
         "user-dirs.dirs".text = lib.generators.toKeyValue {} {
           XDG_DOWNLOAD_DIR = "$HOME/tmp";
@@ -510,34 +446,82 @@ in {
       };
     };
 
-    xsession = {
-      enable = true;
-      windowManager.command = "~/.local/bin/xmonad";
-      initExtra =
-        let wallpaperPath = "~/data/wallpapers/matterhorn.jpg";
-        in with pkgs; ''
-          # ${xorg.xsetroot}/bin/xsetroot -xcf ${gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 32
-
-          ${setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
-        '';
+    nixpkgs.config = {
+      allowUnfree = true;
     };
 
     programs = {
+      aws-cli = {
+        enable = true;
+        config = {
+          default = {
+            region = "eu-west-1";
+          };
+        };
+        credentials = {
+          default = {
+            aws_access_key_id     = builtins.getEnv "AWS_ACCESS_KEY_ID";
+            aws_secret_access_key = builtins.getEnv "AWS_SECRET_ACCESS_KEY";
+          };
+        };
+      };
+
       home-manager.enable = true;
+
+      nodejs.enable = true;
+
+      curl = {
+        enable = true;
+        config = ''
+          user-agent mozilla
+          silent
+          globoff
+        '';
+      };
+
+      zathura = {
+        enable = true;
+        config = ''
+          set incremental-search true
+        '';
+      };
+
+      ssh = {
+        enable = true;
+
+        controlMaster  = "auto";
+        controlPath    = "/tmp/ssh-%u-%r@%h:%p";
+        controlPersist = "0";
+      };
 
       pianobar = {
         enable = true;
-
         config = {
           user = "andrei.volt@gmail.com";
           password = builtins.getEnv "PANDORA_PASSWORD";
           audio_quality = "high";
         };
-     };
+      };
+
+      httpie = {
+        enable = true;
+        defaultOptions = [
+          "--pretty" "format"
+          "--session" "default"
+        ];
+      };
+
+      alacritty = {
+        enable = true;
+        config =
+          import ./alacritty.nix {
+            inherit theme monospaceFont;
+            fontSize = fontSize;
+          };
+      };
 
       mpv = {
         enable = true;
-
         config = {
           ao = "pulse";
           hwdec = "vdpau";
@@ -575,180 +559,17 @@ in {
           ];
         };
       };
-
-      ssh = {
-        enable = true;
-
-        controlMaster  = "auto";
-        controlPath    = "/tmp/ssh-%u-%r@%h:%p";
-        controlPersist = "0";
-      };
-
-      zsh = rec {
-        enable = true;
-
-        enableCompletion = false;
-        enableAutosuggestions = true;
-
-        shellAliases = {
-          R               = "ramda";
-          browser-history = "qutebrowser-history";
-          e               = "${pkgs.emacs}/bin/emacsclient -s scratchpad --no-wait";
-          fzf             = "${pkgs.fzf}/bin/fzf --color bw";
-          gc              = "${pkgs.gitAndTools.hub}/bin/hub clone";
-          git             = "${pkgs.gitAndTools.hub}/bin/hub";
-          gr              = "cd $(${pkgs.git}/bin/git root)";
-          grep            = "grep --color=auto";
-          j               = "jobs -d | paste - -";
-          l               = "ls";
-          la              = "ls -a";
-          ls              = "ls --group-directories-first --classify --dereference-command-line -v";
-          mkdir           = "mkdir -p";
-          rg              = "${pkgs.ripgrep}/bin/rg --smart-case --colors match:bg:yellow --colors match:fg:black";
-          tree            = "${pkgs.tree}/bin/tree -F --dirsfirst";
-          vi              = "${pkgs.neovim}/bin/nvim";
-          vpnoff          = "sudo systemctl stop openvpn-us";
-          vpnon           = "sudo systemctl start openvpn-us";
-        } // {
-          gdax            = "webapp https://www.gdax.com/trade/BTC-USD";
-          pandora         = "webapp https://www.pandora.com/my-music";
-        };
-
-        history = rec {
-          size = 99999;
-          save = size;
-          path = ".zsh_history";
-          ignoreDups = true;
-          share = true;
-          extended = true;
-          ignoreSpace = true;
-          reduceBlanks = true;
-        };
-
-        setTerminalTitle = true;
-
-        glob = {
-          extended = true;
-          case = false;
-          complete = true;
-        };
-
-        enableInteractiveComments = true;
-
-        enableDirenv = true;
-
-        initExtra =
-          let
-            globalAliasesStr =
-              let toStr = x: lib.concatStringsSep "\n"
-                             (lib.mapAttrsToList (k: v: "alias -g ${k}='${v}'") x);
-              in toStr {
-                C  = "| wc -l";
-                L  = "| less -R";
-                H  = "| head";
-                T  = "| tail";
-                Y  = "| ${pkgs.xsel}/bin/xsel -b";
-                N  = "2>/dev/null";
-                F  = "| ${pkgs.fzf}/bin/fzf | xargs";
-                FE = "| ${pkgs.fzf}/bin/fzf | ${pkgs.parallel}/bin/parallel -X --tty $EDITOR";
-              };
-
-            autoRlwrap = ''
-              #zplug 'andreivolt/zsh-auto-rlwrap'
-              #bindkey -M viins '^x' insert-rlwrap
-              #bindkey -M vicmd '^x' insert-rlwrap
-            '';
-
-            functions = ''
-              diff() { ${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff }
-              open() { setsid xdg-open "$*" &>/dev/null }
-              +x() { chmod +x "$*" }
-            '';
-
-            cdAliases = ''
-              alias ..='cd ..'
-              alias ...='cd .. && cd ..';
-              alias ....='cd .. && cd .. && cd ..'
-            '';
-
-            completion = ''
-              zstyle ':completion:*' menu select
-              zstyle ':completion:*' rehash true
-            '';
-
-            plugins = ''
-              source ~/.zplug/init.zsh
-              zplug 'willghatch/zsh-hooks'; zplug load
-              zplug 'andreivolt/zsh-prompt-lean'
-              zplug 'andreivolt/zsh-vim-mode', defer:2; zplug load
-              zplug 'zdharma/fast-syntax-highlighting'
-              zplug 'hlissner/zsh-autopair', defer:2
-              zplug 'chisui/zsh-nix-shell'
-              zplug 'chrismwendt/auto-nix-shell'
-              zplug load
-            '';
-          in ''
-            ${cdAliases}
-            ${globalAliasesStr}
-            ${autoRlwrap}
-            ${functions}
-            ${completion}
-            ${plugins}
-         '';
-
-         profileExtra = "source ~/.private.env";
-      };
     };
   };
 
   security.sudo.wheelNeedsPassword = false;
-
-  environment.variables = {
-    IPFS_PATH = "/var/lib/ipfs/.ipfs";
-    LIBVA_DRIVER_NAME = "vdpau";
-  };
-
-  programs = {
-    adb.enable = true;
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-    };
-  };
-
-  fonts = {
-    fontconfig = {
-      ultimate.enable = false;
-      defaultFonts = {
-        monospace = [ monospaceFont ];
-        sansSerif = [ proportionalFont ];
-      };
-    };
-    enableCoreFonts = true;
-    fonts = with pkgs; [
-      emacs-all-the-icons-fonts
-      font-awesome-ttf
-      google-fonts
-      hack-font
-      hasklig
-      iosevka-custom
-      material-icons
-      nerdfonts
-      overpass
-      powerline-fonts
-      terminus_font
-      ubuntu_font_family
-      vistafonts
-    ];
-  };
 
   powerManagement.resumeCommands = ''
     rm /tmp/ssh*
   '';
 
   systemd.user.services = {
-    ircEmacsDaemon = makeEmacsDaemon "irc";
-    mailEmacsDaemon = makeEmacsDaemon "mail";
-    editorEmacsDaemon = makeEmacsDaemon "scratchpad";
+    ircEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "irc"; };
+    editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "scratchpad"; };
   };
 }

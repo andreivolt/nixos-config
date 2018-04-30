@@ -27,6 +27,7 @@ in
     ed
 
     fdupes
+    pgcli
 
     flac
     sox
@@ -54,7 +55,7 @@ in
 
     neovim
 
-    moreutils
+    (lowPrio moreutils)
     renameutils
     # perl.rename
 
@@ -116,8 +117,6 @@ in
 
     libinput-gestures
     libreoffice-fresh
-
-    nodejs-9_x
 
     ntfs3g
 
@@ -186,7 +185,6 @@ in
   [
     mupdf
     poppler_utils
-    zathura
     impressive
   ] ++
   (with xorg; [
@@ -203,7 +201,6 @@ in
     # https:++github.com/waymonad/waymonad
   ]) ++
   [
-    awscli
     docker-compose-zsh-completions
     docker-machine
     docker_compose
@@ -410,6 +407,7 @@ in
     # autojump
     # https:++github.com/rupa/z
     # https://github.com/zplug/zplug
+    # https://github.com/b4b4r07/enhancd
     fzf
     grc
     highlight

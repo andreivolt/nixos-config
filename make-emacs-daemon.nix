@@ -1,4 +1,4 @@
-{ pkgs, config, name }:
+{ config, pkgs, name }:
 
 {
   enable = true;

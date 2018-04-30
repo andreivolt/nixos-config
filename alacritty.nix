@@ -1,7 +1,7 @@
 { theme, monospaceFont, fontSize }:
 
 {
-  background_opacity = 0.88;
+  background_opacity = 0.93;
   colors = {
     bright = {
       black = theme.gray;
