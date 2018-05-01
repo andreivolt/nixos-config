@@ -13,7 +13,6 @@
    #exe = haskell.lib.justStaticExecutables
   ]);
 
-
   home-manager.users.avo.xdg.configFile = {
     "ghc/ghci.conf".text = ''
       :set prompt "λ "
@@ -87,6 +86,9 @@
       ];
     };
   };
+
+  home-manager.users.avo.home.sessionVariables
+    .STACK_ROOT = "${config.home-manager.users.avo.xdg.dataHome}/stack";
 
   home-manager.users.avo.programs.zsh.shellAliases = {
     stack = "${pkgs.stack}/bin/stack --nix";

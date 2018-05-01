@@ -3,6 +3,34 @@
 {
   users.users.avo.shell = pkgs.zsh;
 
+  home-manager.users.avo.home.sessionVariables = with config.home-manager.users.avo.xdg; {
+    BLOCK_SIZE  = "\'1";
+    COLUMNS     = 100;
+    GREP_COLOR  = "43;30";
+    INPUTRC     = "${configHome}/readline/inputrc";
+    PAGER       = ''
+                   less \
+                   --quit-if-one-screen \
+                   --no-init \
+                   --RAW-CONTROL-CHARS'';
+    RLWRAP_HOME = "${cacheHome}/rlwrap";
+    ZPLUG_HOME  = "${cacheHome}/zplug";
+  };
+
+  home-manager.users.avo.xdg.configFile
+    ."readline/inputrc".text = ''
+       set editing-mode vi
+
+       set completion-ignore-case on
+       set show-all-if-ambiguous  on
+
+       set keymap vi
+       C-r: reverse-search-history
+       C-f: forward-search-history
+       C-l: clear-screen
+       v:   rlwrap-call-editor
+    '';
+
   home-manager.users.avo.programs.zsh = with config.home-manager.users.avo; rec {
     enable = true;
 

@@ -33,7 +33,9 @@ in {
       ./haskell.nix
       ./ipfs.nix
       ./libvirt.nix
+      ./networking.nix
       ./packages.nix
+      ./printing.nix
       ./shell.nix
     ];
 
@@ -86,13 +88,7 @@ in {
       extraClientConf = ''
         auth-cookie = "/tmp/pulse/esd-auth-cookie";
       '';
-   };
-  };
-
-  networking = {
-    enableIPv6 = false;
-    firewall.allowedTCPPorts = [ 80 443 ];
-    hostName = builtins.getEnv "HOST";
+    };
   };
 
   hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
@@ -118,28 +114,7 @@ in {
       libpurple_plugins = with pkgs; [ telegram-purple ];
     };
 
-    zerotierone.enable = true;
-
     emacs.enable = true;
-
-    tor.client.enable = true;
-
-    avahi = {
-      enable = true;
-      nssmdns = true;
-      publish.enable = true;
-    };
-
-    openvpn.servers = {
-      us = {
-        config = "config ${config.users.users.avo.home}/.config/openvpn/conf";
-        autoStart = false;
-        authUserPass = {
-          username = builtins.getEnv "OPENVPN_USERNAME";
-          password = builtins.getEnv "OPENVPN_PASSWORD";
-        };
-      };
-    };
 
     xserver = {
       enable = true;
@@ -178,85 +153,26 @@ in {
           }
         ];
 
-      desktopManager.xterm.enable = false;
-
       displayManager = {
         auto = {
           enable = true;
           user = "avo";
         };
       };
+
+      desktopManager.xterm.enable = false;
     };
 
-    compton = {
-      enable = true;
-      shadow = true;
-      shadowOffsets = [ (-15) (-5) ];
-      shadowOpacity = "0.8";
-      shadowExclude = [
-        ''
-          !(XMONAD_FLOATING_WINDOW ||
-            (_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") ||
-            (_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL"))
-        ''
-      ];
-      extraOptions = ''
-        blur-background = true;
-        blur-background-frame = true;
-        blur-background-fixed = true;
-        blur-background-exclude = [
-          "class_g = 'slop'";
-        ];
-        blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
-        clear-shadow = true;
-      '';
-    };
-
-    printing = {
-      enable = true;
-      clientConf = ''
-        <Printer default>
-          UUID urn:uuid:3c151d9e-3d44-3a04-59f9-5cdfbb513438
-          Info DCPL2520DW
-          MakeModel everywhere
-          DeviceURI ipp://192.168.1.15/ipp/print
-        </Printer>
-      '';
-    };
-
-    dnsmasq = {
-      enable = true;
-      servers = ["8.8.8.8" "8.8.4.4"];
-
-      extraConfig = ''
-        address=/test/127.0.0.1
-      '';
-    };
-
-    openssh.enable = true;
   };
 
   users.users.avo = {
     uid = 1000;
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    openssh.authorizedKeys.keyFiles = [ ./avo.pub ];
   };
 
   home-manager.users.avo = let home_directory = builtins.getEnv "HOME"; in rec {
-    services = {
-      dunst = {
-        enable = true;
-        settings = import ./dunstrc.nix {
-          inherit theme;
-          font = proportionalFont;
-        };
-      };
-
-      unclutter.enable = true;
-
-      dropbox.enable = true;
-    };
+    services.dropbox.enable = true;
 
     home = {
       packages = with pkgs; [];
@@ -267,46 +183,25 @@ in {
       };
 
       sessionVariables = {
-        ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
-        BLOCK_SIZE                  = "\'1";
-        BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
-        COLUMNS                     = 100;
-        EDITOR                      = ''
-                                        ${pkgs.emacs}/bin/emacsclient \
-                                        --tty \
-                                        --create-frame'';
-        PAGER                       = ''
-                                        less \
-                                        --quit-if-one-screen \
-                                        --no-init \
-                                        --RAW-CONTROL-CHARS'';
-        PATH                        = lib.concatStringsSep ":" [
-                                        "$PATH"
-                                        "$HOME/bin"
-                                        "$HOME/.local/bin"
-                                        "${xdg.cacheHome}/npm/packages/bin"
-                                      ];
-        QT_AUTO_SCREEN_SCALE_FACTOR = 1;
-        GREP_COLOR                  = "43;30";
-        GNUPGHOME                   = "${xdg.configHome}/gnupg";
-        HTTPIE_CONFIG_DIR           = "${xdg.configHome}/httpie";
-        INPUTRC                     = "${xdg.configHome}/readline/inputrc";
-        LESSHISTFILE                = "${xdg.cacheHome}/less/history";
-        LIBVA_DRIVER_NAME           = "vdpau";
-        NPM_CONFIG_USERCONFIG       = "${xdg.configHome}/npm/config";
-        PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
-        RLWRAP_HOME                 = "${xdg.cacheHome}/rlwrap";
-        SSH_AUTH_SOCK               = "${xdg.configHome}/gnupg/S.gpg-agent.ssh";
-        STACK_ROOT                  = "${xdg.dataHome}/stack";
-        WWW_HOME                    = "${xdg.cacheHome}/w3m";
-        ZPLUG_HOME                  = "${xdg.cacheHome}/zplug";
+        ALTERNATE_EDITOR  = "${pkgs.neovim}/bin/nvim";
+        BROWSER           = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
+        EDITOR            = ''
+                              ${pkgs.emacs}/bin/emacsclient \
+                              --tty \
+                              --create-frame'';
+        PATH              = lib.concatStringsSep ":" [
+                              "$PATH"
+                              "$HOME/bin"
+                              "${xdg.cacheHome}/npm/packages/bin"
+                            ];
+        GNUPGHOME         = "${xdg.configHome}/gnupg";
+        LESSHISTFILE      = "${xdg.cacheHome}/less/history";
+        LIBVA_DRIVER_NAME = "vdpau";
+        PARALLEL_HOME     = "${xdg.cacheHome}/parallel";
+        WWW_HOME          = "${xdg.cacheHome}/w3m";
       };
 
       file = {
-        ".cups/lpoptions".text = ''
-           Default default
-        '';
-
         ".trc".text =
           let
             username       = "andreivolt";
@@ -376,8 +271,6 @@ in {
           bind v   split-window -h
         '';
 
-        ".local/share/rofi/themes/avo.rasi".text = import ./rofi-theme.nix { inherit theme; };
-
         ".gist".text = builtins.getEnv "GIST_TOKEN";
       };
     };
@@ -409,19 +302,6 @@ in {
                     monospaceFont
                     pkgs;
           };
-
-        "readline/inputrc".text = ''
-          set editing-mode vi
-
-          set completion-ignore-case on
-          set show-all-if-ambiguous  on
-
-          set keymap vi
-          C-r: reverse-search-history
-          C-f: forward-search-history
-          C-l: clear-screen
-          v:   rlwrap-call-editor
-        '';
 
         "user-dirs.dirs".text = lib.generators.toKeyValue {} {
           XDG_DOWNLOAD_DIR = "$HOME/tmp";
@@ -484,14 +364,6 @@ in {
         config = ''
           set incremental-search true
         '';
-      };
-
-      ssh = {
-        enable = true;
-
-        controlMaster  = "auto";
-        controlPath    = "/tmp/ssh-%u-%r@%h:%p";
-        controlPersist = "0";
       };
 
       pianobar = {
@@ -563,10 +435,6 @@ in {
   };
 
   security.sudo.wheelNeedsPassword = false;
-
-  powerManagement.resumeCommands = ''
-    rm /tmp/ssh*
-  '';
 
   systemd.user.services = {
     ircEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "irc"; };
