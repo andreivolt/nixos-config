@@ -10,6 +10,22 @@ let
   };
 
 in {
+  systemd.user.services.reset-redshift = {
+    enable = true;
+    after = [ "suspend.target "];
+    serviceConfig = {
+      Type      = "oneshot";
+      ExecStart = "nightlight -x";
+    };
+  };
+
+  environment.systemPackages = with pkgs; [
+    copyq
+    find-cursor
+    xclip
+    xsel
+  ];
+
   home-manager.users.avo = {
     home.sessionVariables.QT_AUTO_SCREEN_SCALE_FACTOR = 1;
 
@@ -92,22 +108,22 @@ in {
   services.compton = {
     enable = true;
     shadow = true;
-    shadowOffsets = [ (-15) (-5) ];
-    shadowOpacity = "0.8";
-    shadowExclude = [
-      ''
-        !(XMONAD_FLOATING_WINDOW ||
-          (_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") ||
-          (_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL"))
-      ''
-    ];
+    shadowOffsets = [ (-15) (-15) ];
+    shadowOpacity = "0.7";
+    # shadowExclude = [
+    #   ''
+    #     !(XMONAD_FLOATING_WINDOW ||
+    #       (_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") ||
+    #       (_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL"))
+    #   ''
+    # ];
     extraOptions = ''
       blur-background = true;
-      blur-background-frame = true;
-      blur-background-fixed = true;
-      blur-background-exclude = [
-        "class_g = 'slop'";
-      ];
+      #blur-background-frame = true;
+      #blur-background-fixed = false;
+      #blur-background-exclude = [
+      #  "!(class_g = 'scratchpad')";
+      #];
       blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
       clear-shadow = true;
     '';

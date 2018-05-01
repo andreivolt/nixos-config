@@ -159,11 +159,6 @@ in
 
     units
 
-    copyq
-    xclip
-    xsel
-
-
     xurls
     surfraw
   ] ++
@@ -193,8 +188,8 @@ in
     xdpyinfo
     evtest
     xkbevd
-    xbindkeys
     xcape
+    xbindkeys
     xchainkeys
     gnome3.zenity
     xdg_utils
@@ -210,7 +205,6 @@ in
   [
     t
     tdesktop
-    weechat
     pidgin
   ] ++
   [
@@ -411,7 +405,6 @@ in
     fzf
     grc
     highlight
-    lnav
     multitail
     pythonPackages.pygments
     rlwrap

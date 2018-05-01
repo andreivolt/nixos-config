@@ -43,23 +43,27 @@
       R               = "ramda";
       bitcoin         = "bitcoin -datadir ${xdg.dataHome}/bitcoin/bitcoin.conf";
       browser-history = "qutebrowser-history";
-      e               = "${pkgs.emacs}/bin/emacsclient -s scratchpad --no-wait";
       fzf             = "${pkgs.fzf}/bin/fzf --color bw";
-      gc              = "${pkgs.gitAndTools.hub}/bin/hub clone";
-      git             = "${pkgs.gitAndTools.hub}/bin/hub";
-      gr              = "cd $(${pkgs.git}/bin/git root)";
       grep            = "grep --color=auto";
       j               = "jobs -d | paste - -";
-      l               = "ls";
-      la              = "ls -a";
-      ls              = "ls --group-directories-first --classify --dereference-command-line -v";
       mkdir           = "mkdir -p";
       rg              = "${pkgs.ripgrep}/bin/rg --smart-case --colors match:bg:yellow --colors match:fg:black";
       tree            = "${pkgs.tree}/bin/tree -F --dirsfirst";
+      mitmproxy       = "mitmproxy --conf ${xdg.configHome}/mitmproxy/config.yaml";
+    } // {
+      e               = "${pkgs.emacs}/bin/emacsclient -s scratchpad --no-wait";
       vi              = "${pkgs.neovim}/bin/nvim";
+    } // {
+      gc              = "${pkgs.gitAndTools.hub}/bin/hub clone";
+      git             = "${pkgs.gitAndTools.hub}/bin/hub";
+      gr              = "cd $(${pkgs.git}/bin/git root)";
+    } // {
       vpnoff          = "sudo systemctl stop openvpn-us";
       vpnon           = "sudo systemctl start openvpn-us";
-      mitmproxy       = "mitmproxy --conf ${xdg.configHome}/mitmproxy/config.yaml";
+    } // {
+      l               = "ls";
+      la              = "ls -a";
+      ls              = "ls --group-directories-first --classify --dereference-command-line -v";
     } // {
       gdax            = "webapp https://www.gdax.com/trade/BTC-USD";
       pandora         = "webapp https://www.pandora.com/my-music";

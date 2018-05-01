@@ -17,6 +17,9 @@ in {
 
   systemd.user.services.mailEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "mail"; };
 
+  home-manager.users.avo.home.sessionVariables
+    .NOTMUCH_CONFIG = with config.home-manager.users.avo.xdg; "${configHome}/notmuch/config";
+
   home-manager.users.avo.xdg.configFile = {
     "offlineimap/config".text = lib.generators.toINI {} {
       general = {
@@ -25,6 +28,7 @@ in {
         maxconnections = 10;
         autorefresh = "0.5";
         quick = 10;
+        metadata = "${config.home-manager.users.avo.xdg.cacheHome}/offlineimap";
       };
 
       "Account avolt.net" = {
