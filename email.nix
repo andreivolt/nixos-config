@@ -3,6 +3,7 @@
 let
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
   makeEmacsDaemon = import ./make-emacs-daemon.nix;
+  credentials = import ./credentials.nix;
 
 in {
   environment.systemPackages = (with pkgs; [
@@ -50,7 +51,7 @@ in {
         folderfilter = "lambda folder: folder == '[Gmail]/All Mail'";
         realdelete = "yes";
         remoteuser = "andrei@avolt.net";
-        remotepass = builtins.getEnv "AVOLT_GOOGLE_PASSWORD";
+        remotepass = credentials.avolt_google_password;
         sslcacertfile = "/etc/ssl/certs/ca-certificates.crt";
         synclabels = "yes";
         keepalive = 60;

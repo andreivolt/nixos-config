@@ -1,3 +1,6 @@
 [submodule "home-manager"]
 	path = home-manager
 	url = https://github.com/rycee/home-manager
+[submodule "overlays/nix-beautify"]
+	path = overlays/nix-beautify
+	url = https://github.com/nixcloud/nix-beautify

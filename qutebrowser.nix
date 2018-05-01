@@ -60,7 +60,7 @@ in {
     "colors.tabs.selected.even.fg".global = tabs.selected.even.fg;
     "colors.tabs.selected.odd.bg".global = tabs.selected.odd.bg;
     "colors.tabs.selected.odd.fg".global = tabs.selected.odd.fg;
-    "colors.webpage.bg".global = theme.white;
+    "colors.webpage.bg".global = "#eee";
     "completion.height".global = "30%";
     "downloads.location.prompt".global = false;
     "downloads.location.remember".global = true;

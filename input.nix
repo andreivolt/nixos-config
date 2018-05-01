@@ -10,10 +10,10 @@ rec {
       accelSpeed = "0.4";
     };
 
-    multitouch = {
-      enable = true;
-      invertScroll = true;
-    }
+    # multitouch = {
+    #   enable = true;
+    #   invertScroll = true;
+    # };
   };
 
   home-manager.users.avo.home = {

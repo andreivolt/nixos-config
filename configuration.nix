@@ -8,6 +8,7 @@ let
 
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
 
+  credentials = import ./credentials.nix;
 
 in {
   imports =
@@ -95,13 +96,11 @@ in {
         gmusic = {
           deviceid = "0123456789abcdef";
           username = "andreivolt";
-          password = builtins.getEnv "ANDREIVOLT_GOOGLE_PASSWORD";
+          password = credentials.andreivolt_google_password;
           bitrate = 320;
         };
       };
     };
-
-    emacs.enable = true;
 
     xserver = {
       enable = true;
@@ -142,37 +141,31 @@ in {
         LESSHISTFILE                = "${xdg.cacheHome}/less/history";
         LIBVA_DRIVER_NAME           = "vdpau";
         PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
-        WWW_HOME                    = "${xdg.cacheHome}/w3m";
         __GL_SHADER_DISK_CACHE_PATH = "${xdg.cacheHome}/nv";
       };
 
       file = {
+        ".tmux.conf".text = import ./tmux.nix { inherit theme; };
+
         ".trc".text =
-          let
-            username       = "andreivolt";
-            consumerKey    = builtins.getEnv "TWITTER_CONSUMER_KEY";
-            consumerSecret = builtins.getEnv "TWITTER_CONSUMER_SECRET";
-            token          = builtins.getEnv "TWITTER_TOKEN";
-            secret         = builtins.getEnv "TWITTER_SECRET";
-          in ''
+          let username    = "andreivolt";
+          in with credentials.twitter; ''
             ---
             configuration:
               default_profile:
               - ${username}
-              - ${consumerKey}
+              - ${consumer_key}
             profiles:
               ${username}:
-                ${consumerKey}:
+                ${consumer_key}:
                   username: ${username}
-                  consumer_key: ${consumerKey}
-                  consumer_secret: ${consumerSecret}
+                  consumer_key: ${consumer_key}
+                  consumer_secret: ${consumer_secret}
                   token: ${token}
                   secret: ${secret}
           '';
 
-        ".tmux.conf".text = import ./tmux.nix { inherit theme; };
-
-        ".gist".text = builtins.getEnv "GIST_TOKEN";
+        ".gist".text = credentials.gist_token;
       };
     };
 
@@ -188,9 +181,9 @@ in {
           prune = 550;
         };
 
-        "mitmproxy/config.yaml".text = ''
-           CA_DIR: ${xdg.configHome}/mitmproxy/certs
-        '';
+        "mitmproxy/config.yaml".text = lib.generators.toYAML {} {
+           CA_DIR = "${xdg.configHome}/mitmproxy/certs";
+        };
 
         "youtube-dl.conf".text = ''
            --output %(title)s.%(ext)s
@@ -231,5 +224,7 @@ in {
 
   systemd.user.services = {
     editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "scratchpad"; };
+    todoEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "todo"; };
+    mainEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "main"; };
   };
 }

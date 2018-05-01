@@ -8,18 +8,22 @@ with services.xserver; {
     {
       output = "DP-2";
       monitorConfig = ''
-      ${withNvidiaTearingFix { position = "+2160+0"; rotation = "left"; }}
+      # ${withNvidiaTearingFix { position = "+2160+0"; rotation = "left"; }}
       Option "Rotate" "left"
+      Option "LeftOf" "DP-4"
       '';
     }
     {
       output = "DP-4";
       primary = true;
-      monitorConfig = withNvidiaTearingFix { position = "+3840+2160"; };
+      # monitorConfig = withNvidiaTearingFix { position = "+3840+2160"; };
     }
     {
       output = "DP-0";
-      monitorConfig = withNvidiaTearingFix { position = "+3840+0"; };
+      # monitorConfig = withNvidiaTearingFix { position = "+3840+0"; };
+      monitorConfig = ''
+      Option "Above" "DP-4"
+      '';
     }
   ];
 };

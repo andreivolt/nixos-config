@@ -7,7 +7,6 @@
    ghc
    hindent
    hlint
-   hoogle
    stack
    stylish-haskell
    #exe = haskell.lib.justStaticExecutables

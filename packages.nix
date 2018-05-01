@@ -53,6 +53,7 @@ in
     alacritty
     termite
 
+    emacs
     neovim
 
     (lowPrio moreutils)
@@ -80,7 +81,6 @@ in
     aspell
     aspellDicts.en
     aspellDicts.fr
-    goldendict
     sdcv
 
 
@@ -300,7 +300,6 @@ in
     google-chrome-dev
     qutebrowser
     torbrowser
-    w3m
   ] ++
   [
     clerk

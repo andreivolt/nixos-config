@@ -1,7 +1,9 @@
-{
+let credentials = import ../credentials.nix;
+in {
   config.default.region = "eu-west-1";
-  credentials.default = {
-    aws_access_key_id     = builtins.getEnv "AWS_ACCESS_KEY_ID";
-    aws_secret_access_key = builtins.getEnv "AWS_SECRET_ACCESS_KEY";
-  };
+  credentials.default =
+    with credentials.aws; {
+      aws_access_key_id     = access_key_id;
+      aws_secret_access_key = secret_access_key;
+    };
 }

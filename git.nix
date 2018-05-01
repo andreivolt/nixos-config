@@ -2,6 +2,7 @@
 
 let
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
+  credentials = import ./credentials.nix;
 
 in {
   environment.systemPackages =
@@ -37,7 +38,7 @@ in {
         pager = "diff-so-fancy | less --tabs=4 -RFX";
       };
 
-      ghi.token = builtins.getEnv "GHI_TOKEN";
+      ghi.token = credentials.ghi_token;
     };
 
     ignores = [
@@ -53,7 +54,7 @@ in {
     "hub".text = lib.generators.toYAML {} {
       "github.com" = {
         user = "andreivolt";
-        oauth_token = builtins.getEnv "GITHUB_OAUTH_TOKEN";
+        oauth_token = credentials.github_oauth_token;
       };
     };
   };

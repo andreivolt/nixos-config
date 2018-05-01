@@ -43,7 +43,9 @@ in {
 
     xresources.properties = {
       "Xft.dpi"       = 180;
-      "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.defaultSize}";
+      "Xcursor.size"  = 40;
+      "Xcursor.theme" = "Adwaita";
+      # "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.defaultSize}";
       } // (with theme; {
         "*.background" = background; "*.foreground" = foreground;
         "*.color0"     = black;      "*.color8"     = gray;
@@ -69,15 +71,17 @@ in {
       enable = true;
       windowManager.command = "~/.local/bin/xmonad";
       initExtra =
-      let wallpaperPath = "~/data/wallpapers/matterhorn.jpg";
+      let wallpaperPath = "~/doc/wallpapers/matterhorn.jpg";
         in with pkgs; ''
-        ${xorg.xsetroot}/bin/xsetroot -xcf ${gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 36
+        ${xorg.xsetroot}/bin/xsetroot -xcf ${gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40
+
+        ${xorg.xrandr}/bin/xrandr --output DP-4 --auto --primary --output DP-0 --auto --above DP-4 --output DP-2 --auto --left-of DP-4 --rotate left
         
         ${setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
         
         while sleep 1; do
-        systemctl --user --state active list-units emacs.service && {
-          (sleep 3 && ${pkgs.emacs}/bin/emacsclient --create-frame --no-wait) &
+        systemctl --user --state active list-units mainEmacsDaemon.service && {
+          (sleep 3 && ${pkgs.emacs}/bin/emacsclient --socket-name main --create-frame --no-wait) &
           break
         }
         done

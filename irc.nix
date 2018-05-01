@@ -2,6 +2,7 @@
 
 let
   makeEmacsDaemon = import ./make-emacs-daemon.nix;
+  credentials = import ./credentials.nix;
 
 in {
   services.bitlbee = {
@@ -11,5 +12,9 @@ in {
 
   environment.systemPackages = with pkgs; [ weechat ];
 
-  systemd.user.services.ircEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "irc"; };
+  systemd.user.services.ircEmacsDaemon =
+    (makeEmacsDaemon { inherit config pkgs; name = "irc"; }) // {
+      environment.FREENODE_PASSWORD =
+        "'${credentials.freenode_password}'";
+    };
 }

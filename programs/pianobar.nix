@@ -1,9 +1,7 @@
-{
-  config = {
-    user = "andrei.volt@gmail.com";
-    password = builtins.getEnv "PANDORA_PASSWORD";
-    audio_quality = "high";
-  };
+let credentials = import ../credentials.nix;
+in {
+  config =
+    with credentials.pandora; {inherit username password;} // {
+      audio_quality = "high";
+    };
 }
-
-

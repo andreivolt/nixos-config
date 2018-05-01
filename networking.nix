@@ -1,6 +1,7 @@
 { config, ... }:
 
-{
+let credentials = import ./credentials.nix;
+in {
   networking = {
     enableIPv6 = false;
     firewall.allowedTCPPorts = [ 80 443 ];
@@ -18,10 +19,7 @@
       us = {
         config = "config ${config.users.users.avo.home}/.config/openvpn/conf";
         autoStart = false;
-        authUserPass = {
-          username = builtins.getEnv "OPENVPN_USERNAME";
-          password = builtins.getEnv "OPENVPN_PASSWORD";
-        };
+        authUserPass = with credentials.openvpn; { inherit username password; };
       };
     };
 
