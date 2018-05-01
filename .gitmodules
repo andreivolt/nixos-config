@@ -4,3 +4,6 @@
 [submodule "overlays/nix-beautify"]
 	path = overlays/nix-beautify
 	url = https://github.com/nixcloud/nix-beautify
+[submodule "packages/nix-beautify"]
+	path = packages/nix-beautify
+	url = https://github.com/nixcloud/nix-beautify

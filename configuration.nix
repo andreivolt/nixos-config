@@ -1,63 +1,45 @@
 { config, lib, pkgs, ... }:
 
-let
-  makeEmacsDaemon = import ./make-emacs-daemon.nix;
+{
+  imports = [
+    ./hardware-configuration.nix
 
-  theme = import ./challenger-deep-theme.nix;
-  proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
+    ./home-manager/nixos
 
-  myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
-
-  credentials = import ./credentials.nix;
-
-in {
-  imports =
-    [
-      ./hardware-configuration.nix
-
-      ./home-manager/nixos
-
-      ./android.nix
-      ./clojure.nix
-      ./docker.nix
-      ./email.nix
-      ./git.nix
-      ./google-drive-ocamlfuse-service.nix
-      ./gui.nix
-      ./haskell.nix
-      ./input.nix
-      ./ipfs.nix
-      ./irc.nix
-      ./libvirt.nix
-      ./networking.nix
-      ./packages.nix
-      ./printing.nix
-      ./shell.nix
-    ];
+    ./android.nix
+    ./clojure.nix
+    ./docker.nix
+    ./email.nix
+    ./git.nix
+    ./google-drive-ocamlfuse-service.nix
+    ./gui.nix
+    ./haskell.nix
+    ./input.nix
+    ./ipfs.nix
+    ./irc.nix
+    ./libvirt.nix
+    ./networking.nix
+    ./printing.nix
+    ./shell.nix
+    ./tmux.nix
+  ];
 
   boot.loader.timeout = 1;
 
   boot.kernel.sysctl = {
     "fs.inotify.max_user_watches" = 100000;
+    "kernel.core_pattern" = "|/run/current-system/sw/bin/false"; # disable core dumps
     "vm.swappiness" = 1;
     "vm.vfs_cache_pressure" = 50;
-    "kernel.core_pattern" = "|/run/current-system/sw/bin/false"; # disable core dumps
   };
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
-  environment.pathsToLink = [ "/share/zsh" ];
 
   time.timeZone = "Europe/Paris";
 
   i18n.defaultLocale = "en_US.UTF-8";
 
-  system = {
-    autoUpgrade = {
-      enable = true;
-      channel = "https://nixos.org/channels/nixos-unstable";
-    };
-  };
+  system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
 
   nix = {
     buildCores = 0;
@@ -72,19 +54,9 @@ in {
 
   hardware = {
     bluetooth.enable = true;
-
-    opengl = {
-      driSupport = true;
-      driSupport32Bit = true;
-    };
-
-    pulseaudio = {
-      enable = true;
-      package = pkgs.pulseaudioFull;
-    };
+    opengl = { driSupport = true; driSupport32Bit = true; };
   };
 
-  hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
 
   services = {
     devmon.enable = true;
@@ -96,7 +68,7 @@ in {
         gmusic = {
           deviceid = "0123456789abcdef";
           username = "andreivolt";
-          password = credentials.andreivolt_google_password;
+          password = (import ./credentials.nix).andreivolt_google_password;
           bitrate = 320;
         };
       };
@@ -114,24 +86,18 @@ in {
   };
 
   users.users.avo = {
-    uid = 1000;
     isNormalUser = true;
     extraGroups = [ "wheel" ];
   };
-
   security.sudo.wheelNeedsPassword = false;
 
-  home-manager.users.avo = let home_directory = builtins.getEnv "HOME"; in rec {
+  home-manager.users.avo = rec {
     services.dropbox.enable = true;
 
     home = {
       sessionVariables = {
-        ALTERNATE_EDITOR            = "${pkgs.neovim}/bin/nvim";
         BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
-        EDITOR                      = ''
-                                         ${pkgs.emacs}/bin/emacsclient \
-                                         --tty \
-                                         --create-frame'';
+        EDITOR                      = "${pkgs.neovim}/bin/nvim";
         PATH                        = lib.concatStringsSep ":" [
                                         "$PATH"
                                         "$HOME/bin"
@@ -139,42 +105,21 @@ in {
                                       ];
         GNUPGHOME                   = "${xdg.configHome}/gnupg";
         LESSHISTFILE                = "${xdg.cacheHome}/less/history";
-        LIBVA_DRIVER_NAME           = "vdpau";
         PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
         __GL_SHADER_DISK_CACHE_PATH = "${xdg.cacheHome}/nv";
       };
 
       file = {
-        ".tmux.conf".text = import ./tmux.nix { inherit theme; };
-
-        ".trc".text =
-          let username    = "andreivolt";
-          in with credentials.twitter; ''
-            ---
-            configuration:
-              default_profile:
-              - ${username}
-              - ${consumer_key}
-            profiles:
-              ${username}:
-                ${consumer_key}:
-                  username: ${username}
-                  consumer_key: ${consumer_key}
-                  consumer_secret: ${consumer_secret}
-                  token: ${token}
-                  secret: ${secret}
-          '';
-
-        ".gist".text = credentials.gist_token;
+        ".gist".text = (import ./credentials.nix).gist_token;
       };
     };
 
     xdg = {
       enable = true;
 
-      configHome = "${home_directory}/.config";
-      dataHome   = "${home_directory}/.local/share";
-      cacheHome  = "${home_directory}/.cache";
+      configHome = "${config.users.users.avo.home}/.config";
+      dataHome   = "${config.users.users.avo.home}/.local/share";
+      cacheHome  = "${config.users.users.avo.home}/.cache";
 
       configFile = {
         "bitcoin/bitcoin.conf".text = lib.generators.toKeyValue {} {
@@ -189,12 +134,15 @@ in {
            --output %(title)s.%(ext)s
         '';
 
-        "qutebrowser/autoconfig.yml".text = lib.generators.toYAML {}
-          (import ./qutebrowser.nix { inherit theme proportionalFont monospaceFont pkgs; });
-
         "user-dirs.dirs".text = lib.generators.toKeyValue {} {
           XDG_DOWNLOAD_DIR = "$HOME/tmp";
           XDG_DESKTOP_DIR  = "$HOME/tmp";
+        };
+
+        "gtk-3.0/settings.ini".text = lib.generators.toINI {} {
+          "Settings" = {
+            gtk-recent-files-limit = 0;
+          };
         };
 
         "mimeapps.list".text = lib.generators.toINI {} {
@@ -209,7 +157,6 @@ in {
              "text/plain"                                                              = "emacs.desktop";
              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"       = "calc.desktop";
              "application/xml"                                                         = "emacs.desktop";
-             "x-scheme-handler/magnet"                                                 = "userapp-transmission-gtk-NWT3FZ.desktop";
            };
          };
       };
@@ -222,9 +169,377 @@ in {
     programs = (import ./programs.nix { inherit config lib; });
   };
 
-  systemd.user.services = {
+  systemd.user.services = let makeEmacsDaemon = import ./make-emacs-daemon.nix; in {
     editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "scratchpad"; };
     todoEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "todo"; };
     mainEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "main"; };
   };
+} // {
+
+  hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
+  environment.variables.LIBVA_DRIVER_NAME = "vdpau";
+} // {
+
+  hardware.pulseaudio = { enable = true; package = pkgs.pulseaudioFull; };
+  environment.systemPackages = with pkgs; [
+    alsaPlugins
+    alsaUtils
+    pamixer
+    ponymix
+ ];
+} // {
+  environment.systemPackages = with pkgs;
+    let
+      neovim = pkgs.neovim.override { vimAlias = true; };
+      moreutils = (pkgs.stdenv.lib.overrideDerivation pkgs.moreutils (attrs: rec { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; })); # prefer GNU parallel
+      zathura = pkgs.zathura.override { useMupdf = true; };
+      parallel = (pkgs.stdenv.lib.overrideDerivation pkgs.parallel (attrs: rec {
+                   nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];
+                 }));
+    in [
+      xorg.xmessage
+      # fovea
+      # incron
+      # mpris-ctl
+      # pfff
+
+      # https:++github.com/noctuid/tdrop
+      # https:++github.com/rkitover/vimpager
+      # https:++github.com/harelba/q
+
+      # polipo
+      gnumake
+
+      bashdb
+      bindfs
+
+      nodePackages.tern
+
+      cloc
+
+      fdupes
+
+      pgcli
+      sqlite
+
+      flac
+      sox
+      optipng
+      # imagemin-cli
+
+      lbdb
+      lsyncd
+
+      mosh
+
+      ngrok
+
+      pythonPackages.ipython
+      pythonPackages.jupyter
+
+      pythonPackages.scapy
+      qrencode
+      racket
+
+      rxvt_unicode-with-plugins
+      urxvt_autocomplete_all_the_things
+      termite
+
+      emacs
+      neovim
+
+      (lowPrio moreutils)
+      renameutils
+      # perl.rename
+
+      shadowsocks-libev
+
+      siege
+
+      taskwarrior
+
+      unison
+
+      x11_ssh_askpass
+
+      xfontsel
+
+      aria
+      wget
+
+      aspell
+      aspellDicts.en
+      aspellDicts.fr
+
+      bitcoin
+
+      colordiff
+      icdiff
+      wdiff
+
+      dateutils
+
+      gcolor2
+
+      gnupg
+      keybase
+      lastpass-cli
+      openssl
+
+      graphviz
+
+      psmisc
+      hy
+
+      inotify-tools
+      watchman
+
+      jre
+
+      lf
+      tree
+      xfce.thunar
+
+      libreoffice-fresh
+
+      ntfs3g
+
+      expect
+
+      lr
+      parallel
+      pv
+      xe
+      nq
+      fd
+      bfs
+
+      et
+      at
+
+      ripgrep
+
+      rsync
+
+      sshuttle
+      tsocks
+
+      steam
+
+      sxiv
+      # pqiv
+
+      # https:++github.com/wee-slack/wee-slack
+      # telegramircd
+
+      tesseract
+
+      units
+
+      xurls
+      surfraw
+    ] ++
+    [
+      ffmpeg
+      gifsicle
+      graphicsmagick
+      imagemagick
+      inkscape
+    ] ++
+    [
+      cabal2nix
+      nix-prefetch-scripts
+      nix-repl
+      nix-zsh-completions
+      nodePackages.node2nix
+      patchelf
+    ] ++
+    [
+      mupdf
+      poppler_utils
+      impressive
+    ] ++
+    (with xorg; [
+      evtest
+      gnome3.zenity
+      wmutils-core
+      xbindkeys
+      xcape
+      xchainkeys
+      xdg_utils
+      xev
+      xkbevd
+      # https:++github.com/waymonad/waymonad
+
+      avo-scripts
+    ]) ++
+    [
+      google-cloud-sdk
+      nixops
+    ] ++
+    [
+      t
+      tdesktop
+      pidgin
+    ] ++
+    [
+      asciinema
+      gist
+      tmate
+      ttyrec
+    ] ++
+    [
+      # haskellPackages.vimus
+      # https://github.com/hoyon/mpv-mpris
+      google-play-music-desktop-player
+      mpc_cli
+      mpv
+      nodePackages.peerflix
+      pianobar
+      playerctl
+      vimpc
+      you-get
+      youtube-dl
+    ] ++
+    [
+      enscript
+      ghostscript
+      pandoc
+      pdftk
+      texlive.combined.scheme-full
+    ] ++
+    [
+      acpi
+      lm_sensors
+      pciutils
+      usbutils
+    ] ++
+    [
+      abduco
+      dvtm
+      tmux
+      reptyr
+    ] ++
+    [
+      httping
+      iftop
+      nethogs
+    ] ++
+    [
+      curl
+      httpie
+      wsta
+    ] ++
+    [
+      dstat
+      htop
+      iotop
+      linuxPackages.perf
+      sysstat
+    ] ++
+    [
+      google-chrome-dev
+      qutebrowser
+      torbrowser
+    ] ++
+    [
+      clerk
+      lastfmsubmitd
+      mpdas
+      mpdris2
+      mpdscribble
+      nodePackages.peerflix
+      pianobar
+      playerctl
+      youtube-dl
+    ] ++
+    [
+      binutils
+      exiftool
+      exiv2
+      file
+      mediainfo
+      # hachoir-subfile
+      # hachoir-urwid
+      # hachoir-grep
+      # hachoir-metadata
+    ] ++
+    [
+      dnsutils
+      geoipWithDatabase
+      mtr
+      nmap
+      traceroute
+      whois
+    ] ++
+    [
+      byzanz
+      ffcast
+      maim
+      slop
+    ] ++
+    [
+      fatrace
+      forkstat
+      lsof
+      ltrace
+      strace
+    ] ++
+    [
+      notify-desktop
+      libnotify
+      ntfy
+    ] ++
+    [
+      # gron
+      # tsvutils
+      csvtotable
+      docx2txt
+      html2text
+      htmlTidy
+      jo
+      jq
+      libxls
+      miller
+      pdfgrep
+      perlPackages.HTMLParser
+      pup
+      pythonPackages.piep
+      recode
+      recutils
+      remarshal
+      textql
+      unoconv
+      x_x
+      xidel
+      xlsx2csv
+      xml2
+      xsv
+      # haskellPackages.haskell-awk
+    ] ++
+    [
+      atool
+      dtrx
+      unzip
+      zip
+    ] ++
+    [
+      mitmproxy
+      netcat
+      ngrep
+      socat
+      stunnel # https:++gist.github.com/jeremiahsnapp/6426298
+      tcpdump
+      tcpflow
+      telnet
+      wireshark
+    ] ++
+    [
+      fzf
+      grc
+      highlight
+      multitail
+      pythonPackages.pygments
+      rlwrap
+    ];
 }

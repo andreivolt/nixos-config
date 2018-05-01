@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 rec {
   services.xserver = {
     layout = "fr";
@@ -15,6 +17,10 @@ rec {
     #   invertScroll = true;
     # };
   };
+
+  environment.systemPackages = with pkgs; [
+    libinput-gestures
+  ];
 
   home-manager.users.avo.home = {
     keyboard = {

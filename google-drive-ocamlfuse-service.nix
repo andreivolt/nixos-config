@@ -8,8 +8,8 @@
     serviceConfig = with pkgs; {
       Type      = "forking";
       Restart   = "always";
-      ExecStart = "${google-drive-ocamlfuse}/bin/google-drive-ocamlfuse ~/gdrive";
-      ExecStop  = "/run/current-system/sw/bin/fusermount -u ~/gdrive";
+      ExecStart = "${google-drive-ocamlfuse}/bin/google-drive-ocamlfuse gdrive";
+      ExecStop  = "/run/current-system/sw/bin/fusermount -u gdrive";
     };
   };
 }

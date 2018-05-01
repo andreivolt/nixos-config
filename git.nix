@@ -7,12 +7,9 @@ let
 in {
   environment.systemPackages =
     with pkgs.gitAndTools; [
-      # haskellPackages.github-backup
       diff-so-fancy
       git
-      git-imerge
       hub
-      tig
     ];
 
   home-manager.users.avo.programs.git = {
@@ -35,7 +32,7 @@ in {
     extraConfig = {
       core = {
         editor = "emacsclient -nw";
-        pager = "diff-so-fancy | less --tabs=4 -RFX";
+        pager = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less --tabs=4 -RFX";
       };
 
       ghi.token = credentials.ghi_token;

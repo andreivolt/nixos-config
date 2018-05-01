@@ -5,16 +5,13 @@
       clientConf = ''
         <Printer default>
           UUID urn:uuid:3c151d9e-3d44-3a04-59f9-5cdfbb513438
-          Info DCPL2520DW
-          MakeModel everywhere
+          MakeModel DCP-L2520DW series
           DeviceURI ipp://192.168.1.15/ipp/print
         </Printer>
       '';
     };
   };
 
-  home-manager.users.avo.home.file
-    .".cups/lpoptions".text = ''
-       Default default
-    '';
+  home-manager.users.avo.home.sessionVariables
+    .PRINTER = "default";
 }

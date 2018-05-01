@@ -1,5 +1,4 @@
 @compositor/x0
-chart-stream
 firebase-tools
 heroku-cli
 ramda-cli

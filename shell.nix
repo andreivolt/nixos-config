@@ -3,6 +3,16 @@
 {
   users.users.avo.shell = pkgs.zsh;
 
+  home-manager.users.avo.home.packages = with pkgs; [
+    # antigen-hs
+    # autojump
+    # https:++github.com/rupa/z
+    # https://github.com/b4b4r07/enhancd
+    # https://github.com/zplug/zplug
+    # zsh-powerlevel9k
+    direnv
+  ];
+
   home-manager.users.avo.home.sessionVariables = with config.home-manager.users.avo.xdg; {
     BLOCK_SIZE  = "\'1";
     COLUMNS     = 100;
@@ -30,6 +40,8 @@
        C-l: clear-screen
        v:   rlwrap-call-editor
     '';
+
+  environment.pathsToLink = [ "/share/zsh" ];
 
   home-manager.users.avo.programs.zsh = with config.home-manager.users.avo; rec {
     enable = true;

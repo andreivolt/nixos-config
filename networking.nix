@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 let credentials = import ./credentials.nix;
 in {
@@ -7,6 +7,12 @@ in {
     firewall.allowedTCPPorts = [ 80 443 ];
     hostName = builtins.getEnv "HOST";
   };
+
+  environment.systemPackages = with pkgs; [
+    iw
+    wirelesstools
+    wpa_supplicant
+  ];
 
   services = {
     avahi = {
@@ -41,9 +47,6 @@ in {
 
   users.users.avo
     .openssh.authorizedKeys.keyFiles = [ ./avo.pub ];
-
-  home-manager.users.avo.home.sessionVariables
-    .SSH_AUTH_SOCK = "${config.home-manager.users.avo.xdg.configHome}/gnupg/S.gpg-agent.ssh";
 
   home-manager.users.avo.programs.ssh = {
     enable = true;
