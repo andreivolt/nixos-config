@@ -22,7 +22,7 @@ in {
     };
 
     openvpn.servers = {
-      us = {
+      default = {
         config = "config ${config.users.users.avo.home}/.config/openvpn/conf";
         autoStart = false;
         authUserPass = with credentials.openvpn; { inherit username password; };
@@ -48,13 +48,14 @@ in {
   users.users.avo
     .openssh.authorizedKeys.keyFiles = [ ./avo.pub ];
 
-  home-manager.users.avo.programs.ssh = {
-    enable = true;
+  home-manager.users.avo
+    .programs.ssh = {
+      enable = true;
 
-    controlMaster  = "auto";
-    controlPath    = "/tmp/ssh-%u-%r@%h:%p";
-    controlPersist = "0";
-  };
+      controlMaster  = "auto";
+      controlPath    = "/tmp/ssh-%u-%r@%h:%p";
+      controlPersist = "0";
+    };
 
   powerManagement.resumeCommands = ''
     rm /tmp/ssh*

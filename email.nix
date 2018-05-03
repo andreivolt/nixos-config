@@ -3,7 +3,6 @@
 let
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
   makeEmacsDaemon = import ./make-emacs-daemon.nix;
-  credentials = import ./credentials.nix;
 
 in {
   environment.systemPackages = (with pkgs; [
@@ -18,13 +17,14 @@ in {
 
   systemd.user.services.mailEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "mail"; };
 
-  home-manager.users.avo.home.sessionVariables
-    .NOTMUCH_CONFIG = with config.home-manager.users.avo.xdg; "${configHome}/notmuch/config";
+  home-manager.users.avo.home
+    .sessionVariables.NOTMUCH_CONFIG = with config.home-manager.users.avo.xdg;
+      "${configHome}/notmuch/config";
 
   home-manager.users.avo.xdg.configFile = {
-    "offlineimap/config".text = lib.generators.toINI {} {
+    "offlineimap/config".text = lib.generators.toINI {} (let account = "avolt.net"; in {
       general = {
-        accounts = "avolt.net";
+        accounts = account;
         fsync = false;
         maxconnections = 10;
         autorefresh = "0.5";
@@ -32,38 +32,35 @@ in {
         metadata = "${config.home-manager.users.avo.xdg.cacheHome}/offlineimap";
       };
 
-      "Account avolt.net" = {
-        localrepository = "avolt.net_local";
+      "Account ${account}" = {
+        localrepository = "${account}_local"; remoterepository = "${account}_remote";
         postsynchook = "${pkgs.notmuch}/bin/notmuch new";
         realdelete = "yes";
-        remoterepository = "avolt.net_remote";
       };
 
-      "Repository avolt.net_local" = {
-        localfolders = "~/mail/avolt.net";
+      "Repository ${account}_local" = {
+        localfolders = "~/mail/${account}";
         type = "Maildir";
         nametrans = "lambda folder: folder == 'INBOX' and 'INBOX' or ('INBOX.' + folder)";
       };
 
-      "Repository avolt.net_remote" = {
+      "Repository ${account}_remote" = {
         type = "Gmail";
+        remoteuser = myEmail; remotepass = (import ./credentials.nix).avolt_google_password;
+        sslcacertfile = "/etc/ssl/certs/ca-certificates.crt";
         nametrans = "lambda folder: {'[Gmail]/All Mail': 'archive',}.get(folder, folder)";
         folderfilter = "lambda folder: folder == '[Gmail]/All Mail'";
         realdelete = "yes";
-        remoteuser = "andrei@avolt.net";
-        remotepass = credentials.avolt_google_password;
-        sslcacertfile = "/etc/ssl/certs/ca-certificates.crt";
         synclabels = "yes";
         keepalive = 60;
         holdconnectionopen = "yes";
       };
-    };
+    });
 
     "notmuch/config".text = lib.generators.toINI {} {
       user = {
         name = myName;
-        primary_email = myEmail;
-        other_email = "andrei.volt@gmail.com";
+        primary_email = myEmail; other_email = "andrei.volt@gmail.com";
       };
 
       new = {
@@ -82,22 +79,24 @@ in {
   };
 
   environment.etc = {
-    "mailcap".text = ''
-      application/doc; plaintextify < %s; copiousoutput
-      application/msword; plaintextify < %s; copiousoutput
-      application/pdf; zathura %s pdf
-      application/vnd.ms-powerpoint; libreoffice %s
-      application/vnd.ms-powerpoint; ppt2txt '%s'; copiousoutput; description=MS PowerPoint presentation;
-      application/vnd.openxmlformats-officedocument.presentationml.presentation; libreoffice %s
-      application/vnd.openxmlformats-officedocument.presentationml.presentation; plaintextifypptx2txt < %s; copiousoutput
-      application/vnd.openxmlformats-officedocument.presentationml.slideshow; libreoffice %s
-      application/vnd.openxmlformats-officedocument.presentationml.slideshow; plaintextify < %s
-      application/vnd.openxmlformats-officedocument.spreadsheetmleet; plaintextify < %s xls
-      application/vnd.openxmlformats-officedocument.wordprocessingml.document; plaintextify < %s; copiousoutput
-      image; sxiv %s
-      text/html; qutebrowser-open;
-      text/html; w3m -o display_link=true -o display_link_number=true -dump -I %{charset} -cols 72 -T text/html %s; nametemplate=%s.html; copiousoutput
-      text/plain; view-attachment %s txt
+    "mailcap".text = let
+      plaintextify = "${pkgs.avo-scripts}/bin/plaintextify < %s; copiousoutput";
+      libreoffice = "${pkgs.libreoffice-fresh}/bin/libreoffice %s";
+    in ''
+      application/doc;
+      application/msword;                                                        ${plaintextify}
+      application/pdf;                                                           ${pkgs.zathura}/bin/zathura %s pdf
+      application/vnd.ms-powerpoint;                                             ${libreoffice}
+      application/vnd.ms-powerpoint;                                             ${plaintextify}
+      application/vnd.openxmlformats-officedocument.presentationml.presentation; ${libreoffice}
+      application/vnd.openxmlformats-officedocument.presentationml.presentation; ${plaintextify}
+      application/vnd.openxmlformats-officedocument.presentationml.slideshow;    ${libreoffice}
+      application/vnd.openxmlformats-officedocument.presentationml.slideshow;    ${plaintextify}
+      application/vnd.openxmlformats-officedocument.spreadsheetmleet;            ${plaintextify}
+      application/vnd.openxmlformats-officedocument.wordprocessingml.document;   ${plaintextify}
+      image;                                                                     ${pkgs.sxiv}/bin/sxiv %s
+      text/html;                                                                 ${pkgs.qutebrowser}/bin/qutebrowser-open;
+      text/html;                                                                 ${pkgs.w3m}/bin/w3m -o display_link=true -o display_link_number=true -dump -I %{charset} -cols 72 -T text/html %s; nametemplate=%s.html; copiousoutput
     '';
 
     "mailrc".text = ''
@@ -105,7 +104,7 @@ in {
     '';
   };
 
-  home-manager.users.avo.programs.zsh.shellAliases = {
-    msmtp = "${config.home-manager.users.avo.xdg.cacheHome}/mstmp/msmtprc";
-  };
+  home-manager.users.avo
+    .programs.zsh.shellAliases.msmtp = with config.home-manager.users.avo;
+      "${xdg.cacheHome}/mstmp/msmtprc";
 }

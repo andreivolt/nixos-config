@@ -8,25 +8,21 @@
     lumo
     # https:++github.com/uswitch/ej
   ];
-
-  home-manager.users.avo.home.sessionVariables =
-    with config.home-manager.users.avo.xdg; {
+} // {
+  home-manager.users.avo
+    .home.sessionVariables = with config.home-manager.users.avo.xdg; {
       BOOT_HOME = "${configHome}/boot"; BOOT_LOCAL_REPO = "${cacheHome}/boot";
     } // {
       BOOT_JVM_OPTIONS = ''
                          -client \
                          -XX:+TieredCompilation \
                          -XX:TieredStopAtLevel=1 \
-                         -Xverify:none
+                         -Xverify:none\
                        '';
     };
 
-  home-manager.users.avo.programs.zsh.shellAliases = {
-    lumo = "lumo --cache ${config.home-manager.users.avo.xdg.cacheHome}/lumo";
-  };
-
-  home-manager.users.avo.xdg.configFile = {
-    "boot/profile.boot".text = ''
+  home-manager.users.avo
+    .xdg.configFile."boot/profile.boot".text = ''
       (deftask cider
         "CIDER profile"
         []
@@ -41,6 +37,9 @@
                    concat '[cider.nrepl/cider-middleware
                            refactor-nrepl.middleware/wrap-refactor])
            identity)))
-    '';
-  };
+      '';
+} // {
+  home-manager.users.avo
+    .programs.zsh.shellAliases.lumo = with config.home-manager.users.avo;
+      "lumo --cache ${xdg.cacheHome}/lumo";
 }

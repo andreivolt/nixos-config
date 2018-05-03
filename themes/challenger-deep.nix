@@ -10,4 +10,8 @@
   magenta      = "#906cff"; lightMagenta = "#c991e1";
   red          = "#ff5458"; lightRed     = "#ff8080";
   yellow       = "#ffb378"; lightYellow  = "#ffe9aa";
+
+  light = {
+    gray = "#e8e8e8";
+  };
 }

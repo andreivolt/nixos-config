@@ -1,6 +1,6 @@
 let
-  theme = import ../challenger-deep-theme.nix;
-  monospaceFont = "Source Code Pro";
+  theme = import ../themes/challenger-deep.nix;
+  monospaceFont = "Source Code Pro for Powerline";
   fontSize = 10;
 
 in {
@@ -39,7 +39,7 @@ in {
       };
     };
     custom_cursor_colors = true;
-    dpi = { x = 96; y = 96; };
+    dpi = { x = 180; y = 180; };
     draw_bold_text_with_bright_colors = true;
     font = {
       size = fontSize;

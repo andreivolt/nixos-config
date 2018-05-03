@@ -11,11 +11,9 @@
 
   users.users.avo.extraGroups = [ "docker" ];
 
-  virtualisation = {
-    docker = {
-      enable = true;
-      extraOptions = "--experimental";
-      autoPrune.enable = true;
-    };
+  virtualisation.docker = {
+    enable = true;
+    extraOptions = "--experimental";
+    autoPrune.enable = true;
   };
 }

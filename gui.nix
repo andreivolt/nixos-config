@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  theme = import ./challenger-deep-theme.nix;
+  theme = import ./themes/challenger-deep.nix;
 
   myFonts = {
     proportional = "Abel";
@@ -9,10 +9,10 @@ let
     defaultSize = 10;
   };
 
-
 in {
   imports = [
     ./redshift.nix
+    ./rofi.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -22,7 +22,6 @@ in {
     wmctrl xdotool xnee
     xrandr-invert-colors
     copyq xclip xsel
-    rofi
     polybar
 
     # materia-theme
@@ -41,7 +40,8 @@ in {
   ];
 
   home-manager.users.avo = {
-    home.sessionVariables.QT_AUTO_SCREEN_SCALE_FACTOR = 1;
+    home.sessionVariables
+      .QT_AUTO_SCREEN_SCALE_FACTOR = 1;
 
     services = {
       unclutter.enable = true;
@@ -57,21 +57,6 @@ in {
 
     xresources.properties =
       let
-        fonts = {
-          "Xft.dpi" = 180;
-          # "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.defaultSize}";
-        };
-
-        cursor = {
-          "Xcursor.size"  = 40;
-          "Xcursor.theme" = "Adwaita";
-        };
-
-        rofi = let fontSize = "28"; in {
-          "rofi.font"  = "${myFonts.proportional} ${fontSize}";
-          "rofi.theme" = "avo";
-        };
-
         colors = with theme; {
           "*.background" = background; "*.foreground" = foreground;
           "*.color0"     = black;      "*.color8"     = gray;
@@ -86,14 +71,21 @@ in {
           "*.colorUL"     = white;
           "*.cursorColor" = foreground;
         };
-      in
-           fonts
-        // cursor
-        // colors
-        // rofi;
 
-    home.file
-      .".local/share/rofi/themes/avo.rasi".text = import ./rofi-theme.nix { inherit theme; };
+        fonts = {
+          "Xft.dpi" = 180;
+          # "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.defaultSize}";
+        };
+
+        cursor = {
+          "Xcursor.size"  = 40;
+          "Xcursor.theme" = "Adwaita";
+        };
+      in
+           colors
+        // fonts
+        // cursor;
+
 
     xsession = {
       enable = true;
@@ -126,10 +118,9 @@ in {
             ${pkgs.qutebrowser}/bin/qutebrowser &
           '';
 
-        in with pkgs; ''
+        in ''
           ${cursor}
           ${monitorLayout}
-          ${wallpaper}
           ${wallpaper}
           ${startupPrograms}
         '';
@@ -137,10 +128,10 @@ in {
 
     xdg.configFile = {
       "xmobar/xmobarrc".text =
-         import ./xmobarrc.nix {
-           inherit theme;
-           font = myFonts.proportional;
-         };
+        import ./xmobarrc.nix {
+          inherit theme;
+          font = myFonts.proportional;
+        };
 
       "xmobar/bin/online-indicator" = {
         text = with theme; ''
@@ -171,7 +162,7 @@ in {
       #blur-background-frame = true;
       #blur-background-fixed = false;
       #blur-background-exclude = [
-      #  "!(class_g = 'scratchpad')";
+      #  "class_g = 'slop'";
       #];
       blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
       clear-shadow = true;

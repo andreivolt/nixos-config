@@ -3,6 +3,7 @@
     user-agent mozilla
     silent
     globoff
+    follow
   '';
 }
 

@@ -7,7 +7,9 @@
     ./home-manager/nixos
 
     ./android.nix
+    ./audio.nix
     ./clojure.nix
+    ./default-apps.nix
     ./docker.nix
     ./email.nix
     ./git.nix
@@ -94,25 +96,21 @@
   home-manager.users.avo = rec {
     services.dropbox.enable = true;
 
-    home = {
-      sessionVariables = {
-        BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
-        EDITOR                      = "${pkgs.neovim}/bin/nvim";
-        PATH                        = lib.concatStringsSep ":" [
-                                        "$PATH"
-                                        "$HOME/bin"
-                                        "${xdg.cacheHome}/npm/packages/bin"
-                                      ];
-        GNUPGHOME                   = "${xdg.configHome}/gnupg";
-        LESSHISTFILE                = "${xdg.cacheHome}/less/history";
-        PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
-        __GL_SHADER_DISK_CACHE_PATH = "${xdg.cacheHome}/nv";
-      };
-
-      file = {
-        ".gist".text = (import ./credentials.nix).gist_token;
-      };
+    home.sessionVariables = {
+      BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
+      EDITOR                      = "${pkgs.neovim}/bin/nvim";
+      PATH                        = lib.concatStringsSep ":" [
+                                      "$PATH"
+                                      "$HOME/bin"
+                                      "${xdg.cacheHome}/npm/packages/bin"
+                                    ];
+      GNUPGHOME                   = "${xdg.configHome}/gnupg";
+      LESSHISTFILE                = "${xdg.cacheHome}/less/history";
+      PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
+      __GL_SHADER_DISK_CACHE_PATH = "${xdg.cacheHome}/nv";
     };
+
+    home.file.".gist".text = (import ./credentials.nix).gist_token;
 
     xdg = {
       enable = true;
@@ -145,20 +143,6 @@
           };
         };
 
-        "mimeapps.list".text = lib.generators.toINI {} {
-           "Default Applications" = {
-             "x-scheme-handler/http"                                                   = "qutebrowser.desktop";
-             "x-scheme-handler/https"                                                  = "qutebrowser.desktop";
-             "x-scheme-handler/ftp"                                                    = "qutebrowser.desktop";
-             "text/html"                                                               = "qutebrowser.desktop";
-             "application/xhtml+xml"                                                   = "qutebrowser.desktop";
-             "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "libreoffice-writer.desktop";
-             "application/pdf"                                                         = "zathura.desktop";
-             "text/plain"                                                              = "emacs.desktop";
-             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"       = "calc.desktop";
-             "application/xml"                                                         = "emacs.desktop";
-           };
-         };
       };
     };
 
@@ -170,32 +154,33 @@
   };
 
   systemd.user.services = let makeEmacsDaemon = import ./make-emacs-daemon.nix; in {
-    editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "scratchpad"; };
+    editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "editor-scratchpad"; };
     todoEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "todo"; };
     mainEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "main"; };
+    browser = {
+      enable = true;
+      wantedBy = [ "graphical.target" ];
+      serviceConfig = {
+        Type      = "forking";
+        Restart   = "always";
+        ExecStart = "${pkgs.qutebrowser}/bin/qutebrowser";
+        ExecStop  = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+        GuessMainPID = true;
+      };
+      environment.QT_PLUGIN_PATH = "/home/avo/.nix-profile/lib/qt4/plugins:/home/avo/.nix-profile/lib/kde4/plugins:/nix/var/nix/profiles/default/lib/qt4/plugins:/nix/var/nix/profiles/default/lib/kde4/plugins:/run/current-system/sw/lib/qt4/plugins:/run/current-system/sw/lib/kde4/plugins:/etc/profiles/per-user/avo/lib/qt4/plugins:/etc/profiles/per-user/avo/lib/kde4/plugins";
+    };
   };
-} // {
 
   hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
   environment.variables.LIBVA_DRIVER_NAME = "vdpau";
-} // {
 
-  hardware.pulseaudio = { enable = true; package = pkgs.pulseaudioFull; };
-  environment.systemPackages = with pkgs; [
-    alsaPlugins
-    alsaUtils
-    pamixer
-    ponymix
- ];
-} // {
   environment.systemPackages = with pkgs;
     let
-      neovim = pkgs.neovim.override { vimAlias = true; };
       moreutils = (pkgs.stdenv.lib.overrideDerivation pkgs.moreutils (attrs: rec { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; })); # prefer GNU parallel
+      neovim = pkgs.neovim.override { vimAlias = true; };
+      nix-beautify = import ./packages/nix-beautify;
+      parallel = (pkgs.stdenv.lib.overrideDerivation pkgs.parallel (attrs: rec { nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];}));
       zathura = pkgs.zathura.override { useMupdf = true; };
-      parallel = (pkgs.stdenv.lib.overrideDerivation pkgs.parallel (attrs: rec {
-                   nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];
-                 }));
     in [
       xorg.xmessage
       # fovea
@@ -203,9 +188,9 @@
       # mpris-ctl
       # pfff
 
-      # https:++github.com/noctuid/tdrop
-      # https:++github.com/rkitover/vimpager
-      # https:++github.com/harelba/q
+      # https://github.com/noctuid/tdrop
+      # https://github.com/rkitover/vimpager
+      # https://github.com/harelba/q
 
       # polipo
       gnumake
@@ -219,15 +204,14 @@
 
       fdupes
 
-      pgcli
-      sqlite
-
       flac
       sox
+
       optipng
       # imagemin-cli
 
       lbdb
+
       lsyncd
 
       mosh
@@ -241,14 +225,7 @@
       qrencode
       racket
 
-      rxvt_unicode-with-plugins
-      urxvt_autocomplete_all_the_things
-      termite
-
-      emacs
-      neovim
-
-      (lowPrio moreutils)
+      moreutils
       renameutils
       # perl.rename
 
@@ -281,9 +258,6 @@
 
       gcolor2
 
-      gnupg
-      keybase
-      lastpass-cli
       openssl
 
       graphviz
@@ -302,9 +276,9 @@
 
       libreoffice-fresh
 
-      ntfs3g
-
       expect
+
+      url-parser
 
       lr
       parallel
@@ -329,7 +303,7 @@
       sxiv
       # pqiv
 
-      # https:++github.com/wee-slack/wee-slack
+      # https://github.com/wee-slack/wee-slack
       # telegramircd
 
       tesseract
@@ -338,6 +312,8 @@
 
       xurls
       surfraw
+
+      avo-scripts
     ] ++
     [
       ffmpeg
@@ -347,12 +323,21 @@
       inkscape
     ] ++
     [
+      gnupg
+      keybase
+      lastpass-cli
+    ] ++
+    [
       cabal2nix
+      nix-beautify
       nix-prefetch-scripts
       nix-repl
       nix-zsh-completions
       nodePackages.node2nix
-      patchelf
+    ] ++
+    [
+      pgcli
+      sqlite
     ] ++
     [
       mupdf
@@ -370,9 +355,15 @@
       xev
       xkbevd
       # https:++github.com/waymonad/waymonad
-
-      avo-scripts
     ]) ++
+    [
+      emacs
+      neovim
+    ] ++
+    [
+      rxvt_unicode-with-plugins
+      urxvt_autocomplete_all_the_things
+    ] ++
     [
       google-cloud-sdk
       nixops
@@ -528,7 +519,7 @@
       netcat
       ngrep
       socat
-      stunnel # https:++gist.github.com/jeremiahsnapp/6426298
+      stunnel # https://gist.github.com/jeremiahsnapp/6426298
       tcpdump
       tcpflow
       telnet
@@ -538,7 +529,6 @@
       fzf
       grc
       highlight
-      multitail
       pythonPackages.pygments
       rlwrap
     ];

@@ -22,10 +22,9 @@ rec {
     libinput-gestures
   ];
 
-  home-manager.users.avo.home = {
-    keyboard = {
+  home-manager.users.avo.home
+    .keyboard = {
       layout = services.xserver.layout;
       options = [ services.xserver.xkbOptions ];
     };
-  };
 }

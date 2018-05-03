@@ -2,7 +2,6 @@
 firebase-tools
 heroku-cli
 ramda-cli
-tern
 ttystudio
 vmd
 xml2json

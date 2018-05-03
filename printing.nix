@@ -12,6 +12,6 @@
     };
   };
 
-  home-manager.users.avo.home.sessionVariables
-    .PRINTER = "default";
+  home-manager.users.avo.home
+    .sessionVariables.PRINTER = "default";
 }
