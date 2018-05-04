@@ -11,19 +11,12 @@ rec {
       naturalScrolling = true;
       accelSpeed = "0.4";
     };
-
-    # multitouch = {
-    #   enable = true;
-    #   invertScroll = true;
-    # };
   };
 
-  environment.systemPackages = with pkgs; [
-    libinput-gestures
-  ];
+  environment.systemPackages = with pkgs; [ libinput-gestures ];
 
-  home-manager.users.avo.home
-    .keyboard = {
+  home-manager.users.avo
+    .home.keyboard = {
       layout = services.xserver.layout;
       options = [ services.xserver.xkbOptions ];
     };

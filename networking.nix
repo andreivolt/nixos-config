@@ -1,18 +1,19 @@
 { config, pkgs, ... }:
 
-let credentials = import ./credentials.nix;
-in {
+{
+  imports = [
+    ./wifi.nix
+    ./vpn.nix
+    ./privoxy.nix
+    ./ssh-server.nix
+    ./ssh-client.nix
+  ];
+
   networking = {
     enableIPv6 = false;
     firewall.allowedTCPPorts = [ 80 443 ];
     hostName = builtins.getEnv "HOST";
   };
-
-  environment.systemPackages = with pkgs; [
-    iw
-    wirelesstools
-    wpa_supplicant
-  ];
 
   services = {
     avahi = {
@@ -20,16 +21,6 @@ in {
       nssmdns = true;
       publish.enable = true;
     };
-
-    openvpn.servers = {
-      default = {
-        config = "config ${config.users.users.avo.home}/.config/openvpn/conf";
-        autoStart = false;
-        authUserPass = with credentials.openvpn; { inherit username password; };
-      };
-    };
-
-    openssh.enable = true;
 
     tor.client.enable = true;
 
@@ -44,20 +35,4 @@ in {
       '';
     };
   };
-
-  users.users.avo
-    .openssh.authorizedKeys.keyFiles = [ ./avo.pub ];
-
-  home-manager.users.avo
-    .programs.ssh = {
-      enable = true;
-
-      controlMaster  = "auto";
-      controlPath    = "/tmp/ssh-%u-%r@%h:%p";
-      controlPersist = "0";
-    };
-
-  powerManagement.resumeCommands = ''
-    rm /tmp/ssh*
-  '';
 }

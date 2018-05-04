@@ -6,7 +6,7 @@
     leiningen
     lighttable
     lumo
-    # https:++github.com/uswitch/ej
+    # https://github.com/uswitch/ej
   ];
 } // {
   home-manager.users.avo

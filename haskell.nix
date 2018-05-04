@@ -8,8 +8,7 @@
     hindent
     hlint
     stack
-    stylish-haskell
-    #exe = haskell.lib.justStaticExecutables
+    (pkgs.haskell.lib.justStaticExecutables stylish-haskell)
   ];
 } // {
   home-manager.users.avo
@@ -87,15 +86,15 @@
       :set prompt "λ "
     '';
 
-  home-manager.users.avo.programs
-    .zsh.shellAliases.ghci = with config.home-manager.users.avo;
+  home-manager.users.avo
+    .programs.zsh.shellAliases.ghci = with config.home-manager.users.avo;
       "${pkgs.ghc}/bin/ghci --script ${xdg.configHome}/ghc/ghci.conf";
 } // {
-  home-manager.users.avo.home
-    .sessionVariables.STACK_ROOT = with config.home-manager.users.avo;
-      "${.xdg.dataHome}/stack";
+  home-manager.users.avo
+    .home.sessionVariables.STACK_ROOT = with config.home-manager.users.avo;
+      "${xdg.dataHome}/stack";
 
-  home-manager.users.avo.programs
-    .zsh.shellAliases.stack =
-       "${pkgs.stack}/bin/stack --nix";
+  home-manager.users.avo
+    .programs.zsh.shellAliases.stack =
+      "${pkgs.stack}/bin/stack --nix";
 }

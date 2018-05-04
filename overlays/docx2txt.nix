@@ -10,7 +10,9 @@ docx2txt = with pkgs; stdenv.mkDerivation rec {
   };
 
   buildInputs = [ perl unzip ];
+
   dontBuild = true;
+
   installPhase =
     ''
       mkdir -p $out/{bin,etc}

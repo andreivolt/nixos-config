@@ -59,7 +59,6 @@
     opengl = { driSupport = true; driSupport32Bit = true; };
   };
 
-
   services = {
     devmon.enable = true;
 
@@ -102,7 +101,6 @@
       PATH                        = lib.concatStringsSep ":" [
                                       "$PATH"
                                       "$HOME/bin"
-                                      "${xdg.cacheHome}/npm/packages/bin"
                                     ];
       GNUPGHOME                   = "${xdg.configHome}/gnupg";
       LESSHISTFILE                = "${xdg.cacheHome}/less/history";
@@ -161,13 +159,18 @@
       enable = true;
       wantedBy = [ "graphical.target" ];
       serviceConfig = {
-        Type      = "forking";
-        Restart   = "always";
-        ExecStart = "${pkgs.qutebrowser}/bin/qutebrowser";
-        ExecStop  = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
-        GuessMainPID = true;
+        Type         = "forking";
+        Restart      = "always";
+        ExecStart    = ''
+                         ${pkgs.bash}/bin/bash -c '\
+                           source ${config.system.build.setEnvironment};\
+                           source ~/.nix-profile/etc/profile.d/hm-session-vars.sh;\
+                           exec ${pkgs.qutebrowser}/bin/qutebrowser;\
+                         '
+                       '';
+        PIDFile      = "/run/qutebrowser.pid";
+        ExecStop     = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
       };
-      environment.QT_PLUGIN_PATH = "/home/avo/.nix-profile/lib/qt4/plugins:/home/avo/.nix-profile/lib/kde4/plugins:/nix/var/nix/profiles/default/lib/qt4/plugins:/nix/var/nix/profiles/default/lib/kde4/plugins:/run/current-system/sw/lib/qt4/plugins:/run/current-system/sw/lib/kde4/plugins:/etc/profiles/per-user/avo/lib/qt4/plugins:/etc/profiles/per-user/avo/lib/kde4/plugins";
     };
   };
 
@@ -301,7 +304,7 @@
       steam
 
       sxiv
-      # pqiv
+      pqiv
 
       # https://github.com/wee-slack/wee-slack
       # telegramircd

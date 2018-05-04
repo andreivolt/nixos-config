@@ -55,8 +55,6 @@
       enableAutosuggestions = true;
 
       shellAliases = {
-        R               = "ramda";
-        browser-history = "${pkgs.avo-scripts}/bin/qutebrowser-history";
         fzf             = "${pkgs.fzf}/bin/fzf --color bw";
         grep            = "grep --color=auto";
         j               = "jobs -d | paste - -";
@@ -64,25 +62,23 @@
         rg              = "${pkgs.ripgrep}/bin/rg --smart-case --colors match:bg:yellow --colors match:fg:black";
         tree            = "${pkgs.tree}/bin/tree -F --dirsfirst";
       } // {
+        R = "ramda";
+      } // {
+        browser-history = "${pkgs.avo-scripts}/bin/qutebrowser-history";
+      } // {
         bitcoin         = "${pkgs.bitcoin}/bin/bitcoin -datadir ${xdg.dataHome}/bitcoin/bitcoin.conf";
+      } // {
         mitmproxy       = "${pkgs.mitmproxy}/bin/mitmproxy --conf ${xdg.configHome}/mitmproxy/config.yaml";
       } // {
         e               = "${pkgs.emacs}/bin/emacsclient -s scratchpad --no-wait";
         vi              = "${pkgs.neovim}/bin/nvim";
       } // {
-        gc              = "${pkgs.gitAndTools.hub}/bin/hub clone";
-        git             = "${pkgs.gitAndTools.hub}/bin/hub";
-        gr              = "cd $(${pkgs.git}/bin/git root)";
-      } // {
-        vpnoff          = "sudo systemctl stop openvpn-default";
-        vpnon           = "sudo systemctl start openvpn-default";
-      } // {
         l               = "ls";
         la              = "ls -a";
         ls              = "ls --group-directories-first --classify --dereference-command-line -v";
       } // {
-        gdax            = "${pkgs.avo-scripts}/bin/webapp https://www.gdax.com/trade/BTC-USD";
-        pandora         = "${pkgs.avo-scripts}/bin/webapp https://www.pandora.com/my-music";
+        gdax            = "${pkgs.avo-scripts}/bin/webapp gdax https://www.gdax.com/trade/BTC-USD";
+        pandora         = "${pkgs.avo-scripts}/bin/webapp pandora https://www.pandora.com/my-music";
       };
 
       history = rec {

@@ -4,7 +4,7 @@ with services.xserver; {
     Option "metamodes" "nvidia-auto-select ${position} {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On, Rotate=${rotation}}"
     Option "AllowIndirectGLXProtocol" "off"
     Option "TripleBuffer" "on"
-    ''; in [
+  ''; in [
     {
       output = "DP-2";
       monitorConfig = ''

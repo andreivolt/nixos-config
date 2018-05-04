@@ -11,7 +11,6 @@ avo-scripts = with pkgs; stdenv.mkDerivation rec {
   };
 
   installPhase = ''
-    ls
     mkdir -p $out/bin
     find . \
         -maxdepth 1 \( -type f -o -type l \) \

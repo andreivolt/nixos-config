@@ -11,8 +11,10 @@ let
 
 in {
   imports = [
+    ./dunst.nix
     ./redshift.nix
     ./rofi.nix
+    ./xmobar.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -43,17 +45,7 @@ in {
     home.sessionVariables
       .QT_AUTO_SCREEN_SCALE_FACTOR = 1;
 
-    services = {
-      unclutter.enable = true;
-
-      dunst = {
-        enable = true;
-        settings = import ./dunstrc.nix {
-          inherit theme;
-          font = myFonts.proportional;
-        };
-      };
-    };
+    services.unclutter.enable = true;
 
     xresources.properties =
       let
@@ -66,6 +58,7 @@ in {
           "*.color4"     = blue;       "*.color12"    = lightBlue;
           "*.color5"     = magenta;    "*.color13"    = lightMagenta;
           "*.color6"     = cyan;       "*.color14"    = lightCyan;
+          "*.color7"     = white;      "*.color15"    = lightWhite;
 
           "*.borderColor" = background;
           "*.colorUL"     = white;
@@ -90,63 +83,45 @@ in {
     xsession = {
       enable = true;
       windowManager.command = "~/.local/bin/xmonad";
-      initExtra =
-        let
-          cursor = ''
-            ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40
-          '';
-
-          monitorLayout = ''
-            ${pkgs.xorg.xrandr}/bin/xrandr \
-              --output DP-4 --auto --primary \
-              --output DP-0 --auto --above DP-4 \
-              --output DP-2 --auto --left-of DP-4 --rotate left
-          '';
-
-          wallpaper = let wallpaperPath = "~/doc/wallpapers/matterhorn.jpg"; in ''
-            ${pkgs.setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
-          '';
-
-          startupPrograms = ''
-            while sleep 1; do
-            systemctl --user --state active list-units mainEmacsDaemon.service && {
-              (sleep 3 && ${pkgs.emacs}/bin/emacsclient --socket-name main --create-frame --no-wait) &
-              break
-            }
-            done
-
-            ${pkgs.qutebrowser}/bin/qutebrowser &
-          '';
-
-        in ''
-          ${cursor}
-          ${monitorLayout}
-          ${wallpaper}
-          ${startupPrograms}
+      initExtra = let
+        cursor = ''
+          ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40
         '';
+
+        monitorLayout = ''
+          ${pkgs.xorg.xrandr}/bin/xrandr \
+            --output DP-4 --auto --primary \
+            --output DP-0 --auto --above DP-4 \
+            --output DP-2 --auto --left-of DP-4 --rotate left
+        '';
+
+        wallpaper = let wallpaperPath = "~/doc/wallpapers/matterhorn.jpg"; in ''
+          ${pkgs.setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
+        '';
+
+        startupPrograms = ''
+          while sleep 1; do
+          systemctl --user --state active list-units mainEmacsDaemon.service && {
+            (sleep 3 && ${pkgs.emacs}/bin/emacsclient --socket-name main --create-frame --no-wait) &
+            break
+          }
+          done
+
+          ${pkgs.qutebrowser}/bin/qutebrowser &
+        '';
+      in ''
+        ${cursor}
+        ${monitorLayout}
+        ${wallpaper}
+        ${startupPrograms}
+      '';
     };
 
-    xdg.configFile = {
-      "xmobar/xmobarrc".text =
-        import ./xmobarrc.nix {
-          inherit theme;
-          font = myFonts.proportional;
-        };
-
-      "xmobar/bin/online-indicator" = {
-        text = with theme; ''
-          color=$(is-online && echo '${green}' || echo '${red}')
-          symbol=$(is-online && echo ﯱ || echo ﯱ)
-
-          echo "<fc=$color>$symbol</fc>"
-        '';
-        executable = true;
-      };
-    };
   };
 
   services.compton = {
     enable = true;
+
     shadow = true;
     shadowOffsets = [ (-15) (-15) ];
     shadowOpacity = "0.7";

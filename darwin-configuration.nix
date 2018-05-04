@@ -2,14 +2,14 @@
 
 {
   environment.systemPackages = with pkgs; [
-    nodejs
     fastlane
+    nodejs
     ruby_2_5
   ];
   
   environment.variables = {
-    "LC_ALL" = "en_us.UTF-8";
-    "LANG" = "en_us.UTF-8";
+    LC_ALL = "en_us.UTF-8";
+    LANG = "en_us.UTF-8";
   };
 
   programs.zsh.enable = true;

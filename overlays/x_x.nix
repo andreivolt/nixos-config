@@ -2,12 +2,14 @@ self: pkgs: rec {
 
 x_x = with pkgs; pkgs.python36Packages.buildPythonPackage {
   name = "x_x";
+
   propagatedBuildInputs = with python36Packages; [
  	  click
     unicodecsv
     six
     xlrd
   ];
+
   src = pkgs.fetchFromGitHub {
     owner = "kristianperkins";
     repo = "x_x";

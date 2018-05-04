@@ -1,5 +1,4 @@
 @compositor/x0
-firebase-tools
 heroku-cli
 ramda-cli
 ttystudio

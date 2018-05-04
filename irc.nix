@@ -1,10 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let
-  makeEmacsDaemon = import ./make-emacs-daemon.nix;
-  credentials = import ./credentials.nix;
-
-in {
+{
   services.bitlbee = {
     enable = true;
     libpurple_plugins = with pkgs; [ telegram-purple ];
@@ -12,9 +8,11 @@ in {
 
   environment.systemPackages = with pkgs; [ weechat ];
 
-  systemd.user.services.ircEmacsDaemon =
+  systemd.user.services.ircEmacsDaemon = let
+    makeEmacsDaemon = import ./make-emacs-daemon.nix;
+    credentials = import ./credentials.nix;
+  in
     (makeEmacsDaemon { inherit config pkgs; name = "irc"; }) // {
-      environment.FREENODE_PASSWORD =
-        "'${credentials.freenode_password}'";
+      environment.FREENODE_PASSWORD = credentials.freenode_password;
     };
 }

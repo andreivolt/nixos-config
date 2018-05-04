@@ -3,11 +3,10 @@
 {
   virtualisation.libvirtd.enable = true;
 
+  environment.variables.LIBVIRT_DEFAULT_URI = "qemu:///system";
+
   users.users.avo.extraGroups = [ "libvirtd" ];
 
-  environment.variables
-    .LIBVIRT_DEFAULT_URI = "qemu:///system";
-} // {
   environment.systemPackages = with pkgs; [ virt-viewer ];
 
   home-manager.users.avo
