@@ -131,7 +131,7 @@ in {
       }
 
       #button selected {
-          text-color: @selected-normal-foreground;
+          text-color:       @selected-normal-foreground;
           background-color: @selected-normal-background;
       }
 

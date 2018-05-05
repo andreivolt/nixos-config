@@ -26,4 +26,4 @@ with services.xserver; {
       '';
     }
   ];
-};
+}

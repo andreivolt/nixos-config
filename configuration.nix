@@ -20,6 +20,7 @@
     ./ipfs.nix
     ./irc.nix
     ./libvirt.nix
+    ./neovim.nix
     ./networking.nix
     ./printing.nix
     ./shell.nix
@@ -176,7 +177,6 @@
   environment.systemPackages = with pkgs;
     let
       moreutils = (pkgs.stdenv.lib.overrideDerivation pkgs.moreutils (attrs: rec { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; })); # prefer GNU parallel
-      neovim = pkgs.neovim.override { vimAlias = true; };
       nix-beautify = import ./packages/nix-beautify;
       parallel = (pkgs.stdenv.lib.overrideDerivation pkgs.parallel (attrs: rec { nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];}));
       zathura = pkgs.zathura.override { useMupdf = true; };
@@ -203,6 +203,8 @@
       nodePackages.tern
 
       cloc
+
+      rxvt_unicode-with-plugins
 
       fdupes
 
@@ -290,6 +292,8 @@
 
       ripgrep
 
+      emacs
+
       rsync
 
       sshuttle
@@ -355,19 +359,6 @@
       # https:++github.com/waymonad/waymonad
     ]) ++
     [
-      emacs
-      aspell
-      aspellDicts.en
-      aspellDicts.fr
-
-
-      neovim
-    ] ++
-    [
-      rxvt_unicode-with-plugins
-      urxvt_autocomplete_all_the_things
-    ] ++
-    [
       google-cloud-sdk
       nixops
     ] ++
@@ -399,7 +390,7 @@
       ghostscript
       pandoc
       pdftk
-      texlive.combined.scheme-full
+      (lowPrio texlive.combined.scheme-full)
     ] ++
     [
       acpi

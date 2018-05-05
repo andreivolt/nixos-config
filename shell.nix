@@ -71,7 +71,7 @@
         mitmproxy       = "${pkgs.mitmproxy}/bin/mitmproxy --conf ${xdg.configHome}/mitmproxy/config.yaml";
       } // {
         e               = "${pkgs.emacs}/bin/emacsclient -s scratchpad --no-wait";
-        vi              = "${pkgs.neovim}/bin/nvim";
+        vi              = "vim";
       } // {
         l               = "ls";
         la              = "ls -a";
