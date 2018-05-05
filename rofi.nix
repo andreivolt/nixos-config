@@ -4,7 +4,6 @@ let
   myFonts = {
     proportional = "Abel";
     monospace = "Source Code Pro";
-    defaultSize = 10;
   };
 
 in {
@@ -50,9 +49,9 @@ in {
       }
 
       #window {
-          border:     0;
-          text-color: @foreground;
-          padding:    20;
+          border:           0;
+          text-color:       @foreground;
+          padding:          20;
           background-color: @background;
       }
 
@@ -75,55 +74,55 @@ in {
           fixed-height: 0;
           border:       2px 0px 0px;
           padding:      2px 0px 0px;
-          text-color: @separatorcolor;
+          text-color:   @separatorcolor;
       }
       #element {
-          border: 0;
+          border:  0;
           padding: 2px 8px;
       }
 
       #element.normal.normal {
-          text-color: @normal-foreground;
+          text-color:       @normal-foreground;
           background-color: @normal-background;
       }
 
       #element.normal.urgent {
-          text-color: @urgent-foreground;
+          text-color:       @urgent-foreground;
           background-color: @urgent-background;
       }
 
       #element.normal.active {
-          text-color: @active-foreground;
+          text-color:       @active-foreground;
           background-color: @active-background;
       }
 
       #element.selected.normal {
-          text-color: @selected-normal-foreground;
+          text-color:       @selected-normal-foreground;
           background-color: @selected-normal-background;
       }
 
       #element.selected.urgent {
-          text-color: @selected-urgent-foreground;
+          text-color:       @selected-urgent-foreground;
           background-color: @selected-urgent-background;
       }
 
       #element.selected.active {
-          text-color: @selected-active-foreground;
+          text-color:       @selected-active-foreground;
           background-color: @selected-active-background;
       }
 
       #element.alternate.normal {
-          text-color: @alternate-normal-foreground;
+          text-color:       @alternate-normal-foreground;
           background-color: @alternate-normal-background;
       }
 
       #element.alternate.urgent {
-          text-color: @alternate-urgent-foreground;
+          text-color:       @alternate-urgent-foreground;
           background-color: @alternate-urgent-background;
       }
 
       #element.alternate.active {
-          text-color: @alternate-active-foreground;
+          text-color:       @alternate-active-foreground;
           background-color: @alternate-active-background;
       }
 
@@ -138,8 +137,8 @@ in {
 
       #inputbar {
           spacing: 0;
-          border: 0;
-          margin: 0 0 10px 0;
+          border:  0;
+          margin:  0 0 10px 0;
       }
 
       #button normal {

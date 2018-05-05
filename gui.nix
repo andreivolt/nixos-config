@@ -9,6 +9,8 @@ let
     defaultSize = 10;
   };
 
+  avo-xmonad = import ./xmonad-config;
+
 in {
   imports = [
     ./dunst.nix
@@ -25,6 +27,7 @@ in {
     xrandr-invert-colors
     copyq xclip xsel
     polybar
+    avo-xmonad
 
     # materia-theme
     # numix-gtk-theme
@@ -82,7 +85,7 @@ in {
 
     xsession = {
       enable = true;
-      windowManager.command = "~/.local/bin/xmonad";
+      windowManager.command = "${avo-xmonad}/bin/xmonad";
       initExtra = let
         cursor = ''
           ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40
@@ -100,12 +103,8 @@ in {
         '';
 
         startupPrograms = ''
-          while sleep 1; do
-          systemctl --user --state active list-units mainEmacsDaemon.service && {
+          until systemctl --user --state active list-units mainEmacsDaemon.service; do sleep 1; done &&
             (sleep 3 && ${pkgs.emacs}/bin/emacsclient --socket-name main --create-frame --no-wait) &
-            break
-          }
-          done
 
           ${pkgs.qutebrowser}/bin/qutebrowser &
         '';

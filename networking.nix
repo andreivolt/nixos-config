@@ -15,6 +15,8 @@
     hostName = builtins.getEnv "HOST";
   };
 
+  # polipo
+
   services = {
     avahi = {
       enable = true;

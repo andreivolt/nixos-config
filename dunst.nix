@@ -95,10 +95,10 @@ in {
           timeout = 0;
         };
 
-        clock = {
-          appname = "clock";
-          format = "%s %b";
-          timeout = "30";
+        whattimeisit = {
+          appname = "whattimeisit";
+          format = "%s";
+          timeout = "1";
         };
 
         todo = {

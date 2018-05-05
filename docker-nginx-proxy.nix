@@ -5,7 +5,6 @@
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
     requires = [ "docker.service" ];
-    postStop = "${docker}/bin/docker rm -f nginx-proxy 2>/dev/null || true";
     script = ''
       ${docker}/bin/docker rm -f nginx-proxy 2>/dev/null || true
 
@@ -24,5 +23,6 @@
         --label com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy=true \
         jwilder/nginx-proxy
     '';
+    preStop = "${docker}/bin/docker rm -f nginx-proxy";
   };
 }

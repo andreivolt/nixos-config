@@ -35,6 +35,12 @@
     "vm.vfs_cache_pressure" = 50;
   };
 
+  fileSystems."xmonad-config" = {
+    device = "/etc/nixos/xmonad-config";
+    fsType = "none"; options = [ "bind" ];
+    mountPoint = "/home/avo/.config/xmonad";
+  };
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   time.timeZone = "Europe/Paris";
@@ -101,6 +107,7 @@
       PATH                        = lib.concatStringsSep ":" [
                                       "$PATH"
                                       "$HOME/bin"
+                                      "$HOME/.local/bin"
                                     ];
       GNUPGHOME                   = "${xdg.configHome}/gnupg";
       LESSHISTFILE                = "${xdg.cacheHome}/less/history";
@@ -126,21 +133,10 @@
            CA_DIR = "${xdg.configHome}/mitmproxy/certs";
         };
 
-        "youtube-dl.conf".text = ''
-           --output %(title)s.%(ext)s
-        '';
-
         "user-dirs.dirs".text = lib.generators.toKeyValue {} {
           XDG_DOWNLOAD_DIR = "$HOME/tmp";
           XDG_DESKTOP_DIR  = "$HOME/tmp";
         };
-
-        "gtk-3.0/settings.ini".text = lib.generators.toINI {} {
-          "Settings" = {
-            gtk-recent-files-limit = 0;
-          };
-        };
-
       };
     };
 
@@ -184,6 +180,12 @@
       nix-beautify = import ./packages/nix-beautify;
       parallel = (pkgs.stdenv.lib.overrideDerivation pkgs.parallel (attrs: rec { nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];}));
       zathura = pkgs.zathura.override { useMupdf = true; };
+      emacs = (pkgs.stdenv.lib.overrideDerivation pkgs.emacs (attrs: rec {
+                                                                buildInputs = attrs.buildInputs ++
+                                                                            [ aspell aspellDicts.en aspellDicts.fr
+                                                                              w3m
+                                                                            ]; }));
+
     in [
       xorg.xmessage
       # fovea
@@ -194,9 +196,6 @@
       # https://github.com/noctuid/tdrop
       # https://github.com/rkitover/vimpager
       # https://github.com/harelba/q
-
-      # polipo
-      gnumake
 
       bashdb
       bindfs
@@ -228,12 +227,6 @@
       qrencode
       racket
 
-      moreutils
-      renameutils
-      # perl.rename
-
-      shadowsocks-libev
-
       siege
 
       taskwarrior
@@ -247,12 +240,11 @@
       aria
       wget
 
-      aspell
-      aspellDicts.en
-      aspellDicts.fr
-
       bitcoin
 
+      moreutils
+      renameutils
+      # perl.rename
       colordiff
       icdiff
       wdiff
@@ -266,10 +258,12 @@
       graphviz
 
       psmisc
+
       hy
 
       inotify-tools
       watchman
+      gnumake
 
       jre
 
@@ -337,6 +331,7 @@
       nix-repl
       nix-zsh-completions
       nodePackages.node2nix
+      stack2nix
     ] ++
     [
       pgcli
@@ -361,6 +356,11 @@
     ]) ++
     [
       emacs
+      aspell
+      aspellDicts.en
+      aspellDicts.fr
+
+
       neovim
     ] ++
     [
@@ -393,7 +393,6 @@
       playerctl
       vimpc
       you-get
-      youtube-dl
     ] ++
     [
       enscript

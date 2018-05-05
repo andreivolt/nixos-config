@@ -7,3 +7,6 @@
 [submodule "packages/nix-beautify"]
 	path = packages/nix-beautify
 	url = https://github.com/nixcloud/nix-beautify
+[submodule "xmonad-config"]
+	path = xmonad-config
+	url = https://github.com/andreivolt/xmonad-config
