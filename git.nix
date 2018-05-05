@@ -56,9 +56,9 @@ in {
 
   home-manager.users.avo
     .xdg.configFile."hub".text = lib.generators.toYAML {} {
-      "github.com" = {
+      "github.com" = [{
         user = "andreivolt";
         oauth_token = credentials.github_oauth_token;
-      };
+      }];
     };
 }
