@@ -15,6 +15,9 @@
     hostName = builtins.getEnv "HOST";
   };
 
+  environment.systemPackages = with pkgs; [
+    hostsblock
+  ];
   # polipo
 
   services = {

@@ -15,8 +15,28 @@ in {
 
   systemd.user.services.mailEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "mail"; };
 
-} // {
   services.offlineimap.enable = true;
+
+  home-manager.users.avo
+    .home.file.".msmtprc".text =
+      let email = (import ./credentials.nix).email;
+      in ''
+        defaults
+        auth            on
+        tls             on
+        tls_trust_file  /etc/ssl/certs/ca-certificates.crt
+
+        ${lib.concatStrings (map (account: ''
+          account  ${if account ? name then account.name else account.email}
+          host     ${if account ? type && account.type == "gmail" then "smtp.gmail.com" else account.host}
+          port     ${if account ? type && account.type == "gmail" then "587" else account.port}
+          user     ${if account ? type && account.type == "gmail" then account.email else account.user}
+          password ${account.password}
+          from     ${if account ? type && account.type == "gmail" then account.email else account.from}
+        '') email.accounts)}
+
+        account default: ${email.default}
+      '';
 
   home-manager.users.avo
     .xdg.configFile."offlineimap/config".text = lib.generators.toINI {} (let account = "avolt.net"; in {
@@ -53,7 +73,7 @@ in {
         holdconnectionopen = "yes";
       };
     });
-} // {
+
   home-manager.users.avo
     .home.sessionVariables.NOTMUCH_CONFIG = with config.home-manager.users.avo.xdg;
       "${configHome}/notmuch/config";
@@ -78,7 +98,7 @@ in {
         synchronize_flags = true;
       };
     };
-} // {
+
   environment.etc."mailcap".text = let
     plaintextify = "${pkgs.avo-scripts}/bin/plaintextify < %s; copiousoutput";
     libreoffice = "${pkgs.libreoffice-fresh}/bin/libreoffice %s";
@@ -98,7 +118,7 @@ in {
     text/html;                                                                 ${pkgs.qutebrowser}/bin/qutebrowser-open;
     text/html;                                                                 ${pkgs.w3m}/bin/w3m -o display_link=true -o display_link_number=true -dump -I %{charset} -cols 72 -T text/html %s; nametemplate=%s.html; copiousoutput
   '';
-} // {
+
   environment.etc."mailrc".text = ''
     set sendmail=${pkgs.msmtp}/bin/msmtp"
   '';

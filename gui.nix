@@ -103,8 +103,8 @@ in {
         '';
 
         startupPrograms = ''
-          until systemctl --user --state active list-units mainEmacsDaemon.service; do sleep 1; done &&
-            (sleep 3 && ${pkgs.emacs}/bin/emacsclient --socket-name main --create-frame --no-wait) &
+          until systemctl --user --state running list-units mainEmacsDaemon.service; do sleep 1; done &&
+            ${pkgs.emacs}/bin/emacsclient --socket-name main --create-frame &
 
           ${pkgs.qutebrowser}/bin/qutebrowser &
         '';

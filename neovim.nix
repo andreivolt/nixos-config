@@ -1,15 +1,108 @@
 { pkgs, ... }:
 
+# let
+#   customPlugins.monochrome-colors = pkgs.vimUtils.buildVimPlugin {
+#     name = "monochrome-colors";
+#     src = pkgs.writeText "monochrome.vim" ''
+#       hi clear
+#       syntax reset
+
+#       let colors_name="monochrome"
+
+#       for i in [
+#         \ 'WarningMsg',
+#         \ 'Boolean',
+#         \ 'Character',
+#         \ 'Comment',
+#         \ 'Conceal',
+#         \ 'Conditional',
+#         \ 'Constant',
+#         \ 'Debug',
+#         \ 'Define',
+#         \ 'Delimiter',
+#         \ 'Directory',
+#         \ 'Error',
+#         \ 'ErrorMsg',
+#         \ 'Exception',
+#         \ 'Float',
+#         \ 'Function',
+#         \ 'Identifier',
+#         \ 'Ignore',
+#         \ 'Include',
+#         \ 'Keyword',
+#         \ 'Label',
+#         \ 'Macro',
+#         \ 'Normal',
+#         \ 'Number',
+#         \ 'Operator',
+#         \ 'PreCondit',
+#         \ 'PreProc',
+#         \ 'Repeat',
+#         \ 'SignColumn',
+#         \ 'Special',
+#         \ 'SpecialChar',
+#         \ 'SpecialComment',
+#         \ 'Statement',
+#         \ 'StorageClass',
+#         \ 'String',
+#         \ 'Structure',
+#         \ 'Tag',
+#         \ 'Todo',
+#         \ 'Type',
+#         \ 'Typedef',
+#         \ 'Underlined',
+#         \ 'VertSplit',
+#         \ 'CursorLine',
+#         \]
+#         exe 'hi ' . i . ' NONE ctermbg=NONE ctermfg=NONE'
+#       endfor
+
+#       hi Comment      cterm=italic    ctermfg=15
+#       hi CursorLine                              ctermbg=8
+#       hi CursorLineNR                 ctermfg=15
+#       hi EndOfBuffer                  ctermfg=8
+#       hi FoldColumn   NONE
+#       hi LineNr                       ctermfg=8
+#       hi MatchParen   cterm=reverse              ctermbg=NONE
+#       hi NonText                      ctermfg=3
+#       hi Normal                       ctermfg=15
+#       hi Search                                  ctermbg=11
+#       hi SpellBad     cterm=underline ctermfg=1  ctermbg=NONE
+#       hi StatusLine                   ctermfg=8  ctermbg=8
+#       hi StatusLineNC                 ctermfg=8  ctermbg=0
+#       hi Visual                                  ctermbg=8
+#     '';
+#   };
+
+# pkgs.fetchFromGitHub {
+#       owner = "ntpeters";
+#       repo = "vim-better-whitespace";
+#       rev = "984c8da518799a6bfb8214e1acdcfd10f5f1eed7";
+#       sha256 = "10l01a8xaivz6n01x6hzfx7gd0igd0wcf9ril0sllqzbq7yx2bbk";
+#     };
+#   };
+
+# in {
+#    users.users.<yourNickname>.packages = [
+#     (pkgs.vim_configurable.customize {
+#       name = "vim";
+#       vimrcConfig.vam.knownPlugins = pkgs.vimPlugins // customPlugins;
+#       vimrcConfig.vam.pluginDictionaries = [
+#         { names = "vim-better-whitespace" ]; } ]
+#     })
+# };
+
 {
   environment.systemPackages = with pkgs; [ (neovim.override {
     vimAlias = true;
     configure = {
       vam = {
-        knownPlugins = pkgs.vimPlugins;
+        knownPlugins = pkgs.vimPlugins; # // customPlugins;
         pluginDictionaries = [
           # { name = "vim-autoclose"; }
           # { name = "vim-better-whitespace"; }
           { name = "commentary"; }
+          # { name = "monochrome-colors"; }
           { name = "easy-align"; }
           { name = "fzfWrapper"; }
           { name = "fzf-vim"; }
