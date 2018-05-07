@@ -1,6 +1,0 @@
-@compositor/x0
-heroku-cli
-ramda-cli
-ttystudio
-vmd
-xml2json

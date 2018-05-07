@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 {
   systemd.user.services.google-drive-ocamlfuse = {
@@ -12,4 +12,9 @@
       ExecStop  = "/run/current-system/sw/bin/fusermount -u gdrive";
     };
   };
+
+  home-manager.users.avo
+    .home.file = builtins.listToAttrs (map (name: lib.nameValuePair (".gdfuse/default/" + name)
+                                                                    { text = builtins.readFile (./private/gdfuse + ("/" + name)); })
+                                           (lib.attrNames (builtins.readDir ./private/gdfuse)));
 }

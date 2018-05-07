@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 
-{
+rec {
   imports = [
     ./hardware-configuration.nix
 
@@ -8,47 +8,54 @@
 
     ./android.nix
     ./audio.nix
-    ./clojure.nix
+    ./bitcoin.nix
+    ./clojure
     ./default-apps.nix
     ./docker.nix
-    ./email.nix
+    ./dropbox.nix
+    ./email
+    ./floobits.nix
+    ./gist.nix
     ./git.nix
-    ./google-drive-ocamlfuse-service.nix
+    ./gnupg.nix
+    ./google-drive-ocamlfuse.service.nix
     ./gui.nix
-    ./haskell.nix
+    ./haskell
     ./input.nix
     ./ipfs.nix
     ./irc.nix
     ./libvirt.nix
+    ./mitmproxy.nix
+    ./mopidy.nix
     ./neovim.nix
+    ./netrc.nix
     ./networking.nix
+    ./nvidia.nix
     ./printing.nix
+    ./qutebrowser.service.nix
+    ./readline.nix
     ./shell.nix
     ./tmux.nix
+    ./xdg.nix
   ];
+
 
   boot.loader.timeout = 1;
 
-  boot.kernel.sysctl = {
-    "fs.inotify.max_user_watches" = 100000;
-    "kernel.core_pattern" = "|/run/current-system/sw/bin/false"; # disable core dumps
-    "vm.swappiness" = 1;
-    "vm.vfs_cache_pressure" = 50;
-  };
-
-  fileSystems."xmonad-config" = {
-    device = "/etc/nixos/xmonad-config";
-    fsType = "none"; options = [ "bind" ];
-    mountPoint = "/home/avo/.config/xmonad";
-  };
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
+
+
+  boot.kernel.sysctl =
+    { "fs.inotify.max_user_watches" = 100000; } //
+    { "vm.swappiness" = 1;
+      "vm.vfs_cache_pressure" = 50; };
+
 
   time.timeZone = "Europe/Paris";
 
   i18n.defaultLocale = "en_US.UTF-8";
 
-  system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
 
   nix = {
     buildCores = 0;
@@ -56,53 +63,46 @@
     optimise.automatic = true;
   };
 
-  nixpkgs = {
-    overlays = import ./overlays.nix;
-    config.allowUnfree = true;
-  };
+  system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
 
-  hardware = {
-    bluetooth.enable = true;
-    opengl = { driSupport = true; driSupport32Bit = true; };
-  };
 
-  services = {
-    devmon.enable = true;
+  hardware.bluetooth.enable = true;
 
-    mopidy = {
-      enable = true;
-      extensionPackages = with pkgs; [ mopidy-gmusic ];
-      configuration = lib.generators.toINI {} {
-        gmusic = {
-          deviceid = "0123456789abcdef";
-          username = "andreivolt";
-          password = (import ./credentials.nix).andreivolt_google_password;
-          bitrate = 320;
-        };
-      };
-    };
 
-    xserver = {
-      enable = true;
-      videoDrivers = [ "nvidia" ];
+  hardware.opengl = { driSupport = true; driSupport32Bit = true; };
 
-      displayManager.auto = { enable = true; user = "avo"; };
-      desktopManager.xterm.enable = false;
-      # displayManager.sddm.enable = true;
-      # windowManager.sway.enable = true;
-    };
-  };
 
   users.users.avo = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
   };
+
   security.sudo.wheelNeedsPassword = false;
 
-  home-manager.users.avo = rec {
-    services.dropbox.enable = true;
 
-    home.sessionVariables = {
+  services.xserver = {
+    enable = true;
+
+    displayManager.auto = { enable = true; user = "avo"; };
+    desktopManager.xterm.enable = false;
+
+    # displayManager.sddm.enable = true;
+    # windowManager.sway.enable = true;
+    # https://github.com/waymonad/waymonad
+  };
+
+
+  nixpkgs.overlays = import ./overlays.nix;
+
+  nixpkgs.config.allowUnfree = true;
+  home-manager.users.avo.nixpkgs.config = nixpkgs.config;
+
+
+  services.devmon.enable = true;
+
+
+  home-manager.users.avo
+    .home.sessionVariables = with config.home-manager.users.avo; {
       BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
       EDITOR                      = "${pkgs.neovim}/bin/nvim";
       PATH                        = lib.concatStringsSep ":" [
@@ -110,211 +110,109 @@
                                       "$HOME/bin"
                                       "$HOME/.local/bin"
                                     ];
-      GNUPGHOME                   = "${xdg.configHome}/gnupg";
       LESSHISTFILE                = "${xdg.cacheHome}/less/history";
       PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
       __GL_SHADER_DISK_CACHE_PATH = "${xdg.cacheHome}/nv";
     };
 
-    home.file.".gist".text = (import ./credentials.nix).gist_token;
-
-    xdg = {
-      enable = true;
-
-      configHome = "${config.users.users.avo.home}/.config";
-      dataHome   = "${config.users.users.avo.home}/.local/share";
-      cacheHome  = "${config.users.users.avo.home}/.cache";
-
-      configFile = {
-        "bitcoin/bitcoin.conf".text = lib.generators.toKeyValue {} {
-          prune = 550;
-        };
-
-        "mitmproxy/config.yaml".text = lib.generators.toYAML {} {
-           CA_DIR = "${xdg.configHome}/mitmproxy/certs";
-        };
-
-        "user-dirs.dirs".text = lib.generators.toKeyValue {} {
-          XDG_DOWNLOAD_DIR = "$HOME/tmp";
-          XDG_DESKTOP_DIR  = "$HOME/tmp";
-        };
-      };
-    };
-
-    nixpkgs.config = {
-      allowUnfree = true;
-    };
-
-    programs = (import ./programs.nix { inherit config lib; });
-  };
 
   systemd.user.services = let makeEmacsDaemon = import ./make-emacs-daemon.nix; in {
     editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "editor-scratchpad"; };
     todoEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "todo"; };
     mainEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "main"; };
-    browser = {
-      enable = true;
-      wantedBy = [ "graphical.target" ];
-      serviceConfig = {
-        Type         = "forking";
-        Restart      = "always";
-        ExecStart    = ''
-                         ${pkgs.bash}/bin/bash -c '\
-                           source ${config.system.build.setEnvironment};\
-                           source ~/.nix-profile/etc/profile.d/hm-session-vars.sh;\
-                           exec ${pkgs.qutebrowser}/bin/qutebrowser;\
-                         '
-                       '';
-        PIDFile      = "/run/qutebrowser.pid";
-        ExecStop     = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
-      };
-    };
   };
 
-  hardware.opengl.extraPackages = with pkgs; [ vaapiVdpau ];
-  environment.variables.LIBVA_DRIVER_NAME = "vdpau";
 
-  environment.systemPackages = with pkgs;
+  home-manager.users.avo
+    .programs = import ./programs.nix { inherit config lib; };
+
+  environment.systemPackages =
     let
-      moreutils = (pkgs.stdenv.lib.overrideDerivation pkgs.moreutils (attrs: rec { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; })); # prefer GNU parallel
+      # prefer GNU parallel
+      moreutilsWithoutParallel = pkgs.stdenv.lib.overrideDerivation
+                                   pkgs.moreutils
+                                   (attrs: { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; });
       nix-beautify = import ./packages/nix-beautify;
-      parallel = (pkgs.stdenv.lib.overrideDerivation pkgs.parallel (attrs: rec { nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];}));
+      parallel = pkgs.stdenv.lib.overrideDerivation
+                   pkgs.parallel
+                   (attrs: { nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];});
       zathura = pkgs.zathura.override { useMupdf = true; };
-      emacs = (pkgs.stdenv.lib.overrideDerivation pkgs.emacs (attrs: rec {
-                                                                buildInputs = attrs.buildInputs ++
-                                                                            [ aspell aspellDicts.en aspellDicts.fr
-                                                                              w3m
-                                                                            ]; }));
+      emacs = pkgs.stdenv.lib.overrideDerivation
+                pkgs.emacs
+                (attrs: { nativeBuildInputs = attrs.nativeBuildInputs ++ (with pkgs; [ aspell aspellDicts.en aspellDicts.fr
+                                                                                       nodePackages.tern
+                                                                                       w3m ]);});
 
-    in [
-      xorg.xmessage
+    in with pkgs; [
       # fovea
-      # incron
-      # mpris-ctl
-      # pfff
-
+      # https://github.com/harelba/q
       # https://github.com/noctuid/tdrop
       # https://github.com/rkitover/vimpager
-      # https://github.com/harelba/q
-
-      bashdb
-      bindfs
-
-      nodePackages.tern
-
-      cloc
-
-      rxvt_unicode-with-plugins
-
-      fdupes
-
-      flac
-      sox
-
-      optipng
       # imagemin-cli
-
-      lbdb
-
-      lsyncd
-
-      mosh
-
-      ngrok
-
-      pythonPackages.ipython
-      pythonPackages.jupyter
-
-      pythonPackages.scapy
-      qrencode
-      racket
-
-      siege
-
-      taskwarrior
-
-      unison
-
-      x11_ssh_askpass
-
-      xfontsel
-
-      aria
-      wget
-
-      bitcoin
-
-      moreutils
-      renameutils
+      # incron
       # perl.rename
-      colordiff
-      icdiff
-      wdiff
-
-      dateutils
-
-      gcolor2
-
-      openssl
-
-      graphviz
-
-      psmisc
-
-      hy
-
-      inotify-tools
-      watchman
-      gnumake
-
-      jre
-
-      lf
-      tree
-      xfce.thunar
-
-      libreoffice-fresh
-
-      expect
-
-      url-parser
-
-      lr
-      parallel
-      pv
-      xe
-      nq
-      fd
-      bfs
-
-      et
-      at
-
-      ripgrep
-
-      emacs
-
-      rsync
-
-      sshuttle
-      tsocks
-
-      steam
-
-      sxiv
-      pqiv
-
-      # https://github.com/wee-slack/wee-slack
+      # pfff
       # telegramircd
 
-      tesseract
+      # heroku-cli
+      # ramda-cli
+      # ttystudio
+      # vmd
+      # x0
+      # xml2json
 
-      units
-
-      xurls
-      surfraw
-
+      aria wget
       avo-scripts
+      bashdb
+      bfs
+      cloc
+      colordiff icdiff wdiff
+      dateutils moreutilsWithoutParallel
+      emacs
+      et at
+      expect
+      fdupes
+      flac
+      gcolor2
+      gnumake
+      graphviz
+      hy racket
+      inotify-tools watchman
+      jre
+      lbdb
+      lf tree xfce.thunar fd
+      libreoffice-fresh
+      lsyncd
+      mosh
+      ngrok
+      nq
+      openssl
+      optipng
+      parallel
+      psmisc
+      pv
+      pythonPackages.ipython pythonPackages.jupyter
+      pythonPackages.scapy
+      qrencode
+      renameutils
+      ripgrep
+      rsync
+      rxvt_unicode-with-plugins
+      siege
+      sox
+      sshuttle
+      steam
+      surfraw
+      sxiv pqiv
+      taskwarrior
+      tesseract
+      tsocks
+      unison
+      units
+      url-parser
+      x11_ssh_askpass
+      xfontsel
+      xurls
     ] ++
     [
       ffmpeg
@@ -324,7 +222,6 @@
       inkscape
     ] ++
     [
-      gnupg
       keybase
       lastpass-cli
     ] ++
@@ -356,7 +253,6 @@
       xdg_utils
       xev
       xkbevd
-      # https:++github.com/waymonad/waymonad
     ]) ++
     [
       google-cloud-sdk
@@ -430,6 +326,7 @@
       clerk
       lastfmsubmitd
       mpdas
+      # mpris-ctl
       mpdris2
       mpdscribble
       nodePackages.peerflix
@@ -451,7 +348,6 @@
     [
       dnsutils
       geoipWithDatabase
-      mtr
       nmap
       traceroute
       whois

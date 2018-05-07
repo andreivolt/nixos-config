@@ -3,20 +3,15 @@
 let
   theme = import ./themes/challenger-deep.nix;
 
-  myFonts = {
-    proportional = "Abel";
-    monospace = "Source Code Pro";
-    defaultSize = 10;
-  };
-
-  avo-xmonad = import ./xmonad-config;
-
 in {
   imports = [
+    ./compton.nix
     ./dunst.nix
+    ./fonts.nix
     ./redshift.nix
     ./rofi.nix
     ./xmobar.nix
+    ./xmonad.nix
   ];
 
   environment.systemPackages = with pkgs; [
@@ -27,7 +22,6 @@ in {
     xrandr-invert-colors
     copyq xclip xsel
     polybar
-    avo-xmonad
 
     # materia-theme
     # numix-gtk-theme
@@ -43,6 +37,7 @@ in {
     arc-theme
     arc-icon-theme
   ];
+
 
   home-manager.users.avo = {
     home.sessionVariables
@@ -68,9 +63,8 @@ in {
           "*.cursorColor" = foreground;
         };
 
-        fonts = {
+        hdpi = {
           "Xft.dpi" = 180;
-          # "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.defaultSize}";
         };
 
         cursor = {
@@ -79,24 +73,17 @@ in {
         };
       in
            colors
-        // fonts
+        // hdpi
         // cursor;
-
 
     xsession = {
       enable = true;
-      windowManager.command = "${avo-xmonad}/bin/xmonad";
       initExtra = let
         cursor = ''
           ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40
         '';
 
-        monitorLayout = ''
-          ${pkgs.xorg.xrandr}/bin/xrandr \
-            --output DP-4 --auto --primary \
-            --output DP-0 --auto --above DP-4 \
-            --output DP-2 --auto --left-of DP-4 --rotate left
-        '';
+        monitorLayout = "${pkgs.avo-scripts}/bin/monitor-layout";
 
         wallpaper = let wallpaperPath = "~/doc/wallpapers/matterhorn.jpg"; in ''
           ${pkgs.setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
@@ -115,57 +102,5 @@ in {
         ${startupPrograms}
       '';
     };
-
-  };
-
-  services.compton = {
-    enable = true;
-
-    shadow = true;
-    shadowOffsets = [ (-15) (-15) ];
-    shadowOpacity = "0.7";
-    # shadowExclude = [
-    #   ''
-    #     !(XMONAD_FLOATING_WINDOW ||
-    #       (_NET_WM_WINDOW_TYPE@[0]:a = "_NET_WM_WINDOW_TYPE_DIALOG") ||
-    #       (_NET_WM_STATE@[0]:a = "_NET_WM_STATE_MODAL"))
-    #   ''
-    # ];
-    extraOptions = ''
-      blur-background = true;
-      #blur-background-frame = true;
-      #blur-background-fixed = false;
-      #blur-background-exclude = [
-      #  "class_g = 'slop'";
-      #];
-      blur-kern = "11,11,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1";
-      clear-shadow = true;
-    '';
-  };
-
-  fonts = {
-    fontconfig = {
-      ultimate.enable = false;
-      defaultFonts = with myFonts; {
-        monospace = [ monospace ];
-        sansSerif = [ proportional ];
-      };
-    };
-    enableCoreFonts = true;
-    fonts = with pkgs; [
-      emacs-all-the-icons-fonts
-      font-awesome-ttf
-      google-fonts
-      hack-font
-      hasklig
-      iosevka-custom
-      material-icons
-      nerdfonts
-      overpass
-      powerline-fonts
-      terminus_font
-      ubuntu_font_family
-      vistafonts
-    ];
   };
 }

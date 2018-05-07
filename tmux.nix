@@ -28,7 +28,9 @@ let theme = import ./themes/challenger-deep.nix; in {
 
       set  -g base-index 1
       set  -g renumber-windows on
+
       set  -g monitor-activity on
+
       set  -g set-titles on
       set  -g set-titles-string "#T"
 

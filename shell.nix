@@ -19,29 +19,15 @@
       BLOCK_SIZE  = "\'1";
       COLUMNS     = 100;
       GREP_COLOR  = "43;30";
-      INPUTRC     = "${configHome}/readline/inputrc";
       PAGER       = ''
-                     less \
-                     --quit-if-one-screen \
-                     --no-init \
-                     --RAW-CONTROL-CHARS'';
+                      less \
+                      --quit-if-one-screen \
+                      --no-init \
+                      --RAW-CONTROL-CHARS'';
       RLWRAP_HOME = "${cacheHome}/rlwrap";
       ZPLUG_HOME  = "${cacheHome}/zplug";
-    };
+    } // (import ./credentials.nix).env;
 
-  home-manager.users.avo
-    .xdg.configFile."readline/inputrc".text = ''
-       set editing-mode vi
-
-       set completion-ignore-case on
-       set show-all-if-ambiguous  on
-
-       set keymap vi
-       C-r: reverse-search-history
-       C-f: forward-search-history
-       C-l: clear-screen
-       v:   rlwrap-call-editor
-    '';
 
   environment.pathsToLink = [ "/share/zsh" ];
 
@@ -57,6 +43,7 @@
       shellAliases = {
         fzf             = "${pkgs.fzf}/bin/fzf --color bw";
         grep            = "grep --color=auto";
+        hgrep           = "fc -ln 0- | grep";
         j               = "jobs -d | paste - -";
         mkdir           = "mkdir -p";
         rg              = "${pkgs.ripgrep}/bin/rg --smart-case --colors match:bg:yellow --colors match:fg:black";
@@ -66,11 +53,7 @@
       } // {
         browser-history = "${pkgs.avo-scripts}/bin/qutebrowser-history";
       } // {
-        bitcoin         = "${pkgs.bitcoin}/bin/bitcoin -datadir ${xdg.dataHome}/bitcoin/bitcoin.conf";
-      } // {
-        mitmproxy       = "${pkgs.mitmproxy}/bin/mitmproxy --conf ${xdg.configHome}/mitmproxy/config.yaml";
-      } // {
-        e               = "${pkgs.emacs}/bin/emacsclient -s scratchpad --no-wait";
+        e               = "${pkgs.emacs}/bin/emacsclient --socket-name scratchpad --no-wait";
         vi              = "vim";
       } // {
         l               = "ls";
@@ -162,7 +145,5 @@
           ${completion}
           ${plugins}
        '';
-
-       profileExtra = "source ${xdg.configHome}/private.env";
     };
 }

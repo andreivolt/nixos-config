@@ -15,8 +15,7 @@ in {
     .programs.git = {
       enable = true;
 
-      userName  = myName;
-      userEmail = myEmail;
+      userName  = myName; userEmail = myEmail;
 
       aliases = {
         am   = "commit --amend -C HEAD";
@@ -29,14 +28,12 @@ in {
         st   = "status --short";
       };
 
-      extraConfig = {
-        core = {
-          editor = "emacsclient -nw";
-          pager = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less --tabs=4 -RFX";
-        };
-
-        ghi.token = credentials.ghi_token;
+      extraConfig.core = {
+        editor = "${pkgs.emacs}/bin/emacsclient --tty";
+        pager  = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less -RFX";
       };
+
+      extraConfig.ghi.token = credentials.ghi_token;
 
       ignores = [
         "*~"
@@ -57,8 +54,8 @@ in {
   home-manager.users.avo
     .xdg.configFile."hub".text = lib.generators.toYAML {} {
       "github.com" = [{
-        user = "andreivolt";
-        oauth_token = credentials.github_oauth_token;
+        user        = credentials.github.user;
+        oauth_token = credentials.github.oauth_token;
       }];
     };
 }

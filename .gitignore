@@ -1,2 +1,2 @@
-.hostname
-hardware-configuration.nix
+/hardware-configuration.nix
+/private
