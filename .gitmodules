@@ -1,12 +1,12 @@
 [submodule "home-manager"]
 	path = home-manager
 	url = https://github.com/rycee/home-manager
-[submodule "overlays/nix-beautify"]
-	path = overlays/nix-beautify
-	url = https://github.com/nixcloud/nix-beautify
 [submodule "packages/nix-beautify"]
 	path = packages/nix-beautify
 	url = https://github.com/nixcloud/nix-beautify
 [submodule "xmonad-config"]
 	path = xmonad-config
 	url = https://github.com/andreivolt/xmonad-config
+[submodule "scripts"]
+	path = scripts
+	url = https://github.com/andreivolt/scripts

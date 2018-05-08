@@ -8,9 +8,9 @@ with services.xserver; {
     {
       output = "DP-2";
       monitorConfig = ''
-      # ${withNvidiaTearingFix { position = "+2160+0"; rotation = "left"; }}
-      Option "Rotate" "left"
-      Option "LeftOf" "DP-4"
+        # ${withNvidiaTearingFix { position = "+2160+0"; rotation = "left"; }}
+        Option "Rotate" "left"
+        Option "LeftOf" "DP-4"
       '';
     }
     {
@@ -22,7 +22,7 @@ with services.xserver; {
       output = "DP-0";
       # monitorConfig = withNvidiaTearingFix { position = "+3840+0"; };
       monitorConfig = ''
-      Option "Above" "DP-4"
+        Option "Above" "DP-4"
       '';
     }
   ];

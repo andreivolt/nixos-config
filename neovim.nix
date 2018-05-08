@@ -320,19 +320,20 @@
         '';
       in ''
         ${settings}
+
         ${BetterWhitespace}
-        ${highlightCurrentLineInNormalMode}
-        ${useVeryMagicPatterns}
+        ${SuperTab}
+        ${bufferNavigation}
         ${clearSearchHighlight}
+        ${colorscheme}
+        ${cursor}
+        ${fzf}
+        ${highlightCurrentLineInNormalMode}
         ${navigateQuickFix}
         ${rebalanceSplitsOnResize}
-        ${cursor}
-        ${SuperTab}
-        ${fzf}
-        ${bufferNavigation}
-        ${colorscheme}
-        ${ui}
         ${returnToLastPositionWhenOpeningFiles}
+        ${ui}
+        ${useVeryMagicPatterns}
       '';
     };
   }) ];

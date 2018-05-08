@@ -34,6 +34,7 @@ rec {
     ./printing.nix
     ./qutebrowser.service.nix
     ./readline.nix
+    ./scripts.nix
     ./shell.nix
     ./tmux.nix
     ./xdg.nix
@@ -232,6 +233,7 @@ rec {
       nix-repl
       nix-zsh-completions
       nodePackages.node2nix
+      nox
       stack2nix
     ] ++
     [

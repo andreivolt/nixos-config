@@ -3,12 +3,7 @@ self: pkgs: rec {
 avo-scripts = with pkgs; stdenv.mkDerivation rec {
   name = "avo-scripts";
 
-  src = fetchFromGitHub {
-    owner = "andreivolt";
-    repo = "scripts";
-    rev = "f27eb10f5a2f34fa6d33e34aeec463669af533e8";
-    sha256 = "0i7gmarv9ikp20h0hghp4ljcjwmbz7r6112c27ha4hg6k284fnj9";
-  };
+  src = ../scripts;
 
   installPhase = ''
     mkdir -p $out/bin
