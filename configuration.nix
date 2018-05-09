@@ -19,6 +19,7 @@ rec {
     ./git.nix
     ./gnupg.nix
     ./google-drive-ocamlfuse.service.nix
+    ./grep.nix
     ./gui.nix
     ./haskell
     ./input.nix
@@ -31,9 +32,11 @@ rec {
     ./netrc.nix
     ./networking.nix
     ./nvidia.nix
+    ./pandora.nix
     ./printing.nix
     ./qutebrowser.service.nix
     ./readline.nix
+    ./ripgrep.nix
     ./scripts.nix
     ./shell.nix
     ./tmux.nix
@@ -196,7 +199,6 @@ rec {
       pythonPackages.scapy
       qrencode
       renameutils
-      ripgrep
       rsync
       rxvt_unicode-with-plugins
       siege

@@ -10,5 +10,5 @@
 
   home-manager.users.avo
     .programs.zsh.shellAliases.ghci = with config.home-manager.users.avo;
-      "${pkgs.ghc}/bin/ghci --script ${xdg.configHome}/ghc/ghci.conf";
+      "${pkgs.ghc}/bin/ghci -ghci-script ${xdg.configHome}/ghc/ghci.conf";
 }

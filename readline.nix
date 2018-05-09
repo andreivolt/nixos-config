@@ -2,8 +2,8 @@
 
 {
   home-manager.users.avo
-    .home.sessionVariables.INPUTRC = with config.home-manager.users.avo.xdg;
-      "${configHome}/readline/inputrc";
+    .home.sessionVariables.INPUTRC = with config.home-manager.users.avo;
+      "${xdg.configHome}/readline/inputrc";
 
   home-manager.users.avo
     .xdg.configFile."readline/inputrc".text = ''

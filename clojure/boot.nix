@@ -5,7 +5,8 @@
 
   home-manager.users.avo
     .home.sessionVariables = with config.home-manager.users.avo.xdg; {
-      BOOT_HOME = "${configHome}/boot"; BOOT_LOCAL_REPO = "${cacheHome}/boot";
+      BOOT_HOME       = "${configHome}/boot";
+      BOOT_LOCAL_REPO = "${cacheHome}/boot";
     } // {
       BOOT_JVM_OPTIONS = ''
                          -client \

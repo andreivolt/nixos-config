@@ -1,9 +1,9 @@
 {
   config = ''
-    user-agent mozilla
-    silent
-    globoff
     follow
+    globoff
+    silent
+    user-agent mozilla
   '';
 }
 

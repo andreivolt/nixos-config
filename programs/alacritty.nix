@@ -51,14 +51,14 @@ in {
     };
     hide_cursor_when_typing = false;
     key_bindings = [
-      { action = "Paste";            key = "V";        mods = "Control|Shift"; }
-      { action = "Copy";             key = "C";        mods = "Control|Shift"; }
-      { action = "Quit";             key = "Q";        mods = "Command"; }
-      { action = "Quit";             key = "W";        mods = "Command"; }
-      { action = "Paste";            key = "Insert";   mods = "Shift"; }
-      { action = "ResetFontSize";    key = "Key0";     mods = "Control"; }
-      { action = "IncreaseFontSize"; key = "Equals";   mods = "Control"; }
-      { action = "DecreaseFontSize"; key = "Subtract"; mods = "Control"; }
+      { action = "Paste";            mods = "Control|Shift"; key = "V";        }
+      { action = "Copy";             mods = "Control|Shift"; key = "C";        }
+      { action = "Quit";             mods = "Command";       key = "Q";        }
+      { action = "Quit";             mods = "Command";       key = "W";        }
+      { action = "Paste";            mods = "Shift";         key = "Insert";   }
+      { action = "ResetFontSize";    mods = "Control";       key = "Key0";     }
+      { action = "IncreaseFontSize"; mods = "Control";       key = "Equals";   }
+      { action = "DecreaseFontSize"; mods = "Control";       key = "Subtract"; }
     ];
     selection = {
       semantic_escape_chars = ";│`|:\"' ()[]{}<>";

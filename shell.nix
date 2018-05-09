@@ -18,7 +18,6 @@
     .home.sessionVariables = with config.home-manager.users.avo.xdg; {
       BLOCK_SIZE  = "\'1";
       COLUMNS     = 100;
-      GREP_COLOR  = "43;30";
       PAGER       = ''
                       less \
                       --quit-if-one-screen \
@@ -42,11 +41,9 @@
 
       shellAliases = {
         fzf             = "${pkgs.fzf}/bin/fzf --color bw";
-        grep            = "grep --color=auto";
         hgrep           = "fc -ln 0- | grep";
         j               = "jobs -d | paste - -";
         mkdir           = "mkdir -p";
-        rg              = "${pkgs.ripgrep}/bin/rg --smart-case --colors match:bg:yellow --colors match:fg:black";
         tree            = "${pkgs.tree}/bin/tree -F --dirsfirst";
       } // {
         R = "ramda";
@@ -61,7 +58,6 @@
         ls              = "ls --group-directories-first --classify --dereference-command-line -v";
       } // {
         gdax            = "${pkgs.avo-scripts}/bin/webapp gdax https://www.gdax.com/trade/BTC-USD";
-        pandora         = "${pkgs.avo-scripts}/bin/webapp pandora https://www.pandora.com/my-music";
       };
 
       history = rec {

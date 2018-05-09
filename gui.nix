@@ -8,6 +8,7 @@ in {
     ./compton.nix
     ./dunst.nix
     ./fonts.nix
+    ./hdpi.nix
     ./redshift.nix
     ./rofi.nix
     ./xmobar.nix
@@ -40,9 +41,6 @@ in {
 
 
   home-manager.users.avo = {
-    home.sessionVariables
-      .QT_AUTO_SCREEN_SCALE_FACTOR = 1;
-
     services.unclutter.enable = true;
 
     xresources.properties =
@@ -63,17 +61,12 @@ in {
           "*.cursorColor" = foreground;
         };
 
-        hdpi = {
-          "Xft.dpi" = 180;
-        };
-
         cursor = {
           "Xcursor.size"  = 40;
           "Xcursor.theme" = "Adwaita";
         };
       in
            colors
-        // hdpi
         // cursor;
 
     xsession = {
