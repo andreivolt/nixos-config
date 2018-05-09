@@ -70,18 +70,16 @@ rec {
   system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
 
 
+  nixpkgs.overlays = import ./overlays.nix;
+
+  nixpkgs.config.allowUnfree = true;
+  home-manager.users.avo.nixpkgs.config = nixpkgs.config;
+
+
   hardware.bluetooth.enable = true;
 
 
   hardware.opengl = { driSupport = true; driSupport32Bit = true; };
-
-
-  users.users.avo = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-  };
-
-  security.sudo.wheelNeedsPassword = false;
 
 
   services.xserver = {
@@ -96,13 +94,15 @@ rec {
   };
 
 
-  nixpkgs.overlays = import ./overlays.nix;
-
-  nixpkgs.config.allowUnfree = true;
-  home-manager.users.avo.nixpkgs.config = nixpkgs.config;
-
-
   services.devmon.enable = true;
+
+
+  users.users.avo = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+  };
+
+  security.sudo.wheelNeedsPassword = false;
 
 
   home-manager.users.avo
@@ -116,7 +116,6 @@ rec {
                                     ];
       LESSHISTFILE                = "${xdg.cacheHome}/less/history";
       PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
-      __GL_SHADER_DISK_CACHE_PATH = "${xdg.cacheHome}/nv";
     };
 
 
@@ -124,6 +123,17 @@ rec {
     editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "editor-scratchpad"; };
     todoEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "todo"; };
     mainEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "main"; };
+    mainEmacsClient =  {
+      enable = true;
+      serviceConfig = {
+        Type      = "forking";
+        Restart   = "always";
+        ExecStart  = ''
+                      ${pkgs.emacs}/bin/emacsclient \
+                        --socket-name main
+                    '';
+      };
+    };
   };
 
 
@@ -358,7 +368,7 @@ rec {
     ] ++
     [
       byzanz
-      ffcast
+      ffcast xorg.xwininfo xrectsel
       maim
       slop
     ] ++

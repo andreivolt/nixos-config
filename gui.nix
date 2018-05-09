@@ -72,27 +72,13 @@ in {
     xsession = {
       enable = true;
       initExtra = let
-        cursor = ''
-          ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40
-        '';
-
-        monitorLayout = "${pkgs.avo-scripts}/bin/monitor-layout";
-
-        wallpaper = let wallpaperPath = "~/doc/wallpapers/matterhorn.jpg"; in ''
-          ${pkgs.setroot}/bin/setroot -z ${wallpaperPath} -z ${wallpaperPath} -z ${wallpaperPath}
-        '';
-
-        startupPrograms = ''
-          until systemctl --user --state running list-units mainEmacsDaemon.service; do sleep 1; done &&
-            ${pkgs.emacs}/bin/emacsclient --socket-name main --create-frame &
-
-          ${pkgs.qutebrowser}/bin/qutebrowser &
-        '';
+        setCursor = "${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40";
+        monitorsLayout = "${pkgs.avo-scripts}/bin/monitors-layout";
+        setWallpaper = "${pkgs.avo-scripts}/bin/set-wallpaper";
       in ''
-        ${cursor}
-        ${monitorLayout}
-        ${wallpaper}
-        ${startupPrograms}
+        ${setCursor}
+        ${monitorsLayout}
+        ${setWallpaper}
       '';
     };
   };
