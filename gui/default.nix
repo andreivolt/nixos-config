@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  theme = import ./themes/challenger-deep.nix;
+  theme = import ../themes/challenger-deep.nix;
 
 in {
   imports = [

@@ -6,7 +6,7 @@ let
     monospace = "Source Code Pro";
     defaultSize = 10;
   };
-  theme = import ./themes/challenger-deep.nix;
+  theme = import ../themes/challenger-deep.nix;
 
 in {
   home-manager.users.avo

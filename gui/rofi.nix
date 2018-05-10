@@ -16,7 +16,7 @@ in {
     };
 
   home-manager.users.avo
-    .home.file.".local/share/rofi/themes/avo.rasi".text = let theme = import ./themes/challenger-deep.nix; in ''
+    .home.file.".local/share/rofi/themes/avo.rasi".text = let theme = import ../themes/challenger-deep.nix; in ''
       * {
           text-color:                  ${theme.foreground};
           background-color:            ${theme.black};

@@ -8,7 +8,7 @@
         monospace = "Source Code Pro";
         defaultSize = 10;
       };
-      theme = import ./themes/challenger-deep.nix;
+      theme = import ../themes/challenger-deep.nix;
       online-indicator = pkgs.writeScript "xmobar-online-indicator" (with theme; ''
         color=$(is-online && echo '${green}' || echo '${red}')
         symbol=$(is-online && echo ﯱ || echo ﯱ)

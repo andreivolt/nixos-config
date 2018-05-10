@@ -20,7 +20,7 @@ rec {
     ./gnupg.nix
     ./google-drive-ocamlfuse.service.nix
     ./grep.nix
-    ./gui.nix
+    ./gui
     ./haskell
     ./input.nix
     ./ipfs.nix
@@ -39,6 +39,7 @@ rec {
     ./ripgrep.nix
     ./scripts.nix
     ./shell.nix
+    ./sxiv.nix
     ./tmux.nix
     ./xdg.nix
   ];
@@ -216,7 +217,7 @@ rec {
       sshuttle
       steam
       surfraw
-      sxiv pqiv
+      pqiv
       taskwarrior
       tesseract
       tsocks

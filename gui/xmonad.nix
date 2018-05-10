@@ -1,5 +1,5 @@
 let
-  avo-xmonad = import ./xmonad-config;
+  avo-xmonad = import ../xmonad-config;
 
 in {
   fileSystems."xmonad-config" = {
