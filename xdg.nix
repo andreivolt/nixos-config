@@ -1,12 +1,12 @@
 { config, lib, ... }:
 
 {
-  home-manager.users.avo.xdg = {
+  home-manager.users.avo.xdg = with config.users; {
     enable = true;
 
-    configHome = "${config.users.users.avo.home}/.config";
-    dataHome   = "${config.users.users.avo.home}/.local/share";
-    cacheHome  = "${config.users.users.avo.home}/.cache";
+    configHome = "${users.avo.home}/.config";
+    dataHome   = "${users.avo.home}/.local/share";
+    cacheHome  = "${users.avo.home}/.cache";
 
     configFile = {
       "user-dirs.dirs".text = lib.generators.toKeyValue {} {

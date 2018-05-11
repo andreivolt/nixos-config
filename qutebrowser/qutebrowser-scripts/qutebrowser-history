@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+sqlite3 ~/.local/share/qutebrowser/history.sqlite \
+  -separator $'\t' \
+  '
+   SELECT
+     title,
+     url,
+     datetime(atime, "unixepoch")
+   FROM History
+  '

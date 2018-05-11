@@ -107,7 +107,7 @@
 
           functions = ''
             diff() { ${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff }
-            open() { setsid xdg-open "$*" &>/dev/null }
+            open() { setsid ${pkgs.xdg_utils}/bin/xdg-open "$*" &>/dev/null }
             +x() { chmod +x "$*" }
           '';
 

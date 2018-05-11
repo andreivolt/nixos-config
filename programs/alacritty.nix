@@ -7,16 +7,9 @@ in {
   config = {
     background_opacity = 0.93;
     colors = {
-      bright = {
-        black = theme.gray;
-        blue = theme.lightBlue;
-        cyan = theme.lightCyan;
-        green = theme.lightGreen;
-        grey = theme.lightGray;
-        magenta = theme.lightMagenta;
-        red = theme.lightRed;
-        white = theme.white;
-        yellow = theme.lightYellow;
+      primary = {
+        background = "#000000";
+        foreground = theme.foreground;
       };
       cursor = {
         cursor = theme.white;
@@ -33,9 +26,16 @@ in {
         white = theme.white;
         yellow = theme.yellow;
       };
-      primary = {
-        background = theme.background;
-        foreground = theme.foreground;
+      bright = {
+        black = theme.gray;
+        blue = theme.lightBlue;
+        cyan = theme.lightCyan;
+        green = theme.lightGreen;
+        grey = theme.lightGray;
+        magenta = theme.lightMagenta;
+        red = theme.lightRed;
+        white = theme.white;
+        yellow = theme.lightYellow;
       };
     };
     custom_cursor_colors = true;

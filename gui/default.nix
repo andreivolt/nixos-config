@@ -40,6 +40,16 @@ in {
   ];
 
 
+  services.xserver = {
+    displayManager.auto = { enable = true; user = "avo"; };
+    desktopManager.xterm.enable = false;
+
+    # displayManager.sddm.enable = true;
+    # windowManager.sway.enable = true;
+    # https://github.com/waymonad/waymonad
+  };
+
+
   home-manager.users.avo = {
     services.unclutter.enable = true;
 
@@ -62,7 +72,7 @@ in {
         };
 
         cursor = {
-          "Xcursor.size"  = 40;
+          "Xcursor.size"  = 60;
           "Xcursor.theme" = "Adwaita";
         };
       in
@@ -72,11 +82,9 @@ in {
     xsession = {
       enable = true;
       initExtra = let
-        setCursor = "${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40";
         monitorsLayout = "${pkgs.avo-scripts}/bin/monitors-layout";
         setWallpaper = "${pkgs.avo-scripts}/bin/set-wallpaper";
       in ''
-        ${setCursor}
         ${monitorsLayout}
         ${setWallpaper}
       '';

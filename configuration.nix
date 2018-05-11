@@ -83,16 +83,7 @@ rec {
   hardware.opengl = { driSupport = true; driSupport32Bit = true; };
 
 
-  services.xserver = {
-    enable = true;
-
-    displayManager.auto = { enable = true; user = "avo"; };
-    desktopManager.xterm.enable = false;
-
-    # displayManager.sddm.enable = true;
-    # windowManager.sway.enable = true;
-    # https://github.com/waymonad/waymonad
-  };
+  services.xserver.enable = true;
 
 
   services.devmon.enable = true;
@@ -108,15 +99,15 @@ rec {
 
   home-manager.users.avo
     .home.sessionVariables = with config.home-manager.users.avo; {
-      BROWSER                     = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
-      EDITOR                      = "${pkgs.neovim}/bin/nvim";
-      PATH                        = lib.concatStringsSep ":" [
-                                      "$PATH"
-                                      "$HOME/bin"
-                                      "$HOME/.local/bin"
-                                    ];
-      LESSHISTFILE                = "${xdg.cacheHome}/less/history";
-      PARALLEL_HOME               = "${xdg.cacheHome}/parallel";
+      BROWSER       = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
+      EDITOR        = "${pkgs.neovim}/bin/nvim";
+      PATH          = lib.concatStringsSep ":" [
+                        "$PATH"
+                        "$HOME/bin"
+                        "$HOME/.local/bin"
+                      ];
+      LESSHISTFILE  = "${xdg.cacheHome}/less/history";
+      PARALLEL_HOME = "${xdg.cacheHome}/parallel";
     };
 
 
@@ -189,13 +180,14 @@ rec {
       fdupes
       flac
       gcolor2
+      ghi
       gnumake
       graphviz
       hy racket
       inotify-tools watchman
       jre
       lbdb
-      lf tree xfce.thunar fd
+      lf tree fd
       libreoffice-fresh
       lsyncd
       mosh
@@ -204,6 +196,7 @@ rec {
       openssl
       optipng
       parallel
+      pqiv
       psmisc
       pv
       pythonPackages.ipython pythonPackages.jupyter
@@ -217,7 +210,6 @@ rec {
       sshuttle
       steam
       surfraw
-      pqiv
       taskwarrior
       tesseract
       tsocks
@@ -225,6 +217,7 @@ rec {
       units
       url-parser
       x11_ssh_askpass
+      xfce.thunar
       xfontsel
       xurls
     ] ++
@@ -287,14 +280,21 @@ rec {
     [
       # haskellPackages.vimus
       # https://github.com/hoyon/mpv-mpris
+      # mpris-ctl
+      clerk
       google-play-music-desktop-player
+      lastfmsubmitd
       mpc_cli
+      mpdas
+      mpdris2
+      mpdscribble
       mpv
       nodePackages.peerflix
       pianobar
       playerctl
       vimpc
       you-get
+      youtube-dl
     ] ++
     [
       enscript
@@ -326,7 +326,6 @@ rec {
       wsta
     ] ++
     [
-      dstat
       htop
       iotop
       linuxPackages.perf
@@ -334,20 +333,8 @@ rec {
     ] ++
     [
       google-chrome-dev
-      qutebrowser
+      qutebrowser qutebrowser-scripts
       torbrowser
-    ] ++
-    [
-      clerk
-      lastfmsubmitd
-      mpdas
-      # mpris-ctl
-      mpdris2
-      mpdscribble
-      nodePackages.peerflix
-      pianobar
-      playerctl
-      youtube-dl
     ] ++
     [
       binutils
@@ -419,7 +406,6 @@ rec {
       zip
     ] ++
     [
-      mitmproxy
       netcat
       ngrep
       socat

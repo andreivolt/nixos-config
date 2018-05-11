@@ -6,7 +6,7 @@
 	url = https://github.com/nixcloud/nix-beautify
 [submodule "xmonad-config"]
 	path = xmonad-config
-	url = https://github.com/andreivolt/xmonad-config
+	url = git@github.com:andreivolt/xmonad-config
 [submodule "scripts"]
 	path = scripts
-	url = https://github.com/andreivolt/scripts
+	url = git@github.com:andreivolt/scripts

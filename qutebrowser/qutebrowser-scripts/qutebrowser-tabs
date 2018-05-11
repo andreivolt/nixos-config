@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+cat ~/.local/share/qutebrowser/sessions/_autosave.yml |
+sed 1,4d |
+remarshal -if yaml -of json |
+jq -r '
+  .tabs[].history[] |
+  select (.active == true) |
+  [.title, .url] |
+  @tsv
+'
