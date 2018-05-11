@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 
-rec {
+{
   imports = [
     ./hardware-configuration.nix
 
@@ -31,6 +31,7 @@ rec {
     ./neovim.nix
     ./netrc.nix
     ./networking.nix
+    ./nixos.nix
     ./nvidia.nix
     ./pandora.nix
     ./printing.nix
@@ -60,21 +61,6 @@ rec {
   time.timeZone = "Europe/Paris";
 
   i18n.defaultLocale = "en_US.UTF-8";
-
-
-  nix = {
-    buildCores = 0;
-    gc.automatic = true;
-    optimise.automatic = true;
-  };
-
-  system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
-
-
-  nixpkgs.overlays = import ./overlays.nix;
-
-  nixpkgs.config.allowUnfree = true;
-  home-manager.users.avo.nixpkgs.config = nixpkgs.config;
 
 
   hardware.bluetooth.enable = true;
@@ -137,7 +123,7 @@ rec {
       # prefer GNU parallel
       moreutilsWithoutParallel = pkgs.stdenv.lib.overrideDerivation
                                    pkgs.moreutils
-                                   (attrs: { postInstall = pkgs.moreutils.postInstall + "; rm $out/bin/parallel"; });
+                                   (attrs: { postInstall = attrs.postInstall + "; rm $out/bin/parallel"; });
       nix-beautify = import ./packages/nix-beautify;
       parallel = pkgs.stdenv.lib.overrideDerivation
                    pkgs.parallel
@@ -156,7 +142,6 @@ rec {
       # https://github.com/rkitover/vimpager
       # imagemin-cli
       # incron
-      # perl.rename
       # pfff
       # telegramircd
 
@@ -184,12 +169,12 @@ rec {
       gnumake
       graphviz
       hy racket
+      impressive
       inotify-tools watchman
       jre
       lbdb
       lf tree fd
       libreoffice-fresh
-      lsyncd
       mosh
       ngrok
       nq
@@ -202,7 +187,6 @@ rec {
       pythonPackages.ipython pythonPackages.jupyter
       pythonPackages.scapy
       qrencode
-      renameutils
       rsync
       rxvt_unicode-with-plugins
       siege
@@ -210,7 +194,6 @@ rec {
       sshuttle
       steam
       surfraw
-      taskwarrior
       tesseract
       tsocks
       unison
@@ -246,11 +229,6 @@ rec {
       pgcli
       sqlite
     ] ++
-    [
-      mupdf
-      poppler_utils
-      impressive
-    ] ++
     (with xorg; [
       evtest
       gnome3.zenity
@@ -273,7 +251,6 @@ rec {
     ] ++
     [
       asciinema
-      gist
       tmate
       ttyrec
     ] ++
@@ -283,11 +260,8 @@ rec {
       # mpris-ctl
       clerk
       google-play-music-desktop-player
-      lastfmsubmitd
       mpc_cli
-      mpdas
       mpdris2
-      mpdscribble
       mpv
       nodePackages.peerflix
       pianobar
@@ -301,6 +275,7 @@ rec {
       ghostscript
       pandoc
       pdftk
+      poppler_utils
       (lowPrio texlive.combined.scheme-full)
     ] ++
     [
@@ -319,11 +294,6 @@ rec {
       httping
       iftop
       nethogs
-    ] ++
-    [
-      curl
-      httpie
-      wsta
     ] ++
     [
       htop
@@ -356,7 +326,7 @@ rec {
     ] ++
     [
       byzanz
-      ffcast xorg.xwininfo xrectsel
+      ffcast xorg.xwininfo
       maim
       slop
     ] ++
@@ -374,6 +344,7 @@ rec {
     ] ++
     [
       # gron
+      # haskellPackages.haskell-awk
       # tsvutils
       csvtotable
       docx2txt
@@ -397,7 +368,6 @@ rec {
       xlsx2csv
       xml2
       xsv
-      # haskellPackages.haskell-awk
     ] ++
     [
       atool
@@ -406,6 +376,8 @@ rec {
       zip
     ] ++
     [
+      curl
+      httpie
       netcat
       ngrep
       socat
@@ -414,6 +386,7 @@ rec {
       tcpflow
       telnet
       wireshark
+      wsta
     ] ++
     [
       fzf

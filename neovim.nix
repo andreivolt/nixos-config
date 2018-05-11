@@ -126,8 +126,6 @@
 
           set showmatch
 
-          set autoread
-
           set clipboard=unnamedplus
 
           set wildmode=longest,list,full
@@ -205,18 +203,6 @@
         '';
 
         cursor = ''
-          silent !echo -ne "\033]112\007"
-          if exists('$TMUX')
-            let &t_SI  = "\<Esc>Ptmux;\<Esc>\<Esc>]12;red\x7\<Esc>\\\<Esc>Ptmux;\<Esc>\<Esc>[5 q\<Esc>\\"
-            let &t_EI  = "\<Esc>Ptmux;\<Esc>\<Esc>]12;black\x7\<Esc>\\\<Esc>Ptmux;\<Esc>\<Esc>[5 q\<Esc>\\"
-            autocmd VimLeave * silent !printf "\033Ptmux;\033\033]12;grey\007\033\\"
-          else
-            autocmd BufEnter *
-            \ let &t_SI  = "\<Esc>]12;red\x7\<Esc>[5 q" |
-            \ let &t_EI  = "\<Esc>]12;black\x7\<Esc>[5 q"
-            autocmd VimLeave * silent !echo -ne "\033]112\007"
-          endif
-
           set guicursor=n-v-c:block-Cursor/lCursor-blinkon0,i-ci:ver25-Cursor/lCursor,r-cr:hor20-Cursor/lCursor
         '';
 
@@ -304,7 +290,7 @@
           endfor
 
           hi Comment      cterm=italic    ctermfg=15
-          hi CursorLine                              ctermbg=8
+          hi CursorLine                              ctermbg=0
           hi CursorLineNR                 ctermfg=15
           hi EndOfBuffer                  ctermfg=8
           hi FoldColumn   NONE

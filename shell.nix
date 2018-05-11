@@ -40,24 +40,23 @@
       enableAutosuggestions = true;
 
       shellAliases = {
-        fzf             = "${pkgs.fzf}/bin/fzf --color bw";
-        hgrep           = "fc -ln 0- | grep";
-        j               = "jobs -d | paste - -";
-        mkdir           = "mkdir -p";
-        tree            = "${pkgs.tree}/bin/tree -F --dirsfirst";
+        hgrep = "fc -ln 0- | grep";
+        j     = "jobs -d | paste - -";
+        mkdir = "mkdir -p";
+        tree  = "${pkgs.tree}/bin/tree -F --dirsfirst";
       } // {
         R = "ramda";
       } // {
         browser-history = "${pkgs.avo-scripts}/bin/qutebrowser-history";
       } // {
-        e               = "${pkgs.emacs}/bin/emacsclient --socket-name scratchpad --no-wait";
-        vi              = "vim";
+        e  = "${pkgs.emacs}/bin/emacsclient --socket-name scratchpad --no-wait";
+        vi = "vim";
       } // {
-        l               = "ls";
-        la              = "ls -a";
-        ls              = "ls --group-directories-first --classify --dereference-command-line -v";
+        l  = "ls";
+        la = "ls -a";
+        ls = "ls --group-directories-first --classify --dereference-command-line -v";
       } // {
-        gdax            = "${pkgs.avo-scripts}/bin/webapp gdax https://www.gdax.com/trade/BTC-USD";
+        gdax = "${pkgs.avo-scripts}/bin/webapp gdax https://www.gdax.com/trade/BTC-USD";
       };
 
       history = rec {
@@ -97,6 +96,7 @@
               N  = "2>/dev/null";
               F  = "| ${pkgs.fzf}/bin/fzf | xargs";
               FE = "| ${pkgs.fzf}/bin/fzf | ${pkgs.parallel}/bin/parallel -X --tty $EDITOR";
+              X  = "| xargs";
             };
 
           autoRlwrap = ''
