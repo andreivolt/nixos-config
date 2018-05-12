@@ -148,33 +148,41 @@
       # xml2json
 
       aria
+      asciinema ttyrec
+      at
       avo-scripts
       bashdb
       bfs
       cloc
-      colordiff icdiff wdiff
-      dateutils moreutilsWithoutParallel
+      dateutils
       emacs
-      et at
+      et
       expect
       fdupes
       flac
       gcolor2
       ghi
       gnumake
+      graphicsmagick imagemagick
       graphviz
-      hy racket
+      hy
+      icdiff
       impressive
+      inkscape
       inotify-tools watchman
       jre
+      keybase
+      lastpass-cli
       lbdb
-      lf tree fd
+      lf
       libreoffice-fresh
+      moreutilsWithoutParallel
       mosh
       ngrok
       nq
       openssl
       optipng
+      pgcli
       pqiv
       psmisc
       pv
@@ -182,34 +190,29 @@
       pythonPackages.jupyter
       pythonPackages.scapy
       qrencode
+      racket
       rsync
       rxvt_unicode-with-plugins
       sox
+      sqlite
       sshuttle
       surfraw
       tdesktop
       tesseract
+      tmate
+      tree
       tsocks
       units
       url-parser
-      x11_ssh_askpass
       xfce.thunar
-      xfontsel
       xurls
     ] ++
     [
       byzanz
       ffmpeg
       gifsicle
-      graphicsmagick
-      imagemagick
-      inkscape
       maim
       slop
-    ] ++
-    [
-      keybase
-      lastpass-cli
     ] ++
     [
       cabal2nix
@@ -221,10 +224,6 @@
       nox
       stack2nix
     ] ++
-    [
-      pgcli
-      sqlite
-    ] ++
     (with xorg; [
       evtest
       gnome3.zenity
@@ -232,18 +231,11 @@
       xbindkeys
       xcape
       xchainkeys
-      xdg_utils
       xev
-      xkbevd
     ]) ++
     [
       google-cloud-sdk
       nixops
-    ] ++
-    [
-      asciinema
-      tmate
-      ttyrec
     ] ++
     [
       # haskellPackages.vimus
