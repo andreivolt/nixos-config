@@ -12,8 +12,10 @@
 
 
   home-manager.users.avo
-    .home.file = builtins.listToAttrs (map (name: lib.nameValuePair (".ssh/" + name)
-                                                                    { text = builtins.readFile (./private/ssh-keys +("/" + name)); })
-                                           (lib.attrNames (builtins.readDir ./private/ssh-keys)));
+    .home.file =
+      builtins.listToAttrs
+        (map (name: lib.nameValuePair (".ssh/" + name)
+                                      { text = builtins.readFile (./private/ssh-keys +("/" + name)); })
+             (lib.attrNames (builtins.readDir ./private/ssh-keys)));
 
 }

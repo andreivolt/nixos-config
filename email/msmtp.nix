@@ -8,7 +8,7 @@ in {
   environment.systemPackages = with pkgs; [ msmtp ];
 
   home-manager.users.avo
-    .home.file.".msmtprc".text = ''
+    .xdg.configFile."msmtp/config".text = ''
       defaults
       auth            on
       tls             on
@@ -32,5 +32,5 @@ in {
 
   home-manager.users.avo
     .programs.zsh.shellAliases.msmtp = with config.home-manager.users.avo;
-      "${xdg.cacheHome}/mstmp/msmtprc";
+      "${pkgs.msmtp}/bin/msmtp --file ${xdg.configHome}/mstmp/config";
 }

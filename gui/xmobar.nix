@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  environment.systemPackages = with pkgs.haskellPackages; [ xmobar ];
+
   home-manager.users.avo
     .xdg.configFile."xmobar/xmobarrc".text = let
       myFonts = {

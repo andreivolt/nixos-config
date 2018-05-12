@@ -14,7 +14,9 @@
   };
 
   home-manager.users.avo
-    .home.file = builtins.listToAttrs (map (name: lib.nameValuePair (".gdfuse/default/" + name)
-                                                                    { text = builtins.readFile (./private/gdfuse + ("/" + name)); })
-                                           (lib.attrNames (builtins.readDir ./private/gdfuse)));
+    .home.file =
+      builtins.listToAttrs
+        (map (name: lib.nameValuePair (".gdfuse/default/" + name)
+                                      { text = builtins.readFile (./private/gdfuse + ("/" + name)); })
+             (lib.attrNames (builtins.readDir ./private/gdfuse)));
 }

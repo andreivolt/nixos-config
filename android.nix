@@ -10,7 +10,9 @@
       "${xdg.configHome}/android";
 
   home-manager.users.avo
-    .home.file = builtins.listToAttrs (map (name: lib.nameValuePair (".android/" + name)
-                                                                    { text = builtins.readFile (./private/adb-keys + ("/" + name)); })
-                                           (lib.attrNames (builtins.readDir ./private/adb-keys)));
+    .xdg.configFile =
+      builtins.listToAttrs
+        (map (name: lib.nameValuePair ("android/" + name)
+                                      { text = builtins.readFile (./private/adb-keys + ("/" + name)); })
+             (lib.attrNames (builtins.readDir ./private/adb-keys)));
 }

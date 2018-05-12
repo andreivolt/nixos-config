@@ -7,6 +7,7 @@
 
   users.users.avo.extraGroups = [ "libvirtd" ];
 
+
   environment.systemPackages = with pkgs; [ virt-viewer ];
 
   home-manager.users.avo

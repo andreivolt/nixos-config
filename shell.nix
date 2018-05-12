@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   users.users.avo.shell = pkgs.zsh;
@@ -18,11 +18,7 @@
     .home.sessionVariables = with config.home-manager.users.avo.xdg; {
       BLOCK_SIZE  = "\'1";
       COLUMNS     = 100;
-      PAGER       = ''
-                      less \
-                      --quit-if-one-screen \
-                      --no-init \
-                      --RAW-CONTROL-CHARS'';
+      PAGER       = "less";
       RLWRAP_HOME = "${cacheHome}/rlwrap";
       ZPLUG_HOME  = "${cacheHome}/zplug";
     } // (import ./credentials.nix).env;
@@ -44,8 +40,6 @@
         j     = "jobs -d | paste - -";
         mkdir = "mkdir -p";
         tree  = "${pkgs.tree}/bin/tree -F --dirsfirst";
-      } // {
-        R = "ramda";
       } // {
         browser-history = "${pkgs.avo-scripts}/bin/qutebrowser-history";
       } // {
@@ -124,6 +118,7 @@
 
           plugins = ''
             source ${xdg.cacheHome}/zplug/init.zsh
+
             zplug 'willghatch/zsh-hooks'; zplug load
             zplug 'andreivolt/zsh-prompt-lean'
             zplug 'andreivolt/zsh-vim-mode', defer:2; zplug load
@@ -131,15 +126,16 @@
             zplug 'hlissner/zsh-autopair', defer:2
             zplug 'chisui/zsh-nix-shell'
             zplug 'chrismwendt/auto-nix-shell'
+
             zplug load
           '';
-        in ''
-          ${cdAliases}
-          ${globalAliasesStr}
-          ${autoRlwrap}
-          ${functions}
-          ${completion}
-          ${plugins}
-       '';
+        in lib.concatStringsSep "\n" [
+          cdAliases
+          globalAliasesStr
+          autoRlwrap
+          functions
+          completion
+          plugins
+       ];
     };
 }

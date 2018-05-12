@@ -8,11 +8,9 @@
     dataHome   = "${users.avo.home}/.local/share";
     cacheHome  = "${users.avo.home}/.cache";
 
-    configFile = {
-      "user-dirs.dirs".text = lib.generators.toKeyValue {} {
-        XDG_DOWNLOAD_DIR = "$HOME/tmp";
-        XDG_DESKTOP_DIR  = "$HOME/tmp";
-      };
+    configFile."user-dirs.dirs".text = lib.generators.toKeyValue {} {
+      XDG_DOWNLOAD_DIR = "$HOME/tmp";
+      XDG_DESKTOP_DIR  = "$HOME/tmp";
     };
   };
 }

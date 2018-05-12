@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
   theme = import ../themes/challenger-deep.nix;
@@ -16,13 +16,13 @@ in {
   ];
 
   environment.systemPackages = with pkgs; [
+    copyq xclip xsel
     find-cursor
+    polybar
     setroot
     seturgent
     wmctrl xdotool xnee
     xrandr-invert-colors
-    copyq xclip xsel
-    polybar
 
     # materia-theme
     # numix-gtk-theme
@@ -84,10 +84,10 @@ in {
       initExtra = let
         monitorsLayout = "${pkgs.avo-scripts}/bin/monitors-layout";
         setWallpaper = "${pkgs.avo-scripts}/bin/set-wallpaper";
-      in ''
-        ${monitorsLayout}
-        ${setWallpaper}
-      '';
+      in lib.concatStringsSep "\n" [
+        monitorsLayout
+        setWallpaper
+      ];
     };
   };
 }

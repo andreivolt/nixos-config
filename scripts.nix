@@ -6,6 +6,6 @@
   fileSystems."scripts" = {
     device = "/etc/nixos/scripts";
     fsType = "none"; options = [ "bind" ];
-    mountPoint = "/home/avo/bin";
+    mountPoint = "/home/avo/.local/bin";
   };
 }

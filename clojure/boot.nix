@@ -13,7 +13,7 @@
                          -XX:+TieredCompilation \
                          -XX:TieredStopAtLevel=1 \
                          -Xverify:none\
-                       '';
+                         '';
     };
 
   home-manager.users.avo

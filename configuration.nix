@@ -25,6 +25,7 @@
     ./input.nix
     ./ipfs.nix
     ./irc.nix
+    ./less.nix
     ./libvirt.nix
     ./mitmproxy.nix
     ./mopidy.nix
@@ -34,6 +35,7 @@
     ./nixos.nix
     ./nvidia.nix
     ./pandora.nix
+    ./parallel.nix
     ./printing.nix
     ./qutebrowser.service.nix
     ./readline.nix
@@ -66,7 +68,7 @@
   hardware.bluetooth.enable = true;
 
 
-  hardware.opengl = { driSupport = true; driSupport32Bit = true; };
+  hardware.opengl.driSupport = true;
 
 
   services.xserver.enable = true;
@@ -85,15 +87,9 @@
 
   home-manager.users.avo
     .home.sessionVariables = with config.home-manager.users.avo; {
-      BROWSER       = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
-      EDITOR        = "${pkgs.neovim}/bin/nvim";
-      PATH          = lib.concatStringsSep ":" [
-                        "$PATH"
-                        "$HOME/bin"
-                        "$HOME/.local/bin"
-                      ];
-      LESSHISTFILE  = "${xdg.cacheHome}/less/history";
-      PARALLEL_HOME = "${xdg.cacheHome}/parallel";
+      BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
+      EDITOR  = "${pkgs.neovim}/bin/nvim";
+      PATH    = lib.concatStringsSep ":" [ "$PATH" "$HOME/.local/bin" ];
     };
 
 
@@ -110,6 +106,8 @@
                       ${pkgs.emacs}/bin/emacsclient \
                         --socket-name main
                     '';
+        PIDFile      = "/run/main-emacs-client.pid";
+        ExecStop     = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
       };
     };
   };
@@ -125,9 +123,6 @@
                                    pkgs.moreutils
                                    (attrs: { postInstall = attrs.postInstall + "; rm $out/bin/parallel"; });
       nix-beautify = import ./packages/nix-beautify;
-      parallel = pkgs.stdenv.lib.overrideDerivation
-                   pkgs.parallel
-                   (attrs: { nativeBuildInputs = attrs.nativeBuildInputs ++ [ pkgs.perlPackages.DBDSQLite ];});
       zathura = pkgs.zathura.override { useMupdf = true; };
       emacs = pkgs.stdenv.lib.overrideDerivation
                 pkgs.emacs
@@ -152,7 +147,7 @@
       # x0
       # xml2json
 
-      aria wget
+      aria
       avo-scripts
       bashdb
       bfs
@@ -180,23 +175,21 @@
       nq
       openssl
       optipng
-      parallel
       pqiv
       psmisc
       pv
-      pythonPackages.ipython pythonPackages.jupyter
+      pythonPackages.ipython
+      pythonPackages.jupyter
       pythonPackages.scapy
       qrencode
       rsync
       rxvt_unicode-with-plugins
-      siege
       sox
       sshuttle
-      steam
       surfraw
+      tdesktop
       tesseract
       tsocks
-      unison
       units
       url-parser
       x11_ssh_askpass
@@ -205,11 +198,14 @@
       xurls
     ] ++
     [
+      byzanz
       ffmpeg
       gifsicle
       graphicsmagick
       imagemagick
       inkscape
+      maim
+      slop
     ] ++
     [
       keybase
@@ -243,11 +239,6 @@
     [
       google-cloud-sdk
       nixops
-    ] ++
-    [
-      t
-      tdesktop
-      pidgin
     ] ++
     [
       asciinema
@@ -291,15 +282,11 @@
       reptyr
     ] ++
     [
-      httping
-      iftop
-      nethogs
-    ] ++
-    [
       htop
+      iftop
       iotop
       linuxPackages.perf
-      sysstat
+      nethogs
     ] ++
     [
       google-chrome-dev
@@ -318,19 +305,6 @@
       # hachoir-metadata
     ] ++
     [
-      dnsutils
-      geoipWithDatabase
-      nmap
-      traceroute
-      whois
-    ] ++
-    [
-      byzanz
-      ffcast xorg.xwininfo
-      maim
-      slop
-    ] ++
-    [
       fatrace
       forkstat
       lsof
@@ -338,7 +312,6 @@
       strace
     ] ++
     [
-      notify-desktop
       libnotify
       ntfy
     ] ++
@@ -376,20 +349,24 @@
       zip
     ] ++
     [
-      curl
+      dnsutils
+      geoipWithDatabase
       httpie
+      httping
       netcat
       ngrep
+      nmap
       socat
       stunnel # https://gist.github.com/jeremiahsnapp/6426298
       tcpdump
       tcpflow
       telnet
+      traceroute
+      whois
       wireshark
       wsta
     ] ++
     [
-      fzf
       grc
       highlight
       pythonPackages.pygments
