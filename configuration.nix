@@ -144,7 +144,6 @@
       fdupes
       flac
       gcolor2
-      ghi
       gnumake
       graphicsmagick imagemagick
       graphviz

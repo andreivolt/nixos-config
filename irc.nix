@@ -12,7 +12,8 @@
     makeEmacsDaemon = import ./make-emacs-daemon.nix;
     credentials = import ./credentials.nix;
   in
-    (makeEmacsDaemon { inherit config pkgs; name = "irc"; }) // {
+    (makeEmacsDaemon { name = "irc"; inherit config pkgs; })
+    // {
       environment.FREENODE_USERNAME = credentials.freenode.username;
       environment.FREENODE_PASSWORD = credentials.freenode.password;
     };

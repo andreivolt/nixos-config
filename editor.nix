@@ -10,12 +10,12 @@
       serviceConfig = {
         Type      = "forking";
         Restart   = "always";
-        ExecStart  = ''
+        ExecStart = ''
                       ${pkgs.emacs}/bin/emacsclient \
                         --socket-name main
                     '';
-        PIDFile      = "/run/main-emacs-client.pid";
-        ExecStop     = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
+        PIDFile   = "/run/main-emacs-client.pid";
+        ExecStop  = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
       };
     };
   };
