@@ -13,6 +13,8 @@
     ./default-apps.nix
     ./docker.nix
     ./dropbox.nix
+    ./editor-scratchpad.nix
+    ./editor.nix
     ./email
     ./floobits.nix
     ./gist.nix
@@ -44,6 +46,7 @@
     ./shell.nix
     ./sxiv.nix
     ./tmux.nix
+    ./todos.nix
     ./xdg.nix
   ];
 
@@ -91,26 +94,6 @@
       EDITOR  = "${pkgs.neovim}/bin/nvim";
       PATH    = lib.concatStringsSep ":" [ "$PATH" "$HOME/.local/bin" ];
     };
-
-
-  systemd.user.services = let makeEmacsDaemon = import ./make-emacs-daemon.nix; in {
-    editorEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "editor-scratchpad"; };
-    todoEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "todo"; };
-    mainEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "main"; };
-    mainEmacsClient =  {
-      enable = true;
-      serviceConfig = {
-        Type      = "forking";
-        Restart   = "always";
-        ExecStart  = ''
-                      ${pkgs.emacs}/bin/emacsclient \
-                        --socket-name main
-                    '';
-        PIDFile      = "/run/main-emacs-client.pid";
-        ExecStop     = "${pkgs.coreutils}/bin/kill -HUP $MAINPID";
-      };
-    };
-  };
 
 
   home-manager.users.avo
@@ -189,7 +172,6 @@
       pythonPackages.ipython
       pythonPackages.jupyter
       pythonPackages.scapy
-      qrencode
       racket
       rsync
       rxvt_unicode-with-plugins
