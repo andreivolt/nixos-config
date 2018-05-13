@@ -20,13 +20,11 @@
         BLOCK_SIZE  = "\'1";
         COLUMNS     = 100;
         PAGER       = "less";
-      }
-      // (
-        with config.home-manager.users.avo.xdg; {
-          RLWRAP_HOME = "${cacheHome}/rlwrap";
-          ZPLUG_HOME  = "${cacheHome}/zplug";
-        })
-      // (import ./credentials.nix).env;
+      } // (
+      with config.home-manager.users.avo.xdg; {
+        RLWRAP_HOME = "${cacheHome}/rlwrap";
+        ZPLUG_HOME  = "${cacheHome}/zplug";
+      }) // (import ./private/credentials.nix).env;
 
   environment.pathsToLink = [ "/share/zsh" ];
 
@@ -55,6 +53,8 @@
         ls = "ls --group-directories-first --classify --dereference-command-line -v";
       } // {
         gdax = "${pkgs.avo-scripts}/bin/webapp gdax https://www.gdax.com/trade/BTC-USD";
+      } // {
+        journalctl = "${pkgs.grc}/bin/grc journalctl"
       };
 
       history = rec {
@@ -98,16 +98,16 @@
             };
 
           autoRlwrap = ''
-            #zplug 'andreivolt/zsh-auto-rlwrap'
-            #bindkey -M viins '^x' insert-rlwrap
-            #bindkey -M vicmd '^x' insert-rlwrap
+            zplug 'andreivolt/zsh-auto-rlwrap'
+            bindkey -M viins '^x' insert-rlwrap
+            bindkey -M vicmd '^x' insert-rlwrap
           '';
 
-          functions = ''
-            diff() { ${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff }
-            open() { setsid ${pkgs.xdg_utils}/bin/xdg-open "$*" &>/dev/null }
-            +x() { chmod +x "$*" }
-          '';
+          functions = {
+            "diff" = ''${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff'';
+            "open" = ''setsid ${pkgs.xdg_utils}/bin/xdg-open "$*" &>/dev/null'';
+            "+x"   = ''chmod +x "$*"'';
+          };
 
           cdAliases = ''
             alias ..='cd ..'
@@ -136,10 +136,15 @@
         in lib.concatStringsSep "\n" [
           cdAliases
           globalAliasesStr
-          autoRlwrap
-          functions
+          (lib.concatStringsSep "\n"
+            (lib.mapAttrsToList (name: body:
+                              ''
+                                ${name}() {
+                                  ${body}
+                                }
+                              '') functions))
           completion
-          plugins
+          plugins autoRlwrap
        ];
     };
 }

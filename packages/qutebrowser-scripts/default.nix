@@ -1,11 +1,18 @@
-self: pkgs: rec {
+with import <nixpkgs> {};
 
-qutebrowser-scripts = with pkgs; stdenv.mkDerivation rec {
+pkgs.stdenv.mkDerivation {
   name = "qutebrowser-scripts";
+  src = ./.;
 
-  src = ../packages/qutebrowser-scripts;
+  phases = [ "install" ];
 
-  installPhase = ''
+  buildInputs = with pkgs; [
+    remarshal
+    sqlite
+    jq
+  ]
+
+  install = ''
     mkdir -p $out/bin
     find . \
         -maxdepth 1 \( -type f -o -type l \) \
@@ -19,6 +26,4 @@ qutebrowser-scripts = with pkgs; stdenv.mkDerivation rec {
     license = licenses.mit;
     maintainers = with maintainers; [ andreivolt ];
   };
-};
-
 }

@@ -19,13 +19,13 @@ lumo = with pkgs; stdenv.mkDerivation rec {
   ];
 
   buildPhase = ''
-     # remove audible build notifications
-     sed -i '/notify :audible true/d' build.boot
+    # remove audible build notifications
+    sed -i '/notify :audible true/d' build.boot
 
-     mkdir boot_home m2_home
+    mkdir boot_home m2_home
 
-     BOOT_HOME=boot_home BOOT_LOCAL_REPO=m2_home \
-       boot release
+    BOOT_HOME=boot_home BOOT_LOCAL_REPO=m2_home \
+      boot release
   '';
 
   installPhase = ''

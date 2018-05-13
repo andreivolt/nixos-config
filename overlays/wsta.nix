@@ -5,8 +5,8 @@ wsta = with pkgs; stdenv.mkDerivation rec {
   version = "0.5.0";
 
   src = fetchurl {
-      url = "https://github.com/esphen/wsta/releases/download/${version}/wsta-${version}-x86_64-unknown-linux-gnu.tar.gz";
-      sha256 = "0csvkwyv60smpyqlr6wvn6lmgsi4bpw2iyw1ggz38nwplrgabbrj";
+    url = "https://github.com/esphen/wsta/releases/download/${version}/wsta-${version}-x86_64-unknown-linux-gnu.tar.gz";
+    sha256 = "0csvkwyv60smpyqlr6wvn6lmgsi4bpw2iyw1ggz38nwplrgabbrj";
   };
 
   buildInputs = [ openssl ] ;

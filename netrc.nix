@@ -10,5 +10,5 @@
               password ${value.password}
               login ${value.login}
           '')
-          (import ./credentials.nix).netrc);
+          (import ./private/credentials.nix).netrc);
 }

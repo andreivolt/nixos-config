@@ -21,7 +21,7 @@ in {
     polybar
     setroot
     seturgent
-    wmctrl xdotool xnee
+    wmctrl wmutils-core xdotool xnee
     xrandr-invert-colors
 
     # materia-theme
@@ -41,6 +41,8 @@ in {
 
 
   services.xserver = {
+    enable = true;
+
     displayManager.auto = { enable = true; user = "avo"; };
     desktopManager.xterm.enable = false;
 

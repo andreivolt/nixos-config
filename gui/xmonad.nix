@@ -1,5 +1,5 @@
 let
-  avo-xmonad = import ../xmonad-config;
+  avo-xmonad = import ./xmonad-config;
 
 in {
   home-manager.users.avo

@@ -13,15 +13,14 @@ docx2txt = with pkgs; stdenv.mkDerivation rec {
 
   dontBuild = true;
 
-  installPhase =
-    ''
-      mkdir -p $out/{bin,etc}
+  installPhase = ''
+    mkdir -p $out/{bin,etc}
 
-      cp docx2txt.config $out/etc
-      cp docx2txt.pl $out/bin/docx2txt
+    cp docx2txt.config $out/etc
+    cp docx2txt.pl $out/bin/docx2txt
 
-      substituteInPlace $out/bin/docx2txt --replace /usr/bin/unzip ${unzip}/bin/unzip
-    '';
+    substituteInPlace $out/bin/docx2txt --replace /usr/bin/unzip ${unzip}/bin/unzip
+  '';
 };
 
 }

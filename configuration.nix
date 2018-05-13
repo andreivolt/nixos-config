@@ -1,348 +1,328 @@
 { config, lib, pkgs, ... }:
 
-{
+rec {
   imports = [
     ./hardware-configuration.nix
 
     ./home-manager/nixos
 
-    ./android.nix
-    ./audio.nix
-    ./bitcoin.nix
-    ./clojure
-    ./default-apps.nix
-    ./docker.nix
-    ./dropbox.nix
-    ./editor-scratchpad.nix
-    ./editor.nix
-    ./email
-    ./floobits.nix
-    ./gist.nix
-    ./git.nix
-    ./gnupg.nix
-    ./google-drive-ocamlfuse.service.nix
-    ./grep.nix
+    ./hardware
+
     ./gui
-    ./haskell
-    ./input.nix
-    ./ipfs.nix
-    ./irc.nix
-    ./less.nix
-    ./libvirt.nix
-    ./mitmproxy.nix
-    ./mopidy.nix
-    ./neovim.nix
     ./netrc.nix
-    ./networking.nix
-    ./nixos.nix
-    ./nvidia.nix
-    ./pandora.nix
-    ./parallel.nix
-    ./printing.nix
-    ./qutebrowser.service.nix
-    ./readline.nix
-    ./ripgrep.nix
-    ./scripts.nix
+    ./networking
     ./shell.nix
-    ./sxiv.nix
-    ./tmux.nix
-    ./todos.nix
-    ./xdg.nix
+
+    # ./programs/ramda.nix
+    ./programs/alacritty.nix
+    ./programs/android.nix
+    ./programs/aws-cli.nix
+    ./programs/bitcoin.nix
+    ./programs/clojure
+    ./programs/curl.nix
+    ./programs/docker
+    ./programs/dropbox.nix
+    ./programs/editor-scratchpad.nix
+    ./programs/editor.nix
+    ./programs/emacs.nix
+    ./programs/email
+    ./programs/floobits.nix
+    ./programs/fzf.nix
+    ./programs/ghi.nix
+    ./programs/gist.nix
+    ./programs/git.nix
+    ./programs/gnupg.nix
+    ./programs/google-drive.nix
+    ./programs/grep.nix
+    ./programs/haskell
+    ./programs/htop.nix
+    ./programs/httpie.nix
+    ./programs/hub.nix
+    ./programs/ipfs.nix
+    ./programs/irc.nix
+    ./programs/less.nix
+    ./programs/libvirt.nix
+    ./programs/mitmproxy.nix
+    ./programs/mopidy.nix
+    ./programs/mpv.nix
+    ./programs/neovim.nix
+    ./programs/netflix.nix
+    ./programs/pandora.nix
+    ./programs/parallel.nix
+    ./programs/pianobar.nix
+    ./programs/qutebrowser.nix
+    ./programs/readline.nix
+    ./programs/ripgrep.nix
+    ./programs/slack.nix
+    ./programs/ssh.nix
+    ./programs/sxiv.nix
+    ./programs/t.nix
+    ./programs/tmux.nix
+    ./programs/todos.nix
+    ./programs/zathura.nix
   ];
-
-
-  boot.loader.timeout = 1;
-
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-
   boot.kernel.sysctl =
     { "fs.inotify.max_user_watches" = 100000; } //
-    { "vm.swappiness" = 1;
-      "vm.vfs_cache_pressure" = 50; };
-
+    { "vm.swappiness" = 1; "vm.vfs_cache_pressure" = 50; };
 
   time.timeZone = "Europe/Paris";
-
   i18n.defaultLocale = "en_US.UTF-8";
 
-
-  hardware.bluetooth.enable = true;
-
-
-  hardware.opengl.driSupport = true;
-
-
-  services.xserver.enable = true;
-
-
-  services.devmon.enable = true;
-
-
-  users.users.avo = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-  };
-
+  users.users.avo = { isNormalUser = true; extraGroups = [ "wheel" ]; };
   security.sudo.wheelNeedsPassword = false;
 
+  nix = {
+    buildCores = 0;
+    gc.automatic = true; optimise.automatic = true;
+  };
 
-  home-manager.users.avo
-    .home.sessionVariables = with config.home-manager.users.avo; {
+  system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
+
+  nixpkgs.config.allowUnfree = true;
+
+  nixpkgs.overlays =
+    let path = ./overlays; in with builtins;
+    map (n: import (path + ("/" + n)))
+        (filter (n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix")))
+                (attrNames (readDir path)));
+
+  home-manager.users.avo = {
+    nixpkgs.config = config.nixpkgs.config;
+
+    home.sessionVariables = with config.home-manager.users.avo; {
       BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
       EDITOR  = "${pkgs.neovim}/bin/nvim";
       PATH    = lib.concatStringsSep ":" [ "$PATH" "$HOME/.local/bin" ];
     };
 
+    xdg.enable = true;
 
-  home-manager.users.avo
-    .programs = import ./programs.nix { inherit config lib; };
+    xdg.configFile."user-dirs.dirs".text = lib.generators.toKeyValue {} {
+      XDG_DOWNLOAD_DIR = "$HOME/tmp";
+      XDG_DESKTOP_DIR  = "$HOME/tmp";
+    };
 
-  environment.systemPackages =
-    let
-      # prefer GNU parallel
-      moreutilsWithoutParallel = pkgs.stdenv.lib.overrideDerivation
-                                   pkgs.moreutils
-                                   (attrs: { postInstall = attrs.postInstall + "; rm $out/bin/parallel"; });
-      nix-beautify = import ./packages/nix-beautify;
-      zathura = pkgs.zathura.override { useMupdf = true; };
-      emacs = pkgs.stdenv.lib.overrideDerivation
-                pkgs.emacs
-                (attrs: { nativeBuildInputs = attrs.nativeBuildInputs ++ (with pkgs; [ aspell aspellDicts.en aspellDicts.fr
-                                                                                       nodePackages.tern
-                                                                                       w3m ]);});
+    xdg.configFile."mimeapps.list".text =
+      let browser = "qutebrowser"; editor = "emacs"; in lib.generators.toINI {} {
+        "Default Applications" = {
+          "application/pdf"                                                         = "zathura.desktop";
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"       = "calc.desktop";
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "libreoffice-writer.desktop";
+          "application/xhtml+xml"                                                   = "${browser}.desktop";
+          "application/xml"                                                         = "${editor}.desktop";
+          "text/html"                                                               = "${browser}.desktop";
+          "text/plain"                                                              = "${editor}.desktop";
+          "x-scheme-handler/ftp"                                                    = "${browser}.desktop";
+          "x-scheme-handler/http"                                                   = "${browser}.desktop";
+          "x-scheme-handler/https"                                                  = "${browser}.desktop";
+        };
+      };
+  };
 
-    in with pkgs; [
-      # fovea
-      # https://github.com/harelba/q
-      # https://github.com/noctuid/tdrop
-      # https://github.com/rkitover/vimpager
-      # imagemin-cli
-      # incron
-      # pfff
-      # telegramircd
+  services.devmon.enable = true;
 
-      # heroku-cli
-      # ramda-cli
-      # ttystudio
-      # vmd
-      # x0
-      # xml2json
+  fileSystems."scripts" = {
+    device = "/etc/nixos/scripts";
+    fsType = "none"; options = [ "bind" ];
+    mountPoint = "/home/avo/.local/bin";
+  };
 
-      aria
-      asciinema ttyrec
-      at
-      avo-scripts
-      bashdb
-      bfs
-      cloc
-      dateutils
-      emacs
-      et
-      expect
-      fdupes
-      flac
-      gcolor2
-      gnumake
-      graphicsmagick imagemagick
-      graphviz
-      hy
-      icdiff
-      impressive
-      inkscape
-      inotify-tools watchman
-      jre
-      keybase
-      lastpass-cli
-      lbdb
-      lf
-      libreoffice-fresh
-      moreutilsWithoutParallel
-      mosh
-      ngrok
-      nq
-      openssl
-      optipng
-      pgcli
-      pqiv
-      psmisc
-      pv
-      pythonPackages.ipython
-      pythonPackages.jupyter
-      pythonPackages.scapy
-      racket
-      rsync
-      rxvt_unicode-with-plugins
-      sox
-      sqlite
-      sshuttle
-      surfraw
-      tdesktop
-      tesseract
-      tmate
-      tree
-      tsocks
-      units
-      url-parser
-      xfce.thunar
-      xurls
-    ] ++
-    [
-      byzanz
-      ffmpeg
-      gifsicle
-      maim
-      slop
-    ] ++
-    [
-      cabal2nix
-      nix-beautify
-      nix-prefetch-scripts
-      nix-repl
-      nix-zsh-completions
-      nodePackages.node2nix
-      nox
-      stack2nix
-    ] ++
-    (with xorg; [
-      evtest
-      gnome3.zenity
-      wmutils-core
-      xbindkeys
-      xcape
-      xchainkeys
-      xev
-    ]) ++
-    [
-      google-cloud-sdk
-      nixops
-    ] ++
-    [
-      # haskellPackages.vimus
-      # https://github.com/hoyon/mpv-mpris
-      # mpris-ctl
-      clerk
-      google-play-music-desktop-player
-      mpc_cli
-      mpdris2
-      mpv
-      nodePackages.peerflix
-      pianobar
-      playerctl
-      vimpc
-      you-get
-      youtube-dl
-    ] ++
-    [
-      enscript
-      ghostscript
-      pandoc
-      pdftk
-      poppler_utils
-      (lowPrio texlive.combined.scheme-full)
-    ] ++
-    [
-      acpi
-      lm_sensors
-      pciutils
-      usbutils
-    ] ++
-    [
-      abduco
-      dvtm
-      tmux
-      reptyr
-    ] ++
-    [
-      htop
-      iftop
-      iotop
-      linuxPackages.perf
-      nethogs
-    ] ++
-    [
-      google-chrome-dev
-      qutebrowser qutebrowser-scripts
-      torbrowser
-    ] ++
-    [
-      binutils
-      exiftool
-      exiv2
-      file
-      mediainfo
-      # hachoir-subfile
-      # hachoir-urwid
-      # hachoir-grep
-      # hachoir-metadata
-    ] ++
-    [
-      fatrace
-      forkstat
-      lsof
-      ltrace
-      strace
-    ] ++
-    [
-      libnotify
-      ntfy
-    ] ++
-    [
-      # gron
-      # haskellPackages.haskell-awk
-      # tsvutils
-      csvtotable
-      docx2txt
-      html2text
-      htmlTidy
-      jo
-      jq
-      libxls
-      miller
-      pdfgrep
-      perlPackages.HTMLParser
-      pup
-      pythonPackages.piep
-      recode
-      recutils
-      remarshal
-      textql
-      unoconv
-      x_x
-      xidel
-      xlsx2csv
-      xml2
-      xsv
-    ] ++
-    [
-      atool
-      dtrx
-      unzip
-      zip
-    ] ++
-    [
-      dnsutils
-      geoipWithDatabase
-      httpie
-      httping
-      netcat
-      ngrep
-      nmap
-      socat
-      stunnel # https://gist.github.com/jeremiahsnapp/6426298
-      tcpdump
-      tcpflow
-      telnet
-      traceroute
-      whois
-      wireshark
-      wsta
-    ] ++
-    [
-      grc
-      highlight
-      pythonPackages.pygments
-      rlwrap
-    ];
+  environment.systemPackages = with pkgs; [
+    # fovea
+    # hachoir-subfile hachoir-urwid hachoir-grep hachoir-metadata
+    # https://github.com/harelba/q
+    # https://github.com/noctuid/tdrop
+    # https://github.com/rkitover/vimpager
+    # imagemin-cli
+    # incron
+    # pfff
+    # telegramircd
+
+    # heroku-cli
+    # ramda-cli
+    # ttystudio
+    # vmd
+    # x0
+    # xml2json
+
+    acpi
+    aria
+    asciinema ttyrec
+    at
+    atool dtrx
+    avo-scripts
+    bfs
+    binutils
+    byzanz
+    dateutils
+    et
+    exiftool exiv2 mediainfo
+    expect
+    fdupes
+    ffmpeg
+    file
+    flac
+    gcolor2
+    gifsicle
+    gnumake
+    google-cloud-sdk
+    graphicsmagick imagemagick
+    graphviz
+    hy
+    icdiff
+    impressive
+    inkscape
+    inotify-tools watchman
+    jre
+    keybase
+    lastpass-cli
+    lbdb
+    lf
+    libnotify
+    libreoffice-fresh
+    lm_sensors
+    maim slop
+    moreutilsWithoutParallel
+    mosh
+    ngrok
+    nixops
+    nq
+    ntfy
+    openssl
+    optipng
+    pciutils usbutils
+    pqiv
+    psmisc
+    pv
+    pythonPackages.ipython
+    pythonPackages.jupyter
+    pythonPackages.scapy
+    racket
+    rlwrap
+    rsync
+    rxvt_unicode-with-plugins
+    sox
+    sshuttle
+    surfraw
+    tdesktop
+    tesseract
+    tmate
+    tree
+    tsocks
+    units
+    url-parser
+    xfce.thunar
+    xurls
+  ] ++
+  [
+    cabal2nix
+    nix-beautify
+    nix-prefetch-scripts
+    nix-repl
+    nix-zsh-completions
+    nodePackages.node2nix
+    nox
+    stack2nix
+  ] ++
+  (with xorg; [
+    xbindkeys
+    xcape
+    xchainkeys
+    xev
+  ]) ++
+  [
+    # haskellPackages.vimus
+    # https://github.com/hoyon/mpv-mpris
+    # mpris-ctl
+    clerk
+    google-play-music-desktop-player
+    mpc_cli
+    mpdris2
+    mpv
+    nodePackages.peerflix
+    pianobar
+    playerctl
+    vimpc
+    you-get
+    youtube-dl
+  ] ++
+  [
+    pandoc
+    pdftk
+    poppler_utils
+    (lowPrio texlive.combined.scheme-full)
+  ] ++
+  [
+    abduco
+    dvtm
+    tmux
+    reptyr
+  ] ++
+  [
+    htop
+    iftop
+    iotop
+    linuxPackages.perf
+    nethogs
+  ] ++
+  [
+    google-chrome-dev
+    qutebrowser qutebrowser-scripts
+    torbrowser
+  ] ++
+  [
+    fatrace
+    forkstat
+    lsof
+    ltrace
+    strace
+  ] ++
+  [
+    # gron
+    # haskellPackages.haskell-awk
+    # tsvutils
+    csvtotable
+    docx2txt
+    html2text
+    htmlTidy
+    jo
+    jq
+    libxls
+    miller
+    pdfgrep
+    perlPackages.HTMLParser
+    pup
+    pythonPackages.piep
+    recode
+    recutils
+    remarshal
+    textql
+    unoconv
+    x_x
+    xidel
+    xlsx2csv
+    xml2
+    xsv
+  ] ++
+  [
+    dnsutils
+    geoipWithDatabase
+    httpie
+    httping
+    netcat
+    ngrep
+    nmap
+    socat
+    stunnel # https://gist.github.com/jeremiahsnapp/6426298
+    tcpdump
+    tcpflow
+    telnet
+    traceroute
+    whois
+    wireshark
+    wsta
+  ];
 }

@@ -1,8 +1,12 @@
 {
-  config = {
-    ao = "pulse";
-    hwdec = "vdpau";
-    profile = "opengl-hq";
-    audio-display = "no";
+  home-manager.users.avo.programs.mpv = {
+    enable = true;
+
+    config = {
+      ao = "pulse";
+      hwdec = "vdpau";
+      profile = "opengl-hq";
+      audio-display = "no";
+    };
   };
 }

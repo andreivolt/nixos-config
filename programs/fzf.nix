@@ -1,7 +1,11 @@
 {
-  defaultOptions = [
-    "--color" "bw"
-  ];
+  home-manager.users.avo.programs.fzf = {
+    enable = true;
 
-  enableZshIntegration = false;
+    defaultOptions = [
+      "--color" "bw"
+    ];
+    
+    enableZshIntegration = false;
+  };
 }

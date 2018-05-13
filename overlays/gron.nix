@@ -5,8 +5,8 @@ gron = with pkgs; stdenv.mkDerivation rec {
   version = "0.5.2";
 
   src = fetchurl {
-      url = "https://github.com/tomnomnom/gron/releases/download/v0.5.2/gron-linux-amd64-0.5.2.tgz";
-      sha256 = "06f9ygl32zmwcab0vaqms5190lyfgy74lp00qzcmxk0bl7ghi7w1";
+    url = "https://github.com/tomnomnom/gron/releases/download/v0.5.2/gron-linux-amd64-0.5.2.tgz";
+    sha256 = "06f9ygl32zmwcab0vaqms5190lyfgy74lp00qzcmxk0bl7ghi7w1";
   };
 
   sourceRoot = ".";

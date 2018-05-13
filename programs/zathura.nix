@@ -1,6 +1,9 @@
 {
-  config = ''
-    set incremental-search true
-  '';
+  home-manager.users.avo.programs.zathura = {
+    enable = true;
+    
+    config = ''
+      set incremental-search true
+    '';
+  };
 }
-
