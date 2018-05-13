@@ -13,6 +13,7 @@
     credentials = import ./credentials.nix;
   in
     (makeEmacsDaemon { inherit config pkgs; name = "irc"; }) // {
-      environment.FREENODE_PASSWORD = credentials.freenode_password;
+      environment.FREENODE_USERNAME = credentials.freenode.username;
+      environment.FREENODE_PASSWORD = credentials.freenode.password;
     };
 }

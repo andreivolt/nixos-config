@@ -10,7 +10,6 @@
       controlPersist = "0";
     };
 
-
   home-manager.users.avo
     .home.file =
       builtins.listToAttrs

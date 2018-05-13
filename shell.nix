@@ -15,14 +15,18 @@
     ];
 
   home-manager.users.avo
-    .home.sessionVariables = with config.home-manager.users.avo.xdg; {
-      BLOCK_SIZE  = "\'1";
-      COLUMNS     = 100;
-      PAGER       = "less";
-      RLWRAP_HOME = "${cacheHome}/rlwrap";
-      ZPLUG_HOME  = "${cacheHome}/zplug";
-    } // (import ./credentials.nix).env;
-
+    .home.sessionVariables =
+      {
+        BLOCK_SIZE  = "\'1";
+        COLUMNS     = 100;
+        PAGER       = "less";
+      }
+      // (
+        with config.home-manager.users.avo.xdg; {
+          RLWRAP_HOME = "${cacheHome}/rlwrap";
+          ZPLUG_HOME  = "${cacheHome}/zplug";
+        })
+      // (import ./credentials.nix).env;
 
   environment.pathsToLink = [ "/share/zsh" ];
 

@@ -16,8 +16,8 @@ rec {
   environment.systemPackages = with pkgs; [ libinput-gestures ];
 
   home-manager.users.avo
-    .home.keyboard = {
-      layout = services.xserver.layout;
-      options = [ services.xserver.xkbOptions ];
+    .home.keyboard = with services.xserver; {
+      inherit layout;
+      options = [ xkbOptions ];
     };
 }
