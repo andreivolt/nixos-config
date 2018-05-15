@@ -1,8 +1,9 @@
 let
   theme = import ../themes/current;
   pkgs = import <nixpkgs> {};
-  proportionalFont = "Abel"; monospaceFont = "Source Code Pro";
-  fontSize = 10;
+  proportionalFont = builtins.getEnv "PROPORTIONAL_FONT_FAMILY";
+  monospaceFont = builtins.getEnv "MONOSPACE_FONT_FAMILY";
+  fontSize = builtins.getEnv "FONT_SIZE" || 10;
   tabs = rec {
     bar.bg = theme.light.gray;
     even = { bg = bar.bg; fg = theme.black; }; odd = even;

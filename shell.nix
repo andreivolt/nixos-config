@@ -54,7 +54,7 @@
       } // {
         gdax = "${pkgs.avo-scripts}/bin/webapp gdax https://www.gdax.com/trade/BTC-USD";
       } // {
-        journalctl = "${pkgs.grc}/bin/grc journalctl"
+        journalctl = "${pkgs.grc}/bin/grc journalctl";
       };
 
       history = rec {

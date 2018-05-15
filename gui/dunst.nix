@@ -2,9 +2,8 @@
 
 let
   myFonts = {
-    proportional = "Abel";
-    monospace = "Source Code Pro";
-    defaultSize = 10;
+    proportional = builtins.getEnv "PROPORTIONAL_FONT_FAMILY";
+    monospace = builtins.getEnv "MONOSPACE_FONT_FAMILY";
   };
   theme = import ../themes/challenger-deep.nix;
 

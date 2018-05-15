@@ -84,10 +84,10 @@ in {
     xsession = {
       enable = true;
       initExtra = let
-        monitorsLayout = "${pkgs.avo-scripts}/bin/monitors-layout";
+        setMonitors = "${pkgs.avo-scripts}/bin/set-monitors";
         setWallpaper = "${pkgs.avo-scripts}/bin/set-wallpaper";
       in lib.concatStringsSep "\n" [
-        monitorsLayout
+        setMonitors
         setWallpaper
       ];
     };

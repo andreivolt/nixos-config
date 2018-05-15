@@ -47,6 +47,7 @@ rec {
     ./programs/mpv.nix
     ./programs/neovim.nix
     ./programs/netflix.nix
+    ./programs/nodejs.nix
     ./programs/pandora.nix
     ./programs/parallel.nix
     ./programs/pianobar.nix

@@ -6,8 +6,8 @@
   home-manager.users.avo
     .xdg.configFile."xmobar/xmobarrc".text = let
       myFonts = {
-        proportional = "Abel";
-        monospace = "Source Code Pro";
+        proportional = builtins.getEnv "PROPORTIONAL_FONT_FAMILY";
+        monospace = builtins.getEnv "MONOSPACE_FONT_FAMILY";
         defaultSize = 10;
       };
       theme = import ../themes/challenger-deep.nix;
