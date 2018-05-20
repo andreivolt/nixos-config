@@ -149,6 +149,8 @@ rec {
     # x0
     # xml2json
 
+    ej
+
     acpi
     aria
     asciinema ttyrec
@@ -186,6 +188,7 @@ rec {
     libreoffice-fresh
     lm_sensors
     maim slop
+    mkcast
     moreutilsWithoutParallel
     mosh
     ngrok
@@ -214,9 +217,12 @@ rec {
     tree
     tsocks
     units
-    url-parser
+    urlp
     xfce.thunar
     xurls
+
+    sound-theme-freedesktop
+    # oni
   ] ++
   [
     cabal2nix

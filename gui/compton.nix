@@ -4,7 +4,7 @@
 
     shadow = true;
     shadowOffsets = [ (-15) (-15) ];
-    shadowOpacity = "0.7";
+    shadowOpacity = "0.8";
     # shadowExclude = [
     #   ''
     #     !(XMONAD_FLOATING_WINDOW ||
@@ -13,6 +13,7 @@
     #   ''
     # ];
     extraOptions = ''
+      shadow-radius = 10;
       blur-background = true;
       #blur-background-frame = true;
       #blur-background-fixed = false;

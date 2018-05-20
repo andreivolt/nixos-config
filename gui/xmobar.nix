@@ -12,8 +12,8 @@
       };
       theme = import ../themes/challenger-deep.nix;
       online-indicator = pkgs.writeScript "xmobar-online-indicator" (with theme; ''
-        color=$(is-online && echo '${green}' || echo '${red}')
-        symbol=$(is-online && echo ﯱ || echo ﯱ)
+        color=$(${pkgs.avo-scripts}/bin/is-online && echo '${green}' || echo '${red}')
+        symbol=$(${pkgs.avo-scripts}/bin/is-online && echo ﯱ || echo ﯱ)
 
         echo "<fc=$color>$symbol</fc>"
       '');

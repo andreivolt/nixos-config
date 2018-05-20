@@ -1,99 +1,5 @@
 { pkgs, ... }:
 
-
-# let
-#   customPlugins.monochrome-colors = pkgs.vimUtils.buildVimPlugin {
-#     name = "monochrome-colors";
-#     src = pkgs.writeText "monochrome.vim" ''
-#       hi clear
-#       syntax reset
-
-#       let colors_name="monochrome"
-
-#       for i in [
-#         \ 'WarningMsg',
-#         \ 'Boolean',
-#         \ 'Character',
-#         \ 'Comment',
-#         \ 'Conceal',
-#         \ 'Conditional',
-#         \ 'Constant',
-#         \ 'Debug',
-#         \ 'Define',
-#         \ 'Delimiter',
-#         \ 'Directory',
-#         \ 'Error',
-#         \ 'ErrorMsg',
-#         \ 'Exception',
-#         \ 'Float',
-#         \ 'Function',
-#         \ 'Identifier',
-#         \ 'Ignore',
-#         \ 'Include',
-#         \ 'Keyword',
-#         \ 'Label',
-#         \ 'Macro',
-#         \ 'Normal',
-#         \ 'Number',
-#         \ 'Operator',
-#         \ 'PreCondit',
-#         \ 'PreProc',
-#         \ 'Repeat',
-#         \ 'SignColumn',
-#         \ 'Special',
-#         \ 'SpecialChar',
-#         \ 'SpecialComment',
-#         \ 'Statement',
-#         \ 'StorageClass',
-#         \ 'String',
-#         \ 'Structure',
-#         \ 'Tag',
-#         \ 'Todo',
-#         \ 'Type',
-#         \ 'Typedef',
-#         \ 'Underlined',
-#         \ 'VertSplit',
-#         \ 'CursorLine',
-#         \]
-#         exe 'hi ' . i . ' NONE ctermbg=NONE ctermfg=NONE'
-#       endfor
-
-#       hi Comment      cterm=italic    ctermfg=15
-#       hi CursorLine                              ctermbg=8
-#       hi CursorLineNR                 ctermfg=15
-#       hi EndOfBuffer                  ctermfg=8
-#       hi FoldColumn   NONE
-#       hi LineNr                       ctermfg=8
-#       hi MatchParen   cterm=reverse              ctermbg=NONE
-#       hi NonText                      ctermfg=3
-#       hi Normal                       ctermfg=15
-#       hi Search                                  ctermbg=11
-#       hi SpellBad     cterm=underline ctermfg=1  ctermbg=NONE
-#       hi StatusLine                   ctermfg=8  ctermbg=8
-#       hi StatusLineNC                 ctermfg=8  ctermbg=0
-#       hi Visual                                  ctermbg=8
-#     '';
-#   };
-
-# pkgs.fetchFromGitHub {
-#       owner = "ntpeters";
-#       repo = "vim-better-whitespace";
-#       rev = "984c8da518799a6bfb8214e1acdcfd10f5f1eed7";
-#       sha256 = "10l01a8xaivz6n01x6hzfx7gd0igd0wcf9ril0sllqzbq7yx2bbk";
-#     };
-#   };
-
-# in {
-#    users.users.<yourNickname>.packages = [
-#     (pkgs.vim_configurable.customize {
-#       name = "vim";
-#       vimrcConfig.vam.knownPlugins = pkgs.vimPlugins // customPlugins;
-#       vimrcConfig.vam.pluginDictionaries = [
-#         { names = "vim-better-whitespace" ]; } ]
-#     })
-# };
-
-
 {
   environment.systemPackages = with pkgs; [ (neovim.override {
     vimAlias = true;
@@ -107,13 +13,15 @@
             let g:colors_name="${name}"
 
             for i in [
-              \ 'WarningMsg',
               \ 'Boolean',
               \ 'Character',
               \ 'Comment',
               \ 'Conceal',
               \ 'Conditional',
               \ 'Constant',
+              \ 'Cursor',
+              \ 'CursorLine',
+              \ 'CursorLineNR',
               \ 'Debug',
               \ 'Define',
               \ 'Delimiter',
@@ -122,6 +30,7 @@
               \ 'ErrorMsg',
               \ 'Exception',
               \ 'Float',
+              \ 'FoldColumn',
               \ 'Function',
               \ 'Identifier',
               \ 'Ignore',
@@ -129,6 +38,7 @@
               \ 'Keyword',
               \ 'Label',
               \ 'Macro',
+              \ 'MatchParen',
               \ 'Normal',
               \ 'Number',
               \ 'Operator',
@@ -139,6 +49,7 @@
               \ 'Special',
               \ 'SpecialChar',
               \ 'SpecialComment',
+              \ 'SpellBad',
               \ 'Statement',
               \ 'StorageClass',
               \ 'String',
@@ -149,9 +60,7 @@
               \ 'Typedef',
               \ 'Underlined',
               \ 'VertSplit',
-              \ 'Cursor',
-              \ 'CursorLine',
-              \ 'CursorLineNR',
+              \ 'WarningMsg',
               \]
               exe 'hi ' . i . ' NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE'
             endfor
@@ -165,22 +74,25 @@
                 text = (with import ../themes/acme.nix; ''
                   ${mkColorScheme "acme"}
 
-                  hi Comment      cterm=italic    ctermfg=15              gui=italic guifg=${lightWhite}
-                  hi Cursor ctermfg=0 guibg=${highlight}
-                  hi CursorLine                              ctermbg=0                                     guibg=${subtleHighlight}
-                  hi CursorLineNR                 ctermfg=15                         guifg=${gray}         guibg=${subtleHighlight}
-                  hi Delimiter                    ctermfg=8                          guifg=${important}
-                  hi EndOfBuffer                  ctermfg=8                          guifg=${foregroundFaded}
-                  hi FoldColumn   NONE
-                  hi LineNr                       ctermfg=8                          guifg=${foregroundFaded}
-                  hi MatchParen   cterm=reverse              ctermbg=NONE                                guibg=NONE
-                  hi NonText                      ctermfg=3                          guifg=${yellow}
-                  hi Normal                       ctermfg=15                         guifg=${lightWhite}
-                  hi Search                                  ctermbg=11                                  guibg=${lightYellow}
-                  hi SpellBad     cterm=underline ctermfg=1  ctermbg=NONE                                guibg=NONE
-                  hi StatusLine                   ctermfg=8  ctermbg=8               guifg=${yellow}   guibg=${darkGray}
-                  hi StatusLineNC                 ctermfg=8  ctermbg=0               guifg=${lightYellow}  guibg=${gray}
-                  hi Visual                                  ctermbg=8                                   guibg=${selection}
+                  hi Comment      cterm=italic    ctermfg=15            gui=italic guifg=${foregroundSecondary}
+                  hi Cursor                       ctermfg=0                                                       guibg=${highlight}
+                  hi CursorLine                              ctermbg=0                                            guibg=${subtleHighlight}
+                  hi CursorLineNR                 ctermfg=15                       guifg=${gray}                  guibg=${subtleHighlight}
+                  hi EndOfBuffer                  ctermfg=8                        guifg=${foregroundUnimportant}
+                  hi LineNr                       ctermfg=8                        guifg=${foregroundUnimportant}
+                  hi MatchParen   cterm=reverse   ctermfg=8                        guifg=${highlight}
+                  hi NonText                      ctermfg=3                        guifg=${yellow}
+                  hi Normal                       ctermfg=15                       guifg=${lightWhite}
+                  hi Search                                  ctermbg=11                                           guibg=${lightYellow}
+                  hi SpellBad     cterm=underline ctermfg=1
+                  hi StatusLine                   ctermfg=8  ctermbg=8                                            guibg=${highlight}
+                  hi StatusLineNC                 ctermfg=8  ctermbg=0                                            guibg=${yellow}
+                  hi Visual                                  ctermbg=8                                            guibg=${selection}
+
+                  hi String                                                        guifg=${foregroundSecondary}
+                  hi Delimiter                    ctermfg=8             gui=bold   guifg=${important}
+                  hi Keyword                                            gui=italic
+                  hi Conditional                                        gui=italic
                 '');
                 destination = "/colors/acme.vim";
               })
@@ -199,9 +111,8 @@
                   hi CursorLine                              ctermbg=0
                   hi CursorLineNR                 ctermfg=15                                             guibg={lightWhite}
                   hi EndOfBuffer                  ctermfg=8                          guifg={gray}
-                  hi FoldColumn   NONE
                   hi LineNr                       ctermfg=8                          guifg=${gray}
-                  hi MatchParen   cterm=reverse              ctermbg=NONE                                guibg=NONE
+                  hi MatchParen   cterm=reverse
                   hi NonText                      ctermfg=3                          guifg=${yellow}
                   hi Normal                       ctermfg=15                         guifg=${lightWhite}
                   hi Search                                  ctermbg=11                                  guibg=${yellow}
@@ -258,6 +169,8 @@
         in {
           knownPlugins = pkgs.vimPlugins // customPlugins;
           pluginDictionaries = [
+            { name = "vim-easy-align"; }
+            { name = "vim-indent-object"; }
             { name = "colorscheme-acme"; }
             { name = "colorscheme-challenger-deep-monochrome"; }
             { name = "commentary"; }
@@ -275,6 +188,7 @@
             { name = "vim-eunuch"; }
             { name = "vim-indent-guides"; }
             { name = "vim-ls"; }
+            { name = "vim-nix"; }
           ];
         };
 
@@ -341,18 +255,20 @@
 
           let g:fzf_colors =
           \ { 'fg':      ['fg', 'Normal'],
-            \ 'bg':      ['bg', 'StatusLine'],
-            \ 'hl':      ['fg', 'Comment'],
-            \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-            \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-            \ 'hl+':     ['fg', 'Statement'],
-            \ 'info':    ['fg', 'PreProc'],
-            \ 'border':  ['fg', 'Visual'],
-            \ 'prompt':  ['fg', 'Conditional'],
-            \ 'pointer': ['fg', 'Exception'],
-            \ 'marker':  ['fg', 'Keyword'],
-            \ 'spinner': ['fg', 'Label'],
-            \ 'header':  ['fg', 'Comment'] }
+            \ 'bg':      ['bg', 'Normal'],
+            \ 'hl':      ['fg', 'Normal'],
+            \ 'fg+':     ['fg', 'Normal', 'Normal', 'Normal'],
+            \ 'bg+':     ['bg', 'Normal', 'Normal'],
+            \ 'hl+':     ['fg', 'Normal'],
+            \ 'info':    ['fg', 'Normal'],
+            \ 'border':  ['fg', 'Normal'],
+            \ 'prompt':  ['fg', 'Normal'],
+            \ 'pointer': ['fg', 'Normal'],
+            \ 'marker':  ['fg', 'Normal'],
+            \ 'spinner': ['fg', 'Normal'],
+            \ 'header':  ['fg', 'Normal'] }
+
+          autocmd FileType fzf set laststatus=0
         '';
 
         highlightCurrentLineInNormalMode = ''
@@ -385,6 +301,21 @@
           function MinimalMode()
             Goyo 130
           endfunction
+        '';
+
+        goyo = ''
+          let g:goyo_width=150
+          let g:goyo_height='96%'
+
+          function! s:goyo_enter()
+            let g:golden_ratio_autocommand = 0
+          endfunction
+
+          function! s:goyo_leave()
+            let g:golden_ratio_autocommand = 1
+          endfunction
+
+          autocmd! User GoyoEnter nested call <SID>goyo_enter() | autocmd! User GoyoLeave nested call <SID>goyo_leave()
         '';
 
         acmeMinimalMode = ''
@@ -444,6 +375,8 @@
         clearSearchHighlight
         cursor
         fzf
+        goyo
+        hideMessagesAfterTimeout
         highlightCurrentLineInNormalMode
         minimalMode acmeMinimalMode
         navigateQuickFix
@@ -451,11 +384,7 @@
         returnToLastPositionWhenOpeningFiles
         ui
         useVeryMagicPatterns
-        hideMessagesAfterTimeout
       ];
     };
   }) ];
-
-  home-manager.users.avo
-    .programs.zsh.shellAliases.vi = "nvim";
 }

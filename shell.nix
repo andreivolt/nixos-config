@@ -46,7 +46,6 @@
         browser-history = "${pkgs.avo-scripts}/bin/qutebrowser-history";
       } // {
         e  = "${pkgs.emacs}/bin/emacsclient --socket-name scratchpad --no-wait";
-        vi = "vim";
       } // {
         l  = "ls";
         la = "ls -a";
@@ -107,6 +106,7 @@
             "diff" = ''${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff'';
             "open" = ''setsid ${pkgs.xdg_utils}/bin/xdg-open "$*" &>/dev/null'';
             "+x"   = ''chmod +x "$*"'';
+            "vi"   = ''grep acme /proc/$PPID/cmdline && command vim -c 'colorscheme acme' $@ || command vim $@'';
           };
 
           cdAliases = ''

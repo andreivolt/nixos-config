@@ -74,6 +74,7 @@ let
   };
 
   mkConf = colorScheme: {
+    #background_opacity = 0.85;
     colors = colorScheme;
     custom_cursor_colors = true;
     dpi = { x = 180; y = 180; };
@@ -119,6 +120,9 @@ in {
     };
 
   home-manager.users.avo
-    .xdg.configFile."alacritty/alacritty-acme.yml".text = lib.generators.toYAML {} (mkConf colorSchemes.acme);
+    .xdg.configFile."alacritty/config_acme-colors.yml".text = lib.generators.toYAML {} (mkConf colorSchemes.acme);
+
+  home-manager.users.avo
+    .programs.zsh.shellAliases.alacritty-acme = "setsid alacritty --config-file ~/.config/alacritty/config_acme-colors.yml &>/dev/null";
 }
 

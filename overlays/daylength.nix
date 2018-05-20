@@ -1,7 +1,5 @@
 self: pkgs: rec {
 
-#  ./client-ip-echo.nix { }
-
 dayLength = with pkgs; haskellPackages.callPackage {
   pname = "day-length-hs";
   version = "0.1.0.0";

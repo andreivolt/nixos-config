@@ -31,13 +31,13 @@ in {
           markup = "yes";
           monitor = "0";
           padding = "12";
-          separator_color = "auto";
+          separator_color = "${theme.foreground}";
           separator_height = "1";
           show_age_threshold = "60";
           sort = "yes";
           startup_notification = "false";
           sticky_history = "yes";
-          transparency = "5";
+          transparency = "10";
           word_wrap = "yes";
         };
 
@@ -75,9 +75,7 @@ in {
         volume = {
           appname = "volume";
           urgency = "low";
-          stack_duplicates = false;
           format = "%b";
-          hide_duplicates_count = true;
           history_length = "1";
           timeout = "1";
         };
