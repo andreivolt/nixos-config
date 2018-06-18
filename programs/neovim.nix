@@ -126,6 +126,21 @@
             ];
           };
 
+          customPlugins.parinfer-rust = pkgs.vimUtils.buildVimPlugin {
+            name = "parinfer-rust";
+            buildInputs = with pkgs; [ cargo ];
+            postInstall = ''
+              ${pkgs.cargo}/bin/cargo build --release
+              find
+            '';
+            src = pkgs.fetchFromGitHub {
+              owner = "eraserhd";
+              repo = "parinfer-rust";
+              rev = "a26808b97fa99192c7364f73b1ace872b91cc2b6";
+              sha256 = "1j47ypk6waphp4lr5bihdv87945i2gs6d207szcqgph7igg92s8a";
+            };
+          };
+
           customPlugins.golden-ratio = pkgs.vimUtils.buildVimPlugin {
             name = "golden-ratio";
             src = pkgs.fetchFromGitHub {
@@ -169,6 +184,7 @@
         in {
           knownPlugins = pkgs.vimPlugins // customPlugins;
           pluginDictionaries = [
+            # { name = "parinfer-rust"; }
             { name = "vim-easy-align"; }
             { name = "vim-indent-object"; }
             { name = "colorscheme-acme"; }
@@ -216,6 +232,8 @@
             \ ignorecase
             \ smartcase
             \ infercase
+
+          set inccommand=nosplit
 
           set
             \ foldmethod=marker
@@ -268,7 +286,7 @@
             \ 'spinner': ['fg', 'Normal'],
             \ 'header':  ['fg', 'Normal'] }
 
-          autocmd FileType fzf set laststatus=0
+          " autocmd FileType fzf set laststatus=0
         '';
 
         highlightCurrentLineInNormalMode = ''

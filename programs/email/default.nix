@@ -9,7 +9,7 @@ in {
     ./msmtp.nix
     ./notmuch.nix
     ./offlineimap.nix
-    ./mailcap.nix
+    # ./mailcap.nix
   ];
 
   environment.systemPackages = (with pkgs; [
@@ -18,5 +18,5 @@ in {
     procmail
   ]);
 
-  systemd.user.services.mailEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "mail"; };
+  # systemd.user.services.mailEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "mail"; };
 }

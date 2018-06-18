@@ -22,7 +22,6 @@ rec {
     ./programs/curl.nix
     ./programs/docker
     ./programs/dropbox.nix
-    ./programs/editor-scratchpad.nix
     ./programs/editor.nix
     ./programs/emacs.nix
     ./programs/email
@@ -42,7 +41,7 @@ rec {
     ./programs/irc.nix
     ./programs/less.nix
     ./programs/libvirt.nix
-    ./programs/mitmproxy.nix
+    # ./programs/mitmproxy.nix
     ./programs/mopidy.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
@@ -59,7 +58,6 @@ rec {
     ./programs/sxiv.nix
     ./programs/t.nix
     ./programs/tmux.nix
-    ./programs/todos.nix
     ./programs/zathura.nix
   ];
 
@@ -92,6 +90,8 @@ rec {
 
   home-manager.users.avo = {
     nixpkgs.config = config.nixpkgs.config;
+
+    manual.manpages.enable = false;
 
     home.sessionVariables = with config.home-manager.users.avo; {
       BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
@@ -149,7 +149,7 @@ rec {
     # x0
     # xml2json
 
-    ej
+    # ej
 
     acpi
     aria
@@ -185,10 +185,10 @@ rec {
     lbdb
     lf
     libnotify
-    libreoffice-fresh
+    # libreoffice-fresh
     lm_sensors
     maim slop
-    mkcast
+    #mkcast
     moreutilsWithoutParallel
     mosh
     ngrok
@@ -232,7 +232,7 @@ rec {
     nix-zsh-completions
     nodePackages.node2nix
     nox
-    stack2nix
+    #stack2nix
   ] ++
   (with xorg; [
     xbindkeys

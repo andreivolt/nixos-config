@@ -6,7 +6,7 @@
 
   fileSystems =
     let
-      dirs = [ "books" "doc" "media" "org" "proj" "tmp" ];
+      dirs = [ "doc" "media" "proj" "tmp" "src" ];
       template = dir: { device = "/home/avo/" + dir;
                         fsType = "none"; options = [ "bind" ];
                         mountPoint = "/home/avo/Dropbox/" + dir; };

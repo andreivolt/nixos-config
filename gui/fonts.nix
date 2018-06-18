@@ -4,7 +4,8 @@ let
   myFonts = {
     proportional = builtins.getEnv "PROPORTIONAL_FONT_FAMILY";
     monospace = builtins.getEnv "MONOSPACE_FONT_FAMILY";
-    defaultSize = 10;
+    fontSize = builtins.getEnv "MONOSPACE_FONT_SIZE";
+    fontSizePixels = builtins.getEnv "MONOSPACE_FONT_SIZE_PIXELS";
   };
 
 in {
@@ -34,8 +35,10 @@ in {
     ];
   };
 
-  # home-manager.users.avo
-  #   .xresources.properties = {
-  #     "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.defaultSize}";
-  #   };
+  home-manager.users.avo
+    .xresources.properties = {
+      "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.fontSize}";
+      "Emacs.FontBackend"        = "xft";
+      "Emacs.font"              = "${myFonts.monospace}:size=${toString myFonts.fontSizePixels}";
+    };
 }

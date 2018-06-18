@@ -32,7 +32,8 @@ in {
       };
 
       extraConfig.core = {
-        editor = "${pkgs.emacs}/bin/emacsclient --tty";
+        editor = "${pkgs.neovim}/bin/nvim";
+        #editor = "${pkgs.emacs}/bin/emacsclient --tty";
         pager  = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less -RFX";
       };
 
