@@ -37,6 +37,8 @@ in {
         pager  = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less -RFX";
       };
 
+      extraConfig.github.user = (import ../private/credentials.nix).github.user;
+
       ignores = [
         "*~"
         "tags"

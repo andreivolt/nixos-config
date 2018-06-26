@@ -2,7 +2,7 @@
 
 let
   plaintextify = "${pkgs.avo-scripts}/bin/plaintextify < %s; copiousoutput";
-  libreoffice = "${pkgs.libreoffice-fresh}/bin/libreoffice %s";
+  libreoffice = "${pkgs.libreoffice}/bin/libreoffice %s";
 
 in {
   environment.etc."mailcap".text =  ''

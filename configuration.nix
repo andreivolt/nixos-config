@@ -13,7 +13,6 @@ rec {
     ./networking
     ./shell.nix
 
-    # ./programs/ramda.nix
     ./programs/alacritty.nix
     ./programs/android.nix
     ./programs/aws-cli.nix
@@ -41,11 +40,10 @@ rec {
     ./programs/irc.nix
     ./programs/less.nix
     ./programs/libvirt.nix
-    # ./programs/mitmproxy.nix
+    ./programs/mitmproxy.nix
     ./programs/mopidy.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
-    ./programs/netflix.nix
     ./programs/nodejs.nix
     ./programs/pandora.nix
     ./programs/parallel.nix
@@ -53,7 +51,6 @@ rec {
     ./programs/qutebrowser.nix
     ./programs/readline.nix
     ./programs/ripgrep.nix
-    ./programs/slack.nix
     ./programs/ssh.nix
     ./programs/sxiv.nix
     ./programs/t.nix
@@ -79,6 +76,8 @@ rec {
   };
 
   system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
+
+  system.nixos.stateVersion = "18.09";
 
   nixpkgs.config.allowUnfree = true;
 
@@ -132,23 +131,6 @@ rec {
   };
 
   environment.systemPackages = with pkgs; [
-    # fovea
-    # hachoir-subfile hachoir-urwid hachoir-grep hachoir-metadata
-    # https://github.com/harelba/q
-    # https://github.com/noctuid/tdrop
-    # https://github.com/rkitover/vimpager
-    # imagemin-cli
-    # incron
-    # pfff
-    # telegramircd
-
-    # heroku-cli
-    # ramda-cli
-    # ttystudio
-    # vmd
-    # x0
-    # xml2json
-
     # ej
 
     acpi
@@ -185,7 +167,7 @@ rec {
     lbdb
     lf
     libnotify
-    # libreoffice-fresh
+    libreoffice
     lm_sensors
     maim slop
     #mkcast
@@ -196,14 +178,10 @@ rec {
     nq
     ntfy
     openssl
-    optipng
     pciutils usbutils
     pqiv
     psmisc
     pv
-    pythonPackages.ipython
-    pythonPackages.jupyter
-    pythonPackages.scapy
     racket
     rlwrap
     rsync
@@ -211,7 +189,6 @@ rec {
     sox
     sshuttle
     surfraw
-    tdesktop
     tesseract
     tmate
     tree
@@ -220,7 +197,6 @@ rec {
     urlp
     xfce.thunar
     xurls
-
     sound-theme-freedesktop
     # oni
   ] ++
@@ -241,19 +217,7 @@ rec {
     xev
   ]) ++
   [
-    # haskellPackages.vimus
-    # https://github.com/hoyon/mpv-mpris
-    # mpris-ctl
-    clerk
     google-play-music-desktop-player
-    mpc_cli
-    mpdris2
-    mpv
-    nodePackages.peerflix
-    pianobar
-    playerctl
-    vimpc
-    you-get
     youtube-dl
   ] ++
   [
@@ -289,8 +253,6 @@ rec {
   ] ++
   [
     # gron
-    # haskellPackages.haskell-awk
-    # tsvutils
     csvtotable
     docx2txt
     html2text
@@ -302,9 +264,7 @@ rec {
     pdfgrep
     perlPackages.HTMLParser
     pup
-    pythonPackages.piep
     recode
-    recutils
     remarshal
     textql
     unoconv
@@ -316,14 +276,11 @@ rec {
   ] ++
   [
     dnsutils
-    geoipWithDatabase
     httpie
-    httping
     netcat
     ngrep
     nmap
     socat
-    stunnel # https://gist.github.com/jeremiahsnapp/6426298
     tcpdump
     tcpflow
     telnet
