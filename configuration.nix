@@ -40,7 +40,7 @@ rec {
     ./programs/irc.nix
     ./programs/less.nix
     ./programs/libvirt.nix
-    ./programs/mitmproxy.nix
+    # ./programs/mitmproxy.nix
     ./programs/mopidy.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
@@ -78,6 +78,8 @@ rec {
   system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
 
   system.nixos.stateVersion = "18.09";
+
+  services.openssh.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -132,161 +134,134 @@ rec {
 
   environment.systemPackages = with pkgs; [
     # ej
-
+    # gron
+    # oni
+    #mkcast
+    #stack2nix
+    (lowPrio texlive.combined.scheme-full)
+    abduco
     acpi
     aria
-    asciinema ttyrec
+    asciinema
     at
-    atool dtrx
+    atool
     avo-scripts
-    bfs
     binutils
     byzanz
+    csvtotable
     dateutils
+    dnsutils
+    docx2txt
+    dtrx
+    dvtm
     et
     exiftool exiv2 mediainfo
     expect
+    fatrace
     fdupes
     ffmpeg
     file
     flac
+    forkstat
     gcolor2
     gifsicle
     gnumake
+    google-chrome-dev
     google-cloud-sdk
+    google-play-music-desktop-player
     graphicsmagick imagemagick
     graphviz
-    hy
+    html2text
+    htmlTidy
+    htop
+    httpie
     icdiff
+    iftop
     impressive
     inkscape
     inotify-tools watchman
+    iotop
+    jo
+    jq
     jre
     keybase
     lastpass-cli
-    lbdb
-    lf
     libnotify
     libreoffice
+    libxls
+    linuxPackages.perf
     lm_sensors
+    lsof
+    ltrace
     maim slop
-    #mkcast
+    miller
     moreutilsWithoutParallel
     mosh
+    netcat
+    nethogs
+    ngrep
     ngrok
-    nixops
-    nq
-    ntfy
-    openssl
-    pciutils usbutils
-    pqiv
-    psmisc
-    pv
-    racket
-    rlwrap
-    rsync
-    rxvt_unicode-with-plugins
-    sox
-    sshuttle
-    surfraw
-    tesseract
-    tmate
-    tree
-    tsocks
-    units
-    urlp
-    xfce.thunar
-    xurls
-    sound-theme-freedesktop
-    # oni
-  ] ++
-  [
-    cabal2nix
     nix-beautify
     nix-prefetch-scripts
     nix-repl
     nix-zsh-completions
-    nodePackages.node2nix
+    nixops
+    nmap
     nox
-    #stack2nix
-  ] ++
-  (with xorg; [
-    xbindkeys
-    xcape
-    xchainkeys
-    xev
-  ]) ++
-  [
-    google-play-music-desktop-player
-    youtube-dl
-  ] ++
-  [
+    nq
+    ntfy
+    openssl
     pandoc
-    pdftk
-    poppler_utils
-    (lowPrio texlive.combined.scheme-full)
-  ] ++
-  [
-    abduco
-    dvtm
-    tmux
-    reptyr
-  ] ++
-  [
-    htop
-    iftop
-    iotop
-    linuxPackages.perf
-    nethogs
-  ] ++
-  [
-    google-chrome-dev
-    qutebrowser qutebrowser-scripts
-    torbrowser
-  ] ++
-  [
-    fatrace
-    forkstat
-    lsof
-    ltrace
-    strace
-  ] ++
-  [
-    # gron
-    csvtotable
-    docx2txt
-    html2text
-    htmlTidy
-    jo
-    jq
-    libxls
-    miller
+    pciutils usbutils
     pdfgrep
+    pdftk
     perlPackages.HTMLParser
+    poppler_utils
+    pqiv
+    psmisc
     pup
+    pv
+    qutebrowser qutebrowser-scripts
+    racket
     recode
     remarshal
-    textql
-    unoconv
-    x_x
-    xidel
-    xlsx2csv
-    xml2
-    xsv
-  ] ++
-  [
-    dnsutils
-    httpie
-    netcat
-    ngrep
-    nmap
+    reptyr
+    rlwrap
+    rsync
     socat
+    sound-theme-freedesktop
+    sox
+    sshuttle
+    strace
+    surfraw
     tcpdump
     tcpflow
     telnet
+    tesseract
+    tmate
+    tmux
+    torbrowser
     traceroute
+    tree
+    tsocks
+    ttyrec
+    units
+    unoconv
+    urlp
     whois
     wireshark
     wsta
+    x_x
+    xbindkeys
+    xcape
+    xchainkeys
+    xfce.thunar
+    xidel
+    xlsx2csv
+    xml2
+    xorg.xev
+    xsv
+    xurls
+    youtube-dl
   ];
 }
