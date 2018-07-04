@@ -4,6 +4,8 @@
   home-manager.users.avo
     .services.dropbox.enable = true;
 
+  environment.systemPackages = with pkgs; [ dropbox-cli ];
+
   fileSystems =
     let
       dirs = [ "doc" "media" "proj" "tmp" "src" ];

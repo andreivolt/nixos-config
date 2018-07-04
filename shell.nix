@@ -81,6 +81,10 @@
 
       initExtra =
         let
+          prompt = ''
+            export PS='%d $ '
+          '';
+
           globalAliasesStr =
             let toStr = x: lib.concatStringsSep "\n"
                            (lib.mapAttrsToList (k: v: "alias -g ${k}='${v}'") x);
@@ -95,12 +99,6 @@
               FE = "| ${pkgs.fzf}/bin/fzf | ${pkgs.parallel}/bin/parallel -X --tty $EDITOR";
               X  = "| xargs";
             };
-
-          autoRlwrap = ''
-            zplug 'andreivolt/zsh-auto-rlwrap'
-            bindkey -M viins '^x' insert-rlwrap
-            bindkey -M vicmd '^x' insert-rlwrap
-          '';
 
           functions = {
             "diff" = ''${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff'';
@@ -124,12 +122,9 @@
             source ${xdg.cacheHome}/zplug/init.zsh
 
             zplug 'willghatch/zsh-hooks'; zplug load
-            zplug 'andreivolt/zsh-prompt-lean'
-            zplug 'andreivolt/zsh-vim-mode', defer:2; zplug load
+            zplug '~/proj/zsh-vim-mode', from:local
             zplug 'zdharma/fast-syntax-highlighting'
             zplug 'hlissner/zsh-autopair', defer:2
-            zplug 'chisui/zsh-nix-shell'
-            zplug 'chrismwendt/auto-nix-shell'
 
             zplug load
           '';
@@ -144,7 +139,8 @@
                                 }
                               '') functions))
           completion
-          plugins autoRlwrap
+          plugins
+          prompt
        ];
     };
 }

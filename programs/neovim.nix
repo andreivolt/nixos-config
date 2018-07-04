@@ -127,17 +127,36 @@
           };
 
           customPlugins.parinfer-rust = pkgs.vimUtils.buildVimPlugin {
-            name = "parinfer-rust";
-            buildInputs = with pkgs; [ cargo ];
-            postInstall = ''
-              ${pkgs.cargo}/bin/cargo build --release
-              find
-            '';
+            name = "parinfer";
             src = pkgs.fetchFromGitHub {
               owner = "eraserhd";
               repo = "parinfer-rust";
-              rev = "a26808b97fa99192c7364f73b1ace872b91cc2b6";
-              sha256 = "1j47ypk6waphp4lr5bihdv87945i2gs6d207szcqgph7igg92s8a";
+              rev = "642fec5698f21758029988890c6683763beee5fd";
+              sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
+            };
+            buildPhase = ''
+              export HOME=$TMP
+              ${pkgs.cargo}/bin/cargo build --release
+            '';
+          };
+
+          customPlugins.vim-cljfmt = pkgs.vimUtils.buildVimPlugin {
+            name = "vim-cljfmt";
+            src = pkgs.fetchFromGitHub {
+              owner = "venantius";
+              repo = "vim-cljfmt";
+              rev = "f4bbc04967202a2b94a0ebbb3485991489b9dcd4";
+              sha256 = "09x5w55cw4zb5cjbh1d78hxmbagy9xw8p95qry21i1ydi7m0rmn5";
+            };
+          };
+
+          customPlugins.vim-fireplace = pkgs.vimUtils.buildVimPlugin {
+            name = "fireplace.vim";
+            src = pkgs.fetchFromGitHub {
+              owner = "tpope";
+              repo = "vim-fireplace";
+              rev = "1ef0f0726cadd96547a5f79103b66339f170da02";
+              sha256 = "0ihhd34bl98xssa602386ji013pjj6xnkgww3y2wg73sx2nk6qc4";
             };
           };
 
@@ -181,12 +200,19 @@
             };
           };
 
+          customPlugins.rainbow_parentheses = pkgs.vimUtils.buildVimPlugin {
+            name = "rainbow_parentheses";
+            src = pkgs.fetchFromGitHub {
+              owner = "junegunn";
+              repo = "rainbow_parentheses.vim";
+              rev = "27e7cd73fec9d1162169180399ff8ea9fa28b003";
+              sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
+            };
+          };
+
         in {
           knownPlugins = pkgs.vimPlugins // customPlugins;
           pluginDictionaries = [
-            # { name = "parinfer-rust"; }
-            { name = "vim-easy-align"; }
-            { name = "vim-indent-object"; }
             { name = "colorscheme-acme"; }
             { name = "colorscheme-challenger-deep-monochrome"; }
             { name = "commentary"; }
@@ -196,13 +222,19 @@
             { name = "gitgutter"; }
             { name = "golden-ratio"; }
             { name = "goyo"; }
+            { name = "parinfer-rust"; }
+            { name = "rainbow_parentheses"; }
             { name = "supertab"; }
             { name = "surround"; }
             { name = "undotree"; }
             { name = "vim-autoclose"; }
             { name = "vim-better-whitespace"; }
+            { name = "vim-cljfmt"; }
+            { name = "vim-easy-align"; }
             { name = "vim-eunuch"; }
+            { name = "vim-fireplace"; }
             { name = "vim-indent-guides"; }
+            { name = "vim-indent-object"; }
             { name = "vim-ls"; }
             { name = "vim-nix"; }
           ];

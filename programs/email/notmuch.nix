@@ -13,8 +13,10 @@ in {
     .home.sessionVariables.NOTMUCH_CONFIG = with config.home-manager.users.avo.xdg;
       "${configHome}/notmuch/config";
 
+  # home-manager.users.avo
+  #   .xdg.configFile."notmuch/config".text = lib.generators.toINI {} {
   home-manager.users.avo
-    .xdg.configFile."notmuch/config".text = lib.generators.toINI {} {
+    .home.file.".notmuch-config".text = lib.generators.toINI {} {
       user = {
         name = primary.from_name;
         primary_email = primary.address; other_email = secondary.address;

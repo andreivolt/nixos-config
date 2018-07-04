@@ -4,6 +4,9 @@ in {
     enable = true;
 
     extraTmuxConf = ''
+      set -g default-terminal 'screen-256color'
+      set -ga terminal-overrides ',screen-256color:Tc'
+
       set -g @plugin 'tmux-plugins/tpm'
 
       set -g @plugin 'tmux-plugins/tmux-sensible'

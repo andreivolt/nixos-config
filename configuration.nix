@@ -79,7 +79,7 @@ rec {
 
   system.nixos.stateVersion = "18.09";
 
-  services.openssh.enable = true;
+  services.wakeonlan.interfaces = [ { interface = "enp0s31f6"; method = "magicpacket"; } ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -136,18 +136,16 @@ rec {
     # ej
     # gron
     # oni
-    #mkcast
+    # mkcast
     #stack2nix
     (lowPrio texlive.combined.scheme-full)
     abduco
     acpi
     aria
-    asciinema
     at
     atool
     avo-scripts
     binutils
-    byzanz
     csvtotable
     dateutils
     dnsutils
@@ -212,7 +210,7 @@ rec {
     ntfy
     openssl
     pandoc
-    pciutils usbutils
+    pciutils
     pdfgrep
     pdftk
     perlPackages.HTMLParser
@@ -230,33 +228,27 @@ rec {
     rsync
     socat
     sound-theme-freedesktop
-    sox
     sshuttle
     strace
     surfraw
     tcpdump
     tcpflow
     telnet
-    tesseract
     tmate
     tmux
     torbrowser
     traceroute
     tree
     tsocks
-    ttyrec
     units
     unoconv
     urlp
+    usbutils
     whois
     wireshark
     wsta
     x_x
-    xbindkeys
-    xcape
-    xchainkeys
     xfce.thunar
-    xidel
     xlsx2csv
     xml2
     xorg.xev
