@@ -135,49 +135,43 @@ rec {
   environment.systemPackages = with pkgs; [
     # ej
     # gron
-    # oni
     # mkcast
-    #stack2nix
+    # oni
     (lowPrio texlive.combined.scheme-full)
     abduco
     acpi
     aria
     at
-    atool
     avo-scripts
     binutils
     csvtotable
-    dateutils
     dnsutils
     docx2txt
     dtrx
     dvtm
     et
-    exiftool exiv2 mediainfo
+    exiftool
+    exiv2
     expect
-    fatrace
     fdupes
     ffmpeg
     file
-    flac
     forkstat
     gcolor2
-    gifsicle
     gnumake
     google-chrome-dev
     google-cloud-sdk
     google-play-music-desktop-player
-    graphicsmagick imagemagick
-    graphviz
+    graphicsmagick
     html2text
-    htmlTidy
     htop
     httpie
     icdiff
     iftop
+    imagemagick
     impressive
     inkscape
-    inotify-tools watchman
+    inotify-tools
     iotop
     jo
     jq
@@ -190,8 +184,8 @@ rec {
     linuxPackages.perf
     lm_sensors
     lsof
-    ltrace
-    maim slop
+    maim
+    mediainfo
     miller
     moreutilsWithoutParallel
     mosh
@@ -210,29 +204,26 @@ rec {
     ntfy
     openssl
     pandoc
-    pciutils
-    pdfgrep
     pdftk
     perlPackages.HTMLParser
-    poppler_utils
     pqiv
     psmisc
     pup
     pv
-    qutebrowser qutebrowser-scripts
+    qutebrowser
+    qutebrowser-scripts
     racket
     recode
     remarshal
     reptyr
     rlwrap
     rsync
+    slop
     socat
     sound-theme-freedesktop
-    sshuttle
     strace
     surfraw
     tcpdump
-    tcpflow
     telnet
     tmate
     tmux
@@ -243,15 +234,13 @@ rec {
     units
     unoconv
     urlp
-    usbutils
+    watchman
     whois
     wireshark
     wsta
     x_x
     xfce.thunar
     xlsx2csv
-    xml2
-    xorg.xev
     xsv
     xurls
     youtube-dl

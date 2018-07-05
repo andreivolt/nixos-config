@@ -82,7 +82,7 @@
       initExtra =
         let
           prompt = ''
-            export PS='%d $ '
+            export PS1='%d $ '
           '';
 
           globalAliasesStr =
