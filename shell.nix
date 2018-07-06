@@ -5,12 +5,6 @@
 
   home-manager.users.avo
     .home.packages = with pkgs; [
-      # antigen-hs
-      # autojump
-      # https:++github.com/rupa/z
-      # https://github.com/b4b4r07/enhancd
-      # https://github.com/zplug/zplug
-      # zsh-powerlevel9k
       direnv
     ];
 
@@ -79,11 +73,12 @@
 
       enableDirenv = true;
 
+
+                # j=$jobstates[$a];i='${${(@s,:,)j}[2]}'
+                # jobs+=($a${i//[^+-]/})
       initExtra =
         let
-          prompt = ''
-            export PS1='%d $ '
-          '';
+          prompt = builtins.readFile ./prompt.zsh;
 
           globalAliasesStr =
             let toStr = x: lib.concatStringsSep "\n"

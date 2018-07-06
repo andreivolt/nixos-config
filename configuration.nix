@@ -33,7 +33,6 @@ rec {
     ./programs/google-drive.nix
     ./programs/grep.nix
     ./programs/haskell
-    ./programs/htop.nix
     ./programs/httpie.nix
     ./programs/hub.nix
     ./programs/ipfs.nix
@@ -41,13 +40,10 @@ rec {
     ./programs/less.nix
     ./programs/libvirt.nix
     # ./programs/mitmproxy.nix
-    ./programs/mopidy.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
     ./programs/nodejs.nix
-    ./programs/pandora.nix
     ./programs/parallel.nix
-    ./programs/pianobar.nix
     ./programs/qutebrowser.nix
     ./programs/readline.nix
     ./programs/ripgrep.nix
@@ -149,14 +145,11 @@ rec {
     docx2txt
     dtrx
     dvtm
-    et
     exiftool
     exiv2
     expect
     fdupes
-    ffmpeg
     file
-    forkstat
     gcolor2
     gnumake
     google-chrome-dev
@@ -164,7 +157,6 @@ rec {
     google-play-music-desktop-player
     graphicsmagick
     html2text
-    htop
     httpie
     icdiff
     iftop
@@ -186,7 +178,6 @@ rec {
     lsof
     maim
     mediainfo
-    miller
     moreutilsWithoutParallel
     mosh
     netcat
@@ -204,7 +195,6 @@ rec {
     ntfy
     openssl
     pandoc
-    pdftk
     perlPackages.HTMLParser
     pqiv
     psmisc
@@ -242,7 +232,5 @@ rec {
     xfce.thunar
     xlsx2csv
     xsv
-    xurls
-    youtube-dl
   ];
 }

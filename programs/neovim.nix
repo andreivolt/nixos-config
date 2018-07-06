@@ -66,147 +66,149 @@
             endfor
           '';
 
-          customPlugins.colorscheme-acme = pkgs.vimUtils.buildVimPlugin {
-            name = "colorscheme-acme";
-            src = [
-              (pkgs.writeTextFile {
-                name = "acme.vim";
-                text = (with import ../themes/acme.nix; ''
-                  ${mkColorScheme "acme"}
+          customPlugins = {
+            colorscheme-acme = pkgs.vimUtils.buildVimPlugin {
+              name = "colorscheme-acme";
+              src = [
+                (pkgs.writeTextFile {
+                  name = "acme.vim";
+                  text = (with import ../themes/acme.nix; ''
+                    ${mkColorScheme "acme"}
 
-                  hi Comment      cterm=italic    ctermfg=15            gui=italic guifg=${foregroundSecondary}
-                  hi Cursor                       ctermfg=0                                                       guibg=${highlight}
-                  hi CursorLine                              ctermbg=0                                            guibg=${subtleHighlight}
-                  hi CursorLineNR                 ctermfg=15                       guifg=${gray}                  guibg=${subtleHighlight}
-                  hi EndOfBuffer                  ctermfg=8                        guifg=${foregroundUnimportant}
-                  hi LineNr                       ctermfg=8                        guifg=${foregroundUnimportant}
-                  hi MatchParen   cterm=reverse   ctermfg=8                        guifg=${highlight}
-                  hi NonText                      ctermfg=3                        guifg=${yellow}
-                  hi Normal                       ctermfg=15                       guifg=${lightWhite}
-                  hi Search                                  ctermbg=11                                           guibg=${lightYellow}
-                  hi SpellBad     cterm=underline ctermfg=1
-                  hi StatusLine                   ctermfg=8  ctermbg=8                                            guibg=${highlight}
-                  hi StatusLineNC                 ctermfg=8  ctermbg=0                                            guibg=${yellow}
-                  hi Visual                                  ctermbg=8                                            guibg=${selection}
+                    hi Comment      cterm=italic    ctermfg=15            gui=italic guifg=${foregroundSecondary}
+                    hi Cursor                       ctermfg=0                                                       guibg=${highlight}
+                    hi CursorLine                              ctermbg=0                                            guibg=${subtleHighlight}
+                    hi CursorLineNR                 ctermfg=15                       guifg=${gray}                  guibg=${subtleHighlight}
+                    hi EndOfBuffer                  ctermfg=8                        guifg=${foregroundUnimportant}
+                    hi LineNr                       ctermfg=8                        guifg=${foregroundUnimportant}
+                    hi MatchParen   cterm=reverse   ctermfg=8                        guifg=${highlight}
+                    hi NonText                      ctermfg=3                        guifg=${yellow}
+                    hi Normal                       ctermfg=15                       guifg=${lightWhite}
+                    hi Search                                  ctermbg=11                                           guibg=${lightYellow}
+                    hi SpellBad     cterm=underline ctermfg=1
+                    hi StatusLine                   ctermfg=8  ctermbg=8                                            guibg=${highlight}
+                    hi StatusLineNC                 ctermfg=8  ctermbg=0                                            guibg=${yellow}
+                    hi Visual                                  ctermbg=8                                            guibg=${selection}
 
-                  hi String                                                        guifg=${foregroundSecondary}
-                  hi Delimiter                    ctermfg=8             gui=bold   guifg=${important}
-                  hi Keyword                                            gui=italic
-                  hi Conditional                                        gui=italic
-                '');
-                destination = "/colors/acme.vim";
-              })
-            ];
-          };
-
-          customPlugins.colorscheme-challenger-deep-monochrome = pkgs.vimUtils.buildVimPlugin {
-            name = "colorscheme-challenger-deep-monochrome";
-            src = [
-              (pkgs.writeTextFile {
-                name = "challenger-deep-monochrome.vim";
-                text = (with import ../themes/challenger-deep.nix; ''
-                  ${mkColorScheme "challenger-deep-monochrome"}
-
-                  hi Comment      cterm=italic    ctermfg=15              gui=italic guifg=${lightWhite}
-                  hi CursorLine                              ctermbg=0
-                  hi CursorLineNR                 ctermfg=15                                             guibg={lightWhite}
-                  hi EndOfBuffer                  ctermfg=8                          guifg={gray}
-                  hi LineNr                       ctermfg=8                          guifg=${gray}
-                  hi MatchParen   cterm=reverse
-                  hi NonText                      ctermfg=3                          guifg=${yellow}
-                  hi Normal                       ctermfg=15                         guifg=${lightWhite}
-                  hi Search                                  ctermbg=11                                  guibg=${yellow}
-                  hi SpellBad     cterm=underline ctermfg=1  ctermbg=NONE                                guibg=NONE
-                  hi StatusLine                   ctermfg=8  ctermbg=8                                   guibg=${gray}
-                  hi StatusLineNC                 ctermfg=8  ctermbg=0                                   guibg=${black}
-                  hi Visual                                  ctermbg=8                                   guibg=${gray}
-                '');
-                destination = "/colors/challenger-deep-monochrome.vim";
-              })
-            ];
-          };
-
-          customPlugins.parinfer-rust = pkgs.vimUtils.buildVimPlugin {
-            name = "parinfer";
-            src = pkgs.fetchFromGitHub {
-              owner = "eraserhd";
-              repo = "parinfer-rust";
-              rev = "642fec5698f21758029988890c6683763beee5fd";
-              sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
+                    hi String                                                        guifg=${foregroundSecondary}
+                    hi Delimiter                    ctermfg=8             gui=bold   guifg=${important}
+                    hi Keyword                                            gui=italic
+                    hi Conditional                                        gui=italic
+                  '');
+                  destination = "/colors/acme.vim";
+                })
+              ];
             };
-            buildPhase = ''
-              export HOME=$TMP
-              ${pkgs.cargo}/bin/cargo build --release
-            '';
-          };
 
-          customPlugins.vim-cljfmt = pkgs.vimUtils.buildVimPlugin {
-            name = "vim-cljfmt";
-            src = pkgs.fetchFromGitHub {
-              owner = "venantius";
-              repo = "vim-cljfmt";
-              rev = "f4bbc04967202a2b94a0ebbb3485991489b9dcd4";
-              sha256 = "09x5w55cw4zb5cjbh1d78hxmbagy9xw8p95qry21i1ydi7m0rmn5";
+            colorscheme-challenger-deep-monochrome = pkgs.vimUtils.buildVimPlugin {
+              name = "colorscheme-challenger-deep-monochrome";
+              src = [
+                (pkgs.writeTextFile {
+                  name = "challenger-deep-monochrome.vim";
+                  text = (with import ../themes/challenger-deep.nix; ''
+                    ${mkColorScheme "challenger-deep-monochrome"}
+
+                    hi Comment      cterm=italic    ctermfg=15              gui=italic guifg=${lightWhite}
+                    hi CursorLine                              ctermbg=0
+                    hi CursorLineNR                 ctermfg=15                                             guibg={lightWhite}
+                    hi EndOfBuffer                  ctermfg=8                          guifg={gray}
+                    hi LineNr                       ctermfg=8                          guifg=${gray}
+                    hi MatchParen   cterm=reverse
+                    hi NonText                      ctermfg=3                          guifg=${yellow}
+                    hi Normal                       ctermfg=15                         guifg=${lightWhite}
+                    hi Search                                  ctermbg=11                                  guibg=${yellow}
+                    hi SpellBad     cterm=underline ctermfg=1  ctermbg=NONE                                guibg=NONE
+                    hi StatusLine                   ctermfg=8  ctermbg=8                                   guibg=${gray}
+                    hi StatusLineNC                 ctermfg=8  ctermbg=0                                   guibg=${black}
+                    hi Visual                                  ctermbg=8                                   guibg=${gray}
+                  '');
+                  destination = "/colors/challenger-deep-monochrome.vim";
+                })
+              ];
             };
-          };
 
-          customPlugins.vim-fireplace = pkgs.vimUtils.buildVimPlugin {
-            name = "fireplace.vim";
-            src = pkgs.fetchFromGitHub {
-              owner = "tpope";
-              repo = "vim-fireplace";
-              rev = "1ef0f0726cadd96547a5f79103b66339f170da02";
-              sha256 = "0ihhd34bl98xssa602386ji013pjj6xnkgww3y2wg73sx2nk6qc4";
+            parinfer-rust = pkgs.vimUtils.buildVimPlugin {
+              name = "parinfer";
+              src = pkgs.fetchFromGitHub {
+                owner = "eraserhd";
+                repo = "parinfer-rust";
+                rev = "642fec5698f21758029988890c6683763beee5fd";
+                sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
+              };
+              buildPhase = ''
+                export HOME=$TMP
+                ${pkgs.cargo}/bin/cargo build --release
+              '';
             };
-          };
 
-          customPlugins.golden-ratio = pkgs.vimUtils.buildVimPlugin {
-            name = "golden-ratio";
-            src = pkgs.fetchFromGitHub {
-              owner = "roman";
-              repo = "golden-ratio";
-              rev = "2e085355f2c1d0842b649a963958c21e6815ffc5";
-              sha256 = "1n2mhvbi1qmxkc2gc8yxljr5f90pa0wsbggh4hdsx5ry4v940smq";
+            vim-cljfmt = pkgs.vimUtils.buildVimPlugin {
+              name = "vim-cljfmt";
+              src = pkgs.fetchFromGitHub {
+                owner = "venantius";
+                repo = "vim-cljfmt";
+                rev = "f4bbc04967202a2b94a0ebbb3485991489b9dcd4";
+                sha256 = "09x5w55cw4zb5cjbh1d78hxmbagy9xw8p95qry21i1ydi7m0rmn5";
+              };
             };
-          };
 
-          customPlugins.vim-better-whitespace = pkgs.vimUtils.buildVimPlugin {
-            name = "vim-better-whitespace";
-            src = pkgs.fetchFromGitHub {
-              owner = "ntpeters";
-              repo = "vim-better-whitespace";
-              rev = "984c8da518799a6bfb8214e1acdcfd10f5f1eed7";
-              sha256 = "10l01a8xaivz6n01x6hzfx7gd0igd0wcf9ril0sllqzbq7yx2bbk";
+            vim-fireplace = pkgs.vimUtils.buildVimPlugin {
+              name = "fireplace.vim";
+              src = pkgs.fetchFromGitHub {
+                owner = "tpope";
+                repo = "vim-fireplace";
+                rev = "1ef0f0726cadd96547a5f79103b66339f170da02";
+                sha256 = "0ihhd34bl98xssa602386ji013pjj6xnkgww3y2wg73sx2nk6qc4";
+              };
             };
-          };
 
-          customPlugins.vim-ls = pkgs.vimUtils.buildVimPlugin {
-            name = "vim-ls";
-            src = pkgs.fetchFromGitHub {
-              owner = "gkz";
-              repo = "vim-ls";
-              rev = "795568338ecdc5d8059db2eb84c7f0de3388bae3";
-              sha256 = "0p3dbwfsqhhzh7icsiaa7j09zp5r8j7xrcaw6gjxcxqlhv86jaa1";
+            golden-ratio = pkgs.vimUtils.buildVimPlugin {
+              name = "golden-ratio";
+              src = pkgs.fetchFromGitHub {
+                owner = "roman";
+                repo = "golden-ratio";
+                rev = "2e085355f2c1d0842b649a963958c21e6815ffc5";
+                sha256 = "1n2mhvbi1qmxkc2gc8yxljr5f90pa0wsbggh4hdsx5ry4v940smq";
+              };
             };
-          };
 
-          customPlugins.vim-autoclose = pkgs.vimUtils.buildVimPlugin {
-            name = "vim-autoclose";
-            src = pkgs.fetchFromGitHub {
-              owner = "Townk";
-              repo = "vim-autoclose";
-              rev = "a9a3b7384657bc1f60a963fd6c08c63fc48d61c3";
-              sha256 = "12jk98hg6rz96nnllzlqzk5nhd2ihj8mv20zjs56p3200izwzf7d";
+            vim-better-whitespace = pkgs.vimUtils.buildVimPlugin {
+              name = "vim-better-whitespace";
+              src = pkgs.fetchFromGitHub {
+                owner = "ntpeters";
+                repo = "vim-better-whitespace";
+                rev = "984c8da518799a6bfb8214e1acdcfd10f5f1eed7";
+                sha256 = "10l01a8xaivz6n01x6hzfx7gd0igd0wcf9ril0sllqzbq7yx2bbk";
+              };
             };
-          };
 
-          customPlugins.rainbow_parentheses = pkgs.vimUtils.buildVimPlugin {
-            name = "rainbow_parentheses";
-            src = pkgs.fetchFromGitHub {
-              owner = "junegunn";
-              repo = "rainbow_parentheses.vim";
-              rev = "27e7cd73fec9d1162169180399ff8ea9fa28b003";
-              sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
+            vim-ls = pkgs.vimUtils.buildVimPlugin {
+              name = "vim-ls";
+              src = pkgs.fetchFromGitHub {
+                owner = "gkz";
+                repo = "vim-ls";
+                rev = "795568338ecdc5d8059db2eb84c7f0de3388bae3";
+                sha256 = "0p3dbwfsqhhzh7icsiaa7j09zp5r8j7xrcaw6gjxcxqlhv86jaa1";
+              };
+            };
+
+            vim-autoclose = pkgs.vimUtils.buildVimPlugin {
+              name = "vim-autoclose";
+              src = pkgs.fetchFromGitHub {
+                owner = "Townk";
+                repo = "vim-autoclose";
+                rev = "a9a3b7384657bc1f60a963fd6c08c63fc48d61c3";
+                sha256 = "12jk98hg6rz96nnllzlqzk5nhd2ihj8mv20zjs56p3200izwzf7d";
+              };
+            };
+
+            rainbow_parentheses = pkgs.vimUtils.buildVimPlugin {
+              name = "rainbow_parentheses";
+              src = pkgs.fetchFromGitHub {
+                owner = "junegunn";
+                repo = "rainbow_parentheses.vim";
+                rev = "27e7cd73fec9d1162169180399ff8ea9fa28b003";
+                sha256 = "0izbjq6qbia013vmd84rdwjmwagln948jh9labhly0asnhqyrkb8";
+              };
             };
           };
 
