@@ -121,6 +121,23 @@
                     hi StatusLine                   ctermfg=8  ctermbg=8                                   guibg=${gray}
                     hi StatusLineNC                 ctermfg=8  ctermbg=0                                   guibg=${black}
                     hi Visual                                  ctermbg=8                                   guibg=${gray}
+
+                    hi rainbowParensShell1 guifg=#0000ff
+                    hi rainbowParensShell2 guifg=#005ffe
+                    hi rainbowParensShell3 guifg=#00bffe
+                    hi rainbowParensShell4 guifg=#00fede
+                    hi rainbowParensShell5 guifg=#00fe7f
+                    hi rainbowParensShell6 guifg=#00fe1f
+                    hi rainbowParensShell7 guifg=#3ffe00
+                    hi rainbowParensShell8 guifg=#9ffe00
+                    hi rainbowParensShell9 guifg=#fefe00
+                    hi rainbowParensShell10 guifg=#fe9f00
+                    hi rainbowParensShell11 guifg=#fe3f00
+                    hi rainbowParensShell12 guifg=#fe001f
+                    hi rainbowParensShell13 guifg=#fe007f
+                    hi rainbowParensShell14 guifg=#fe00de
+                    hi rainbowParensShell15 guifg=#be00fe
+                    hi rainbowParensShell16 guifg=#5f00fe
                   '');
                   destination = "/colors/challenger-deep-monochrome.vim";
                 })
@@ -224,6 +241,7 @@
             { name = "gitgutter"; }
             { name = "golden-ratio"; }
             { name = "goyo"; }
+            { name = "nerdtree"; }
             { name = "parinfer-rust"; }
             { name = "rainbow_parentheses"; }
             { name = "supertab"; }

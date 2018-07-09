@@ -18,10 +18,8 @@ rec {
     ./programs/aws-cli.nix
     ./programs/bitcoin.nix
     ./programs/clojure
-    ./programs/curl.nix
     ./programs/docker
     ./programs/dropbox.nix
-    ./programs/editor.nix
     ./programs/emacs.nix
     ./programs/email
     ./programs/floobits.nix
@@ -133,7 +131,6 @@ rec {
     # gron
     # mkcast
     # oni
-    (lowPrio texlive.combined.scheme-full)
     abduco
     acpi
     aria
@@ -156,15 +153,12 @@ rec {
     google-cloud-sdk
     google-play-music-desktop-player
     graphicsmagick
-    html2text
     httpie
     icdiff
-    iftop
     imagemagick
     impressive
     inkscape
     inotify-tools
-    iotop
     jo
     jq
     jre
@@ -215,6 +209,7 @@ rec {
     surfraw
     tcpdump
     telnet
+    texlive.combined.scheme-full
     tmate
     tmux
     torbrowser
@@ -225,7 +220,6 @@ rec {
     unoconv
     urlp
     watchman
-    whois
     wireshark
     wsta
     x_x
