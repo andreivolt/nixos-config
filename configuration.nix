@@ -40,7 +40,6 @@ rec {
     # ./programs/mitmproxy.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
-    ./programs/nodejs.nix
     ./programs/parallel.nix
     ./programs/qutebrowser.nix
     ./programs/readline.nix
@@ -139,12 +138,11 @@ rec {
     binutils
     csvtotable
     dnsutils
-    docx2txt
+    # docx2txt
     dtrx
     dvtm
     exiftool
     exiv2
-    expect
     fdupes
     file
     gcolor2
@@ -155,8 +153,6 @@ rec {
     graphicsmagick
     httpie
     icdiff
-    imagemagick
-    impressive
     inkscape
     inotify-tools
     jo
@@ -179,8 +175,6 @@ rec {
     ngrep
     ngrok
     nix-beautify
-    nix-prefetch-scripts
-    nix-repl
     nix-zsh-completions
     nixops
     nmap
@@ -219,7 +213,6 @@ rec {
     units
     unoconv
     urlp
-    watchman
     wireshark
     wsta
     x_x

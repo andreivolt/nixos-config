@@ -5,6 +5,8 @@ avo-scripts = with pkgs; stdenv.mkDerivation rec {
 
   src = ../scripts;
 
+  buildInputs = [ expect ];
+
   installPhase = ''
     mkdir -p $out/bin
     find . \

@@ -178,6 +178,16 @@
               };
             };
 
+            paredit = pkgs.vimUtils.buildVimPlugin {
+              name = "paredit.vim";
+              src = pkgs.fetchFromGitHub {
+                owner = "vim-scripts";
+                repo = "paredit.vim";
+                rev = "791c3a0cc3155f424fba9409a9520eec241c189c";
+                sha256 = "15lg33bgv7afjikn1qanriaxmqg4bp3pm7qqhch6105r1sji9gz9";
+              };
+            };
+
             golden-ratio = pkgs.vimUtils.buildVimPlugin {
               name = "golden-ratio";
               src = pkgs.fetchFromGitHub {
@@ -242,6 +252,7 @@
             { name = "golden-ratio"; }
             { name = "goyo"; }
             { name = "nerdtree"; }
+            { name = "paredit"; }
             { name = "parinfer-rust"; }
             { name = "rainbow_parentheses"; }
             { name = "supertab"; }
