@@ -22,7 +22,6 @@ rec {
     ./programs/dropbox.nix
     ./programs/emacs.nix
     ./programs/email
-    ./programs/floobits.nix
     ./programs/fzf.nix
     ./programs/ghi.nix
     ./programs/gist.nix
@@ -178,7 +177,6 @@ rec {
     nix-zsh-completions
     nixops
     nmap
-    nox
     nq
     ntfy
     openssl

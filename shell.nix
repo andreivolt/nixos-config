@@ -88,11 +88,8 @@
               L  = "| less -R";
               H  = "| head";
               T  = "| tail";
-              Y  = "| ${pkgs.xsel}/bin/xsel -b";
-              N  = "2>/dev/null";
               F  = "| ${pkgs.fzf}/bin/fzf | xargs";
               FE = "| ${pkgs.fzf}/bin/fzf | ${pkgs.parallel}/bin/parallel -X --tty $EDITOR";
-              X  = "| xargs";
             };
 
           functions = {

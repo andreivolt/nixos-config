@@ -11,32 +11,16 @@ in {
     ./hdpi.nix
     ./redshift.nix
     ./rofi.nix
-    ./xmobar.nix
     ./xmonad.nix
   ];
 
   environment.systemPackages = with pkgs; [
-    copyq xclip xsel
-    find-cursor
-    polybar
     setroot
-    seturgent
-    wmctrl wmutils-core xdotool xnee
+    wmctrl
+    xclip
+    xdotool
     xrandr-invert-colors
-
-    # materia-theme
-    # numix-gtk-theme
-    # adapta-gtk-theme
-
-    # qtstyleplugin-kvantum-qt4
-    # qtstyleplugins
-    # qtstyleplugin-kvantum
-    # QT_QPA_PLATFORMTHEME=gtk2
-    gnome3.adwaita-icon-theme
-    # breeze-gtk breeze-qt5 qt5ct
-    lxappearance
-    arc-theme
-    arc-icon-theme
+    xsel
   ];
 
 
