@@ -4,7 +4,7 @@
 [submodule "packages/nix-beautify"]
 	path = packages/nix-beautify
 	url = https://github.com/nixcloud/nix-beautify
-[submodule "xmonad-config"]
+[submodule "gui/xmonad-config"]
 	path = gui/xmonad-config
 	url = git@github.com:andreivolt/xmonad-config
 [submodule "scripts"]

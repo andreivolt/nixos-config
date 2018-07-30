@@ -125,6 +125,7 @@ rec {
   };
 
   environment.systemPackages = with pkgs; [
+    # docx2txt
     # ej
     # gron
     # mkcast
@@ -132,12 +133,10 @@ rec {
     abduco
     acpi
     aria
-    at
     avo-scripts
     binutils
     csvtotable
     dnsutils
-    # docx2txt
     dtrx
     dvtm
     exiftool
@@ -177,7 +176,6 @@ rec {
     nix-zsh-completions
     nixops
     nmap
-    nq
     ntfy
     openssl
     pandoc
@@ -196,7 +194,6 @@ rec {
     rsync
     slop
     socat
-    sound-theme-freedesktop
     strace
     surfraw
     tcpdump
