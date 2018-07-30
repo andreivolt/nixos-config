@@ -126,10 +126,8 @@ rec {
 
   environment.systemPackages = with pkgs; [
     # docx2txt
-    # ej
     # gron
     # mkcast
-    # oni
     abduco
     acpi
     aria

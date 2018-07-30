@@ -15,7 +15,6 @@ in {
   ];
 
   environment.systemPackages = with pkgs; [
-    setroot
     wmctrl
     xclip
     xdotool
@@ -74,10 +73,8 @@ in {
       enable = true;
       initExtra = let
         setMonitors = "${pkgs.avo-scripts}/bin/set-monitors";
-        setWallpaper = "${pkgs.avo-scripts}/bin/set-wallpaper";
       in lib.concatStringsSep "\n" [
         setMonitors
-        setWallpaper
       ];
     };
   };
