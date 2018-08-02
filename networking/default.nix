@@ -3,7 +3,6 @@
 {
   imports = [
     ./wifi.nix
-    ./vpn.nix
     ./privoxy.nix
     ./sshd.nix
   ];

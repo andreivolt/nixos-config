@@ -20,16 +20,10 @@ in {
     enableCoreFonts = true;
     fonts = with pkgs; [
       emacs-all-the-icons-fonts
-      font-awesome-ttf
       google-fonts
       hack-font
-      hasklig
       iosevka-custom
-      material-icons
       nerdfonts
-      overpass
-      powerline-fonts
-      terminus_font
       ubuntu_font_family
       vistafonts
     ];

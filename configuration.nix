@@ -45,7 +45,6 @@ rec {
     ./programs/ripgrep.nix
     ./programs/ssh.nix
     ./programs/sxiv.nix
-    ./programs/t.nix
     ./programs/tmux.nix
     ./programs/zathura.nix
   ];
@@ -170,7 +169,6 @@ rec {
     nethogs
     ngrep
     ngrok
-    nix-beautify
     nix-zsh-completions
     nixops
     nmap
@@ -212,5 +210,6 @@ rec {
     xfce.thunar
     xlsx2csv
     xsv
+    xurls
   ];
 }

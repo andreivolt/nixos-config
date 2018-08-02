@@ -8,7 +8,7 @@
 
   fileSystems =
     let
-      dirs = [ "lib" "media" "proj" "tmp" "src" ];
+      dirs = [ "lib" "proj" "tmp" "src" ];
       template = dir: { device = "/home/avo/" + dir;
                         fsType = "none"; options = [ "bind" ];
                         mountPoint = "/home/avo/Dropbox/" + dir; };

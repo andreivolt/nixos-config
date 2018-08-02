@@ -17,6 +17,7 @@
         --network nginx-proxy \
         -v /var/lib/docker-nginx-proxy.vhost.d:/etc/nginx/vhost.d:ro \
         -v /var/lib/docker-nginx-proxy.certs:/etc/nginx/certs:ro \
+        -v ${pkgs.writeText "custom.conf" "proxy_read_timeout 999;"}:/etc/nginx/conf.d/custom.conf:ro \
         -v /etc/nginx/vhost.d \
         -v /usr/share/nginx/html \
         -v /var/run/docker.sock:/tmp/docker.sock:ro \
