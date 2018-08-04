@@ -38,6 +38,7 @@ rec {
     ./programs/libvirt.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
+    ./programs/nodejs.nix
     ./programs/parallel.nix
     ./programs/qutebrowser.nix
     ./programs/readline.nix
@@ -85,7 +86,7 @@ rec {
     manual.manpages.enable = false;
 
     home.sessionVariables = with config.home-manager.users.avo; {
-      BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser-open-in-instance";
+      BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser";
       EDITOR  = "${pkgs.neovim}/bin/nvim";
       PATH    = lib.concatStringsSep ":" [ "$PATH" "$HOME/.local/bin" ];
     };

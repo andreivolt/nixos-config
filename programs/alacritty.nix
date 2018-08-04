@@ -1,4 +1,4 @@
-{ lib, ...}:
+{ config, lib, pkgs, ...}:
 
 let
   theme = import ../themes/current;
@@ -112,12 +112,10 @@ let
   };
 
 in {
-  home-manager.users.avo
-    .programs.alacritty = {
-      enable = true;
+  environment.systemPackages = with pkgs; [ alacritty ];
 
-      config = mkConf colorSchemes.default;
-    };
+  home-manager.users.avo
+    .xdg.configFile."alacritty/alacritty.yml".text = lib.generators.toYAML {} (mkConf colorSchemes.default);
 
   home-manager.users.avo
     .xdg.configFile."alacritty/config_acme-colors.yml".text = lib.generators.toYAML {} (mkConf colorSchemes.acme);

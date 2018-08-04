@@ -1,10 +1,18 @@
-{
-  home-manager.users.avo.programs.httpie = {
-    enable = true;
+{ config, lib, pkgs, ... }:
 
-    defaultOptions = [
-      "--pretty" "format"
-      "--session" "default"
-    ];
+{
+  environment.systemPackages = with pkgs; [ httpie ];
+
+  home-manager.users.avo
+    .home.sessionVariables = with config.home-manager.users.avo.xdg; {
+      HTTPIE_CONFIG_DIR = "${configHome}/httpie";
+    };
+
+  home-manager.users.avo
+    .xdg.configFile."httpie/config.json".text = lib.generators.toJSON {} {
+      default_options = [
+        "--pretty" "format"
+        "--session" "default"
+      ];
   };
 }
