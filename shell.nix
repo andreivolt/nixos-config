@@ -117,6 +117,7 @@
             zplug '~/proj/zsh-vim-mode', from:local
             zplug 'zdharma/fast-syntax-highlighting'
             zplug 'hlissner/zsh-autopair', defer:2
+            zplug 'chisui/zsh-nix-shell'
 
             zplug load
           '';

@@ -9,12 +9,12 @@ in {
     ./dunst.nix
     ./fonts.nix
     ./hdpi.nix
-    ./redshift.nix
     ./rofi.nix
     ./xmonad.nix
   ];
 
   environment.systemPackages = with pkgs; [
+    redshift
     wmctrl
     xclip
     xdotool

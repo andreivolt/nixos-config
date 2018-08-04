@@ -23,7 +23,6 @@ in {
       google-fonts
       hack-font
       iosevka-custom
-      nerdfonts
       ubuntu_font_family
       vistafonts
     ];

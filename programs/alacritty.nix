@@ -84,7 +84,7 @@ let
       normal = { family = monospaceFont; style = "Regular"; };
       bold = { family = monospaceFont; style = "Bold"; };
       italic = { family = monospaceFont; style = "Italic"; };
-      offset = { x = 0; y = -3; };
+      offset = { x = 0; y = -4; };
       glyph_offset = { x = 0; y = 0; };
     };
     hide_cursor_when_typing = false;

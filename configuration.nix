@@ -13,13 +13,13 @@ rec {
     ./networking
     ./shell.nix
 
+    # ./programs/mitmproxy.nix
     ./programs/alacritty.nix
     ./programs/android.nix
     ./programs/aws-cli.nix
     ./programs/bitcoin.nix
     ./programs/clojure
     ./programs/docker
-    ./programs/dropbox.nix
     ./programs/emacs.nix
     ./programs/email
     ./programs/fzf.nix
@@ -36,7 +36,6 @@ rec {
     ./programs/irc.nix
     ./programs/less.nix
     ./programs/libvirt.nix
-    # ./programs/mitmproxy.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
     ./programs/parallel.nix
@@ -138,7 +137,6 @@ rec {
     dvtm
     exiftool
     exiv2
-    fdupes
     file
     gcolor2
     gnumake

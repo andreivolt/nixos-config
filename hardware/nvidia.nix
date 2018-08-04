@@ -11,6 +11,3 @@ if builtins.getEnv "HOST" == "watts" then {
     .home.sessionVariables.__GL_SHADER_DISK_CACHE_PATH = with config.home-manager.users.avo;
       "${xdg.cacheHome}/nv";
 } else {}
-// {
-  hardware.opengl.driSupport = true;
-}
