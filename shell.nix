@@ -54,28 +54,11 @@
         size = 99999;
         save = size;
         path = ".cache/zsh_history";
-        ignoreDups = true;
+        expireDuplicatesFirst = true;
         share = true;
         extended = true;
-        ignoreSpace = true;
-        reduceBlanks = true;
       };
 
-      setTerminalTitle = true;
-
-      glob = {
-        extended = true;
-        case = false;
-        complete = true;
-      };
-
-      enableInteractiveComments = true;
-
-      enableDirenv = true;
-
-
-                # j=$jobstates[$a];i='${${(@s,:,)j}[2]}'
-                # jobs+=($a${i//[^+-]/})
       initExtra =
         let
           prompt = builtins.readFile ./prompt.zsh;
@@ -105,6 +88,10 @@
             alias ....='cd .. && cd .. && cd ..'
           '';
 
+          direnv = ''
+            eval "$(${pkgs.direnv}/bin/direnv hook zsh)"
+          '';
+
           completion = ''
             zstyle ':completion:*' menu select
             zstyle ':completion:*' rehash true
@@ -122,6 +109,20 @@
             zplug load
           '';
         in lib.concatStringsSep "\n" [
+          ''
+            setopt HIST_IGNORE_SPACE
+            setopt HIST_REDUCE_BLANKS
+
+            setopt EXTENDED_GLOB
+            setopt CASE_GLOB
+            setopt GLOB_COMPLETE
+
+            setopt INTERACTIVE_COMMENTS
+
+            if [[ $TERM != eterm-color && $TERM != dumb ]]; then
+              preexec() { print -Pn "\e]0;$1\a" }
+            fi
+          ''
           cdAliases
           globalAliasesStr
           (lib.concatStringsSep "\n"
@@ -134,6 +135,7 @@
           completion
           plugins
           prompt
+          direnv
        ];
     };
 }

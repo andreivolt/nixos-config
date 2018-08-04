@@ -1,3 +1,5 @@
+{ config, lib, pkgs, ... }:
+
 let
   theme = import ../themes/current;
   pkgs = import <nixpkgs> {};
@@ -11,10 +13,8 @@ let
   };
 
 in {
-  home-manager.users.avo.programs.qutebrowser = {
-    enable = true;
-
-    config = {
+  home-manager.users.avo
+    .xdg.configFile."qutebrowser/autoconfig.yml".text = lib.generators.toYAML {} {
       "config_version" = 2;
       "settings" = {
         "aliases".global = {
@@ -142,5 +142,4 @@ in {
         "zoom.mouse_divider".global = 512;
       };
     };
-  };
 }
