@@ -124,9 +124,7 @@ rec {
   };
 
   environment.systemPackages = with pkgs; [
-    # docx2txt
     # gron
-    # mkcast
     abduco
     acpi
     aria
@@ -134,18 +132,17 @@ rec {
     binutils
     csvtotable
     dnsutils
+    docx2txt
     dtrx
     dvtm
-    exiftool
-    exiv2
     file
+    flameshot
     gcolor2
     gnumake
     google-chrome-dev
     google-cloud-sdk
     google-play-music-desktop-player
     graphicsmagick
-    httpie
     icdiff
     inkscape
     inotify-tools
@@ -158,10 +155,7 @@ rec {
     libreoffice
     libxls
     linuxPackages.perf
-    lm_sensors
     lsof
-    maim
-    mediainfo
     moreutilsWithoutParallel
     mosh
     netcat
@@ -179,7 +173,6 @@ rec {
     psmisc
     pup
     pv
-    qutebrowser
     qutebrowser-scripts
     racket
     recode
@@ -187,11 +180,9 @@ rec {
     reptyr
     rlwrap
     rsync
-    slop
     socat
     strace
     surfraw
-    tcpdump
     telnet
     texlive.combined.scheme-full
     tmate

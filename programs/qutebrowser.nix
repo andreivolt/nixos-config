@@ -13,6 +13,8 @@ let
   };
 
 in {
+  environment.systemPackages = with pkgs; [ qutebrowser ];
+
   home-manager.users.avo
     .xdg.configFile."qutebrowser/autoconfig.yml".text = lib.generators.toYAML {} {
       "config_version" = 2;
