@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+name=$1
+url=$2
+
+google-chrome-unstable \
+    --class=$name \
+    --app="$url" \
+    --no-first-run --no-default-browser-check \
+    --user-data-dir=$XDG_CACHE_HOME/${name}-webapp \
+    &>/dev/null &
+
+disown

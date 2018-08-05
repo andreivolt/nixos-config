@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+set-volume() {
+    pamixer --unmute
+
+    case $1 in
+        +*) pamixer --increase ${1/+/} ;;
+        -*) pamixer --decrease ${1/-/} ;;
+    esac
+}
+
+get-volume() {
+    pamixer --get-volume
+}
+
+mute-toggle() {
+    pamixer --toggle-mute
+}
+
+
+case $1 in
+    up) set-volume +2 ;;
+    down) set-volume -2 ;;
+    mute-toggle) mute-toggle;;
+esac
+
+notify-send --app-name volume "volume" $(get-volume)

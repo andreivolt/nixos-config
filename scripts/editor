@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+emacsclient \
+    --socket-name main \
+    --create-frame \
+    --no-wait

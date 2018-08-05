@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+app_name=$(basename $PWD)
+
+do-release() {
+    $(npm bin)/code-push release-react -d Production $app_name
+}
+
+do-release android
+do-release ios --plistFile ios/$app_name/Info.plist

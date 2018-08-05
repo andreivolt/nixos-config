@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+setsid \
+  google-chrome-unstable \
+    --user-data-dir=$(mktemp -d) \
+    --no-first-run --no-default-browser-check \
+  &>/dev/null

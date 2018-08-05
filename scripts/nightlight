@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+[ ! -f /tmp/.nightlight ] && echo 'REDSHIFT_TEMP=6500; REDSHIFT_BRIGTHNESS=1' > /tmp/.nightlight
+source /tmp/.nightlight
+
+while getopts ":t:b:-x:" o; do
+sign=$OPTARG
+
+case $o in
+    t) (! [[ $REDSHIFT_TEMP -eq 6500 && $sign = '+' ]]) && REDSHIFT_TEMP=$(($REDSHIFT_TEMP $sign 50)) ;;
+    b) (! [[ $REDSHIFT_BRIGTHNESS -eq 1 && $sign = '+' ]]) && REDSHIFT_BRIGTHNESS=$(($REDSHIFT_BRIGTHNESS $sign 0.01)) ;;
+    -x) redshift -x; rm /tmp/.nightlight; exit ;;
+esac
+done
+
+redshift -O $REDSHIFT_TEMP -b $REDSHIFT_BRIGTHNESS &>/dev/null
+
+notify-send "
+  t: $REDSHIFT_TEMP
+  b: $REDSHIFT_BRIGTHNESS
+"
+
+echo "REDSHIFT_TEMP=$REDSHIFT_TEMP; REDSHIFT_BRIGTHNESS=$REDSHIFT_BRIGTHNESS" > /tmp/.nightlight

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+file=$(mktemp)
+
+maim 2>/dev/null \
+    --select --highlight --color 0,0,0,0.5 \
+    --format png \
+    $file
+
+echo $file

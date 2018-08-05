@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+pkill -USR1 dunst
+pkill -USR2 dunst

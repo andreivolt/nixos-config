@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+emacsclient \
+    --socket-name mail \
+    --create-frame --frame-parameters '((name . "mail"))' --eval '(+avo/mail)' \
+    --no-wait

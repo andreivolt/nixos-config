@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+text="$*"
+
+curl "https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=$GOOGLE_API_KEY" \
+    -H "Content-Type: application/json" \
+    --data "{
+      'input':{
+        'text':\"$text\"
+      },
+      'voice':{
+        'languageCode':'en-us',
+        'name':'en-US-Wavenet-C',
+        'ssmlGender':'FEMALE'
+      },
+      'audioConfig':{
+        'audioEncoding':'OGG_OPUS'
+      }
+    }" |
+jq .audioContent -r | base64 --decode |
+mpv -

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+emacsclient \
+    --socket-name irc \
+    --create-frame --frame-parameters '((name . "irc"))' -e '(+avo/irc)' \
+    --no-wait

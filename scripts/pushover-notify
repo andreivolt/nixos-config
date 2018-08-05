@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+http POST https://api.pushover.net/1/messages \
+  token==$PUSHOVER_TOKEN \
+  user==$PUSHOVER_USER \
+  message=="${*:-done}" &>/dev/null

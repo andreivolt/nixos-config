@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+declare left=DP-2 center=DP-4 top=DP-0
+
+top_on="--output $top --auto --above $center"
+
+xrandr \
+  $(case $1 in
+      default)
+        echo "
+        --output $center --auto --primary \
+        $top_on \
+        --output $left --auto --left-of $center --rotate left"
+        ;;
+
+      one)
+        echo "
+        --output $center --auto --primary \
+        --output $top --off \
+        --output $left --off"
+        ;;
+
+      vid)
+        echo "
+        --output $center --auto --primary \
+        $top_on \
+        --output $left --off"
+        ;;
+
+      left-portrait)
+        echo "
+        --output $left --rotate left"
+        ;;
+
+      left-landscape)
+        echo "
+        --output $left --rotate normal"
+        ;;
+    esac)

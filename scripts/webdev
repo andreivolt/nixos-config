@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+url=$1
+
+google-chrome-unstable --app=$url &>/dev/null &
+disown
+echo $!
+
+sleep 1
+
+classname=$(<<<$url perl -pe 's|^https?://||; s|/|__|; s|/|_|g')
+echo $classname
+xdotool search --classname $classname windowactivate --sync key F12

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+url=$1
+
+emacsclient \
+    --socket-name scratchpad \
+    --eval "(browse-url-emacs \"$url\")" \
+    --no-wait

@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+url=$1
+
+git clone \
+    --depth 1 $url \
+    $(urlp --path $url | sed 's|/||; s|/|-|')
