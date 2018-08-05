@@ -7,6 +7,3 @@
 [submodule "gui/xmonad-config"]
 	path = gui/xmonad-config
 	url = git@github.com:andreivolt/xmonad-config
-[submodule "scripts"]
-	path = scripts
-	url = git@github.com:andreivolt/scripts

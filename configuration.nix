@@ -70,7 +70,10 @@ rec {
 
   system.nixos.stateVersion = "18.09";
 
-  services.wakeonlan.interfaces = [ { interface = "enp0s31f6"; method = "magicpacket"; } ];
+  services.wakeonlan.interfaces =
+   if builtins.getEnv "HOST" == "watts" then
+     [ { interface = "enp0s31f6"; method = "magicpacket"; } ]
+   else [];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -82,8 +85,6 @@ rec {
 
   home-manager.users.avo = {
     nixpkgs.config = config.nixpkgs.config;
-
-    manual.manpages.enable = false;
 
     home.sessionVariables = with config.home-manager.users.avo; {
       BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser";
@@ -125,16 +126,13 @@ rec {
 
   environment.systemPackages = with pkgs; [
     # gron
-    abduco
     acpi
     aria
     avo-scripts
     binutils
-    csvtotable
     dnsutils
     docx2txt
     dtrx
-    dvtm
     file
     flameshot
     gcolor2
@@ -153,7 +151,6 @@ rec {
     lastpass-cli
     libnotify
     libreoffice
-    libxls
     linuxPackages.perf
     lsof
     moreutilsWithoutParallel
@@ -169,7 +166,6 @@ rec {
     openssl
     pandoc
     perlPackages.HTMLParser
-    pqiv
     psmisc
     pup
     pv
@@ -192,14 +188,10 @@ rec {
     tree
     tsocks
     units
-    unoconv
     urlp
     wireshark
     wsta
-    x_x
     xfce.thunar
-    xlsx2csv
-    xsv
     xurls
   ];
 }

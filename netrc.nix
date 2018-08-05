@@ -5,10 +5,10 @@
     .home.file.".netrc".text =
       lib.concatStringsSep "\n"
         (lib.mapAttrsToList
-          (name: value: ''
-            machine ${name}
-              password ${value.password}
-              login ${value.login}
+          (machine: credentials: ''
+            machine ${machine}
+              password ${credentials.password}
+              login ${credentials.login}
           '')
           (import ./private/credentials.nix).netrc);
 }
