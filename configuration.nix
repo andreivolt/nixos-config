@@ -131,7 +131,6 @@ rec {
     avo-scripts
     binutils
     dnsutils
-    docx2txt
     dtrx
     file
     flameshot
