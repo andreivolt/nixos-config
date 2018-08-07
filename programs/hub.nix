@@ -9,5 +9,5 @@
 
   home-manager.users.avo
     .home.sessionVariables.GITHUB_TOKEN =
-      (import ../private/credentials.nix).github.oauth_token;
+      (import ../private/credentials.nix).github.token;
 }

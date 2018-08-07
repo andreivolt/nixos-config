@@ -10,7 +10,7 @@
   home-manager.users.avo
     .xdg.configFile."ripgrep/config".text = ''
       --smart-case
-      --colors=match:bg:yellow
+      --colors=match:bg:white
       --colors=match:fg:black
     '';
 }

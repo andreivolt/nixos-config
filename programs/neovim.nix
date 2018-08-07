@@ -94,6 +94,8 @@
                     hi Delimiter                    ctermfg=8             gui=bold   guifg=${important}
                     hi Keyword                                            gui=italic
                     hi Conditional                                        gui=italic
+
+                    hi VertSplit NONE guifg=${foregroundSecondary}
                   '');
                   destination = "/colors/acme.vim";
                 })
@@ -110,16 +112,16 @@
 
                     hi Comment      cterm=italic    ctermfg=15              gui=italic guifg=${lightWhite}
                     hi CursorLine                              ctermbg=0
-                    hi CursorLineNR                 ctermfg=15                                             guibg={lightWhite}
-                    hi EndOfBuffer                  ctermfg=8                          guifg={gray}
+                    hi CursorLineNR                 ctermfg=15                                             guibg=${lightWhite}
+                    hi EndOfBuffer                  ctermfg=8                          guifg=${gray}
                     hi LineNr                       ctermfg=8                          guifg=${gray}
                     hi MatchParen   cterm=reverse
                     hi NonText                      ctermfg=3                          guifg=${yellow}
                     hi Normal                       ctermfg=15                         guifg=${lightWhite}
                     hi Search                                  ctermbg=11                                  guibg=${yellow}
                     hi SpellBad     cterm=underline ctermfg=1  ctermbg=NONE                                guibg=NONE
-                    hi StatusLine                   ctermfg=8  ctermbg=8                                   guibg=${gray}
-                    hi StatusLineNC                 ctermfg=8  ctermbg=0                                   guibg=${black}
+                    hi StatusLine                   ctermfg=8  ctermbg=8                                   guifg=${gray} guibg=${white}
+                    hi StatusLineNC                 ctermfg=8  ctermbg=0                                   guifg=${black} guibg=${white}
                     hi Visual                                  ctermbg=8                                   guibg=${gray}
 
                     hi rainbowParensShell1 guifg=#0000ff
@@ -138,6 +140,8 @@
                     hi rainbowParensShell14 guifg=#fe00de
                     hi rainbowParensShell15 guifg=#be00fe
                     hi rainbowParensShell16 guifg=#5f00fe
+
+                    hi VertSplit NONE guifg=${foregroundSecondary}
                   '');
                   destination = "/colors/challenger-deep-monochrome.vim";
                 })
@@ -268,6 +272,7 @@
             { name = "vim-indent-object"; }
             { name = "vim-ls"; }
             { name = "vim-nix"; }
+            { name = "vim-orgmode" ; }
           ];
         };
 
@@ -312,6 +317,7 @@
           set gdefault " default replace to global
 
           let mapleader = "\<Space>"
+          let localleader = ","
 
           nnoremap gV '[V'] " select last inserted text
 
@@ -433,7 +439,7 @@
             \ laststatus=1
             \ noshowmode
 
-          set fillchars=stl:\ ,stlnc:\ ,vert:│ | hi VertSplit NONE
+          set fillchars=stl:\ ,stlnc:\ ,vert:│
 
           set foldcolumn=1 | hi FoldColumn NONE
         '';

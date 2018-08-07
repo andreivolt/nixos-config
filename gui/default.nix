@@ -9,7 +9,6 @@ in {
     ./dunst.nix
     ./fonts.nix
     ./hdpi.nix
-    ./rofi.nix
     ./xmonad.nix
   ];
 
@@ -62,12 +61,7 @@ in {
         };
       in
            colors
-        // cursor
-        // {
-          "Emacs.toolBar"   = 0;
-          "Emacs.menuBar"   = 0;
-          "Emacs.scrollBar" = 0;
-        };
+        // cursor;
 
     xsession = {
       enable = true;

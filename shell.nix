@@ -20,8 +20,6 @@
         ZPLUG_HOME  = "${cacheHome}/zplug";
       }) // (import ./private/credentials.nix).env;
 
-  environment.pathsToLink = [ "/share/zsh" ];
-
   home-manager.users.avo
     .programs.zsh = with config.home-manager.users.avo; rec {
       enable = true;

@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-exec rofi \
-  -modi window \
-  -show window \
-  -matching fuzzy \
-  -display-window ''

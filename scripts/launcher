@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-exec rofi \
-  -modi drun \
-  -show drun \
-  -matching fuzzy \
-  -display-drun ''

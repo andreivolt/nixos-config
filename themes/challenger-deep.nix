@@ -1,4 +1,4 @@
-{
+rec {
   background   = "#1b182c"; foreground   = "#cbe3e7";
   black        = "#100e23"; lightBlack   = "#565575";
   darkGray     = "#2b2942"; gray         = "#565575";
@@ -10,6 +10,9 @@
   magenta      = "#906cff"; lightMagenta = "#c991e1";
   red          = "#ff5458"; lightRed     = "#ff8080";
   yellow       = "#ffb378"; lightYellow  = "#ffe9aa";
+
+  foregroundUnimportant = lightestGray;
+  foregroundSecondary = gray;
 
   light = {
     gray = "#e8e8e8";
