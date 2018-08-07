@@ -126,8 +126,8 @@ in {
         "tabs.padding".global                = { top = 5; right = 7; bottom = 5; left = 7; };
         "tabs.position".global               = "right";
         "tabs.select_on_remove".global       = "next";
-        "tabs.show".global                   = "always";
-        "tabs.show_switching_delay".global   = 800;
+        "tabs.show".global                   = "switching";
+        "tabs.show_switching_delay".global   = 2000;
         "tabs.title.format".global           = "{title}";
         "tabs.width".global                  = 370;
         "tabs.wrap".global                   = true;
@@ -139,7 +139,7 @@ in {
 
         "window.hide_wayland_decoration".global = false;
 
-        "zoom.default".global       = "100%";
+        "zoom.default".global       = "120%";
         "zoom.levels".global        = [ "25%" "33%" "50%" "67%" "75%" "90%" "100%" "110%" "118%" "125%" "150%" "175%" "200%" "250%" "300%" "400%" "500%" ];
         "zoom.mouse_divider".global = 512;
       };

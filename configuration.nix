@@ -4,11 +4,10 @@ rec {
   imports = [
     ./hardware-configuration.nix
 
-    ./home-manager/nixos
-
-    ./hardware
+    "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos"
 
     ./gui
+    ./hardware
     ./netrc.nix
     ./networking
     ./shell.nix
@@ -49,8 +48,6 @@ rec {
     ./programs/zathura.nix
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
   boot.kernel.sysctl =
     { "fs.inotify.max_user_watches" = 100000; } //
     { "vm.swappiness" = 1; "vm.vfs_cache_pressure" = 50; };
@@ -86,7 +83,7 @@ rec {
   home-manager.users.avo = {
     nixpkgs.config = config.nixpkgs.config;
 
-    home.sessionVariables = with config.home-manager.users.avo; {
+    home.sessionVariables = {
       BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser";
       EDITOR  = "${pkgs.neovim}/bin/nvim";
       PATH    = lib.concatStringsSep ":" [ "$PATH" "$HOME/.local/bin" ];
@@ -141,8 +138,8 @@ rec {
     google-play-music-desktop-player
     graphicsmagick
     icdiff
-    inkscape
     inotify-tools
+    jetbrains.idea-community
     jo
     jq
     jre
@@ -164,16 +161,13 @@ rec {
     ntfy
     openssl
     pandoc
-    perlPackages.HTMLParser
     psmisc
-    pup
     pv
     qutebrowser-scripts
     racket
     recode
     remarshal
     reptyr
-    rlwrap
     rsync
     socat
     strace

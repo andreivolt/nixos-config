@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-file=$1
-
-ipfs add $file |
-awk '{ print $2 }' | xargs -I{} echo https://ipfs.io/ipfs/{}

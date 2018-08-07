@@ -1,0 +1,32 @@
+name:                avo-xmonad
+version:             0.1.0.0
+github:              "andreivolt/avo-xmonad"
+license:             BSD3
+author:              "Andrei Vladescu-Olt"
+maintainer:          "andrei@avolt.net"
+
+extra-source-files:
+- README.md
+
+description:         Please see the README on Github at <https://github.com/githubuser/avo-xmonad#readme>
+
+dependencies:
+- base >= 4.9 && < 5
+- xmonad
+- xmonad-contrib
+- containers
+
+library:
+  source-dirs: src
+
+executables:
+  xmonad:
+    main:                xmonad.hs
+    source-dirs:         src
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    - -fwarn-unused-imports
+    dependencies:
+    - avo-xmonad

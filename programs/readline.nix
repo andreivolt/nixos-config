@@ -1,6 +1,8 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 
 {
+  environment.systemPackages = with pkgs; [ rlwrap ];
+
   home-manager.users.avo
     .home.sessionVariables.INPUTRC = with config.home-manager.users.avo;
       "${xdg.configHome}/readline/inputrc";
