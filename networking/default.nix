@@ -2,21 +2,16 @@
 
 {
   imports = [
-    ./wifi.nix
-    ./privoxy.nix
     ./sshd.nix
+    ./vpn.nix
+    ./wifi.nix
   ];
 
   networking = {
-    enableIPv6 = false;
+    # enableIPv6 = false;
     firewall.allowedTCPPorts = [ 80 443 ];
     hostName = builtins.getEnv "HOST";
   };
-
-  environment.systemPackages = with pkgs; [
-    hostsblock
-  ];
-  # polipo
 
   services = {
     avahi = {
@@ -26,8 +21,6 @@
     };
 
     tor.client.enable = true;
-
-    zerotierone.enable = true;
 
     dnsmasq = {
       enable = true;

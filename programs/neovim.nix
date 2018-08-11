@@ -83,7 +83,7 @@
                     hi LineNr                       ctermfg=8                        guifg=${foregroundUnimportant}
                     hi MatchParen   cterm=reverse   ctermfg=8                        guifg=${highlight}
                     hi NonText                      ctermfg=3                        guifg=${yellow}
-                    hi Normal                       ctermfg=15                       guifg=${lightWhite}
+                    hi Normal                       ctermfg=15                       guifg=${lightWhite} guibg=${background}
                     hi Search                                  ctermbg=11                                           guibg=${lightYellow}
                     hi SpellBad     cterm=underline ctermfg=1
                     hi StatusLine                   ctermfg=8  ctermbg=8                                            guibg=${highlight}
@@ -317,7 +317,7 @@
           set gdefault " default replace to global
 
           let mapleader = "\<Space>"
-          let localleader = ","
+          let maplocalleader = ","
 
           nnoremap gV '[V'] " select last inserted text
 
