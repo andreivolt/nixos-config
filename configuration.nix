@@ -74,6 +74,8 @@ rec {
 
   nixpkgs.config.allowUnfree = true;
 
+  networking.extraHosts = builtins.readFile (builtins.fetchurl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts);
+
   nixpkgs.overlays =
     let path = ./overlays; in with builtins;
     map (n: import (path + ("/" + n)))

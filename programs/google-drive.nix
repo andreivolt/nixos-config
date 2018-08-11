@@ -5,7 +5,7 @@
 
   fileSystems =
     let
-      dirs = [ "doc" "lib" "proj" "src" "tmp" ];
+      dirs = [ "doc" "lib" "proj" "tmp" ];
       template = dir: { device = "/home/avo/gdrive/" + dir;
                         fsType = "none"; options = [ "bind" ];
                         mountPoint = "/home/avo/" + dir; };

@@ -8,7 +8,7 @@ let
   colorSchemes = {
     default = {
       primary = {
-        background = "#000000";
+        background = theme.background;
         foreground = theme.foreground;
       };
       cursor = {
