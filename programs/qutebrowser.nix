@@ -126,7 +126,7 @@ in {
         "tabs.padding".global                = { top = 5; right = 7; bottom = 5; left = 7; };
         "tabs.position".global               = "right";
         "tabs.select_on_remove".global       = "next";
-        "tabs.show".global                   = "switching";
+        "tabs.show".global                   = "always";
         "tabs.show_switching_delay".global   = 2000;
         "tabs.title.format".global           = "{title}";
         "tabs.width".global                  = 370;

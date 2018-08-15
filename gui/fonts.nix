@@ -27,11 +27,4 @@ in {
       vistafonts
     ];
   };
-
-  home-manager.users.avo
-    .xresources.properties = {
-      "*.font"        = "xft:${myFonts.monospace}:size=${toString myFonts.fontSize}";
-      "Emacs.FontBackend"        = "xft";
-      "Emacs.font"              = "${myFonts.monospace}:size=${toString myFonts.fontSizePixels}";
-    };
 }
