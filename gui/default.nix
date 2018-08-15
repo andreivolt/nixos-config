@@ -29,8 +29,8 @@ in {
     desktopManager.xterm.enable = false;
 
     # displayManager.sddm.enable = true;
-    # windowManager.sway.enable = true;
-    # https://github.com/waymonad/waymonad
+    # programs.sway.enable = true;
+    # programs.way-cooler.enable = true;
   };
 
 

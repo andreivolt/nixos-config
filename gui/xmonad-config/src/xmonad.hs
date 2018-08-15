@@ -47,7 +47,7 @@ main = xmonad
                       }
 
     myConfig = azertyConfig
-                 { terminal          = "alacritty"
+                 { terminal          = "alacritty-acme"
                  , workspaces        = Local.workspaceNames
                  , manageHook        = myManageHook
                                        <+> manageDocks

@@ -28,7 +28,6 @@ rec {
     ./programs/gnupg.nix
     ./programs/google-drive.nix
     ./programs/grep.nix
-    ./programs/haskell
     ./programs/httpie.nix
     ./programs/hub.nix
     ./programs/ipfs.nix

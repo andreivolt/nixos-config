@@ -13,7 +13,7 @@ prompt_precmd() {
   [[ -n $jobs ]] && prompt_jobs="%F{yellow}["${(j:,:)jobs}"]%f "
 
   setopt promptsubst
-  PROMPT=" $prompt_jobs%d $ "
+  PROMPT="%K{white} $prompt_jobs%F{black}%d $ %f%k "
 }
 
 prompt_opts=(cr percent sp subst)
