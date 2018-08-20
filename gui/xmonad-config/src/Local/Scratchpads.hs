@@ -43,8 +43,6 @@ myScratchpads =
   [ NS "music"  "google-play-music-desktop-player" (className =? "Google Play Music Desktop Player") $ x (customFloating myCenterFloatRect)
   , NS "irc"    "irc"                              (title =? "irc") $ x (customFloating myTopFloatRect)
   , NS "mail"   "email"                            (title =? "mail") $ x (customFloating myTopFloatRect)
-  , NS "system" "alacritty --title system -e htop" (title =? "system") $ x (customFloating myTopFloatRect)
-  , NS "editor" "editor-scratchpad"                (title =? "editor") $ x (customFloating myTopFloatRect)
   ]
   where
     x y = ask >>= \w -> liftX (markAsFloating w) >> y

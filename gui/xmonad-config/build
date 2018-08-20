@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-
-cd ~/.config/xmonad
-
-stack build
-
-mv $(stack path --dist-dir)/build/xmonad/xmonad $1
