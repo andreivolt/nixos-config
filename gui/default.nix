@@ -27,12 +27,7 @@ in {
 
     displayManager.auto = { enable = true; user = "avo"; };
     desktopManager.xterm.enable = false;
-
-    # displayManager.sddm.enable = true;
-    # programs.sway.enable = true;
-    # programs.way-cooler.enable = true;
   };
-
 
   home-manager.users.avo = {
     services.unclutter.enable = true;
