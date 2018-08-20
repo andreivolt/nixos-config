@@ -64,7 +64,7 @@ rec {
 
   system.autoUpgrade = { enable = true; channel = "https://nixos.org/channels/nixos-unstable"; };
 
-  system.nixos.stateVersion = "18.09";
+  system.stateVersion = "18.09";
 
   services.wakeonlan.interfaces =
    if builtins.getEnv "HOST" == "watts" then
