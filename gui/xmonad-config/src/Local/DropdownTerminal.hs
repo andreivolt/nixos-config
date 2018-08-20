@@ -11,7 +11,7 @@ import           XMonad.Util.Scratchpad (scratchpadManageHook,
 toggleDropdownTerminal = do
   hideAllScratchpads
 
-  scratchpadSpawnActionCustom "alacritty --title scratchpad -e terminal-scratchpad"
+  scratchpadSpawnActionCustom "alacritty --class scratchpad -e terminal-scratchpad"
 
 manageDropdownTerminal = scratchpadManageHook myTopFloatRect
   where

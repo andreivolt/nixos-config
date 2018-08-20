@@ -1,7 +1,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
 
-module Local.Keys (myKeys, myMouseBindings, modifierKey) where
+module Local.Keys (myKeys, modifierKey) where
 
 import           Local.ConditionalKeys
 import           Local.DropdownTerminal              (toggleDropdownTerminal)
@@ -34,7 +34,6 @@ import qualified Data.Map                            as M
 import           XMonad.Util.Paste                   as Paste
 import           XMonad.Util.Run
 import           XMonad.Util.XSelection
-import qualified XMonad.Actions.FlexibleManipulate   as Flex
 
 
 modifierKey = mod4Mask
@@ -44,14 +43,13 @@ myKeys conf =
 
 myKeys' conf@XConfig {XMonad.modMask = modm} = mkKeymap conf
   [ "<Insert>"               ~~ runProcessWithInput "copy" [] "" >>= Paste.pasteString
-
-  , "<Pause>"                ~~ spawn "suspend"
-  , "M-q"                    ~~ spawn "xmonad=~/.local/share/xmonad/xmonad-x86_64-linux; $xmonad --recompile && $xmonad --restart"
+  , "M-q"                    ~~ spawn "xmonad --recompile && xmonad --restart"
 
   , "<Print>"                ~~ spawn "gtk-launch flameshot.desktop"
   , "M-S-<Return>"           ~~ spawn $ XMonad.terminal conf
 
-  , "M-p"                    ~~ spawn "notify-send -a whattimeisit \"$(whattimeisit)\""
+  -- , "M-p"                    ~~ spawn "notify-send -a whattimeisit \"$(whattimeisit)\""
+  , "M-p"                    ~~ spawn "xterm"
 
   , "<XF86AudioRaiseVolume>" ~~ spawn "volume up"
   , "<XF86AudioLowerVolume>" ~~ spawn "volume down"
@@ -104,9 +102,3 @@ myKeys' conf@XConfig {XMonad.modMask = modm} = mkKeymap conf
   infixr 0 ~~
   (~~) :: a -> b -> (a, b)
   (~~) = (,)
-
-
-myMouseBindings XConfig {XMonad.modMask = modMask} = M.fromList
-  [ ((modMask, button1), (\w -> focus w >> windows W.swapMaster))
-  , ((modMask, button3), (\w -> focus w >> Flex.mouseWindow Flex.discrete w))
-  ]
