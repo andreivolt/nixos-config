@@ -21,7 +21,6 @@
               \ 'Constant',
               \ 'Cursor',
               \ 'CursorLine',
-              \ 'CursorLineNR',
               \ 'Debug',
               \ 'Define',
               \ 'Delimiter',
@@ -62,7 +61,7 @@
               \ 'VertSplit',
               \ 'WarningMsg',
               \]
-              exe 'hi ' . i . ' NONE ctermbg=NONE ctermfg=NONE guibg=NONE guifg=NONE'
+              exe 'hi ' . i . ' NONE'
             endfor
           '';
 
@@ -72,31 +71,26 @@
               src = [
                 (pkgs.writeTextFile {
                   name = "acme.vim";
-                  text = (with import ../themes/acme.nix; ''
+                  text = with import ../themes/acme.nix; ''
                     ${mkColorScheme "acme"}
 
-                    hi Comment      cterm=italic    ctermfg=15            gui=italic guifg=${foregroundSecondary}
-                    hi Cursor                       ctermfg=0                                                       guibg=${highlight}
-                    hi CursorLine                              ctermbg=0                                            guibg=${subtleHighlight}
-                    hi CursorLineNR                 ctermfg=15                       guifg=${gray}                  guibg=${subtleHighlight}
-                    hi EndOfBuffer                  ctermfg=8                        guifg=${foregroundUnimportant}
-                    hi LineNr                       ctermfg=8                        guifg=${foregroundUnimportant}
-                    hi MatchParen   cterm=reverse   ctermfg=8                        guifg=${highlight}
-                    hi NonText                      ctermfg=3                        guifg=${yellow}
-                    hi Normal                       ctermfg=15                       guifg=${lightWhite} guibg=${background}
-                    hi Search                                  ctermbg=11                                           guibg=${lightYellow}
-                    hi SpellBad     cterm=underline ctermfg=1
-                    hi StatusLine                   ctermfg=8  ctermbg=8                                            guibg=${highlight}
-                    hi StatusLineNC                 ctermfg=8  ctermbg=0                                            guibg=${yellow}
-                    hi Visual                                  ctermbg=8                                            guibg=${selection}
-
-                    hi String                                                        guifg=${foregroundSecondary}
-                    hi Delimiter                    ctermfg=8             gui=bold   guifg=${important}
-                    hi Keyword                                            gui=italic
-                    hi Conditional                                        gui=italic
-
-                    hi VertSplit NONE guifg=${foregroundSecondary}
-                  '');
+                    hi Comment gui=italic guifg=${foregroundSecondary}
+                    hi Cursor guibg=${highlight}
+                    hi Delimiter gui=bold guifg=${important}
+                    hi EndOfBuffer guifg=${backgroundFaded}
+                    hi Keyword gui=italic
+                    hi LineNr guifg=${foregroundUnimportant}
+                    hi MatchParen gui=bold guifg=${highlight}
+                    hi NonText guifg=${yellow}
+                    hi Normal guifg=${lightWhite} guibg=${background}
+                    hi Search guibg=${lightYellow}
+                    hi SpellBad gui=underline guibg=${error}
+                    hi StatusLine NONE guifg=${background} guibg=${foreground}
+                    hi StatusLineNC guifg=${backgroundContrast} guibg=${foreground}
+                    hi String guifg=${foregroundSecondary}
+                    hi VertSplit NONE guifg=${backgroundContrast}
+                    hi Visual guibg=${selection}
+                  '';
                   destination = "/colors/acme.vim";
                 })
               ];
@@ -107,22 +101,21 @@
               src = [
                 (pkgs.writeTextFile {
                   name = "challenger-deep-monochrome.vim";
-                  text = (with import ../themes/challenger-deep.nix; ''
+                  text = with import ../themes/challenger-deep.nix; ''
                     ${mkColorScheme "challenger-deep-monochrome"}
 
-                    hi Comment      cterm=italic    ctermfg=15              gui=italic guifg=${lightWhite}
-                    hi CursorLine                              ctermbg=0
-                    hi CursorLineNR                 ctermfg=15                                             guibg=${lightWhite}
-                    hi EndOfBuffer                  ctermfg=8                          guifg=${gray}
-                    hi LineNr                       ctermfg=8                          guifg=${gray}
-                    hi MatchParen   cterm=reverse
-                    hi NonText                      ctermfg=3                          guifg=${yellow}
-                    hi Normal                       ctermfg=15                         guifg=${lightWhite}
-                    hi Search                                  ctermbg=11                                  guibg=${yellow}
-                    hi SpellBad     cterm=underline ctermfg=1  ctermbg=NONE                                guibg=NONE
-                    hi StatusLine                   ctermfg=8  ctermbg=8                                   guifg=${gray} guibg=${white}
-                    hi StatusLineNC                 ctermfg=8  ctermbg=0                                   guifg=${black} guibg=${white}
-                    hi Visual                                  ctermbg=8                                   guibg=${gray}
+                    hi Comment gui=italic guifg=${lightWhite}
+                    hi Cursor guibg=${highlight} guifg=#ffffff
+                    hi EndOfBuffer guifg=${gray}
+                    hi LineNr guifg=${gray}
+                    hi MatchParen gui=bold guifg=${red}
+                    hi NonText guifg=${yellow}
+                    hi Normal guifg=${lightWhite}
+                    hi Search guibg=${yellow}
+                    hi SpellBad guibg=NONE
+                    hi StatusLine guifg=${gray} guibg=${white}
+                    hi StatusLineNC guifg=${black} guibg=${white}
+                    hi Visual guibg=${gray}
 
                     hi rainbowParensShell1 guifg=#0000ff
                     hi rainbowParensShell2 guifg=#005ffe
@@ -142,7 +135,7 @@
                     hi rainbowParensShell16 guifg=#5f00fe
 
                     hi VertSplit NONE guifg=${foregroundSecondary}
-                  '');
+                  '';
                   destination = "/colors/challenger-deep-monochrome.vim";
                 })
               ];
@@ -190,6 +183,17 @@
                 rev = "791c3a0cc3155f424fba9409a9520eec241c189c";
                 sha256 = "15lg33bgv7afjikn1qanriaxmqg4bp3pm7qqhch6105r1sji9gz9";
               };
+            };
+
+            vimpager = pkgs.vimUtils.buildVimPlugin {
+              name = "vimpager";
+              src = pkgs.fetchFromGitHub {
+                owner = "rkitover";
+                repo = "vimpager";
+                rev = "82619297ca1533ffe72d1ea27131d7302164d47a";
+                sha256 = "0ip1ncl34j7lzxyv1r6z58fk7jkxjs2vdwk1vs77icxsg61y746v";
+              };
+              buildInputs = [ pkgs.sharutils ];
             };
 
             golden-ratio = pkgs.vimUtils.buildVimPlugin {
@@ -273,6 +277,7 @@
             { name = "vim-ls"; }
             { name = "vim-nix"; }
             { name = "vim-orgmode" ; }
+            { name = "vimpager"; }
           ];
         };
 
@@ -335,6 +340,8 @@
           autocmd CursorHold * redraw!
         '';
 
+
+
         fzf = ''
           let $FZF_DEFAULT_COMMAND = '${pkgs.ripgrep}/bin/rg --files --hidden --follow -g "!{.git}/*" 2>/dev/null'
           nnoremap <silent> <leader>b :Buffers<CR>
@@ -358,10 +365,11 @@
           " autocmd FileType fzf set laststatus=0
         '';
 
-        highlightCurrentLineInNormalMode = ''
-          set cursorline
-          autocmd InsertEnter * set nocursorline
-          autocmd InsertLeave * set cursorline
+        NERDTree = ''
+          let NERDTreeMapActivateNode='<tab>'
+
+          map <leader>t :NERDTreeToggle<CR>
+          map <leader>tf :NERDTreeFind<CR>
         '';
 
         useVeryMagicPatterns = ''
@@ -457,6 +465,7 @@
         settings
 
         BetterWhitespace
+        NERDTree
         SuperTab
         bufferNavigation
         clearSearchHighlight
@@ -464,7 +473,6 @@
         fzf
         goyo
         hideMessagesAfterTimeout
-        highlightCurrentLineInNormalMode
         minimalMode acmeMinimalMode
         navigateQuickFix
         rebalanceSplitsOnResize

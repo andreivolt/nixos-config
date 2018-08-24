@@ -19,7 +19,7 @@ let
   lightBlue      = "#eaffff";
   lightYellow    = "#fcfcce";
   lighterYellow  = "#ffffca";
-  lightestYellow = "#ffffea";
+  lightestYellow = "#ffffee";
   turquoise = "#1abc9c";
 
   red = "#b34747"; lightRed = "#e67373";
@@ -27,9 +27,12 @@ let
 in {
   inherit darkGray gray lightGray;
 
-  background   = lightestYellow; foreground   = darkGray;
+  background   = lightestYellow;
+  foreground   = darkGray;
 
-  backgroundContrast = lightestGray;
+  error = red;
+
+  backgroundContrast = "#ccccbb";
 
   subtleHighlight = lightYellow;
   foregroundSecondary = gray;
@@ -37,23 +40,28 @@ in {
 
   highlight = turquoise;
 
-  black        = yellow;         lightBlack   = lightYellow;
+  black        = yellow;
+  lightBlack   = lightYellow;
 
-  white        = black;          lightWhite   = darkGray;
+  white        = black;
+  lightWhite   = darkGray;
 
-  blue         = gray;           lightBlue    = lightGray;
-  cyan         = gray;           lightCyan    = lightGray;
-  magenta      = gray;           lightMagenta = lightGray;
+  blue         = gray;
+  lightBlue    = lightGray;
+  cyan         = gray;
+  lightCyan    = lightGray;
+  magenta      = gray;
+  lightMagenta = lightGray;
 
   selection = cyan;
-  backgroundFaded = lightestYellow;
+  backgroundFaded = "#ededda";
+
   important = "#67809f";
 
-  green        = black;          lightGreen   = darkGray;
-  red          = red;            lightRed     = lightRed;
-  yellow       = yellow;         lightYellow  = lightYellow;
-
-  light = {
-    gray = "#e8e8e8";
-  };
+  green        = black;
+  lightGreen   = darkGray;
+  red          = red;
+  lightRed     = lightRed;
+  yellow       = yellow;
+  lightYellow  = lightYellow;
 }

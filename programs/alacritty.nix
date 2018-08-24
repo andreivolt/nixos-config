@@ -1,9 +1,9 @@
 { config, lib, pkgs, ...}:
 
 let
-  theme = import ../themes/current;
-  monospaceFont = builtins.getEnv "MONOSPACE_FONT_FAMILY";
-  fontSize = lib.toInt (builtins.getEnv "MONOSPACE_FONT_SIZE");
+  theme = import ../themes/acme.nix;
+  monospaceFont = if builtins.getEnv("MONOSPACE_FONT_FAMILY") != "" then builtins.getEnv("MONOSPACE_FONT_FAMILY") else "Source Code Pro";
+  fontSize = if builtins.getEnv("TERMINAL_FONT_SIZE") != "" then lib.toInt builtins.getEnv("TERMINAL_FONT_SIZE") else 14;
 
   colorSchemes = {
     default = {
@@ -107,7 +107,7 @@ let
     };
     window = {
       dimensions = { columns = 0; lines = 0; };
-      padding = { x = 28; y = 20; };
+      padding = { x = 20; y = 20; };
     };
   };
 

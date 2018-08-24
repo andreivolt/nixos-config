@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-wmctrl -x -a _emacs-wrapped.Emacs

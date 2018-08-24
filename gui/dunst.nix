@@ -2,12 +2,34 @@
 
 let
   myFonts = {
-    proportional = builtins.getEnv "PROPORTIONAL_FONT_FAMILY";
-    monospace = builtins.getEnv "MONOSPACE_FONT_FAMILY";
+    proportional = if builtins.getEnv("PROPORTIONAL_FONT_FAMILY") != "" then builtins.getEnv("PROPORTIONAL_FONT_FAMILY") else "Lato";
+    monospace = if builtins.getEnv("MONOSPACE_FONT_FAMILY") != "" then builtins.getEnv("MONOSPACE_FONT_FAMILY") else "Source Code Pro";
   };
   theme = import ../themes/challenger-deep.nix;
 
 in {
+  environment.systemPackages = with pkgs; let
+    toggle-notifications = pkgs.stdenv.mkDerivation rec {
+      name = "toggle-notifications";
+
+      src = [(pkgs.writeScript name ''
+        #!/usr/bin/env bash
+
+        pkill -USR1 ${dunst}/bin/dunst
+        pkill -USR2 ${dunst}/bin/dunst
+      '')];
+
+      unpackPhase = "true";
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/${name}
+      '';
+    };
+  in [
+    toggle-notifications
+  ];
+
   home-manager.users.avo
     .services.dunst = {
       enable = true;
@@ -78,12 +100,6 @@ in {
           format = "%b";
           history_length = "1";
           timeout = "1";
-        };
-
-        ignore-dropbox = {
-          appname = "Dropbox";
-          summary = "*";
-          format = "";
         };
 
         sticky = {
