@@ -5,9 +5,10 @@
     .home.sessionVariables = with config.home-manager.users.avo; {
       LESSHISTFILE  = "${xdg.cacheHome}/less/history";
       LESS          = ''
-                        --quit-if-one-screen \
+                        --RAW-CONTROL-CHARS \
+                        --ignore-case \
                         --no-init \
-                        --RAW-CONTROL-CHARS\
+                        --quit-if-one-screen\
                       '';
     };
 }

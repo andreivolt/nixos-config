@@ -8,8 +8,7 @@ rec {
 
     ./gui
     ./hardware
-    ./netrc.nix
-    ./networking
+    ./networking.nix
     ./shell.nix
 
     # ./programs/mitmproxy.nix
@@ -18,7 +17,7 @@ rec {
     ./programs/aws-cli.nix
     ./programs/bitcoin.nix
     ./programs/clojure
-    ./programs/docker
+    ./programs/docker.nix
     ./programs/emacs.nix
     ./programs/email
     ./programs/fzf.nix
@@ -29,20 +28,18 @@ rec {
     ./programs/google-drive.nix
     ./programs/grep.nix
     ./programs/httpie.nix
-    ./programs/hub.nix
     ./programs/ipfs.nix
     ./programs/irc.nix
     ./programs/less.nix
     ./programs/libvirt.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
-    ./programs/nodejs.nix
+    ./programs/nginx-proxy.nix
     ./programs/parallel.nix
-    ./programs/qutebrowser.nix
     ./programs/readline.nix
     ./programs/ripgrep.nix
     ./programs/ssh.nix
-    ./programs/sxiv.nix
+    ./programs/sshd.nix
     ./programs/tmux.nix
     ./programs/zathura.nix
   ];
@@ -85,9 +82,8 @@ rec {
     nixpkgs.config = config.nixpkgs.config;
 
     home.sessionVariables = {
-      BROWSER = "${pkgs.qutebrowser}/bin/qutebrowser";
+      BROWSER = "${pkgs.google-chrome-dev}/bin/google-chrome-unstable";
       EDITOR  = "${pkgs.neovim}/bin/nvim";
-      PATH    = lib.concatStringsSep ":" [ "$PATH" "$HOME/.local/bin" ];
     };
 
     xdg.enable = true;
@@ -98,49 +94,48 @@ rec {
     };
 
     xdg.configFile."mimeapps.list".text =
-      let browser = "qutebrowser"; editor = "emacs"; in lib.generators.toINI {} {
+      let
+        browser = "google-chrome-unstable";
+        editor = "emacs";
+      in lib.generators.toINI {} {
         "Default Applications" = {
-          "application/pdf"                                                         = "zathura.desktop";
-          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"       = "calc.desktop";
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document" = "libreoffice-writer.desktop";
-          "application/xhtml+xml"                                                   = "${browser}.desktop";
-          "application/xml"                                                         = "${editor}.desktop";
-          "text/html"                                                               = "${browser}.desktop";
-          "text/plain"                                                              = "${editor}.desktop";
-          "x-scheme-handler/ftp"                                                    = "${browser}.desktop";
-          "x-scheme-handler/http"                                                   = "${browser}.desktop";
-          "x-scheme-handler/https"                                                  = "${browser}.desktop";
+          "application/pdf" = "org.pwmt.zathura.desktop";
+          "application/xhtml+xml" = "${browser}.desktop";
+          "application/xml" = "${editor}.desktop";
+          "text/html" = "${browser}.desktop";
+          "text/plain" = "${editor}.desktop";
+          "x-scheme-handler/ftp" = "${browser}.desktop";
+          "x-scheme-handler/http" = "${browser}.desktop";
+          "x-scheme-handler/https" = "${browser}.desktop";
         };
       };
   };
 
   services.devmon.enable = true;
 
-  fileSystems."scripts" = {
-    device = "/etc/nixos/scripts";
-    fsType = "none"; options = [ "bind" ];
-    mountPoint = "/home/avo/.local/bin";
-  };
-
-  environment.systemPackages = with pkgs; [
-    # gron
+  environment.systemPackages = with pkgs; let
+    moreutils-without-parallel =
+      pkgs.stdenv.lib.overrideDerivation
+        pkgs.moreutils
+        (attrs: { postInstall = attrs.postInstall + "; rm $out/bin/parallel"; });
+  in [
     acpi
     aria
-    avo-scripts
     binutils
+    disposable-browser
     dnsutils
     dtrx
+    emacs-browse-url
     file
     flameshot
     gcolor2
-    gnumake
     google-chrome-dev
     google-cloud-sdk
     google-play-music-desktop-player
     graphicsmagick
+    gron
     icdiff
     inotify-tools
-    jetbrains.idea-community
     jo
     jq
     jre
@@ -148,9 +143,8 @@ rec {
     lastpass-cli
     libnotify
     libreoffice
-    linuxPackages.perf
     lsof
-    moreutilsWithoutParallel
+    moreutils-without-parallel
     mosh
     netcat
     nethogs
@@ -163,26 +157,28 @@ rec {
     openssl
     pandoc
     psmisc
+    pushover
     pv
-    qutebrowser-scripts
     racket
     recode
     remarshal
-    reptyr
     rsync
     socat
     strace
     surfraw
+    sxiv
     telnet
+    terminal-scratchpad
     texlive.combined.scheme-full
     tmate
-    tmux
     torbrowser
     traceroute
     tree
     tsocks
     units
     urlp
+    webapp
+    whattimeisit
     wireshark
     wsta
     xfce.thunar

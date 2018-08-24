@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-tmux attach -t scratchpad || tmux new -s scratchpad \; set status off \; attach

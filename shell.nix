@@ -31,21 +31,11 @@
 
       shellAliases = {
         hgrep = "fc -ln 0- | grep";
-        j     = "jobs -d | paste - -";
-        mkdir = "mkdir -p";
-        tree  = "${pkgs.tree}/bin/tree -F --dirsfirst";
-      } // {
-        browser-history = "${pkgs.avo-scripts}/bin/qutebrowser-history";
-      } // {
-        e  = "${pkgs.emacs}/bin/emacsclient --socket-name scratchpad --no-wait";
-      } // {
         l  = "ls";
         la = "ls -a";
         ls = "ls --group-directories-first --classify --dereference-command-line -v";
-      } // {
-        gdax = "${pkgs.avo-scripts}/bin/webapp gdax https://www.gdax.com/trade/BTC-USD";
-      } // {
-        journalctl = "${pkgs.grc}/bin/grc journalctl";
+        mkdir = "mkdir -p";
+        tree  = "${pkgs.tree}/bin/tree -F --dirsfirst";
       };
 
       history = rec {
@@ -59,25 +49,23 @@
 
       initExtra =
         let
-          prompt = builtins.readFile ./prompt.zsh;
-
           globalAliasesStr =
             let toStr = x: lib.concatStringsSep "\n"
                            (lib.mapAttrsToList (k: v: "alias -g ${k}='${v}'") x);
             in toStr {
-              C  = "| wc -l";
-              L  = "| less -R";
-              H  = "| head";
-              T  = "| tail";
-              F  = "| ${pkgs.fzf}/bin/fzf | xargs";
+              C = "| wc -l";
+              L = "| less -R";
+              H = "| head";
+              T = "| tail";
+              F = "| ${pkgs.fzf}/bin/fzf | xargs";
               FE = "| ${pkgs.fzf}/bin/fzf | ${pkgs.parallel}/bin/parallel -X --tty $EDITOR";
             };
 
           functions = {
+            "+x" = ''chmod +x "$*"'';
             "diff" = ''${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff'';
             "open" = ''setsid ${pkgs.xdg_utils}/bin/xdg-open "$*" &>/dev/null'';
-            "+x"   = ''chmod +x "$*"'';
-            "vi"   = ''grep acme /proc/$PPID/cmdline && command vim -c 'colorscheme acme' $@ || command vim $@'';
+            "vi" = ''grep acme /proc/$PPID/cmdline && command vim -c 'colorscheme acme' $@ || command vim $@'';
           };
 
           cdAliases = ''
@@ -106,20 +94,37 @@
 
             zplug load
           '';
+
+          prompt = ''
+            prompt_precmd() {
+              rehash
+
+              local jobs
+              local prompt_jobs
+              unset jobs
+              for a (''${(k)jobstates}) {
+                j=$jobstates[$a];i=\'''''${''${(@s,:,)j}[2]}'
+                jobs+=($a''${i//[^+-]/})
+              }
+
+              prompt_jobs=""
+              [[ -n $jobs ]] && prompt_jobs="%F{black}["''${(j:,:)jobs}"]%f "
+
+              setopt promptsubst
+              PROMPT="%K{white} $prompt_jobs%F{black}%~ $ %f%k "
+            }
+
+            prompt_opts=(cr percent sp subst)
+
+            add-zsh-hook precmd prompt_precmd
+          '';
         in lib.concatStringsSep "\n" [
           ''
-            setopt HIST_IGNORE_SPACE
-            setopt HIST_REDUCE_BLANKS
-
-            setopt EXTENDED_GLOB
-            setopt CASE_GLOB
-            setopt GLOB_COMPLETE
-
+            setopt HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
+            setopt EXTENDED_GLOB CASE_GLOB GLOB_COMPLETE
             setopt INTERACTIVE_COMMENTS
 
-            if [[ $TERM != eterm-color && $TERM != dumb ]]; then
-              preexec() { print -Pn "\e]0;$1\a" }
-            fi
+            preexec() { print -Pn "\e]0;$1\a" }
           ''
           cdAliases
           globalAliasesStr

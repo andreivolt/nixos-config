@@ -26,8 +26,8 @@ in {
       account default: ${email.primary_address}
     '';
 
-  environment.etc."mailrc".text = ''
-    set sendmail=${pkgs.msmtp}/bin/msmtp"
+  environment.etc."mail.rc".text = ''
+    set sendmail=${pkgs.msmtp}/bin/msmtp
   '';
 
   home-manager.users.avo

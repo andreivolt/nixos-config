@@ -4,14 +4,10 @@ let
   myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
 
 in {
-  imports = [
-    ./ghi.nix
-    ./hub.nix
-  ];
-
   environment.systemPackages = with pkgs.gitAndTools; [
     diff-so-fancy
     git
+    git-hub
   ];
 
   home-manager.users.avo
@@ -33,11 +29,13 @@ in {
 
       extraConfig.core = {
         editor = "${pkgs.neovim}/bin/nvim";
-        #editor = "${pkgs.emacs}/bin/emacsclient --tty";
         pager  = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less -RFX";
       };
 
-      extraConfig.github.user = (import ../private/credentials.nix).github.user;
+      extraConfig.hub = with (import ../private/credentials.nix).github; {
+        username = user;
+        oauthtoken = token;
+      };
 
       ignores = [
         "*~"

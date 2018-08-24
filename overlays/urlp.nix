@@ -1,7 +1,7 @@
 self: pkgs: rec {
 
 urlp = with pkgs; stdenv.mkDerivation rec {
-  name = "urlp-${version}";
+  name = "urlp";
   version = "1.0.0";
 
   src = fetchurl {
