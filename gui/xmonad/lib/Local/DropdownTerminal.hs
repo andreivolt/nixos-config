@@ -3,21 +3,18 @@ module Local.DropdownTerminal (
   , manageDropdownTerminal
 ) where
 
-import           Local.Scratchpads      (hideAllScratchpads)
 import qualified XMonad.StackSet        as W
 import           XMonad.Util.Scratchpad (scratchpadManageHook,
                                          scratchpadSpawnActionCustom)
 
-toggleDropdownTerminal = do
-  hideAllScratchpads
-
-  scratchpadSpawnActionCustom "alacritty --class scratchpad -e terminal-scratchpad"
+toggleDropdownTerminal =
+  scratchpadSpawnActionCustom "alacritty --config-file ~/.config/alacritty/config_scratchpad.yml --class scratchpad --title scratchpad"
 
 manageDropdownTerminal = scratchpadManageHook myTopFloatRect
   where
     myTopFloatRect = W.RationalRect l t w h
       where
-        h = 0.75
+        h = 0.65
         w = 1 - 2 * l
         t = 0
-        l = 0.01
+        l = 0.15

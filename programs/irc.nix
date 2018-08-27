@@ -3,7 +3,7 @@
 {
   # systemd.user.services.ircEmacsDaemon = let
   #   makeEmacsDaemon = import ../util/make-emacs-daemon.nix;
-  #   credentials = import ../private/credentials.nix;
+  #   credentials = import ../credentials.nix;
   # in
   #   (makeEmacsDaemon { name = "irc"; inherit config pkgs; })
   #   // {

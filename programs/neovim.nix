@@ -1,6 +1,10 @@
 { pkgs, ... }:
 
 {
+  environment.variables.EDITOR = "${pkgs.neovim}/bin/nvim";
+
+  home-manager.users.avo.programs.zsh.shellAliases.vi = "vim";
+
   environment.systemPackages = with pkgs; [ (neovim.override {
     vimAlias = true;
     configure = {
@@ -71,72 +75,27 @@
               src = [
                 (pkgs.writeTextFile {
                   name = "acme.vim";
-                  text = with import ../themes/acme.nix; ''
+                  text = with import ../theme.nix; ''
                     ${mkColorScheme "acme"}
 
-                    hi Comment gui=italic guifg=${foregroundSecondary}
-                    hi Cursor guibg=${highlight}
+                    hi Comment gui=italic ctermfg=8
+                    hi Cursor ctermfg=6
                     hi Delimiter gui=bold guifg=${important}
                     hi EndOfBuffer guifg=${backgroundFaded}
                     hi Keyword gui=italic
                     hi LineNr guifg=${foregroundUnimportant}
                     hi MatchParen gui=bold guifg=${highlight}
-                    hi NonText guifg=${yellow}
-                    hi Normal guifg=${lightWhite} guibg=${background}
+                    hi NonText ctermfg=15
+                    hi Normal NONE ctermfg=0
                     hi Search guibg=${lightYellow}
                     hi SpellBad gui=underline guibg=${error}
-                    hi StatusLine NONE guifg=${background} guibg=${foreground}
-                    hi StatusLineNC guifg=${backgroundContrast} guibg=${foreground}
-                    hi String guifg=${foregroundSecondary}
-                    hi VertSplit NONE guifg=${backgroundContrast}
-                    hi Visual guibg=${selection}
+                    " hi StatusLine NONE guifg=${background} guibg=${foreground}
+                    " hi StatusLineNC guifg=${backgroundContrast} guibg=${foreground}
+                    hi String ctermfg=3
+                    hi VertSplit NONE ctermfg=8
+                    hi Visual ctermbg=11
                   '';
                   destination = "/colors/acme.vim";
-                })
-              ];
-            };
-
-            colorscheme-challenger-deep-monochrome = pkgs.vimUtils.buildVimPlugin {
-              name = "colorscheme-challenger-deep-monochrome";
-              src = [
-                (pkgs.writeTextFile {
-                  name = "challenger-deep-monochrome.vim";
-                  text = with import ../themes/challenger-deep.nix; ''
-                    ${mkColorScheme "challenger-deep-monochrome"}
-
-                    hi Comment gui=italic guifg=${lightWhite}
-                    hi Cursor guibg=${highlight} guifg=#ffffff
-                    hi EndOfBuffer guifg=${gray}
-                    hi LineNr guifg=${gray}
-                    hi MatchParen gui=bold guifg=${red}
-                    hi NonText guifg=${yellow}
-                    hi Normal guifg=${lightWhite}
-                    hi Search guibg=${yellow}
-                    hi SpellBad guibg=NONE
-                    hi StatusLine guifg=${gray} guibg=${white}
-                    hi StatusLineNC guifg=${black} guibg=${white}
-                    hi Visual guibg=${gray}
-
-                    hi rainbowParensShell1 guifg=#0000ff
-                    hi rainbowParensShell2 guifg=#005ffe
-                    hi rainbowParensShell3 guifg=#00bffe
-                    hi rainbowParensShell4 guifg=#00fede
-                    hi rainbowParensShell5 guifg=#00fe7f
-                    hi rainbowParensShell6 guifg=#00fe1f
-                    hi rainbowParensShell7 guifg=#3ffe00
-                    hi rainbowParensShell8 guifg=#9ffe00
-                    hi rainbowParensShell9 guifg=#fefe00
-                    hi rainbowParensShell10 guifg=#fe9f00
-                    hi rainbowParensShell11 guifg=#fe3f00
-                    hi rainbowParensShell12 guifg=#fe001f
-                    hi rainbowParensShell13 guifg=#fe007f
-                    hi rainbowParensShell14 guifg=#fe00de
-                    hi rainbowParensShell15 guifg=#be00fe
-                    hi rainbowParensShell16 guifg=#5f00fe
-
-                    hi VertSplit NONE guifg=${foregroundSecondary}
-                  '';
-                  destination = "/colors/challenger-deep-monochrome.vim";
                 })
               ];
             };
@@ -245,13 +204,22 @@
                 sha256 = "0izbjq6qbia013vmd84rdwjmwagln948jh9labhly0asnhqyrkb8";
               };
             };
+
+            lightline = pkgs.vimUtils.buildVimPlugin {
+              name = "lightline";
+              src = pkgs.fetchFromGitHub {
+                owner = "itchyny";
+                repo = "lightline.vim";
+                rev = "0532dff598abca9975d3f80128eaadadbf1d91d4";
+                sha256 = "1wvhl2wc2p4vqi7zzj7wdyq0cnbfq8s7g5ifcchj8f5s8c4h4lfc";
+              };
+            };
           };
 
         in {
           knownPlugins = pkgs.vimPlugins // customPlugins;
           pluginDictionaries = [
             { name = "colorscheme-acme"; }
-            { name = "colorscheme-challenger-deep-monochrome"; }
             { name = "commentary"; }
             { name = "easy-align"; }
             { name = "fzf-vim"; }
@@ -259,6 +227,7 @@
             { name = "gitgutter"; }
             { name = "golden-ratio"; }
             { name = "goyo"; }
+            { name = "lightline"; }
             { name = "nerdtree"; }
             { name = "paredit"; }
             { name = "parinfer-rust"; }
@@ -283,6 +252,8 @@
 
       customRC = let
         settings = ''
+          set noswapfile
+
           set
             \ title
             \ hidden
@@ -370,6 +341,11 @@
 
           map <leader>t :NERDTreeToggle<CR>
           map <leader>tf :NERDTreeFind<CR>
+
+          let g:NERDTreeDirArrowExpandable = '+'
+          let g:NERDTreeDirArrowCollapsible = '-'
+
+          let g:NERDTreeMinimalUI = 1
         '';
 
         useVeryMagicPatterns = ''
@@ -396,6 +372,23 @@
           function MinimalMode()
             Goyo 130
           endfunction
+        '';
+
+        lightline = ''
+          let g:lightline = {
+                \ 'colorscheme': 'PaperColor_light',
+                \ }
+        '';
+
+        reloadBuffersWhenChangedExternally = ''
+          " Triger `autoread` when files changes on disk
+          " https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+          " https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
+          autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
+          " Notification after file change
+          " https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
+          autocmd FileChangedShellPost *
+            \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
         '';
 
         goyo = ''
@@ -439,7 +432,7 @@
 
         ui = ''
           set termguicolors
-          colorscheme challenger-deep-monochrome
+          colorscheme acme
 
           set showmatch
 
@@ -467,12 +460,14 @@
         BetterWhitespace
         NERDTree
         SuperTab
+        reloadBuffersWhenChangedExternally
         bufferNavigation
         clearSearchHighlight
         cursor
         fzf
         goyo
         hideMessagesAfterTimeout
+        lightline
         minimalMode acmeMinimalMode
         navigateQuickFix
         rebalanceSplitsOnResize

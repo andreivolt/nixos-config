@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  email = (import ../../private/credentials.nix).email;
+  email = (import ../../credentials.nix).email;
   accounts = email.accounts;
   primary = lib.findFirst (account: account.address == email.primary_address) null accounts;
   secondary = lib.findFirst (account: account.address == email.secondary_address) null accounts;

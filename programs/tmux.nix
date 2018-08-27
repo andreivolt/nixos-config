@@ -1,4 +1,4 @@
-let theme = import ../themes/challenger-deep.nix;
+let theme = import ../theme.nix;
 in {
   programs.tmux = {
     enable = true;

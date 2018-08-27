@@ -2,7 +2,6 @@ import           Local.DropdownTerminal              (manageDropdownTerminal)
 import           Local.Keys                          as Local
 import           Local.Layouts                       as Layouts
 import           Local.NotifyUrgencyHook             (handleUrgencyHook)
-import           Local.Scratchpads                   (manageMyScratchpads)
 
 import           Control.Monad
 import qualified Data.Map                            as M
@@ -27,34 +26,34 @@ main = xmonad
   $ myConfig)
   where
     myNav2DConf = def { defaultTiledNavigation = centerNavigation
-                       , floatNavigation        = centerNavigation
-                       , screenNavigation       = lineNavigation
-                       , layoutNavigation       = [ ("Full", centerNavigation)
-                                                  , ("Tabs", hybridNavigation)]
+                       , floatNavigation = centerNavigation
+                       , screenNavigation = lineNavigation
+                       , layoutNavigation =
+                           [ ("Full", centerNavigation)
+                           , ("Tabs", hybridNavigation)]
                        }
 
     myConfig = azertyConfig
-                 { terminal          = "alacritty"
-                 , workspaces        = ["1", "2", "3", "4"]
-                 , manageHook        = myManageHook
-                                       <+> manageDropdownTerminal
-                                       <+> manageMyScratchpads
-                 , layoutHook        = myLayoutHook
-                 , clickJustFocuses  = True
+                 { terminal = "alacritty"
+                 , workspaces = ["1", "2", "3", "4"]
+                 , manageHook = myManageHook <+> manageDropdownTerminal
+                 , layoutHook = myLayoutHook
+                 , clickJustFocuses = True
                  , focusFollowsMouse = False
-                 , logHook           = historyHook
-                 , modMask           = Local.modifierKey
-                 , borderWidth       = 0
-                 , mouseBindings     = Local.myMouseBindings
-                 , handleEventHook   = Fullscreen.fullscreenEventHook
-                 , keys              = Local.myKeys
+                 , logHook = historyHook
+                 , modMask = Local.modifierKey
+                 , borderWidth = 0
+                 -- , mouseBindings = Local.myMouseBindings
+                 , handleEventHook = Fullscreen.fullscreenEventHook
+                 , keys = Local.myKeys
                  }
 
     myManageHook = composeAll . concat $
-       [ [isDialog           --> doRectFloat (W.RationalRect (1/4) (1/4) (1/2) (1/2))]
-       -- , [isFullscreen       --> doFullFloat]
-       , [className =? c     --> doCenterFloat | c <- myFloatWCs]
+       [ [isDialog --> doRectFloat (W.RationalRect (1/4) (1/4) (1/2) (1/2))]
+       , [className =? c --> doRectFloat (W.RationalRect (1/4) (1/4) (1/2) (1/2)) | c <- myFloatWCs]
+       , [role =? "pop-up" <&&> className =? "Google-chrome-unstable" --> doFloat]
        ] where
+        role = stringProperty "WM_WINDOW_ROLE"
         myFloatWCs =
           [ "Sxiv"
           , "mpv"]
@@ -65,4 +64,4 @@ main = xmonad
       $ (Layouts.full |||
          Layouts.masterTabbed |||
          Layouts.tabs |||
-         Layouts.webdev)
+         Layouts.centeredMasterTabbed)

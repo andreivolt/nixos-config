@@ -9,7 +9,6 @@ rec {
     ./gui
     ./hardware
     ./networking.nix
-    ./shell.nix
 
     # ./programs/mitmproxy.nix
     ./programs/alacritty.nix
@@ -23,25 +22,28 @@ rec {
     ./programs/fzf.nix
     ./programs/ghi.nix
     ./programs/gist.nix
+    ./programs/git-hub.nix
     ./programs/git.nix
     ./programs/gnupg.nix
     ./programs/google-drive.nix
     ./programs/grep.nix
     ./programs/httpie.nix
-    ./programs/ipfs.nix
     ./programs/irc.nix
     ./programs/less.nix
     ./programs/libvirt.nix
+    ./programs/macos-vm.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
     ./programs/nginx-proxy.nix
     ./programs/parallel.nix
+    ./programs/pushover.nix
     ./programs/readline.nix
     ./programs/ripgrep.nix
     ./programs/ssh.nix
     ./programs/sshd.nix
     ./programs/tmux.nix
     ./programs/zathura.nix
+    ./programs/zsh.nix
   ];
 
   boot.kernel.sysctl =
@@ -64,33 +66,22 @@ rec {
   system.stateVersion = "18.09";
 
   services.wakeonlan.interfaces =
-   if builtins.getEnv "HOST" == "watts" then
-     [ { interface = "enp0s31f6"; method = "magicpacket"; } ]
-   else [];
+    if builtins.getEnv "HOST" == "watts" then [ { interface = "enp0s31f6"; method = "magicpacket"; } ] else [];
 
   nixpkgs.config.allowUnfree = true;
 
   networking.extraHosts = builtins.readFile (builtins.fetchurl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts);
 
-  nixpkgs.overlays =
-    let path = ./overlays; in with builtins;
-    map (n: import (path + ("/" + n)))
-        (filter (n: match ".*\\.nix" n != null || pathExists (path + ("/" + n + "/default.nix")))
-                (attrNames (readDir path)));
+  environment.variables.BROWSER = "${pkgs.google-chrome-dev}/bin/google-chrome-unstable";
 
   home-manager.users.avo = {
     nixpkgs.config = config.nixpkgs.config;
-
-    home.sessionVariables = {
-      BROWSER = "${pkgs.google-chrome-dev}/bin/google-chrome-unstable";
-      EDITOR  = "${pkgs.neovim}/bin/nvim";
-    };
 
     xdg.enable = true;
 
     xdg.configFile."user-dirs.dirs".text = lib.generators.toKeyValue {} {
       XDG_DOWNLOAD_DIR = "$HOME/tmp";
-      XDG_DESKTOP_DIR  = "$HOME/tmp";
+      XDG_DESKTOP_DIR = "$HOME/tmp";
     };
 
     xdg.configFile."mimeapps.list".text =
@@ -114,9 +105,90 @@ rec {
   services.devmon.enable = true;
 
   environment.systemPackages = with pkgs; let
+    google-search = stdenv.mkDerivation rec {
+      name = "google-search";
+
+      src = [(writeScript name ''
+        ${pkgs.surfraw}/bin/surfraw google *
+      '')];
+
+      unpackPhase = "true";
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/${name}
+      '';
+    };
+
+    new-browser-tab = stdenv.mkDerivation rec {
+      name = "new-browser-tab";
+
+      src = [(writeScript name ''
+        sleep 0.1
+        ${xdotool}/bin/xdotool \
+          search --class Chrome \
+          windowactivate --sync key --clearmodifiers --window 0 ctrl+t
+      '')];
+
+      unpackPhase = "true";
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/${name}
+      '';
+    };
+
+    disposable-browser = with pkgs; stdenv.mkDerivation rec {
+      name = "disposable-browser";
+
+      src = [(pkgs.writeScript name ''
+        #!/usr/bin/env bash
+
+        setsid \
+          ${pkgs.google-chrome-dev}/bin/google-chrome-unstable \
+            --user-data-dir=$(mktemp -d) \
+            --no-first-run --no-default-browser-check \
+            $* &>/dev/null
+      '')];
+
+      unpackPhase = "true";
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/${name}
+      '';
+    };
+
+    webapp = with pkgs; stdenv.mkDerivation rec {
+      name = "webapp";
+
+      src = [(pkgs.writeScript name ''
+        #!/usr/bin/env bash
+
+        name=$1
+        url=$2
+
+        ${pkgs.google-chrome-dev}/bin/google-chrome-unstable \
+            --class=webapp \
+            --app="$url" \
+            --no-first-run --no-default-browser-check \
+            --user-data-dir=$XDG_CACHE_HOME/''${name}-webapp \
+            &>/dev/null &
+
+        disown
+      '')];
+
+      unpackPhase = "true";
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/${name}
+      '';
+    };
+
     moreutils-without-parallel =
-      pkgs.stdenv.lib.overrideDerivation
-        pkgs.moreutils
+      stdenv.lib.overrideDerivation
+        moreutils
         (attrs: { postInstall = attrs.postInstall + "; rm $out/bin/parallel"; });
   in [
     acpi
@@ -125,63 +197,46 @@ rec {
     disposable-browser
     dnsutils
     dtrx
-    emacs-browse-url
     file
     flameshot
     gcolor2
     google-chrome-dev
     google-cloud-sdk
-    google-play-music-desktop-player
+    google-search
     graphicsmagick
     gron
-    icdiff
-    inotify-tools
     jo
     jq
-    jre
     keybase
     lastpass-cli
-    libnotify
     libreoffice
     lsof
     moreutils-without-parallel
     mosh
     netcat
     nethogs
+    new-browser-tab
     ngrep
     ngrok
     nix-zsh-completions
     nixops
     nmap
     ntfy
-    openssl
     pandoc
     psmisc
-    pushover
-    pv
     racket
-    recode
     remarshal
     rsync
     socat
     strace
-    surfraw
     sxiv
     telnet
-    terminal-scratchpad
     texlive.combined.scheme-full
     tmate
     torbrowser
-    traceroute
     tree
-    tsocks
-    units
-    urlp
     webapp
-    whattimeisit
     wireshark
-    wsta
     xfce.thunar
-    xurls
   ];
 }

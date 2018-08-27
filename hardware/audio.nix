@@ -72,12 +72,12 @@
     google-tts = pkgs.stdenv.mkDerivation rec {
       name = "google-tts";
 
-      src = [(pkgs.writeScript name ''
+      src = [(pkgs.writeScript name (let api_key = (import ../credentials.nix).google_api_key; in ''
         #!/usr/bin/env bash
 
         text="$*"
 
-        ${pkgs.curl}/bin/curl "https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=$GOOGLE_API_KEY" \
+        ${pkgs.curl}/bin/curl "https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${api_key}" \
             -H "Content-Type: application/json" \
             --data "{
               'input':{
@@ -94,7 +94,7 @@
             }" |
         ${pkgs.jq}/bin/jq .audioContent -r | base64 --decode |
         ${pkgs.mpv}/bin/mpv -
-      '')];
+      ''))];
 
       unpackPhase = "true";
 

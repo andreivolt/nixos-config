@@ -4,8 +4,10 @@
   environment.systemPackages = with pkgs; [ rlwrap ];
 
   home-manager.users.avo
-    .home.sessionVariables.INPUTRC = with config.home-manager.users.avo;
-      "${xdg.configHome}/readline/inputrc";
+    .home.sessionVariables = with config.home-manager.users.avo.xdg; {
+      INPUTRC = "${configHome}/readline/inputrc";
+      RLWRAP_HOME = "${cacheHome}/rlwrap";
+    };
 
   home-manager.users.avo
     .xdg.configFile."readline/inputrc".text = ''

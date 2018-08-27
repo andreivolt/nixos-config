@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  email = (import ../../private/credentials.nix).email;
+  email = (import ../../credentials.nix).email;
   accounts = email.accounts;
 
 in {
