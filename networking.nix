@@ -1,10 +1,10 @@
 { config, lib, pkgs, ... }:
 
 let
-  vpn = let credentials = import ./private/credentials.nix; in {
-    config = credentials.pia-openvpn-conf;
+  vpn = with (import ./credentials.nix).vpn; {
+    config = conf;
     autoStart = false;
-    authUserPass = with credentials.vpn; { inherit username password; };
+    authUserPass = { inherit username password; };
   };
 
 in {
@@ -32,6 +32,7 @@ in {
   networking = {
     enableIPv6 = false;
     firewall.allowedTCPPorts = [ 80 443 ];
+    firewall.allowedUDPPorts = [ 60001 ];
     hostName = builtins.getEnv "HOST";
 
     wireless = {
@@ -40,7 +41,7 @@ in {
         lib.mapAttrs'
           (name: value:
             lib.nameValuePair name (lib.listToAttrs [(lib.nameValuePair "psk" value)]))
-          (import ./private/credentials.nix).wifi;
+          (import ./credentials.nix).wifi;
     };
   };
 
@@ -61,7 +62,5 @@ in {
     };
 
     openvpn.servers.default = vpn;
-
-    tor.client.enable = true;
   };
 }

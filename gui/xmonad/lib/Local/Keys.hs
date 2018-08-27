@@ -6,7 +6,6 @@ module Local.Keys (myKeys, myMouseBindings, modifierKey) where
 import           Local.ConditionalKeys
 import           Local.DropdownTerminal              (toggleDropdownTerminal)
 import           Local.Layouts                       (TABBED (..))
-import           Local.Scratchpads                   (toggleScratchpad)
 
 import           XMonad
 import           XMonad.Actions.CycleWS              (WSType (EmptyWS, WSIs, WSTagGroup),
@@ -53,9 +52,7 @@ myKeys' conf@XConfig {XMonad.modMask = modm} = mkKeymap conf
 
   , "<XF86AudioRaiseVolume>" ~~ spawn "volume up"
   , "<XF86AudioLowerVolume>" ~~ spawn "volume down"
-  , "<XF86AudioStop>"        ~~ spawn "volume mute-toggle"
-
-  , "<F7>"                   ~~ toggleScratchpad "music"
+  , "<XF86AudioMute>"        ~~ spawn "volume mute-toggle"
 
   , "M-<F1>"                 ~~ spawn "nightlight -b-"
   , "M-<F2>"                 ~~ spawn "nightlight -t-"
@@ -66,12 +63,11 @@ myKeys' conf@XConfig {XMonad.modMask = modm} = mkKeymap conf
 
   , "M-<Space>"              ~~ sendMessage NextLayout
   , "M-f"                    ~~ sendMessage (Toggle FULL)
+  , "M-g"                    ~~ spawn "sleep 0.1; new-browser-tab"
   , "M-t"                    ~~ sendMessage (Toggle TABBED)
-  , "M-:"                    ~~ Paste.pasteString "y" >> spawn "sleep 0.1; surfraw google $(xsel -b)"
+  , "M-:"                    ~~ Paste.pasteString "y" >> spawn "sleep 0.1; google-search $(xsel -b)"
 
   , "M-S-c"                  ~~ kill
-
-  , "M-a n"                  ~~ spawn "notify-send foo"
 
   , "M-u"                    ~~ focusUrgent
 

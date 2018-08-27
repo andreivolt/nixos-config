@@ -5,7 +5,7 @@ let
     proportional = if builtins.getEnv("PROPORTIONAL_FONT_FAMILY") != "" then builtins.getEnv("PROPORTIONAL_FONT_FAMILY") else "Lato";
     monospace = if builtins.getEnv("MONOSPACE_FONT_FAMILY") != "" then builtins.getEnv("MONOSPACE_FONT_FAMILY") else "Source Code Pro";
   };
-  theme = import ../themes/challenger-deep.nix;
+  theme = import ../theme.nix;
 
 in {
   environment.systemPackages = with pkgs; let
@@ -27,6 +27,7 @@ in {
       '';
     };
   in [
+    libnotify
     toggle-notifications
   ];
 

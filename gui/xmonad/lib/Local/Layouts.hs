@@ -6,13 +6,13 @@
 
 module Local.Layouts (
     tabs
-  , webdev
   , masterTabbed
+  , centeredMasterTabbed
   , full
   , TABBED(TABBED)
 ) where
 
-import           Local.ChallengerDeepTheme
+import           Local.Theme
 
 import           XMonad                           (Full (Full), Mirror (Mirror),
                                                    Tall (Tall), Typeable,
@@ -28,6 +28,8 @@ import           XMonad.Layout.Renamed            (Rename (Replace), renamed)
 import           XMonad.Layout.Simplest           (Simplest (Simplest))
 import           XMonad.Layout.Tabbed             (addTabs, tabbed)
 import           XMonad.Layout.Spacing            (smartSpacingWithEdge)
+import XMonad.Layout.Reflect
+import XMonad.Layout.CenteredMaster
 
 
 data TABBED = TABBED deriving (Read, Show, Eq, Typeable)
@@ -47,10 +49,10 @@ tabs =
   addTabTopBar = noFrillsDeco shrinkText tabTopBarTheme
   myAddTabs = addTabs shrinkText tabTheme
 
-webdev =
-  addTopBar
-  $ Tall 1 (1 / 100) (3 / 5)
-
 masterTabbed =
   addTopBar
+  $ reflectHoriz
   $ mastered (1 / 100) (1 / 2) tabs
+
+centeredMasterTabbed =
+  centerMaster $ addTopBar tabs

@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  email = lib.findFirst (account: account.address == "andrei@avolt.net") null (import ../../private/credentials.nix).email.accounts;
+  email = lib.findFirst (account: account.address == "andrei@avolt.net") null (import ../../credentials.nix).email.accounts;
 
 in {
   services.offlineimap.enable = true;

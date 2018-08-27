@@ -3,22 +3,13 @@
 {
   users.users.avo.shell = pkgs.zsh;
 
-  home-manager.users.avo
-    .home.packages = with pkgs; [
-      direnv
-    ];
+  home-manager.users.avo.home.packages = with pkgs; [ direnv ];
 
   home-manager.users.avo
-    .home.sessionVariables =
-      {
-        BLOCK_SIZE  = "\'1";
-        COLUMNS     = 100;
-        PAGER       = "less";
-      } // (
-      with config.home-manager.users.avo.xdg; {
-        RLWRAP_HOME = "${cacheHome}/rlwrap";
-        ZPLUG_HOME  = "${cacheHome}/zplug";
-      }) // (import ./private/credentials.nix).env;
+    .home.sessionVariables.BLOCK_SIZE = "\'1";
+
+  home-manager.users.avo.home.sessionVariables.ZPLUG_HOME = with config.home-manager.users.avo.xdg;
+    "${cacheHome}/zplug";
 
   home-manager.users.avo
     .programs.zsh = with config.home-manager.users.avo; rec {
@@ -31,11 +22,11 @@
 
       shellAliases = {
         hgrep = "fc -ln 0- | grep";
-        l  = "ls";
+        l = "ls";
         la = "ls -a";
         ls = "ls --group-directories-first --classify --dereference-command-line -v";
         mkdir = "mkdir -p";
-        tree  = "${pkgs.tree}/bin/tree -F --dirsfirst";
+        tree = "${pkgs.tree}/bin/tree -F --dirsfirst";
       };
 
       history = rec {
@@ -65,7 +56,6 @@
             "+x" = ''chmod +x "$*"'';
             "diff" = ''${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff'';
             "open" = ''setsid ${pkgs.xdg_utils}/bin/xdg-open "$*" &>/dev/null'';
-            "vi" = ''grep acme /proc/$PPID/cmdline && command vim -c 'colorscheme acme' $@ || command vim $@'';
           };
 
           cdAliases = ''
@@ -108,10 +98,12 @@
               }
 
               prompt_jobs=""
-              [[ -n $jobs ]] && prompt_jobs="%F{black}["''${(j:,:)jobs}"]%f "
+              [[ -n $jobs ]] && prompt_jobs=" ["''${(j:,:)jobs}"] "
 
               setopt promptsubst
-              PROMPT="%K{white} $prompt_jobs%F{black}%~ $ %f%k "
+
+              PROMPT="%B%F{green}❯%b%f "
+              RPROMPT="%F{blue}$prompt_jobs%U%~%u%f"
             }
 
             prompt_opts=(cr percent sp subst)
@@ -123,8 +115,6 @@
             setopt HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
             setopt EXTENDED_GLOB CASE_GLOB GLOB_COMPLETE
             setopt INTERACTIVE_COMMENTS
-
-            preexec() { print -Pn "\e]0;$1\a" }
           ''
           cdAliases
           globalAliasesStr

@@ -5,7 +5,7 @@
 
   users.users.avo.extraGroups = [ "adbusers" ];
 
-  environment.systemPackages = let
+  environment.systemPackages = with pkgs; let
     adb-wifi-connect = pkgs.stdenv.mkDerivation rec {
       name = "adb-wifi-connect";
 
@@ -26,6 +26,7 @@
     };
   in [
     adb-wifi-connect
+    jre
   ];
 
   home-manager.users.avo
@@ -33,7 +34,7 @@
       "${xdg.configHome}/android";
 
   home-manager.users.avo
-    .xdg.configFile = with (import ../private/credentials.nix).adb; {
+    .xdg.configFile = with (import ../credentials.nix).adb; {
       "android/adbkey".text = private;
       "android/adbkey.pub".text = public;
     };
