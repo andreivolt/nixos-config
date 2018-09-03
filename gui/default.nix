@@ -2,7 +2,6 @@
 
 let
   theme = import ../theme.nix;
-  xmonad = import ./xmonad;
   set-monitors = pkgs.stdenv.mkDerivation rec {
     name = "set-monitors";
 
@@ -37,7 +36,7 @@ in {
   fileSystems."xmonad" = {
     device = builtins.toString ./xmonad;
     fsType = "none"; options = [ "bind" ];
-    mountPoint = "/home/avo/.config/xmonad";
+    mountPoint = "/home/avo/.xmonad";
   };
 
   environment.systemPackages = with pkgs; let
@@ -152,8 +151,8 @@ in {
   services.compton = {
     enable = true;
     shadow = true;
-    shadowOffsets = [ (-8) 8 ];
-    shadowOpacity = "0.5";
+    shadowOffsets = [ (-15) 15 ];
+    shadowOpacity = "0.35";
     shadowExclude = [ ''
       !(focused ||
         (name = 'scratchpad') ||
@@ -161,7 +160,7 @@ in {
         (_NET_WM_STATE@[0]:a = '_NET_WM_STATE_MODAL'))
     '' ];
     extraOptions = ''
-      shadow-radius = 10;
+      shadow-radius = 15;
       blur-background = true;
       blur-background-frame = true;
       blur-background-fixed = false;

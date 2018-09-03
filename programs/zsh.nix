@@ -55,6 +55,7 @@
           functions = {
             "+x" = ''chmod +x "$*"'';
             "diff" = ''${pkgs.wdiff}/bin/wdiff -n $@ | ${pkgs.colordiff}/bin/colordiff'';
+            "each" = ''xargs -i -n1 $1 "{}"'';
             "open" = ''setsid ${pkgs.xdg_utils}/bin/xdg-open "$*" &>/dev/null'';
           };
 

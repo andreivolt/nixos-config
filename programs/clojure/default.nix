@@ -3,7 +3,7 @@
 {
   imports = [
     ./boot.nix
-    ./lumo.nix
+    # ./lumo.nix
   ];
 
   environment.systemPackages = with pkgs; [
