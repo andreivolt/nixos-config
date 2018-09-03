@@ -14,7 +14,7 @@ manageDropdownTerminal = scratchpadManageHook myTopFloatRect
   where
     myTopFloatRect = W.RationalRect l t w h
       where
-        h = 0.65
+        h = 0.7
         w = 1 - 2 * l
         t = 0
-        l = 0.15
+        l = 0.1

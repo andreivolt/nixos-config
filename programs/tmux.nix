@@ -44,7 +44,7 @@ in {
       set  -g status-right                 ' #S '
       set  -g window-status-format         ' #I: #W '
       set  -g window-status-current-format ' #I: #W '
-      setw -g window-status-current-style  bg='${theme.black}',fg='${theme.white}'
+      setw -g window-status-current-style  bg='${theme.foreground}',fg='${theme.background}'
       setw -g window-status-activity-style bg='${theme.yellow}'
 
       set  -g prefix C-a
