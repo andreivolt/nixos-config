@@ -1,10 +1,6 @@
-{ config, lib, pkgs, myName, myEmail, ... }:
+{ config, lib, pkgs,  ... }:
 
-let
-  myName = "Andrei Vladescu-Olt"; myEmail = "andrei@avolt.net";
-  makeEmacsDaemon = import ../../util/make-emacs-daemon.nix;
-
-in {
+{
   imports = [
     ./msmtp.nix
     ./notmuch.nix

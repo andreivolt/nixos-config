@@ -14,7 +14,7 @@ let
 
     nativeBuildInputs = [
       boot
-      nodejs-8_x
+      nodejs
       python
       yarn
     ];

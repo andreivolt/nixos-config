@@ -32,9 +32,11 @@ rec {
     ./programs/less.nix
     ./programs/libvirt.nix
     ./programs/macos-vm.nix
+    ./programs/mosh.nix
     ./programs/mpv.nix
     ./programs/neovim.nix
     ./programs/nginx-proxy.nix
+    ./programs/nodejs.nix
     ./programs/parallel.nix
     ./programs/pushover.nix
     ./programs/readline.nix
@@ -212,7 +214,6 @@ rec {
     libreoffice
     lsof
     moreutils-without-parallel
-    mosh
     netcat
     nethogs
     new-browser-tab

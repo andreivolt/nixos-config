@@ -12,12 +12,11 @@ let
 
       case $1 in
         *)
-          nvidia-settings --assign CurrentMetaMode='\
-            ''${secondary}: nvidia-auto-select +3840+0 {ForceFullCompositionPipeline=On},\
-            ''${primary}: nvidia-auto-select +3840+0 {ForceFullCompositionPipeline=On, SameAs=DP-0}'
+          nvidia-settings --assign CurrentMetaMode="\
+            ''${primary}: nvidia-auto-select +3840+0 {ForceFullCompositionPipeline=On},\
+            ''${secondary}: nvidia-auto-select +3840+0 {ForceFullCompositionPipeline=On, SameAs=#{primary}"
           ;;
       esac
-        ];
     '')];
 
     unpackPhase = "true";
@@ -94,6 +93,35 @@ in {
       '';
     };
 
+    chrome-switch-tabs = pkgs.stdenv.mkDerivation rec {
+      name = "chrome-switch-tabs";
+
+      src = [(pkgs.writeScript name ''
+        #!/usr/bin/env bash
+
+        TABS_JSON=$(~/.local/share/npm/packages/bin/chrome-remote-interface list | sed -e "s/^'//" -e "s/'$//" | jq -r 'map(select(.type == "page") | {id: .id, title: .title})')
+
+        if [[ -z $@ ]]; then
+            TAB_NAMES=$(echo "$TABS_JSON" | jq -r 'map(.title) | .[]')
+
+            echo "$TAB_NAMES"
+        else
+            TAB=$*
+
+            TAB_ID=$(echo "$TABS_JSON" | jq -r "map(select(.title | contains (\"''${TAB//\"/\\\"}\")) | .id) | .[]")
+
+            ~/.local/share/npm/packages/bin/chrome-remote-interface activate "$TAB_ID" >/dev/null
+        fi
+      '')];
+
+      unpackPhase = "true";
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/${name}
+      '';
+    };
+
     whattimeisit = with pkgs; stdenv.mkDerivation rec {
       name = "whattimeisit";
 
@@ -115,6 +143,8 @@ in {
     focus-window
     nightlight
     redshift
+    rofi
+    chrome-switch-tabs
     set-monitors
     whattimeisit
     wmctrl
@@ -151,7 +181,7 @@ in {
   services.compton = {
     enable = true;
     shadow = true;
-    shadowOffsets = [ (-15) 15 ];
+    shadowOffsets = [ (-15) (-5) ];
     shadowOpacity = "0.35";
     shadowExclude = [ ''
       !(focused ||
@@ -160,7 +190,7 @@ in {
         (_NET_WM_STATE@[0]:a = '_NET_WM_STATE_MODAL'))
     '' ];
     extraOptions = ''
-      shadow-radius = 15;
+      shadow-radius = 10;
       blur-background = true;
       blur-background-frame = true;
       blur-background-fixed = false;
@@ -202,10 +232,6 @@ in {
           "*.color5" = magenta; "*.color13" = lightMagenta;
           "*.color6" = cyan; "*.color14" = lightCyan;
           "*.color7" = white; "*.color15" = lightWhite;
-
-          "*.borderColor" = background;
-          "*.colorUL" = white;
-          "*.cursorColor" = foreground;
         };
 
         cursor = {

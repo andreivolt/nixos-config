@@ -31,8 +31,6 @@ in {
 
   networking = {
     enableIPv6 = false;
-    firewall.allowedTCPPorts = [ 80 443 ];
-    firewall.allowedUDPPorts = [ 60001 ];
     hostName = builtins.getEnv "HOST";
 
     wireless = {

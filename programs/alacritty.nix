@@ -96,13 +96,9 @@ let
       { action = "IncreaseFontSize"; mods = "Control"; key = "Equals"; }
       { action = "DecreaseFontSize"; mods = "Control"; key = "Subtract"; }
     ];
-    selection = {
-      semantic_escape_chars = ";│`|:\"' ()[]{}<>";
-    };
+    selection.semantic_escape_chars = ";│`|:\"' ()[]{}<>";
     tabspaces = 4;
-    visual_bell = {
-      duration = 0;
-    };
+    visual_bell.duration = 0;
     window = {
       dimensions = { columns = 0; lines = 0; };
       padding = { x = 20; y = 15; };

@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+
   systemd.services.docker-nginx-proxy = with pkgs; {
     wantedBy = [ "multi-user.target" ];
     after = [ "network.target" ];
