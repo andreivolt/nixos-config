@@ -8,7 +8,5 @@
         (attrs: { nativeBuildInputs = attrs.nativeBuildInputs ++ [ perlPackages.DBDSQLite ];});
   in [ parallel ];
 
-  home-manager.users.avo
-    .home.sessionVariables.PARALLEL_HOME = with config.home-manager.users.avo;
-      "${xdg.cacheHome}/parallel";
+  environment.variables.PARALLEL_HOME = "~/.cache/parallel";
 }

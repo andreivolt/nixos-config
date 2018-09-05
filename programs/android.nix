@@ -29,9 +29,7 @@
     jre
   ];
 
-  home-manager.users.avo
-    .home.sessionVariables.ANDROID_SDK_HOME = with config.home-manager.users.avo;
-      "${xdg.configHome}/android";
+  environment.variables.ANDROID_SDK_HOME = "~/.config/android";
 
   home-manager.users.avo
     .xdg.configFile = with (import ../credentials.nix).adb; {

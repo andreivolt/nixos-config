@@ -21,7 +21,5 @@
         cp $src $out/bin/${name}
       '';
     };
-  in [
-    irc
-  ];
+  in [ irc ];
 }

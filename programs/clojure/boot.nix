@@ -3,10 +3,10 @@
 {
   environment.systemPackages = with pkgs; [ boot ];
 
-  home-manager.users.avo
-    .home.sessionVariables = with config.home-manager.users.avo.xdg; {
-      BOOT_HOME = "${configHome}/boot";
-      BOOT_LOCAL_REPO = "${cacheHome}/boot";
+  environment.variables =
+    {
+      BOOT_HOME = "~/.config/boot";
+      BOOT_LOCAL_REPO = "~/.cache/boot";
     } // {
       BOOT_JVM_OPTIONS = ''
         -client \

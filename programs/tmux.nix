@@ -39,7 +39,7 @@ in {
       set  -g set-titles on
       set  -g set-titles-string "#T"
 
-      set  -g status-style                 bg='${theme.background}',fg='${theme.foreground}'
+      set  -g status-style                 bg='${theme.gray}',fg='${theme.background}'
       set  -g status-left                  '''
       set  -g status-right                 ' #S '
       set  -g window-status-format         ' #I: #W '

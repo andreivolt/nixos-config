@@ -7,6 +7,5 @@
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  environment.variables.__GL_SHADER_DISK_CACHE_PATH = with config.home-manager.users.avo;
-    "${xdg.cacheHome}/nv";
+  environment.variables.__GL_SHADER_DISK_CACHE_PATH = "~/.cache/nv";
 }

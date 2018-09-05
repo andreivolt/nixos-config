@@ -3,9 +3,7 @@
 {
   environment.systemPackages = with pkgs; [ nodejs ];
 
-  home-manager.users.avo
-    .home.sessionVariables.NPM_CONFIG_USERCONFIG = with config.home-manager.users.avo.xdg;
-      "${configHome}/npm/config";
+  environment.variables.NPM_CONFIG_USERCONFIG = "~/.config/npm/config";
 
   home-manager.users.avo
     .xdg.configFile."npm/config".text = lib.generators.toKeyValue {} (with config.home-manager.users.avo.xdg; {

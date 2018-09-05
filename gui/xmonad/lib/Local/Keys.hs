@@ -62,7 +62,7 @@ myKeys' conf@XConfig {XMonad.modMask = modm} = mkKeymap conf
   , "M-s"                    ~~ withFocused $ windows . W.sink
 
   , "M-<Space>"              ~~ sendMessage NextLayout
-  , "M-g"                    ~~ spawn "rofi -combi-modi 'window,chrome:chrome-switch-tabs' -show combi -modi combi -font 'Product Sans 24' -theme Arc-Dark"
+  , "M-g"                    ~~ spawn "window-switcher"
   , "M-f"                    ~~ sendMessage (Toggle FULL)
   , "M-t"                    ~~ sendMessage (Toggle TABBED)
   , "M-:"                    ~~ Paste.pasteString "y" >> spawn "sleep 0.1; google-search $(xsel -b)"

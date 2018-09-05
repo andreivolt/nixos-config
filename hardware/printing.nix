@@ -10,6 +10,5 @@
     '';
   };
 
-  home-manager.users.avo
-    .home.sessionVariables.PRINTER = "default";
+  environment.variables.PRINTER = "default";
 }
