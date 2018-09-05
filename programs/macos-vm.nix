@@ -116,14 +116,25 @@
         brew install sshfs
       '';
 
+    bootstrapMachine = writeScript "bootstrap-machine" ''
+      export LIBVIRT_DEFAULT_URI=qemu:///system
+
+      ${libvirt}/bin/virsh destroy macos
+      ${libvirt}/bin/virsh undefine macos
+      ${libvirt}/bin/virsh define ${machine-xml}
+    '';
+
     in stdenv.mkDerivation rec {
       name = "macos-vm";
 
-      src = [];
+      src = [ bootstrapMachine ];
 
       unpackPhase = "true";
 
-      installPhase = "mkdir $out";
+      installPhase = ''
+        mkdir -p $out/bin
+        cp ${bootstrapMachine} $out/bin/${name}
+      '';
     };
   in [ macos-vm ];
 }

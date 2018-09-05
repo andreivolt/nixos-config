@@ -230,7 +230,7 @@
             { name = "lightline"; }
             { name = "nerdtree"; }
             { name = "paredit"; }
-            { name = "parinfer-rust"; }
+            # { name = "parinfer-rust"; }
             { name = "rainbow_parentheses"; }
             { name = "supertab"; }
             { name = "surround"; }
