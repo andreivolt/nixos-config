@@ -7,9 +7,5 @@ rec {
     xkbOptions = "ctrl:nocaps";
   };
 
-  home-manager.users.avo
-    .home.keyboard = with services.xserver; {
-      inherit layout;
-      options = [ xkbOptions ];
-    };
+  i18n.consoleUseXkbConfig = true;
 }

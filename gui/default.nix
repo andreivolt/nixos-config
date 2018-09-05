@@ -2,6 +2,7 @@
 
 let
   theme = import ../theme.nix;
+
   set-monitors = pkgs.stdenv.mkDerivation rec {
     name = "set-monitors";
 
@@ -17,6 +18,23 @@ let
             ''${secondary}: nvidia-auto-select +3840+0 {ForceFullCompositionPipeline=On, SameAs=#{primary}"
           ;;
       esac
+    '')];
+
+    unpackPhase = "true";
+
+    installPhase = ''
+      mkdir -p $out/bin
+      cp $src $out/bin/${name}
+    '';
+  };
+
+  todo = with pkgs; stdenv.mkDerivation rec {
+    name = "todo";
+
+    src = [(pkgs.writeScript name ''
+      #!/usr/bin/env bash
+
+      ${pkgs.emacs}/bin/emacs ~/doc/todo.org --eval '(setq mode-line-format nil)' &
     '')];
 
     unpackPhase = "true";
@@ -104,7 +122,7 @@ in {
         if [[ -z $@ ]]; then
             TAB_NAMES=$(echo "$TABS_JSON" | jq -r 'map(.title) | .[]')
 
-            echo "$TAB_NAMES"
+            echo "$TAB_NAMES" | sort
         else
             TAB=$*
 
@@ -139,14 +157,35 @@ in {
       '';
     };
 
+    window-switcher = with pkgs; stdenv.mkDerivation rec {
+      name = "window-switcher";
+
+      src = [(pkgs.writeScript name ''
+        #!/usr/bin/env bash
+
+        rofi \
+          -combi-modi 'window,\x200b:chrome-switch-tabs' -show combi -modi combi \
+          -font 'Product Sans 32' -width 50 -location 2 -lines 20 -show-icons -display-combi '''
+      '')];
+
+      unpackPhase = "true";
+
+      installPhase = ''
+        mkdir -p $out/bin
+        cp $src $out/bin/${name}
+      '';
+    };
+
   in [
+    chrome-switch-tabs
     focus-window
     nightlight
     redshift
     rofi
-    chrome-switch-tabs
     set-monitors
+    todo
     whattimeisit
+    window-switcher
     wmctrl
     xclip
     xdotool
@@ -157,24 +196,28 @@ in {
   services.xserver = {
     enable = true;
 
-    displayManager.auto = { enable = true; user = "avo"; };
-    displayManager.sessionCommands = let
-      setMonitors = "${set-monitors}/bin/set-monitors";
-      setCursor = "${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40";
-      todo = "${pkgs.emacs}/bin/emacs ~/doc/todo.org --eval '(setq mode-line-format nil)' &";
-    in lib.mkAfter (lib.concatStringsSep "\n" [
-      setMonitors
-      setCursor
-      "${pkgs.insync}/bin/insync start"
-      "google-chrome-unstable &"
-      todo
-    ]);
+    displayManager = {
+      auto = { enable = true; user = "avo"; };
+      sessionCommands = let
+        setMonitors = "${set-monitors}/bin/set-monitors";
+        setCursor = "${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40";
+      in lib.mkAfter (lib.concatStringsSep "\n" [
+        "${pkgs.insync}/bin/insync start"
+        "google-chrome-unstable --remote-debugging-port=9222 &"
+        setCursor
+        setMonitors
+        todo
+      ]);
+    };
 
     desktopManager.xterm.enable = false;
-    windowManager.default = "xmonad";
-    windowManager.xmonad = {
-      enable = true;
-      enableContribAndExtras = true;
+
+    windowManager = {
+      default = "xmonad";
+      xmonad = {
+        enable = true;
+        enableContribAndExtras = true;
+      };
     };
   };
 
@@ -187,7 +230,8 @@ in {
       !(focused ||
         (name = 'scratchpad') ||
         (_NET_WM_WINDOW_TYPE@[0]:a = '_NET_WM_WINDOW_TYPE_DIALOG') ||
-        (_NET_WM_STATE@[0]:a = '_NET_WM_STATE_MODAL'))
+        (_NET_WM_STATE@[0]:a = '_NET_WM_STATE_MODAL') ||
+        (_NET_WM_STATE@[0]:a = '_NET_WM_STATE_ABOVE'))
     '' ];
     extraOptions = ''
       shadow-radius = 10;
@@ -212,7 +256,6 @@ in {
       emacs-all-the-icons-fonts
       google-fonts
       open-dyslexic
-      overpass
       vistafonts
     ];
   };
@@ -234,6 +277,12 @@ in {
           "*.color7" = white; "*.color15" = lightWhite;
         };
 
+        rofi = {
+          "rofi.bw" = 0;
+          "rofi.padding" = 15;
+          "rofi.hide-scrollbar" = true;
+        };
+
         cursor = {
           "Xcursor.size" = 60;
           "Xcursor.theme" = "Adwaita";
@@ -253,6 +302,7 @@ in {
            colors
         // cursor
         // emacs
-        // hdpi;
+        // hdpi
+        // rofi;
   };
 }

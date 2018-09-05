@@ -5,11 +5,9 @@
 
   home-manager.users.avo.home.packages = with pkgs; [ direnv ];
 
-  home-manager.users.avo
-    .home.sessionVariables.BLOCK_SIZE = "\'1";
+  environment.variables.BLOCK_SIZE = "\'1";
 
-  home-manager.users.avo.home.sessionVariables.ZPLUG_HOME = with config.home-manager.users.avo.xdg;
-    "${cacheHome}/zplug";
+  environment.variables.ZPLUG_HOME = "$HOME/.cache/zplug";
 
   home-manager.users.avo
     .programs.zsh = with config.home-manager.users.avo; rec {
@@ -104,7 +102,7 @@
               setopt promptsubst
 
               PROMPT="%B%F{green}❯%b%f "
-              RPROMPT="%F{blue}$prompt_jobs%U%~%u%f"
+              RPROMPT="%F{blue}$prompt_jobs%~%f"
             }
 
             prompt_opts=(cr percent sp subst)

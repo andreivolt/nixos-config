@@ -3,9 +3,7 @@
 {
   environment.systemPackages = with pkgs; [ httpie ];
 
-  home-manager.users.avo
-    .home.sessionVariables.HTTPIE_CONFIG_DIR = with config.home-manager.users.avo.xdg;
-      "${configHome}/httpie";
+  environment.variables.HTTPIE_CONFIG_DIR = "~/.config/httpie";
 
   home-manager.users.avo
     .xdg.configFile."httpie/config.json".text = lib.generators.toJSON {} {

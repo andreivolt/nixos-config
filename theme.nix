@@ -32,6 +32,7 @@ in {
   foreground = darkGray;
 
   error = red;
+  warning = yellow;
 
   backgroundContrast = "#ccccbb";
 
