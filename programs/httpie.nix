@@ -3,13 +3,12 @@
 {
   environment.systemPackages = with pkgs; [ httpie ];
 
-  environment.variables.HTTPIE_CONFIG_DIR = "~/.config/httpie";
+  environment.variables.HTTPIE_CONFIG_DIR = "/etc/httpie";
 
-  home-manager.users.avo
-    .xdg.configFile."httpie/config.json".text = lib.generators.toJSON {} {
-      default_options = [
-        "--pretty" "format"
-        "--session" "default"
-      ];
+  environment.etc."httpie/config.json".text = lib.generators.toJSON {} {
+    default_options = [
+      "--pretty" "format"
+      "--session" "default"
+    ];
   };
 }

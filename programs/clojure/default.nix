@@ -9,6 +9,5 @@
   environment.systemPackages = with pkgs; [
     leiningen
     lighttable
-    # https://github.com/uswitch/ej
   ];
 }

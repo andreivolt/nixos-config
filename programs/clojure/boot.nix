@@ -1,12 +1,12 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; [ boot ];
 
   environment.variables =
     {
-      BOOT_HOME = "~/.config/boot";
-      BOOT_LOCAL_REPO = "~/.cache/boot";
+      BOOT_HOME = "$HOME/.config/boot";
+      BOOT_LOCAL_REPO = "$HOME/.cache/boot";
     } // {
       BOOT_JVM_OPTIONS = ''
         -client \
@@ -34,7 +34,6 @@
            identity)))
       '';
 
-  home-manager.users.avo
-    .programs.zsh.shellAliases.boot = with config.home-manager.users.avo;
-      "rlwrap -a -m boot";
+  programs.zsh.interactiveShellInit = lib.mkAfter "
+    alias boot='rlwrap -a -m boot'";
 }

@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 
 {
+  networking.bridges = { br0 = { interfaces = [ "enp0s31f6" ]; }; };
+
   environment.systemPackages = let
     nixos-config = pkgs.writeText "configuration.nix" ''
       { config, pkgs, ... }:

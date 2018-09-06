@@ -1,69 +1,26 @@
-let
-  canyonTan = "#bf9f73";
-  duneBeige = "#bda78f";
-  grottoBlue = "#3c5262";
-  mossGreen = "#475451";
-  regalBlue = "#4a5070";
-  seagullGray = "#a3a090";
-  steelGray = "#686f82";
-  valleyGreen = "#6F8568";
+rec {
+  background = black; foreground = white;
 
-  black = "#000000";
+  black = "#111111"; white = "#dddddd";
+
   darkGray = "#222222";
-  gray = "#444444";
+  gray = "#aaaaaa";
+  lightBlack = gray;
   lightGray = "#555555";
+  lightWhite = darkGray;
   lighterGray = "#b9b9b9";
-  lightestGray = "#eeeeee";
-  cyan = "#aeeeee";
-  yellow = "#d9b500";
-  white = "#ffffff";
-  lightBlue = "#eaffff";
-  lightYellow = "#fcfcce";
-  lighterYellow = "#ffffca";
-  lightestYellow = "#ffffee";
-  turquoise = "#1abc9c";
 
-  red = "#b34747"; lightRed = "#e67373";
-
-in {
-  inherit darkGray gray lightGray;
-
-  background = lightestYellow;
-  foreground = darkGray;
+  blue = "#217dd9"; lightBlue = "#eaffff";
+  cyan = "#aeeeee"; lightCyan = "#aeeeee";
+  green = "#45e67a"; lightGreen = "#45e67a";
+  red = "#ff4d4d"; lightRed = "#ff4d4d";
+  yellow = "#d9b500"; lightYellow = "#fcfcce";
+  magenta = "#b045e6"; lightMagenta = "#b045e6";
 
   error = red;
+  success = green;
   warning = yellow;
 
-  backgroundContrast = "#ccccbb";
-
-  subtleHighlight = lightYellow;
-  foregroundSecondary = gray;
-  foregroundUnimportant = lighterGray;
-
-  highlight = turquoise;
-
-  black = white;
-  lightBlack = lightYellow;
-
-  white = black;
-  lightWhite = darkGray;
-
-  blue = "#2e8ae6";
-  lightBlue = lightGray;
-  cyan = gray;
-  lightCyan = lightGray;
-  magenta = gray;
-  lightMagenta = lightGray;
-
-  selection = cyan;
-  backgroundFaded = "#ededda";
-
-  important = "#67809f";
-
-  green = black;
-  lightGreen = darkGray;
-  red = red;
-  lightRed = lightRed;
-  yellow = yellow;
-  lightYellow = lightYellow;
+  highlight = blue;
+  selection = darkGray;
 }

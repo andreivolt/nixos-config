@@ -4,9 +4,6 @@ in {
     enable = true;
 
     extraTmuxConf = ''
-      set -g default-terminal 'screen-256color'
-      set -ga terminal-overrides ',screen-256color:Tc'
-
       set -g @plugin 'tmux-plugins/tpm'
 
       set -g @plugin 'tmux-plugins/tmux-sensible'
@@ -19,10 +16,9 @@ in {
 
       set -g @plugin 'tmux-plugins/tmux-copycat'
       set -g @plugin 'tmux-plugins/tmux-yank'
-      set -g @yank_selection 'primary'
-      bind -T copy-mode-vi v   send -X begin-selection
-      bind -T copy-mode-vi C-v send -X rectangle-toggle
-      bind -T copy-mode-vi y   send -X copy-selection
+      # bind -T copy-mode-vi v   send -X begin-selection
+      # bind -T copy-mode-vi C-v send -X rectangle-toggle
+      # bind -T copy-mode-vi y   send -X copy-selection
       unbind               p
       bind                 p   paste-buffer
 
@@ -51,10 +47,8 @@ in {
       setw -g mode-keys vi
       set  -g mode-keys vi
 
-      bind C-o previous-window
-      bind C-i next-window
-      bind s   split-window -v
-      bind v   split-window -h
+      bind s split-window -v
+      bind v split-window -h
     '';
   };
 }

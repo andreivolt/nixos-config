@@ -8,7 +8,7 @@ import           XMonad.Util.Scratchpad (scratchpadManageHook,
                                          scratchpadSpawnActionCustom)
 
 toggleDropdownTerminal =
-  scratchpadSpawnActionCustom "alacritty --config-file ~/.config/alacritty/config_scratchpad.yml --class scratchpad --title scratchpad"
+  scratchpadSpawnActionCustom "terminal-scratchpad"
 
 manageDropdownTerminal = scratchpadManageHook myTopFloatRect
   where

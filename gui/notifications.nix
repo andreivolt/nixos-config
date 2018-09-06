@@ -38,12 +38,11 @@ in {
         global = {
           alignment = "left";
           bounce_freq = "0";
-          browser = "${pkgs.qutebrowser}/bin/qutebrower-open-in-instance";
-          dmenu = "${pkgs.rofi}/bin/rofi -dmenu";
+          browser = "${pkgs.google-chrome-dev}/bin/google-chrome-unstable";
           follow = "keyboard";
           font = "${font} 16";
           format = "<b>%s</b>: %b";
-          frame_color = "${theme.background}";
+          frame_color = "${theme.black}";
           frame_width = "1";
           geometry = "600x15+150-350";
           horizontal_padding = "16";
@@ -54,7 +53,7 @@ in {
           markup = "yes";
           monitor = "0";
           padding = "12";
-          separator_color = "${theme.foreground}";
+          separator_color = "${theme.white}";
           separator_height = "1";
           show_age_threshold = "60";
           sort = "yes";
@@ -71,14 +70,14 @@ in {
         };
 
         urgency_low = {
-          background = "${theme.background}";
-          foreground = "${theme.foreground}";
+          background = "${theme.black}";
+          foreground = "${theme.white}";
           timeout = 3;
         };
 
         urgency_normal = {
-          background = "${theme.background}";
-          foreground = "${theme.foreground}";
+          background = "${theme.black}";
+          foreground = "${theme.white}";
           timeout = 3;
         };
 
