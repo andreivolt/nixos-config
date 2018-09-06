@@ -14,7 +14,7 @@ in {
         maxconnections = 10;
         autorefresh = "0.5";
         quick = 10;
-        metadata = "${config.home-manager.users.avo.xdg.cacheHome}/offlineimap";
+        metadata = "~/.cache/offlineimap";
       };
 
       "Account ${account}" = {

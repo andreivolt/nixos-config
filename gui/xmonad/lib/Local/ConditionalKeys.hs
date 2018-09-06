@@ -1,6 +1,4 @@
 module Local.ConditionalKeys (
-                                 -- * Usage
-                                 -- $usage
                                  XCond(..),
                                  chooseAction,
                                  bindOn

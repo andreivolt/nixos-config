@@ -14,10 +14,13 @@
       src = [(pkgs.writeScript name ''
         #!/usr/bin/env bash
 
-        ${pkgs.emacs}/bin/emacsclient \
-            --socket-name mail \
-            --create-frame --frame-parameters '((name . "mail"))' --eval '(+avo/mail)' \
-            --no-wait
+        exec &>/dev/null
+
+        ${pkgs.emacs}/bin/emacs \
+          --name email
+          --eval '(avo/email)' &
+
+        disown
       '')];
 
       unpackPhase = "true";
@@ -32,8 +35,6 @@
     mailutils
     email
   ];
-
-  # systemd.user.services.mailEmacsDaemon = makeEmacsDaemon { inherit config pkgs; name = "mail"; };
 
   environment.etc."mailcap".text = let
     plaintextify = "${pkgs.libreoffice}/bin/plaintextify < %s; copiousoutput";

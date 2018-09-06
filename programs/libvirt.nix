@@ -12,8 +12,6 @@
 
   home-manager.users.avo
     .xdg.configFile."virt-viewer/settings".text = lib.generators.toINI {} {
-      virt-viewer = {
-        ask-quit = false;
-      };
+      virt-viewer.ask-quit = false;
     };
 }

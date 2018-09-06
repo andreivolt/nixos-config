@@ -28,23 +28,6 @@ let
     '';
   };
 
-  todo = with pkgs; stdenv.mkDerivation rec {
-    name = "todo";
-
-    src = [(pkgs.writeScript name ''
-      #!/usr/bin/env bash
-
-      ${pkgs.emacs}/bin/emacs ~/doc/todo.org --eval '(setq mode-line-format nil)' &
-    '')];
-
-    unpackPhase = "true";
-
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/${name}
-    '';
-  };
-
 in {
   imports = [
     ./notifications.nix
@@ -93,6 +76,7 @@ in {
         esac
         done
 
+        ${pkgs.redshift}/bin/redshift -x
         ${pkgs.redshift}/bin/redshift -O $REDSHIFT_TEMP -b $REDSHIFT_BRIGTHNESS &>/dev/null
 
         notify-send "
@@ -101,35 +85,6 @@ in {
         "
 
         echo "REDSHIFT_TEMP=$REDSHIFT_TEMP; REDSHIFT_BRIGTHNESS=$REDSHIFT_BRIGTHNESS" > /tmp/.nightlight
-      '')];
-
-      unpackPhase = "true";
-
-      installPhase = ''
-        mkdir -p $out/bin
-        cp $src $out/bin/${name}
-      '';
-    };
-
-    chrome-switch-tabs = pkgs.stdenv.mkDerivation rec {
-      name = "chrome-switch-tabs";
-
-      src = [(pkgs.writeScript name ''
-        #!/usr/bin/env bash
-
-        TABS_JSON=$(~/.local/share/npm/packages/bin/chrome-remote-interface list | sed -e "s/^'//" -e "s/'$//" | jq -r 'map(select(.type == "page") | {id: .id, title: .title})')
-
-        if [[ -z $@ ]]; then
-            TAB_NAMES=$(echo "$TABS_JSON" | jq -r 'map(.title) | .[]')
-
-            echo "$TAB_NAMES" | sort
-        else
-            TAB=$*
-
-            TAB_ID=$(echo "$TABS_JSON" | jq -r "map(select(.title | contains (\"''${TAB//\"/\\\"}\")) | .id) | .[]")
-
-            ~/.local/share/npm/packages/bin/chrome-remote-interface activate "$TAB_ID" >/dev/null
-        fi
       '')];
 
       unpackPhase = "true";
@@ -157,35 +112,13 @@ in {
       '';
     };
 
-    window-switcher = with pkgs; stdenv.mkDerivation rec {
-      name = "window-switcher";
-
-      src = [(pkgs.writeScript name ''
-        #!/usr/bin/env bash
-
-        rofi \
-          -combi-modi 'window,\x200b:chrome-switch-tabs' -show combi -modi combi \
-          -font 'Product Sans 32' -width 50 -location 2 -lines 20 -show-icons -display-combi '''
-      '')];
-
-      unpackPhase = "true";
-
-      installPhase = ''
-        mkdir -p $out/bin
-        cp $src $out/bin/${name}
-      '';
-    };
-
   in [
-    chrome-switch-tabs
     focus-window
     nightlight
     redshift
-    rofi
     set-monitors
-    todo
+    setroot
     whattimeisit
-    window-switcher
     wmctrl
     xclip
     xdotool
@@ -202,11 +135,10 @@ in {
         setMonitors = "${set-monitors}/bin/set-monitors";
         setCursor = "${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.gnome3.adwaita-icon-theme}/share/icons/Adwaita/cursors/left_ptr 40";
       in lib.mkAfter (lib.concatStringsSep "\n" [
-        "${pkgs.insync}/bin/insync start"
-        "google-chrome-unstable --remote-debugging-port=9222 &"
+        "google-chrome-unstable"
         setCursor
         setMonitors
-        todo
+        "todos"
       ]);
     };
 
@@ -221,13 +153,16 @@ in {
     };
   };
 
+  programs.zsh.interactiveShellInit = lib.mkAfter "alias redshift='redshift -x && redshift'";
+
   services.compton = {
     enable = true;
     shadow = true;
     shadowOffsets = [ (-15) (-5) ];
-    shadowOpacity = "0.35";
+    shadowOpacity = "0.5";
     shadowExclude = [ ''
       !(focused ||
+        (class_g = 'mpv') ||
         (name = 'scratchpad') ||
         (_NET_WM_WINDOW_TYPE@[0]:a = '_NET_WM_WINDOW_TYPE_DIALOG') ||
         (_NET_WM_STATE@[0]:a = '_NET_WM_STATE_MODAL') ||
@@ -245,7 +180,7 @@ in {
 
   fonts = {
     fontconfig = {
-      ultimate.enable = false;
+      ultimate = { enable = true; preset = "windowsxp"; };
       defaultFonts = {
         monospace = [(if builtins.getEnv("MONOSPACE_FONT_FAMILY") != "" then builtins.getEnv("MONOSPACE_FONT_FAMILY") else "Source Code Pro")];
         sansSerif = [(if builtins.getEnv("PROPORTIONAL_FONT_FAMILY") != "" then builtins.getEnv("PROPORTIONAL_FONT_FAMILY") else "Product Sans")];
@@ -260,27 +195,23 @@ in {
     ];
   };
 
-  home-manager.users.avo = {
-    services.unclutter.enable = true;
+  services.unclutter.enable = true;
 
+  # environment.etc."X11/Xresources".text =
+
+  home-manager.users.avo = {
     xresources.properties =
       let
         colors = with theme; {
           "*.background" = background; "*.foreground" = foreground;
-          "*.color0" = black; "*.color8" = gray;
+          "*.color0" = background; "*.color8" = gray;
           "*.color1" = red; "*.color9" = lightRed;
           "*.color2" = green; "*.color10" = lightGreen;
           "*.color3" = yellow; "*.color11" = lightYellow;
           "*.color4" = blue; "*.color12" = lightBlue;
           "*.color5" = magenta; "*.color13" = lightMagenta;
           "*.color6" = cyan; "*.color14" = lightCyan;
-          "*.color7" = white; "*.color15" = lightWhite;
-        };
-
-        rofi = {
-          "rofi.bw" = 0;
-          "rofi.padding" = 15;
-          "rofi.hide-scrollbar" = true;
+          "*.color7" = foreground; "*.color15" = lightWhite;
         };
 
         cursor = {
@@ -302,7 +233,6 @@ in {
            colors
         // cursor
         // emacs
-        // hdpi
-        // rofi;
+        // hdpi;
   };
 }

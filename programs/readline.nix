@@ -19,6 +19,6 @@ in {
 
   environment.variables = {
     INPUTRC = "${inputrc}";
-    RLWRAP_HOME = "~/.cache/rlwrap";
+    RLWRAP_HOME = "$HOME/.cache/rlwrap";
   };
 }

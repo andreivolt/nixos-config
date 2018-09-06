@@ -1,6 +1,7 @@
+{ lib, ... }:
+
 {
   environment.variables.GREP_COLOR = "1";
 
-  home-manager.users.avo
-    .programs.zsh.shellAliases.grep = "grep --color=auto";
+  programs.zsh.interactiveShellInit = lib.mkAfter "alias grep='grep --color=auto'";
 }

@@ -21,16 +21,7 @@ import qualified Local.Theme as Theme
 
 data LibNotifyUrgencyHook = LibNotifyUrgencyHook deriving (Read, Show)
 
-instance UrgencyHook LibNotifyUrgencyHook where
-    urgencyHook LibNotifyUrgencyHook w = do
-        name     <- getName w
-        Just idx <- (W.findTag w) <$> gets windowset
-
-        notify ("workspace " ++ idx ++ ": ") (show name)
-        where
-          notify :: String -> String -> X ()
-          notify title msg = spawn $ "notify-send " ++ show title ++ " " ++ show msg
-
+instance UrgencyHook LibNotifyUrgencyHook
 
 handleUrgencyHook =
   withUrgencyHook LibNotifyUrgencyHook .

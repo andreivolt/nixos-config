@@ -3,8 +3,8 @@
 let
   ripgrep-config = pkgs.writeText "ripgreprc" ''
     --smart-case
-    --colors=match:bg:yellow
-    --colors=match:fg:black
+    --colors=match:fg:yellow
+    --colors=match:style:underline
   '';
 
 in {

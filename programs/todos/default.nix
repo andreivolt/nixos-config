@@ -1,9 +1,9 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   environment.systemPackages = with pkgs; let
-    irc = pkgs.stdenv.mkDerivation rec {
-      name = "irc";
+    todos = stdenv.mkDerivation rec {
+      name = "todos";
 
       src = [(pkgs.writeScript name ''
         #!/usr/bin/env bash
@@ -11,8 +11,10 @@
         exec &>/dev/null
 
         ${pkgs.emacs}/bin/emacs \
-          --name irc
-          --load ~/.emacs.d/irc.el &
+          --name todos \
+          --load ${./src/todos.el} \
+          --eval '(multicolumn-delete-other-windows-and-split-with-follow-mode)' \
+          ~/todo/todo.org &
 
         disown
       '')];
@@ -24,5 +26,5 @@
         cp $src $out/bin/${name}
       '';
     };
-  in [ irc ];
+  in [ todos ];
 }

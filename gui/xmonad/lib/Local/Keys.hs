@@ -1,7 +1,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeSynonymInstances  #-}
 
-module Local.Keys (myKeys, myMouseBindings, modifierKey) where
+module Local.Keys (myKeys, modifierKey) where
 
 import           Local.ConditionalKeys
 import           Local.DropdownTerminal              (toggleDropdownTerminal)
@@ -42,10 +42,10 @@ myKeys conf =
   (myKeys' conf) `M.union` (M.fromList [((0, xK_twosuperior), toggleDropdownTerminal)])
 
 myKeys' conf@XConfig {XMonad.modMask = modm} = mkKeymap conf
-  [ "<Insert>"               ~~ runProcessWithInput "copy" [] "" >>= Paste.pasteString
-  , "M-q"                    ~~ spawn "xmonad --recompile && xmonad --restart"
+  [ "M-q"                    ~~ spawn "xmonad --recompile && xmonad --restart"
 
   , "<Print>"                ~~ spawn "gtk-launch flameshot.desktop"
+
   , "M-S-<Return>"           ~~ spawn $ XMonad.terminal conf
 
   , "M-p"                    ~~ spawn "notify-send -a whattimeisit \"$(whattimeisit)\""
@@ -54,52 +54,38 @@ myKeys' conf@XConfig {XMonad.modMask = modm} = mkKeymap conf
   , "<XF86AudioLowerVolume>" ~~ spawn "volume down"
   , "<XF86AudioMute>"        ~~ spawn "volume mute-toggle"
 
-  , "M-<F1>"                 ~~ spawn "nightlight -b-"
-  , "M-<F2>"                 ~~ spawn "nightlight -t-"
-  , "M-<F3>"                 ~~ spawn "nightlight -t+"
-  , "M-<F4>"                 ~~ spawn "nightlight -b+"
-
-  , "M-s"                    ~~ withFocused $ windows . W.sink
+  , "M-g"                    ~~ spawn "window-switcher"
 
   , "M-<Space>"              ~~ sendMessage NextLayout
-  , "M-g"                    ~~ spawn "window-switcher"
   , "M-f"                    ~~ sendMessage (Toggle FULL)
   , "M-t"                    ~~ sendMessage (Toggle TABBED)
+
   , "M-:"                    ~~ Paste.pasteString "y" >> spawn "sleep 0.1; google-search $(xsel -b)"
 
   , "M-S-c"                  ~~ kill
 
   , "M-u"                    ~~ focusUrgent
 
-  , "M-<Tab>"                ~~ windows W.focusDown
-  , "M-S-<Tab>"              ~~ windows W.focusUp
   , "M-<Return>"             ~~ windows W.swapMaster
 
-  , "M-i"                    ~~ nextMatch Backward (return True)
-  , "M-o"                    ~~ nextMatch Forward (return True)
+  , "M-s"                    ~~ withFocused $ windows . W.sink
 
-  , "M-h"                    ~~ bindOn LD [("Tabs", windows W.focusUp), ("", windowGo MD.L False)]
+  , "M-<Tab>"                ~~ windows W.focusDown
+  , "M-S-<Tab>"              ~~ windows W.focusUp
+  , "M-h"                    ~~ windows W.focusDown
   , "M-j"                    ~~ windowGo MD.D False
   , "M-k"                    ~~ windowGo MD.U False
-  , "M-l"                    ~~ bindOn LD [("Tabs", windows W.focusDown), ("", windowGo MD.R False)]
+  , "M-l"                    ~~ windows W.focusUp
 
-  , "M-S-h"                  ~~ windowToScreen MD.L False
-  , "M-S-j"                  ~~ windowToScreen MD.D False
-  , "M-S-k"                  ~~ windowToScreen MD.U False
-  , "M-S-l"                  ~~ windowToScreen MD.R False
+  , "M-S-h"                  ~~ windows W.swapDown
+  , "M-S-j"                  ~~ windows W.swapUp
+  , "M-S-k"                  ~~ windows W.swapDown
+  , "M-S-l"                  ~~ windows W.swapUp
 
   , "M-M1-h"                 ~~ sendMessage Shrink
   , "M-M1-l"                 ~~ sendMessage Expand
-
-  , "M-<Left>"               ~~ prevWS
-  , "M-<Right>"              ~~ nextWS
   ]
  where
   infixr 0 ~~
   (~~) :: a -> b -> (a, b)
   (~~) = (,)
-
-myMouseBindings XConfig {XMonad.modMask = modMask} = M.fromList
-  [ ((modMask, button1), (\w -> focus w >> windows W.swapMaster))
-  , ((modMask, button3), (\w -> focus w >> Flex.mouseWindow Flex.discrete w))
-  ]

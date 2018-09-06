@@ -26,8 +26,7 @@ import           XMonad.Layout.MultiToggle
 import           XMonad.Layout.NoFrillsDecoration (noFrillsDeco)
 import           XMonad.Layout.Renamed            (Rename (Replace), renamed)
 import           XMonad.Layout.Simplest           (Simplest (Simplest))
-import           XMonad.Layout.Tabbed             (addTabs, tabbed)
-import           XMonad.Layout.Spacing            (smartSpacingWithEdge)
+import           XMonad.Layout.Tabbed             (addTabs)
 import XMonad.Layout.Reflect
 import XMonad.Layout.CenteredMaster
 
@@ -43,7 +42,8 @@ full =
   Fullscreen.fullscreenFull Full
 
 tabs =
-  addTabTopBar
+  named "Tabs"
+  $ addTabTopBar
   $ myAddTabs Simplest
  where
   addTabTopBar = noFrillsDeco shrinkText tabTopBarTheme
@@ -55,4 +55,6 @@ masterTabbed =
   $ mastered (1 / 100) (1 / 2) tabs
 
 centeredMasterTabbed =
-  centerMaster $ addTopBar tabs
+  centerMaster $ Simplest
+
+named n = renamed [(XMonad.Layout.Renamed.Replace n)]

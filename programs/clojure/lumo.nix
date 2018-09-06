@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 let
   lumo = with pkgs; stdenv.mkDerivation rec {
@@ -46,7 +46,6 @@ let
 in {
   environment.systemPackages = [ lumo ];
 
-  home-manager.users.avo
-    .programs.zsh.shellAliases.lumo = with config.home-manager.users.avo;
-      "rlwrap -a -m ${lumo}/bin/lumo --cache ${xdg.cacheHome}/lumo";
+  programs.zsh.interactiveShellInit = lib.mkAfter "
+    alias lumo='rlwrap -a -m ${lumo}/bin/lumo --cache ~/.cache/lumo'";
 }
