@@ -1,1 +1,1 @@
-NixOS configuration files
+Nixos configuration files
