@@ -45,7 +45,6 @@ rec {
     ./programs/ssh.nix
     ./programs/sshd.nix
     ./programs/terminal.nix
-    ./programs/tmux.nix
     ./programs/todos
     ./programs/webapp.nix
     ./programs/whatismyip.nix
@@ -169,7 +168,6 @@ rec {
     strace
     sxiv
     telnet
-    tmate
     torbrowser
     tree
     wireshark
