@@ -46,20 +46,19 @@ with lib;
   hardware.opengl.extraPackages = [ pkgs.vaapiVdpau ];
   environment.variables.LIBVA_DRIVER_NAME = "vdpau";
 
-  # nvidia
   hardware.opengl.enable = true;
+
   services.xserver.videoDrivers = [ "nvidia" ];
-  systemd.user.services.nvidia-tearing-fix = {
-    wantedBy = [ "graphical-session.target" ]; after = [ "graphical-session.target" ]; partOf = [ "graphical-session.target" ];
-    serviceConfig.Type = "oneshot";
-    path = [ pkgs.avo.nvidia-tearing-fix ];
-    script = "source ${config.system.build.setEnvironment} && nvidia-tearing-fix"; };
 
   # xorg
   services.xserver.enable = true;
   services.xserver.displayManager.auto = { enable = true; user = "avo"; };
   services.xserver.displayManager.sessionCommands = "xrdb -merge /etc/X11/Xresources; redshift -P -O 5500";
   services.xserver.desktopManager.xterm.enable = false;
+
+  # fix Nvidia tearing
+  services.xserver.screenSection = ''
+    Option "metamodes" "DP-0: nvidia-auto-select +0+0 { ForceCompositionPipeline=On }, DP-2: nvidia-auto-select +0+0 { ForceCompositionPipeline=On, SameAs=DP-0 }" '';
 
   # xmonad
   services.xserver.windowManager = {
@@ -416,12 +415,12 @@ with lib;
         prompt_jobs=""
         [[ -n $jobs ]] && prompt_jobs="["''${(j:,:)jobs}"] "
 
-        [[ -n $IN_NIX_SHELL ]] && nix_shell_indicator='%K{3}%F{0} nix-shell %f%k '
+        [[ -n $IN_NIX_SHELL ]] && nix_shell_indicator=' %K{3}%F{0} nix-shell %f%k '
 
         setopt promptsubst
         PROMPT="
-%F{green}｜%f%F{3}''${vcs_info_msg_0_}%f%F{8}%~%f
-$nix_shell_indicator%F{8}$prompt_jobs%f%B%F{green}｜%b%f"
+%F{green}｜$nix_shell_indicator%f%F{3}''${vcs_info_msg_0_}%f%F{8}%~%f
+%F{8}$prompt_jobs%f%B%F{green}｜%b%f"
 
       }
 
@@ -522,7 +521,7 @@ $nix_shell_indicator%F{8}$prompt_jobs%f%B%F{green}｜%b%f"
           glob_complete'';
 
       terminal-title = ''
-        precmd() { print -Pn "\e]0;terminal\a" }
+        precmd() { print -Pn "\e]0;TTY\a" }
         preexec() { print -Pn "\e]0;$1\a" }'';
 
     in concatStringsSep "\n" [
