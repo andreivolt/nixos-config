@@ -58,7 +58,9 @@ with lib;
 
   # fix Nvidia tearing
   services.xserver.screenSection = ''
-    Option "metamodes" "DP-0: nvidia-auto-select +0+0 { ForceCompositionPipeline=On }, DP-2: nvidia-auto-select +0+0 { ForceCompositionPipeline=On, SameAs=DP-0 }" '';
+    Option "metamodes" "DP-0: nvidia-auto-select +0+0 { ForceCompositionPipeline=On }, DP-2: nvidia-auto-select +0+0 { ForceCompositionPipeline=On, SameAs=DP-0 }"
+    Option "AllowIndirectGLXProtocol" "off"
+    Option "TripleBuffer" "on" '';
 
   # xmonad
   services.xserver.windowManager = {
@@ -183,12 +185,12 @@ with lib;
   services.printing = {
     enable = true;
     clientConf = ''
-      <Printer brother>
+      <Printer default>
         UUID urn:uuid:3c151d9e-3d44-3a04-59f9-5cdfbb513438
         MakeModel DCP-L2520DW series
         DeviceURI ipp://192.168.1.15/ipp/print
       </Printer> ''; };
-  environment.variables.PRINTER = "brother";
+  environment.variables.PRINTER = "default";
 
   # default apps
   environment.etc."xdg/mimeapps.list".text = ''
@@ -197,7 +199,7 @@ with lib;
   environment.etc."xdg/user-dirs.defaults".text = "XDG_DOWNLOAD_DIR=$HOME/tmp; XDG_DESKTOP_DIR=$HOME/tmp";
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
   environment.variables.BROWSER = "${pkgs.avo.browser}/bin/browser";
-  environment.variables.EDITOR = "${pkgs.neomutt}/bin/vim";
+  environment.variables.EDITOR = "${pkgs.neovim}/bin/vim";
   environment.variables.PAGER = "${pkgs.wrapped.less}/bin/less";
 
   services.offlineimap = { enable = true; package = pkgs.wrapped.offlineimap; };
@@ -208,6 +210,7 @@ with lib;
     acpi
     aria
     awscli
+    bat
     binutils
     bitcoin
     boot
@@ -217,12 +220,14 @@ with lib;
     dtrx
     file
     flameshot
+    freerdp
     fzf
     git
     git-hub
     gnugrep
     gnupg
     google-cloud-sdk
+    google-play-music-desktop-player
     graphicsmagick
     httpie
     jq
@@ -264,8 +269,8 @@ with lib;
     xdotool
     xfce.thunar
     xsel
-    xurls
-    zathura ]
+    xurls ]
+    # zathura ]
   ++
   (with avo; [
     adb-tcpip
@@ -398,7 +403,7 @@ with lib;
     promptInit = ''
       autoload -Uz vcs_info
 
-      zstyle ':vcs_info:git*' formats "%r [%b] %a"
+      zstyle ':vcs_info:git*' formats "%F{black}%K{green} %r %k%K{8} %b %k%f%a"
 
       prompt_precmd() {
         rehash
@@ -413,14 +418,16 @@ with lib;
           jobs+=($a''${i//[^+-]/})
         }
         prompt_jobs=""
-        [[ -n $jobs ]] && prompt_jobs="["''${(j:,:)jobs}"] "
+        [[ -n $jobs ]] && prompt_jobs="["''${(j:,:)jobs}"]"
 
-        [[ -n $IN_NIX_SHELL ]] && nix_shell_indicator=' %K{3}%F{0} nix-shell %f%k '
+        # (jobs | sed -r 's/..suspended//; s/ +/ /; s/^/%K{blue}/; s/$/%k/' | tr '\n' ' ')
+
+        [[ -n $IN_NIX_SHELL ]] && nix_shell_indicator='%K{yellow}%F{black} nix-shell %f%k'
 
         setopt promptsubst
         PROMPT="
-%F{green}｜$nix_shell_indicator%f%F{3}''${vcs_info_msg_0_}%f%F{8}%~%f
-%F{8}$prompt_jobs%f%B%F{green}｜%b%f"
+%(?.%F{green}.%F{red})╭─%f$nix_shell_indicator''${vcs_info_msg_0_}%f%F{8} %~%f
+%(?.%F{green}.%F{red})╰─%f$prompt_jobs%f%B%F{blue}%b%f "
 
       }
 
