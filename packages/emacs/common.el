@@ -1,20 +1,39 @@
 (setq evil-want-keybinding nil)
+
 (load "theme")
 
 (setq sentence-end-double-space nil)
-(setq-default tab-width 2 indent-tabs-mode nil
-              vc-follow-symlinks t)
+
+(setq-default tab-width 2
+              indent-tabs-mode nil)
+
+(setq vc-follow-symlinks t)
+
 (setq-default cursor-in-non-selected-windows nil
               uniquify-buffer-name-style 'forward)
+
 (setq truncate-partial-width-windows nil
       eldoc-idle-delay 0.2
       frame-title-format '("%b")
-      inhibit-startup-screen t
-      mode-line-format '("%e " mode-line-modified " " mode-line-buffer-identification))
+      inhibit-startup-screen t)
+
+(setq-default mode-line-format '("%e " mode-line-modified " " mode-line-buffer-identification))
 
 (require 'use-package)
 
-(dolist (f '("elisp" "git" "sexps")) (load f))
+(dolist (f '("elisp" "git")) (load f))
+
+(use-package srefactor
+  :config
+  (require 'srefactor-lisp))
+
+(use-package parinfer
+  :init
+  (setq parinfer-extensions '(defaults
+                               pretty-parens
+                               ;; evil
+                               smart-tab
+                               smart-yank)))
 
 (use-package writeroom-mode)
 
@@ -114,7 +133,6 @@
   (setq ivy-height 20
         ivy-fixed-height-minibuffer t)
   (ivy-mode +1)
-  ;; ivy
   (progn
     (define-key ivy-minibuffer-map (kbd "C-SPC") #'ivy-call-and-recenter)
     (define-key ivy-minibuffer-map (kbd "M-v") #'yank)
@@ -191,11 +209,11 @@
   :config
   (evil-mode +1)
 
-  ; (evil-define-key nil evil-normal-state-map
-  ;   "\C-h"'evil-window-left
-  ;   "\C-j" 'evil-window-down
-  ;   "\C-k" 'evil-window-up
-  ;   "\C-l" 'evil-window-right)
+  (evil-define-key nil evil-normal-state-map
+    "\C-h"'evil-window-left
+    "\C-j" 'evil-window-down
+    "\C-k" 'evil-window-up
+    "\C-l" 'evil-window-right)
 
   (global-set-key (kbd "C-x C-g") 'evil-show-file-info)
 
@@ -304,24 +322,21 @@
         neo-show-hidden-files t
         neo-theme 'ascii
         neo-autorefresh t)
-
   :config
+  (with-eval-after-load "evil"
+    (with-eval-after-load "evil-leader"
+      (evil-leader/set-key "e" 'neotree-toggle))
 
-  ;; (with-eval-after-load "evil"
-  ;;   (with-eval-after-load "evil-leader"
-  ;;     (evil-leader/set-key "e" 'neotree-toggle))
-
-  ;;   (evil-define-key 'normal neotree-mode-map (kbd "<tab>") 'neotree-enter))
-
+    (evil-define-key 'normal neotree-mode-map (kbd "<tab>") 'neotree-enter))
 
   ;; TODO
   ;; collapse all
-  ;; (define-key neotree-mode-map (kbd "gc")
-  ;;   (lambda ()
-  ;;     (interactive)
-  ;;     (setq list-of-expanded-folders neo-buffer--expanded-node-list)
-  ;;     (dolist (folder list-of-expanded-folders)
-  ;;       (neo-buffer--toggle-expand folder))))
+  (evil-define-key 'normal neotree-mode-map (kbd "gc")
+    (lambda ()
+      (interactive)
+      (setq list-of-expanded-folders neo-buffer--expanded-node-list)
+      (dolist (folder list-of-expanded-folders)
+        (neo-buffer--toggle-expand folder))))
 
   ;; cursor always on the first non-blank character
   (progn
@@ -336,7 +351,8 @@
     (advice-add 'neotree-next-line :after '+neotree*indent-cursor)
     (advice-add 'neotree-previous-line :after '+neotree*indent-cursor)))
 
-(use-package nix-mode)
+(use-package nix-mode
+  :mode ("\\.nix\\'"))
 
 (use-package projectile
   :config
@@ -377,7 +393,6 @@
     `(define-key ,map (kbd "C-u") 'avo/minibuffer-kill-line)
     `(define-key ,map (kbd "C-b") 'backward-word)
     `(define-key ,map (kbd "C-f") 'forward-word)))
-
 
 (use-package counsel
   :config

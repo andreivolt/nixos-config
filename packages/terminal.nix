@@ -5,7 +5,7 @@ terminal =
     env.TERM = "xterm-16color";
 
     font = let font = "Roboto Mono"; in {
-      size = 12.5;
+      size = 11.5;
 
       normal = { family = font; style = "Light"; };
       bold = { family = font; style = "Regular"; };
@@ -25,7 +25,7 @@ terminal =
 
     window.dimensions = { columns = 0; lines = 0; };
 
-    window.padding = { x = 30; y = 20; };
+    window.padding = { x = 15; y = 10; };
 
     key_bindings = [
       { action = "Copy"; mods = "Control|Shift"; key = "C"; }

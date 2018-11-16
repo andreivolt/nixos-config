@@ -53,7 +53,7 @@ with lib;
   # xorg
   services.xserver.enable = true;
   services.xserver.displayManager.auto = { enable = true; user = "avo"; };
-  services.xserver.displayManager.sessionCommands = "xrdb -merge /etc/X11/Xresources; redshift -P -O 5500";
+  services.xserver.displayManager.sessionCommands = "xrdb -merge /etc/X11/Xresources; redshift -O 4000";
   services.xserver.desktopManager.xterm.enable = false;
 
   # fix Nvidia tearing
@@ -81,19 +81,6 @@ with lib;
     wantedBy = [ "graphical-session.target" ]; after = [ "graphical-session-pre.target" ]; partOf = [ "graphical-session.target" ];
     path = [ pkgs.notify-osd ];
     script = "notify-osd"; };
-
-  systemd.user.services.todos = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.avo.todos ];
-    script = "source ${config.system.build.setEnvironment} && todos_server";
-    restartTriggers = [ pkgs.avo.todos ];
-    serviceConfig.Restart = "always"; };
-
-  systemd.user.services.todos-lib = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.avo.todos-lib ];
-    script = "source ${config.system.build.setEnvironment} && todos-lib_server";
-    serviceConfig.Restart = "always"; };
 
   services.emacs = {
     enable = true;
@@ -160,16 +147,20 @@ with lib;
 
   # networking
   networking.hostName = builtins.getEnv "HOSTNAME";
+
   networking.wireless = {
     enable = true;
     networks = mapAttrs'
       (k: v: nameValuePair k (listToAttrs [ (nameValuePair "psk" v) ]))
       (import /home/avo/lib/credentials.nix).wifi; };
-  services.dnsmasq = {
-    enable = true;
-    servers = [ "1.1.1.1" ];
-    extraConfig = "address=/test/127.0.0.1"; };
+
+  services.dnsmasq.enable = true;
+  services.dnsmasq.servers = [ "1.1.1.1" ];
+  services.dnsmasq.extraConfig = "address=/test/127.0.0.1";
+
   services.tor.enable = true;
+  services.tor.client.enable = true;
+  services.tor.client.transparentProxy.enable = true;
 
   # ad blocking
   networking.extraHosts = builtins.readFile (builtins.fetchurl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts);
@@ -199,7 +190,7 @@ with lib;
   environment.etc."xdg/user-dirs.defaults".text = "XDG_DOWNLOAD_DIR=$HOME/tmp; XDG_DESKTOP_DIR=$HOME/tmp";
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
   environment.variables.BROWSER = "${pkgs.avo.browser}/bin/browser";
-  environment.variables.EDITOR = "${pkgs.neovim}/bin/vim";
+  environment.variables.EDITOR = "vim";
   environment.variables.PAGER = "${pkgs.wrapped.less}/bin/less";
 
   services.offlineimap = { enable = true; package = pkgs.wrapped.offlineimap; };
@@ -215,6 +206,7 @@ with lib;
     bitcoin
     boot
     clojure
+    direnv
     dnsutils
     docker_compose
     dtrx
@@ -227,13 +219,11 @@ with lib;
     gnugrep
     gnupg
     google-cloud-sdk
-    google-play-music-desktop-player
     graphicsmagick
     httpie
     jq
     jre
     lastpass-cli
-    leiningen
     less
     libinput-gestures
     libnotify
@@ -248,7 +238,6 @@ with lib;
     notmuch
     openssh
     openssl
-    pandoc
     parallel
     psmisc
     pup
@@ -260,6 +249,7 @@ with lib;
     strace
     sxiv
     telnet
+    texlive.combined.scheme-full
     tree
     urlwatch
     virt-viewer
@@ -359,6 +349,17 @@ with lib;
     serviceConfig.Restart = "always"; };
 
   # Todos
+  systemd.user.services.todos = {
+    wantedBy = [ "default.target" ];
+    path = [ pkgs.avo.todos ];
+    script = "source ${config.system.build.setEnvironment} && todos_server";
+    restartTriggers = [ pkgs.avo.todos ];
+    serviceConfig.Restart = "always"; };
+  systemd.user.services.todos-lib = {
+    wantedBy = [ "default.target" ];
+    path = [ pkgs.avo.todos-lib ];
+    script = "source ${config.system.build.setEnvironment} && todos-lib_server";
+    serviceConfig.Restart = "always"; };
   systemd.user.services.insync-todos = {
     serviceConfig.Type = "oneshot";
     path = [ pkgs.insync ];
@@ -402,7 +403,6 @@ with lib;
 
     promptInit = ''
       autoload -Uz vcs_info
-
       zstyle ':vcs_info:git*' formats "%F{black}%K{green} %r %k%K{8} %b %k%f%a"
 
       prompt_precmd() {
@@ -419,20 +419,18 @@ with lib;
         }
         prompt_jobs=""
         [[ -n $jobs ]] && prompt_jobs="["''${(j:,:)jobs}"]"
-
         # (jobs | sed -r 's/..suspended//; s/ +/ /; s/^/%K{blue}/; s/$/%k/' | tr '\n' ' ')
 
-        [[ -n $IN_NIX_SHELL ]] && nix_shell_indicator='%K{yellow}%F{black} nix-shell %f%k'
+        [[ -n $IN_NIX_SHELL ]] && local nix_shell_indicator='%K{yellow}%F{black} NIX %f%k'
+        [[ -n $DIRENV_DIR ]] && local direnv_indicator='%K{magenta}%F{black} ENV %f%k'
 
         setopt promptsubst
         PROMPT="
-%(?.%F{green}.%F{red})╭─%f$nix_shell_indicator''${vcs_info_msg_0_}%f%F{8} %~%f
+%(?.%F{green}.%F{red})╭─%f$direnv_indicator$nix_shell_indicator''${vcs_info_msg_0_}%f%F{8} %~%f
 %(?.%F{green}.%F{red})╰─%f$prompt_jobs%f%B%F{blue}%b%f "
-
       }
 
       prompt_opts=(cr percent sp subst)
-
       add-zsh-hook precmd prompt_precmd'';
 
     interactiveShellInit = let
@@ -446,11 +444,12 @@ with lib;
           hist_reduce_blanks \
           share_history'';
 
-      global-aliases = let toStr = attrs: concatStringsSep "\n" (mapAttrsToList (k: v: "alias -g ${k}='| ${v}'") attrs); in toStr {
-        C = "wc -l";
-        H = "head";
-        L = "less";
-        T = "tail"; };
+      global-aliases = let toStr = attrs: concatStringsSep "\n" (mapAttrsToList (k: v: "alias -g ${k}='${v}'") attrs); in toStr {
+        C = "| wc -l";
+        F = "$(fzf)";
+        H = "| head";
+        L = "| less";
+        T = "| tail"; };
 
       completion = ''
         zstyle ':completion:*' menu select
@@ -521,6 +520,9 @@ with lib;
         }
         zle -N zle-line-init; zle -N zle-line-finish; zle -N zle-keymap-select'';
 
+      direnv = ''
+        eval "$(direnv hook zsh)"'';
+
       globbing = ''
         setopt \
           case_glob \
@@ -535,6 +537,7 @@ with lib;
       "setopt autocd"
       autopair
       completion
+      direnv
       fast-syntax-highlighting
       global-aliases
       globbing
@@ -549,7 +552,7 @@ with lib;
     global-exclude-patterns = let
       emacs = [ "*~" "\\#*#" "\\.#*" ];
     in
-      [ "./env" ] ++ emacs;
+      emacs;
   in with pkgs; generators.toINI {} {
     user = with import /home/avo/lib/credentials.nix; { inherit name; email = email.address; };
     alias = {
@@ -561,5 +564,6 @@ with lib;
       di = "diff";
       st = "status --short"; };
     core.pager = "${gitAndTools.diff-so-fancy}/bin/diff-so-fancy | ${wrapped.less}/bin/less -X";
-    core.excludesFile = "${writeText "_" (concatStringsSep "\n" global-exclude-patterns)}"; };
+    core.excludesFile = "${writeText "_" (concatStringsSep "\n" global-exclude-patterns)}";
+    push.default = "current"; };
 }

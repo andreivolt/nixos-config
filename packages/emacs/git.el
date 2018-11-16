@@ -1,8 +1,7 @@
 (use-package magit
   :config
-  (add-hook 'git-commit-mode-hook 'evil-insert-state))
-
-(use-package evil-magit :after magit)
+  (add-hook 'git-commit-mode-hook 'evil-insert-state)
+  (use-package evil-magit))
 
 (use-package git-gutter-fringe
   :config

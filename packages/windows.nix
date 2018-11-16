@@ -1,7 +1,7 @@
 self: super: with super; {
 
 windows = let
-  image_path = "/home/avo/tmp/windows.raw";
+  image_path = "/var/lib/libvirt/images/windows.raw";
 in writeShellScriptBin "windows" ''
   sudo \
     ${kvm}/bin/qemu-system-x86_64 \

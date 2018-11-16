@@ -15,14 +15,14 @@
             (lambda ()
               (remove-hook 'window-configuration-change-hook 'add-side-padding-to-windows))))
 
-(progn
-  (defun add-top-padding-to-windows ()
-    (setq header-line-format " ")
-    (set-face-attribute 'header-line nil
-                        :background background
-                        :height 0.5
-                        :box nil))
-  (add-hook 'window-configuration-change-hook 'add-top-padding-to-windows))
+;; (progn
+;;   (defun add-top-padding-to-windows ()
+;;     (setq header-line-format " ")
+;;     (set-face-attribute 'header-line nil
+;;                         :background background
+;;                         :height 0.5
+;;                         :box nil))
+;;   (add-hook 'window-configuration-change-hook 'add-top-padding-to-windows))
 
 (progn
   (add-hook 'evil-insert-state-entry-hook (lambda () (blink-cursor-mode +1)))
@@ -86,7 +86,7 @@
           (setq red "#b33024") (setq light-red "lightred")
           (setq yellow "#d9b500") (setq light-yellow "lightyellow"))))
 
-    (let ((font-height 140))
+    (let ((font-height 110))
       (progn
         (set-face-attribute 'default nil
                             :font fixed-pitch-font
@@ -138,11 +138,11 @@
         (set-face-foreground 'neo-expand-btn-face background)
 
         (dolist (face '(neo-button-face
-                        neo-file-link-face
                         neo-dir-link-face
-                        neo-root-dir-face
+                        neo-expand-btn-face
+                        neo-file-link-face
                         neo-header-face
-                        neo-expand-btn-face))
+                        neo-root-dir-face))
           (set-face-attribute face nil
                               :foreground foreground
                               :height 100))
@@ -209,7 +209,7 @@
         (set-face-attribute 'mode-line-inactive nil
                             :font variable-pitch-font :weight 'normal
                             :background background-light :foreground foreground
-                            :box `(:line-width 3 :color ,blue)))
+                            :box `(:line-width 3 :color ,background-light)))
 
       (with-eval-after-load "diff-mode"
         (cl-loop for (key . value)
@@ -219,14 +219,14 @@
 
       (progn
         (set-face-attribute 'highlight nil
-                            :background blue)
+                            :background yellow)
 
         (set-face-attribute 'lazy-highlight nil
-                            :background background :foreground blue
+                            :background background :foreground yellow
                             :weight 'bold :underline t)
 
         (set-face-attribute 'isearch nil
-                            :background blue :foreground background
+                            :background yellow :foreground foreground
                             :underline t)
 
         (set-face-attribute 'region nil
@@ -234,13 +234,13 @@
 
       (progn
         (set-face-attribute 'font-lock-comment-face nil
-                            :inherit 'variable-pitch
-                            :foreground foreground)
+                            :slant 'italic
+                            :foreground blue)
 
         (set-face-attribute 'font-lock-string-face nil
-                            :foreground foreground)
+                            :foreground foreground-light)
 
-        (dolist (face '(builtin constant doc function-name keyword string type variable-name))
+        (dolist (face '(builtin constant doc function-name keyword type variable-name))
           (set-face-attribute (intern (concat "font-lock-" (symbol-name face) "-face")) nil
                               :inherit 'default
                               :foreground foreground))))
@@ -251,6 +251,7 @@
                                :foreground blue)
            (add-hook 'minibuffer-setup-hook
                      (lambda ()
+                       (set-window-scroll-bars (minibuffer-window) nil nil)
                        (set-window-fringes (minibuffer-window) 0 0 nil)
                        (set (make-local-variable 'face-remapping-alist)
                             `((default :foreground ,background :background ,foreground))))))
