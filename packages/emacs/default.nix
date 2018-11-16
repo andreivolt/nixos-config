@@ -9,6 +9,8 @@ emacs =
     clojure-mode
     company
     company-statistics
+    counsel
+    edit-server
     eval-sexp-fu
     evil
     evil-collection
@@ -23,32 +25,30 @@ emacs =
     evil-org
     evil-snipe
     evil-surround
-    counsel
     evil-visualstar
     git-gutter-fringe
     git-timemachine
     hl-todo
     ivy
-    org-plus-contrib
     link-hint
     magit
+    markdown-mode
     nav-flash
     neotree
     nix-mode
     notmuch
     org-bullets
+    org-plus-contrib
     org-web-tools
     parinfer
     pretty-mode
     projectile
-    markdown-mode
     ripgrep
     smartparens
     smex
     sort-words
     srefactor
     typo
-    edit-server
     use-package
     w3m
     writeroom-mode ]);
