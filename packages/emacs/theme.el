@@ -86,7 +86,7 @@
           (setq red "#b33024") (setq light-red "lightred")
           (setq yellow "#d9b500") (setq light-yellow "lightyellow"))))
 
-    (let ((font-height 110))
+    (let ((font-height 90))
       (progn
         (set-face-attribute 'default nil
                             :font fixed-pitch-font
@@ -151,11 +151,12 @@
                             :weight 'bold
                             :foreground foreground)
 
-        (when (display-graphic-p)
-          (dolist (face '(neo-dir-link-face
-                          neo-root-dir-face
-                          neo-file-link-face))
-            (set-face-attribute face nil :font variable-pitch-font))))
+        (add-hook 'neotree-mode-hook
+          '(lambda ()
+             (dolist (face '(neo-dir-link-face
+                               neo-root-dir-face
+                               neo-file-link-face))
+                 (set-face-attribute face nil :font variable-pitch-font)))))
 
       (with-eval-after-load "git-gutter"
         (cl-loop for (key . value)

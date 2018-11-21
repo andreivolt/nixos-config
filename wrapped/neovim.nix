@@ -12,11 +12,24 @@ neovim =
             rev = "642fec5698f21758029988890c6683763beee5fd"; sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8"; };
           buildPhase = "HOME=$TMP ${cargo}/bin/cargo build --release"; };
 
+        vim-bracketed-paste = vimUtils.buildVimPlugin {
+          name = "vim-bracketed-paste";
+          src = fetchFromGitHub {
+            owner = "ConradIrwin"; repo = "vim-bracketed-paste";
+            rev = "c4c639f3cacd1b874ed6f5f196fac772e089c932"; sha256 = "1hhi7ab36iscv9l7i64qymckccnjs9pzv0ccnap9gj5xigwz6p9h"; }; };
+
         paredit = vimUtils.buildVimPlugin {
           name = "paredit.vim";
           src = fetchFromGitHub {
             owner = "vim-scripts"; repo = "paredit.vim";
             rev = "791c3a0cc3155f424fba9409a9520eec241c189c"; sha256 = "15lg33bgv7afjikn1qanriaxmqg4bp3pm7qqhch6105r1sji9gz9"; }; };
+
+        unimpaired = vimUtils.buildVimPlugin {
+          name = "unimpaired.vim";
+          src = fetchFromGitHub {
+            owner = "tpope"; repo = "vim-unimpaired";
+            rev = "d6325994b3c16ce36fd494c47dae4dab8d21a3da"; sha256 = "0l5g3xq0azplaq3i2rblg8d61czpj47k0126zi8x48na9sj0aslv"; };
+          buildInputs = [ sharutils ]; };
 
         vimpager = vimUtils.buildVimPlugin {
           name = "vimpager";
@@ -66,7 +79,9 @@ neovim =
         { name = "fzf-vim"; }
         { name = "fzfWrapper"; }
         { name = "gitgutter"; }
+        { name = "unimpaired"; }
         { name = "goyo"; }
+        { name = "vim-bracketed-paste"; }
         { name = "nerdtree"; }
         { name = "parinfer-rust"; }
         # { name = "spell-fr"; }
@@ -332,6 +347,13 @@ neovim =
         nnoremap gd :bdelete<CR>
         nnoremap gf <C-^>'';
 
+      unimpaired = ''
+        nmap < [
+        nmap > ]
+        omap < [
+        omap > ]
+      '';
+
       return-to-last-position-when-opening-files = ''
         augroup LastPosition
           autocmd! BufReadPost *
@@ -347,6 +369,7 @@ neovim =
       buffer-navigation
       clear-search-highlight
       disable-git-gutter-by-default
+      unimpaired
       fzf
       goyo
       lisp

@@ -106,7 +106,7 @@
       (dotimes (number 8 value)
         (set-face-attribute (intern (concat "outline-" (number-to-string (+ 1 number)))) nil
                             :foreground foreground
-                            :height 140
+                            :height 100
                             :weight 'normal :slant 'normal)))
 
     (set-face-attribute 'org-link nil
@@ -198,8 +198,8 @@
 (use-package markdown-mode)
 
 (progn
-  (set-face-attribute 'org-block nil :height 120)
-  (set-face-attribute 'org-block-begin-line nil :foreground background-light :height 120)
-  (set-face-attribute 'org-block-end-line nil :foreground background-light :height 120))
+  (set-face-attribute 'org-block nil :height 100)
+  (set-face-attribute 'org-block-begin-line nil :foreground background-light :height 100)
+  (set-face-attribute 'org-block-end-line nil :foreground background-light :height 100))
 
 (add-hook 'org-after-todo-state-change-hook 'avo/sort)

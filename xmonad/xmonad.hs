@@ -5,6 +5,7 @@ import           XMonad.Actions.GroupNavigation
 import           XMonad.Actions.Navigation2D
 import           XMonad.Config.Azerty                (azertyConfig)
 import           XMonad.Hooks.EwmhDesktops           (ewmh)
+import XMonad.Actions.GroupNavigation
 import           XMonad.Hooks.ManageHelpers
 import qualified XMonad.Layout.Fullscreen            as Fullscreen
 import           XMonad.Layout.LayoutCombinators     ((|||))
@@ -205,6 +206,8 @@ main = xmonad
          , ("M-:"                    , Paste.pasteString "y" >> spawn "sleep 0.1; google-search $(xsel -b)")
          , ("M-S-c"                  , kill)
          , ("M-u"                    , focusUrgent)
+
+         , ("M-x", nextMatch History (return True))
 
          , ("M-<Tab>"                , windows W.focusDown)
          , ("M-S-<Tab>"              , windows W.focusUp)
