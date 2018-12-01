@@ -33,6 +33,7 @@ emacs =
     link-hint
     magit
     markdown-mode
+    multicolumn
     nav-flash
     neotree
     nix-mode

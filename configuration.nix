@@ -5,14 +5,19 @@ with lib;
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules.d/clojure.nix
     ./modules.d/insync-home-mounts.nix
     ./modules.d/node.nix
+    ./modules.d/nvidia-shield-mount.nix
+    ./modules.d/todos.nix
+    ./modules.d/touchpad.nix
+    ./xmonad
   ];
 
-  boot.kernel.sysctl = {
-    "fs.inotify.max_user_watches" = 100000;
-    "vm.swappiness" = 10; "vm.vfs_cache_pressure" = 50;
-    "kernel.core_pattern" = "|/run/current-system/sw/bin/false"; };
+  boot.kernel.sysctl."fs.inotify.max_user_watches" = 100000; # increase inotify watches
+  boot.kernel.sysctl."vm.swappiness" = 10; # avoid swapping
+  boot.kernel.sysctl."vm.vfs_cache_pressure" = 50; # avoid reclaiming memory from file caches
+  boot.kernel.sysctl."kernel.core_pattern" = "|/run/current-system/sw/bin/false"; # disable core dumps
 
   time.timeZone = "Europe/Paris";
   i18n.defaultLocale = "en_US.UTF-8";
@@ -28,22 +33,10 @@ with lib;
     useSandbox = false; };
 
   # audio
-  hardware.pulseaudio = {
-    enable = true;
-    package = pkgs.pulseaudioFull;
-    extraConfig = ''
-      load-module module-alsa-sink device=hw:1,9
-    '';
-  };
-
-  # bluetooth
+  hardware.pulseaudio.enable = true;
+  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+  hardware.pulseaudio.extraConfig = "load-module module-alsa-sink device=hw:1,9"; # output audio to HDMI
   hardware.bluetooth.enable = true;
-
-  # touchpad
-  services.xserver.libinput = {
-    enable = true;
-    naturalScrolling = true;
-    accelSpeed = "0.6"; };
 
   # keyboard
   services.xserver.layout = "fr";
@@ -74,13 +67,6 @@ with lib;
     Option "metamodes" "DP-0: nvidia-auto-select +0+0 { ForceCompositionPipeline=On }, DP-2: nvidia-auto-select +0+0 { ForceCompositionPipeline=On, SameAs=DP-0 }"
     Option "AllowIndirectGLXProtocol" "off"
     Option "TripleBuffer" "on" '';
-
-  # xmonad
-  services.xserver.windowManager = {
-    default = "xmonad";
-    xmonad = { enable = true; enableContribAndExtras = true; }; };
-  environment.variables.XMONAD_CONFIG_DIR = builtins.toString ./xmonad;
-  environment.variables.XMONAD_DATA_DIR = "/tmp"; environment.variables.XMONAD_CACHE_DIR = "/tmp";
 
   # compton
   services.compton = {
@@ -202,6 +188,7 @@ with lib;
   environment.systemPackages = with pkgs; with wrapped; [
     (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne avo.hunspell-ro ]))
     (lowPrio moreutils) # prefer GNU parallel
+    # xpra
     acpi
     aria
     awscli
@@ -217,7 +204,6 @@ with lib;
     dtrx
     file
     flameshot
-    freerdp
     fzf
     git
     git-hub
@@ -232,7 +218,7 @@ with lib;
     less
     libinput-gestures
     libnotify
-    libreoffice-fresh
+    # libreoffice-fresh
     lsof
     mitmproxy
     mpv
@@ -254,6 +240,7 @@ with lib;
     ripgrep
     rlwrap
     setroot # TODO
+    slack
     strace
     sxiv
     telnet
@@ -266,12 +253,11 @@ with lib;
     xclip
     xdotool
     xfce.thunar
+    xsel
     yarn
     youtube-dl
-    # xpra
-    xsel
-    xurls ]
-    # zathura ]
+    xurls
+    zathura ]
   ++
   (with avo; [
     adb-tcpip
@@ -352,26 +338,6 @@ with lib;
     serviceConfig.Type = "forking";
     serviceConfig.Restart = "always"; };
 
-  # Todos
-  systemd.user.services.todos = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.avo.todos ];
-    script = "source ${config.system.build.setEnvironment} && todos_server";
-    restartTriggers = [ pkgs.avo.todos ];
-    serviceConfig.Restart = "always"; };
-  systemd.user.services.todos-lib = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.avo.todos-lib ];
-    script = "source ${config.system.build.setEnvironment} && todos-lib_server";
-    serviceConfig.Restart = "always"; };
-  systemd.user.services.insync-todos = {
-    serviceConfig.Type = "oneshot";
-    path = [ pkgs.insync ];
-    script = "insync force_sync %h/todos"; };
-  systemd.user.timers.insync-todos = {
-    wantedBy = [ "default.target" ];
-    timerConfig = { Unit = "insync-todos.service"; OnCalendar = "*:*:0/10"; }; };
-
   # Isync
   systemd.user.services.isync = {
     serviceConfig.Type = "oneshot";
@@ -387,25 +353,14 @@ with lib;
   networking.bridges.br0.interfaces = [ "enp0s31f6" ];
   networking.firewall.trustedInterfaces = [ "br0" ];
 
-  # Clojure
-  environment.variables.CLJ_CONFIG = let _ = ''
-    {:aliases {:find-deps {:extra-deps
-                            {find-deps
-                               {:git/url "https://github.com/hagmonk/find-deps",
-                                :sha "6fc73813aafdd2288260abb2160ce0d4cdbac8be"}},
-                           :main-opts ["-m" "find-deps.core"]}}}
-  ''; in "${pkgs.writeText "_" _}";
-
-  systemd.user.services.clojure = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.clojure ];
-    script = ''
-      clj \
-        -Sdeps '{:deps {nrepl {:mvn/version "0.4.5"} cider/cider-nrepl {:mvn/version "0.18.0"}}}' \
-        --main nrepl.cmdline \
-          --middleware '[cider.nrepl/cider-middleware]' \
-          --port 9999'';
-    serviceConfig.Restart = "always"; };
+  # # Clojure
+  # environment.variables.CLJ_CONFIG = let _ = ''
+  #   {:aliases {:find-deps {:extra-deps
+  #                           {find-deps
+  #                              {:git/url "https://github.com/hagmonk/find-deps",
+  #                               :sha "6fc73813aafdd2288260abb2160ce0d4cdbac8be"}},
+  #                          :main-opts ["-m" "find-deps.core"]}}}
+  # ''; in "${pkgs.writeText "_" _}";
 
   # shell
   environment.variables.ZDOTDIR = "/etc";
@@ -587,18 +542,6 @@ with lib;
     core.excludesFile = "${writeText "_" (concatStringsSep "\n" global-exclude-patterns)}";
     push.default = "current"; };
 
- # Nvidia Shield
- fileSystems."/mnt/shield" = {
-   device = "//192.168.1.29/internal";
-   fsType = "cifs";
-   options = [
-     "x-systemd.automount" "noauto"
-     "x-systemd.idle-timeout=60" "x-systemd.device-timeout=5s" "x-systemd.mount-timeout=5s"
-     "username=andrei.volt" "password=fo-chou-knot"
-     "vers=1.0"
-   ];
- };
-
  systemd.services.remotectl =
    (import (pkgs.fetchFromGitHub {
      owner = "lessrest";
@@ -615,6 +558,8 @@ with lib;
        '';
      };
    };
+
+  # ChromeCast
   networking.firewall.allowedTCPPorts = [ 1988 8008 8009 5556 5558 ];
   networking.firewall.allowedUDPPortRanges = [ { from = 32768; to = 60000; } ];
 }
