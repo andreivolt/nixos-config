@@ -5,12 +5,21 @@ with lib;
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules.d/block-ads.nix
+    ./modules.d/brother-printer.nix
+    ./modules.d/chromecast.nix
     ./modules.d/clojure.nix
+    ./modules.d/fix-nvidia-tearing.nix
+    ./modules.d/git.nix
     ./modules.d/insync-home-mounts.nix
+    ./modules.d/insync.nix
+    ./modules.d/map-caps-lock-to-ctrl.nix
     ./modules.d/node.nix
     ./modules.d/nvidia-shield-mount.nix
     ./modules.d/todos.nix
     ./modules.d/touchpad.nix
+    ./modules.d/wifi-networks.nix
+    ./modules.d/window-shadows.nix
     ./xmonad
   ];
 
@@ -41,10 +50,6 @@ with lib;
   # keyboard
   services.xserver.layout = "fr";
 
-  # map Caps Lock to Ctrl
-  services.xserver.xkbOptions = "ctrl:nocaps";
-  i18n.consoleUseXkbConfig = true;
-
   # hardware video acceleration
   hardware.opengl.extraPackages = [ pkgs.vaapiVdpau ];
   environment.variables.LIBVA_DRIVER_NAME = "vdpau";
@@ -58,21 +63,6 @@ with lib;
   services.xserver.displayManager.auto = { enable = true; user = "avo"; };
   services.xserver.displayManager.sessionCommands = "xrdb -merge /etc/X11/Xresources; redshift -O 4000";
   services.xserver.desktopManager.xterm.enable = false;
-  # environment.etc."X11/Xresources".text = ''
-  #   Xft.dpi: 192
-  # '';
-
-  # fix Nvidia tearing
-  services.xserver.screenSection = ''
-    Option "metamodes" "DP-0: nvidia-auto-select +0+0 { ForceCompositionPipeline=On }, DP-2: nvidia-auto-select +0+0 { ForceCompositionPipeline=On, SameAs=DP-0 }"
-    Option "AllowIndirectGLXProtocol" "off"
-    Option "TripleBuffer" "on" '';
-
-  # compton
-  services.compton = {
-    enable = true;
-    shadow = true; shadowOffsets = [ (-15) (-5) ]; shadowOpacity = "0.7";
-    extraOptions = "shadow-radius = 10;"; };
 
   services.unclutter.enable = true;
 
@@ -97,11 +87,11 @@ with lib;
     script = "source ${config.system.build.setEnvironment} && emacs-edit-server";
     serviceConfig.Restart = "always"; };
 
-  systemd.user.services.emacs-notmuch = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.avo.emacs-notmuch-server ];
-    script = "source ${config.system.build.setEnvironment} && emacs-notmuch-server";
-    serviceConfig.Restart = "always"; };
+  # systemd.user.services.emacs-notmuch = {
+  #   wantedBy = [ "default.target" ];
+  #   path = [ pkgs.avo.emacs-notmuch-server ];
+  #   script = "source ${config.system.build.setEnvironment} && emacs-notmuch-server";
+  #   serviceConfig.Restart = "always"; };
 
   users.users.avo = {
     isNormalUser = true;
@@ -136,42 +126,27 @@ with lib;
   # networking
   networking.hostName = builtins.getEnv "HOSTNAME";
 
-  networking.wireless = {
-    enable = true;
-    networks = mapAttrs'
-      (k: v: nameValuePair k (listToAttrs [ (nameValuePair "psk" v) ]))
-      (import /home/avo/lib/credentials.nix).wifi; };
+  networking.wireless.enable = true;
 
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
 
   services.dnsmasq.enable = true;
-  services.dnsmasq.servers = [ "1.1.1.1" ];
-  services.dnsmasq.extraConfig = "address=/test/127.0.0.1";
+  services.dnsmasq.servers = [ "1.1.1.1" ]; # use Cloudflare DNS
+  services.dnsmasq.extraConfig = "address=/test/127.0.0.1"; # map test TLD to localhost
 
   services.tor.enable = true;
   services.tor.client = { enable = true; transparentProxy.enable = true; };
-
-  # ad blocking
-  networking.extraHosts = builtins.readFile (builtins.fetchurl https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts);
 
   # sshd
   services.openssh.enable = true;
   users.users.avo.openssh.authorizedKeys.keys = [ (import /home/avo/lib/credentials.nix).ssh_keys.public ];
 
-  # automount removable devices
-  services.devmon.enable = true;
+  services.devmon.enable = true; # automount removable devices
 
   # printing
   services.printing.enable = true;
-  services.printing.clientConf = ''
-    <Printer default>
-      UUID urn:uuid:3c151d9e-3d44-3a04-59f9-5cdfbb513438
-      MakeModel DCP-L2520DW series
-      DeviceURI ipp://192.168.1.15/ipp/print
-    </Printer>
-  '';
-  environment.variables.PRINTER = "default";
+  environment.variables.PRINTER = "brother";
 
   # default apps
   environment.etc."xdg/mimeapps.list".text = ''
@@ -188,7 +163,6 @@ with lib;
   environment.systemPackages = with pkgs; with wrapped; [
     (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne avo.hunspell-ro ]))
     (lowPrio moreutils) # prefer GNU parallel
-    # xpra
     acpi
     aria
     awscli
@@ -205,7 +179,6 @@ with lib;
     file
     flameshot
     fzf
-    git
     git-hub
     gnugrep
     gnupg
@@ -220,7 +193,7 @@ with lib;
     libnotify
     # libreoffice-fresh
     lsof
-    mitmproxy
+    # mitmproxy
     mpv
     msmtp
     neomutt
@@ -248,6 +221,7 @@ with lib;
     tree
     urlwatch
     virt-viewer
+    w3m
     weechat
     wmctrl
     xclip
@@ -329,14 +303,6 @@ with lib;
         -v /etc/nginx/vhost.d \
         -v /var/run/docker.sock:/tmp/docker.sock:ro \
         jwilder/nginx-proxy''; };
-
-  # Insync
-  systemd.user.services.insync = {
-    after = [ "network.target" ]; wantedBy = [ "default.target" ];
-    path = [ pkgs.insync ];
-    script = "insync start";
-    serviceConfig.Type = "forking";
-    serviceConfig.Restart = "always"; };
 
   # Isync
   systemd.user.services.isync = {
@@ -523,25 +489,6 @@ with lib;
     vim-mode
     fzf ];
 
-  environment.etc."gitconfig".text = let
-    global-exclude-patterns = let
-      emacs = [ "*~" "\\#*#" "\\.#*" ];
-    in
-      emacs;
-  in with pkgs; generators.toINI {} {
-    user = with import /home/avo/lib/credentials.nix; { inherit name; email = email.address; };
-    alias = {
-      am = "commit --all --amend --no-edit";
-      ap = "add --patch";
-      ci = "commit";
-      co = "checkout";
-      dc = "diff --cached";
-      di = "diff";
-      st = "status --short"; };
-    core.pager = "${gitAndTools.diff-so-fancy}/bin/diff-so-fancy | ${wrapped.less}/bin/less -X";
-    core.excludesFile = "${writeText "_" (concatStringsSep "\n" global-exclude-patterns)}";
-    push.default = "current"; };
-
  systemd.services.remotectl =
    (import (pkgs.fetchFromGitHub {
      owner = "lessrest";
@@ -558,8 +505,4 @@ with lib;
        '';
      };
    };
-
-  # ChromeCast
-  networking.firewall.allowedTCPPorts = [ 1988 8008 8009 5556 5558 ];
-  networking.firewall.allowedUDPPortRanges = [ { from = 32768; to = 60000; } ];
 }

@@ -37,7 +37,7 @@ emacs =
     nav-flash
     neotree
     nix-mode
-    notmuch
+    # notmuch
     org-bullets
     org-plus-contrib
     org-web-tools
