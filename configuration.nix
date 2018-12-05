@@ -7,19 +7,25 @@ with lib;
     ./hardware-configuration.nix
     ./modules.d/block-ads.nix
     ./modules.d/brother-printer.nix
+    ./modules.d/wayland.nix
     ./modules.d/chromecast.nix
     ./modules.d/clojure.nix
+    ./modules.d/docker.nix
+    ./modules.d/emacs-edit-server.nix
     ./modules.d/fix-nvidia-tearing.nix
     ./modules.d/git.nix
     ./modules.d/insync-home-mounts.nix
     ./modules.d/insync.nix
     ./modules.d/map-caps-lock-to-ctrl.nix
     ./modules.d/node.nix
+    ./modules.d/notifications.nix
     ./modules.d/nvidia-shield-mount.nix
     ./modules.d/todos.nix
     ./modules.d/touchpad.nix
+    ./modules.d/vi-readline.nix
     ./modules.d/wifi-networks.nix
     ./modules.d/window-shadows.nix
+    ./modules.d/x11.nix
     ./xmonad
   ];
 
@@ -47,29 +53,13 @@ with lib;
   hardware.pulseaudio.extraConfig = "load-module module-alsa-sink device=hw:1,9"; # output audio to HDMI
   hardware.bluetooth.enable = true;
 
-  # keyboard
-  services.xserver.layout = "fr";
-
   # hardware video acceleration
   hardware.opengl.extraPackages = [ pkgs.vaapiVdpau ];
   environment.variables.LIBVA_DRIVER_NAME = "vdpau";
 
   hardware.opengl.enable = true;
 
-  services.xserver.videoDrivers = [ "nvidia" ];
-
-  # xorg
-  services.xserver.enable = true;
-  services.xserver.displayManager.auto = { enable = true; user = "avo"; };
-  services.xserver.displayManager.sessionCommands = "xrdb -merge /etc/X11/Xresources; redshift -O 4000";
-  services.xserver.desktopManager.xterm.enable = false;
-
   services.unclutter.enable = true;
-
-  systemd.user.services.notify-osd = {
-    wantedBy = [ "graphical-session.target" ]; after = [ "graphical-session-pre.target" ]; partOf = [ "graphical-session.target" ];
-    path = [ pkgs.notify-osd ];
-    script = "notify-osd"; };
 
   services.emacs = {
     enable = true;
@@ -79,12 +69,6 @@ with lib;
     wantedBy = [ "default.target" ];
     path = [ pkgs.avo.emacs-clojure ];
     script = "source ${config.system.build.setEnvironment} && emacs-clojure_server";
-    serviceConfig.Restart = "always"; };
-
-  systemd.user.services.emacs-edit-server = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.avo.emacs-edit-server ];
-    script = "source ${config.system.build.setEnvironment} && emacs-edit-server";
     serviceConfig.Restart = "always"; };
 
   # systemd.user.services.emacs-notmuch = {
@@ -98,23 +82,11 @@ with lib;
     shell = pkgs.zsh;
     extraGroups = [
       "adbusers"
-      "docker"
       "libvirt"
       "wheel" ]; };
   security.sudo.wheelNeedsPassword = false;
 
   # readline
-  environment.etc."inputrc".text = ''
-    set editing-mode vi
-
-    set completion-ignore-case on
-    set show-all-if-ambiguous on
-
-    set keymap vi
-    C-r: reverse-search-history
-    C-f: forward-search-history
-    C-l: clear-screen
-    v: rlwrap-call-editor'';
 
   # fonts
   fonts = {
@@ -231,6 +203,7 @@ with lib;
     yarn
     youtube-dl
     xurls
+    rmlint
     zathura ]
   ++
   (with avo; [
@@ -285,10 +258,6 @@ with lib;
 
   programs.adb.enable = true;
 
-  # Docker
-  virtualisation.docker = {
-    enable = true;
-    autoPrune.enable = true; };
   systemd.services.docker-nginx-proxy = {
     wantedBy = [ "multi-user.target" ];
     path = [ pkgs.docker ];
