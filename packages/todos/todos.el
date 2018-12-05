@@ -118,7 +118,7 @@
       (face-spec-set face '((t :inherit 'fixed-pitch))))
 
     (set-face-attribute 'org-block nil
-                        :background foreground-light :foreground background-light))
+                        :background foreground :foreground background-light))
 
   (progn
     (defun org-summary-todo (n-done n-not-done)

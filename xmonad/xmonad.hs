@@ -47,6 +47,8 @@ import XMonad.Util.NamedScratchpad
 import XMonad.Layout.Decoration
 import XMonad.Hooks.DynamicProperty
 
+
+import XMonad.Layout.SubLayouts
 import           XMonad.Hooks.UrgencyHook  (BorderUrgencyHook (BorderUrgencyHook),
                                             RemindWhen (Every),
                                             SuppressWhen (Focused), UrgencyHook,
@@ -99,7 +101,7 @@ main = xmonad
          where
            tabs =
              addTabTopBar
-             $ myAddTabs Simplest
+             $ myAddTabs
              where
                addTabTopBar = noFrillsDeco shrinkText tabTopBarTheme
                  where tabTopBarTheme = def {
@@ -114,20 +116,21 @@ main = xmonad
                    , urgentTextColor = yellow
                    , decoHeight = 10
                    }
-               myAddTabs = addTabs shrinkText tabTheme
-                 where tabTheme = def {
-                    activeColor = blue
-                  , activeBorderColor = blue
-                  , activeTextColor = white
-                  , inactiveColor = gray
-                  , inactiveBorderColor = gray
-                  , inactiveTextColor = black
-                  , urgentColor = yellow
-                  , urgentBorderColor = yellow
-                  , urgentTextColor = black
-                  , decoHeight = 44
-                  , fontName = "xft:Proxima Nova Condensed Semibold:size=10"
-                  }
+               myAddTabs =
+                 addTabs shrinkText tabTheme $ Simplest
+                   where tabTheme = def {
+                      activeColor = blue
+                    , activeBorderColor = blue
+                    , activeTextColor = white
+                    , inactiveColor = gray
+                    , inactiveBorderColor = gray
+                    , inactiveTextColor = black
+                    , urgentColor = yellow
+                    , urgentBorderColor = yellow
+                    , urgentTextColor = black
+                    , decoHeight = 44
+                    , fontName = "xft:Proxima Nova Condensed Semibold:size=10"
+                    }
 
            masterTabbed =
              addTopBar $ mastered (1 / 100) (1 / 2) tabs
@@ -216,6 +219,9 @@ main = xmonad
          , ("M-l"                    , windows W.focusDown)
          , ("M-j"                    , windowGo MD.D False)
          , ("M-k"                    , windowGo MD.U False)
+
+        , ("M-g m", withFocused (sendMessage . MergeAll))                  -- Merge all windows to sublayout group
+        , ("M-g u", withFocused (sendMessage . UnMerge))                   -- Unmerge single window from sublayout gr
 
          , ("M-S-h"                  , windows W.swapDown)
          , ("M-S-j"                  , windows W.swapUp)
