@@ -1,6 +1,6 @@
 {
  fileSystems."/mnt/shield" = {
-   device = "//192.168.1.29/internal";
+   device = "//shield.local/internal";
    fsType = "cifs";
    options = [
      "x-systemd.automount" "noauto"

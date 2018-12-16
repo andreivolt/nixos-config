@@ -1,6 +1,6 @@
 (setq evil-want-keybinding nil)
 
-(load "theme")
+;; (load "theme")
 
 (setq sentence-end-double-space nil)
 
@@ -156,16 +156,33 @@
     (typo-global-mode 1)
     (add-hook 'text-mode-hook 'typo-mode)))
 
+(setq evil-ex-search-vim-style-regexp t
+      evil-ex-substitute-global t
+      evil-respect-visual-line-mode t
+      evil-symbol-word-search t
+      evil-toggle-key ""
+      evil-want-C-u-scroll t
+      evil-want-Y-yank-to-eol t)
+
 (use-package evil
   :config
   (setq evil-ex-search-vim-style-regexp t
         evil-ex-substitute-global t
+        evil-want-keybinding nil
         evil-respect-visual-line-mode t
         evil-symbol-word-search t
         evil-toggle-key ""
         evil-want-C-u-scroll t
         evil-want-Y-yank-to-eol t)
   :init
+  (setq evil-ex-search-vim-style-regexp t
+        evil-ex-substitute-global t
+        evil-respect-visual-line-mode t
+        evil-symbol-word-search t
+        evil-want-keybinding nil
+        evil-toggle-key ""
+        evil-want-C-u-scroll t
+        evil-want-Y-yank-to-eol t)
   (use-package evil-expat :after evil)
 
   (use-package evil-visualstar
@@ -486,10 +503,20 @@ Lisp function does not specify a special indentation."
                  (method
                   (funcall method indent-point state)))))))))
 
-(use-package eval-sexp-fu :config
-  (face-spec-set 'eval-sexp-fu-flash
-                 `((t
-                    :background ,light-blue :foreground ,background
-                    :weight normal))))
+;; (use-package eval-sexp-fu :config
+;;   (face-spec-set 'eval-sexp-fu-flash
+;;                  `((t
+;;                     :background ,light-blue :foreground ,background
+;;                     :weight normal))))
 
 (add-hook 'emacs-lisp-mode-hook 'parinfer-mode)
+
+
+(progn
+  (set-fringe-mode 0)
+
+  (progn
+    (tool-bar-mode -1)
+    (menu-bar-mode -1))
+
+  (set-window-scroll-bars (minibuffer-window) nil nil))

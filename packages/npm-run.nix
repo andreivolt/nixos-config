@@ -7,14 +7,21 @@ npm-run = writeShellScriptBin "npm-run" ''
   args="$*"
   image_name=node.$package_name
 
-  if [[ -z $(docker images -f reference=$image_name -q) ]]; then
-    docker run -ti node sh -c "
-      npm install -g $package_name"
-    docker commit $(docker ps -lq) $image_name
-  fi
+  run() {
+    docker run -ti \
+      --net host \
+      $image_name sh -c "
+        node_modules/.bin/$executable_name $args"
+  }
 
-  docker run -i \
-    --net host \
-    $image_name sh -c "
-      $executable_name $args"'';
+  run || {
+    if [[ -z $(docker images -f reference=$image_name -q) ]]; then
+      docker run -ti node sh -c "
+        npm install $package_name"
+      docker commit $(docker ps -lq) $image_name
+    fi
+    run
+  }
+'';
+
 }
