@@ -92,6 +92,7 @@ neovim =
         { name = "vim-better-whitespace"; }
         { name = "vim-bracketed-paste"; }
         { name = "vim-eunuch"; }
+        { name = "vim-indent-guides"; }
         { name = "vim-indent-object"; }
         { name = "vim-nix"; }
         { name = "vim-rooter"; } ]; };
@@ -307,6 +308,11 @@ neovim =
       rebalance-splits-on-resize = ''
         autocmd VimResized * wincmd ='';
 
+      indent-guides = ''
+        let g:indent_guides_auto_colors = 0
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=NONE guibg=NONE
+        autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=15 guibg=${color15}'';
+
       statusline = ''
         set statusline=\ %f
 
@@ -369,11 +375,11 @@ neovim =
       buffer-navigation
       clear-search-highlight
       disable-git-gutter-by-default
-      unimpaired
       fzf
       goyo
-      lisp
       hide-messages-after-timeout
+      indent-guides
+      lisp
       navigate-arg-list
       navigate-quick-fix
       nerdtree
@@ -383,6 +389,7 @@ neovim =
       statusline
       supertab
       turn-on-spell-checking-for-text-files
+      unimpaired
       use-very-magic-patterns
       window-mappings ]; };
   in let terminal-bg-change-wrapper = ''

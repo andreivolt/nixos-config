@@ -2,123 +2,99 @@
 
 with lib;
 
-{
+let
+  aliases = {
+    e = "setsid &>/dev/null emacsclient --create-frame";
+    hgrep = "fc -ln 0- | grep";
+    l = "ls";
+    la = "ls -a";
+    ll = "ls -l";
+    ls = "ls --no-group --group-directories-first --classify --dereference-command-line -v";
+    mkdir = "mkdir -p";
+    tree = "${pkgs.tree}/bin/tree -F --dirsfirst";
+    vi = "vim";
+  };
+
+in {
   imports = [
+    # ./modules.d/wayland.nix
     ./hardware-configuration.nix
+    ./modules.d/android.nix
+    ./modules.d/audio.nix
+    ./modules.d/automount-removable-devices.nix
     ./modules.d/block-ads.nix
-    ./modules.d/brother-printer.nix
-    ./modules.d/wayland.nix
     ./modules.d/chromecast.nix
     ./modules.d/clojure.nix
+    ./modules.d/cloudflare-dns.nix
+    ./modules.d/direnv.nix
     ./modules.d/docker.nix
     ./modules.d/emacs-edit-server.nix
-    ./modules.d/fix-nvidia-tearing.nix
+    ./modules.d/email.nix
+    ./modules.d/fonts.nix
     ./modules.d/git.nix
-    ./modules.d/insync-home-mounts.nix
+    ./modules.d/http-reverse-proxy.nix
     ./modules.d/insync.nix
+    ./modules.d/isync.nix
+    ./modules.d/libvirt.nix
     ./modules.d/map-caps-lock-to-ctrl.nix
+    ./modules.d/map-test-tld-to-localhost.nix
+    ./modules.d/mdns.nix
     ./modules.d/node.nix
     ./modules.d/notifications.nix
     ./modules.d/nvidia-shield-mount.nix
+    ./modules.d/nvidia.nix
+    ./modules.d/printing.nix
+    ./modules.d/remotectl.nix
+    ./modules.d/sshd.nix
+    ./modules.d/tmux.nix
     ./modules.d/todos.nix
+    ./modules.d/tor.nix
     ./modules.d/touchpad.nix
     ./modules.d/vi-readline.nix
-    ./modules.d/wifi-networks.nix
-    ./modules.d/window-shadows.nix
+    ./modules.d/wifi.nix
     ./modules.d/x11.nix
-    ./xmonad
+    ./modules.d/zsh-vi.nix
+    ./modules.d/xmonad
   ];
 
-  boot.kernel.sysctl."fs.inotify.max_user_watches" = 100000; # increase inotify watches
   boot.kernel.sysctl."vm.swappiness" = 10; # avoid swapping
   boot.kernel.sysctl."vm.vfs_cache_pressure" = 50; # avoid reclaiming memory from file caches
+
   boot.kernel.sysctl."kernel.core_pattern" = "|/run/current-system/sw/bin/false"; # disable core dumps
 
   time.timeZone = "Europe/Paris";
   i18n.defaultLocale = "en_US.UTF-8";
 
   nixpkgs.config.allowUnfree = true;
+
   nixpkgs.overlays = [
     (import ./packages)
-    (import ./wrapped)];
+    (import ./wrapped)
+  ];
 
   nix = {
     buildCores = 0;
     gc.automatic = true; optimise.automatic = true;
-    useSandbox = false; };
+    useSandbox = false;
+  };
 
-  # audio
-  hardware.pulseaudio.enable = true;
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
-  hardware.pulseaudio.extraConfig = "load-module module-alsa-sink device=hw:1,9"; # output audio to HDMI
   hardware.bluetooth.enable = true;
 
-  # hardware video acceleration
-  hardware.opengl.extraPackages = [ pkgs.vaapiVdpau ];
-  environment.variables.LIBVA_DRIVER_NAME = "vdpau";
-
   hardware.opengl.enable = true;
-
-  services.unclutter.enable = true;
-
-  services.emacs = {
-    enable = true;
-    package = pkgs.avo.emacs; };
-
-  systemd.user.services.emacs-clojure = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.avo.emacs-clojure ];
-    script = "source ${config.system.build.setEnvironment} && emacs-clojure_server";
-    serviceConfig.Restart = "always"; };
-
-  # systemd.user.services.emacs-notmuch = {
-  #   wantedBy = [ "default.target" ];
-  #   path = [ pkgs.avo.emacs-notmuch-server ];
-  #   script = "source ${config.system.build.setEnvironment} && emacs-notmuch-server";
-  #   serviceConfig.Restart = "always"; };
 
   users.users.avo = {
     isNormalUser = true;
     shell = pkgs.zsh;
-    extraGroups = [
-      "adbusers"
-      "libvirt"
-      "wheel" ]; };
+    extraGroups = [ "wheel" ];
+  };
   security.sudo.wheelNeedsPassword = false;
 
-  # readline
-
-  # fonts
-  fonts = {
-    fontconfig.ultimate = { enable = true; preset = "windowsxp"; };
-    fontconfig.defaultFonts = { monospace = [ "Roboto Mono" ]; sansSerif = [ "Proxima Nova" ]; };
-    enableCoreFonts= true;
-    fonts = with pkgs; [ google-fonts hack-font vistafonts ]; };
-
-  # networking
   networking.hostName = builtins.getEnv "HOSTNAME";
 
-  networking.wireless.enable = true;
-
-  services.avahi.enable = true;
-  services.avahi.nssmdns = true;
-
-  services.dnsmasq.enable = true;
-  services.dnsmasq.servers = [ "1.1.1.1" ]; # use Cloudflare DNS
-  services.dnsmasq.extraConfig = "address=/test/127.0.0.1"; # map test TLD to localhost
-
-  services.tor.enable = true;
-  services.tor.client = { enable = true; transparentProxy.enable = true; };
-
-  # sshd
-  services.openssh.enable = true;
-  users.users.avo.openssh.authorizedKeys.keys = [ (import /home/avo/lib/credentials.nix).ssh_keys.public ];
-
-  services.devmon.enable = true; # automount removable devices
-
-  # printing
-  services.printing.enable = true;
-  environment.variables.PRINTER = "brother";
+  services.emacs = {
+    enable = true;
+    package = pkgs.avo.emacs;
+  };
 
   # default apps
   environment.etc."xdg/mimeapps.list".text = ''
@@ -126,25 +102,24 @@ with lib;
     application/pdf=org.pwmt.zathura.desktop'';
   environment.etc."xdg/user-dirs.defaults".text = "XDG_DOWNLOAD_DIR=$HOME/tmp; XDG_DESKTOP_DIR=$HOME/tmp";
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
-  environment.variables.BROWSER = "${pkgs.avo.browser}/bin/browser";
+  environment.variables.BROWSER = "browser";
   environment.variables.EDITOR = "vim";
-  environment.variables.PAGER = "${pkgs.wrapped.less}/bin/less";
-
-  services.offlineimap = { enable = true; package = pkgs.wrapped.offlineimap; };
+  environment.variables.PAGER = "less";
 
   environment.systemPackages = with pkgs; with wrapped; [
-    (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne avo.hunspell-ro ]))
-    (lowPrio moreutils) # prefer GNU parallel
+    # libreoffice-fresh
+    # mitmproxy
+    (hunspellWithDicts (with hunspellDicts; [
+      en-us
+      fr-moderne
+      avo.hunspell-ro
+    ]))
     acpi
     aria
     awscli
     bat
     binutils
     bitcoin
-    boot
-    cifs-utils
-    clojure
-    direnv
     dnsutils
     docker_compose
     dtrx
@@ -161,38 +136,34 @@ with lib;
     jre
     lastpass-cli
     less
-    libinput-gestures
-    libnotify
-    # libreoffice-fresh
     lsof
-    # mitmproxy
+    moreutils
     mpv
     msmtp
     neomutt
     neovim
     nethogs
     nmap
-    nodejs
     notmuch
     openssh
     openssl
     parallel
     psmisc
     pup
-    python3Packages.pip
     recode
-    redshift # TODO
+    redshift
     ripgrep
     rlwrap
-    setroot # TODO
+    rmlint
+    setroot
     slack
+    socat
     strace
     sxiv
     telnet
     texlive.combined.scheme-full
     tree
     urlwatch
-    virt-viewer
     w3m
     weechat
     wmctrl
@@ -200,12 +171,10 @@ with lib;
     xdotool
     xfce.thunar
     xsel
-    yarn
-    youtube-dl
     xurls
-    rmlint
-    zathura ]
-  ++
+    youtube-dl
+    zathura
+  ] ++
   (with avo; [
     adb-tcpip
     blink-diff
@@ -218,13 +187,13 @@ with lib;
     emacs
     emacs-clojure
     emacs-irc
+    emacs-notmuch
     emacs-toggle-theme
     fill-pdf-form
     gmail
     google-search
     google-tts
     guesslang
-    inbox
     launcher
     macos
     macos-nixos-rebuild
@@ -232,7 +201,6 @@ with lib;
     nightmode
     npm-run
     open
-    pdf2text
     phonecall
     private-browser
     pushbullet
@@ -249,69 +217,19 @@ with lib;
     webapp
     whattimeisit
     windows
-    zprint ]);
+    zprint
+  ]);
   # ++ (
   #   let mkWebapp = name: url: nameValuePair name (pkgs.writeShellScriptBin name "\${webapp}/bin/webapp '${url}'"); in mapAttrs mkWebapp {
   #     gmail = "https://mail.google.com/mail/u/1";
   #     youtube-music = "https://music.youtube.com";
   #   }));
 
-  programs.adb.enable = true;
-
-  systemd.services.docker-nginx-proxy = {
-    wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.docker ];
-    script = ''
-      docker rm -f nginx-proxy 2>/dev/null || true
-      docker network create nginx-proxy 2>/dev/null || true
-      docker run \
-        -p 80:80 \
-        --name nginx-proxy \
-        --network nginx-proxy \
-        -v ${pkgs.writeText "_" "proxy_read_timeout 999;"}:/etc/nginx/conf.d/custom.conf:ro \
-        -v /etc/nginx/vhost.d \
-        -v /var/run/docker.sock:/tmp/docker.sock:ro \
-        jwilder/nginx-proxy''; };
-
-  # Isync
-  systemd.user.services.isync = {
-    serviceConfig.Type = "oneshot";
-    path = [ pkgs.wrapped.isync ];
-    script = "mbsync main"; };
-  systemd.user.timers.isync = {
-    wantedBy = [ "default.target" ];
-    timerConfig = { Unit = "isync.service"; OnCalendar = "*:*:0/30"; }; };
-
-  # libvirt
-  virtualisation.libvirtd.enable = true;
-  environment.variables.LIBVIRT_DEFAULT_URI = "qemu:///system";
-  networking.bridges.br0.interfaces = [ "enp0s31f6" ];
-  networking.firewall.trustedInterfaces = [ "br0" ];
-
-  # # Clojure
-  # environment.variables.CLJ_CONFIG = let _ = ''
-  #   {:aliases {:find-deps {:extra-deps
-  #                           {find-deps
-  #                              {:git/url "https://github.com/hagmonk/find-deps",
-  #                               :sha "6fc73813aafdd2288260abb2160ce0d4cdbac8be"}},
-  #                          :main-opts ["-m" "find-deps.core"]}}}
-  # ''; in "${pkgs.writeText "_" _}";
-
   # shell
   environment.variables.ZDOTDIR = "/etc";
   programs.zsh.enable = true;
   programs.zsh.enableCompletion = true;
-  programs.zsh.shellAliases = {
-    e = "setsid &>/dev/null emacsclient --create-frame";
-    hgrep = "fc -ln 0- | grep";
-    l = "ls";
-    la = "ls -a";
-    ll = "ls -l";
-    ls = "ls --no-group --group-directories-first --classify --dereference-command-line -v";
-    mkdir = "mkdir -p";
-    tree = "${pkgs.tree}/bin/tree -F --dirsfirst";
-    vi = "vim";
-  };
+  programs.zsh.shellAliases = aliases;
   programs.zsh.promptInit = let
     nix-shell-plugin = pkgs.fetchFromGitHub {
       owner = "chisui"; repo = "zsh-nix-shell";
@@ -360,9 +278,6 @@ with lib;
       zstyle ':completion:*' menu select
       zstyle ':completion:*' rehash true'';
 
-    direnv = ''
-      eval "$(direnv hook zsh)"'';
-
     fast-syntax-highlighting = let _ = pkgs.fetchFromGitHub {
       owner = "zdharma"; repo = "fast-syntax-highlighting";
       rev = "5ed7c0fa0be5e456a131a2378af10b5c03131a7e"; sha256 = "0g3vzaixwjl9rjxc8waq1458kqjg8hsgsaz3ln6a1jm8cd7qca50";
@@ -395,83 +310,36 @@ with lib;
         hist_reduce_blanks \
         share_history'';
 
-    nix-shell-auto-enter = ''
-      add-zsh-hook -Uz chpwd (){ [[ -f shell.nix ]] && nix-shell }'';
+    nix-shell-auto = ''
+      in-nix-project() {
+        if [[ -z $1 ]]; then
+          in-nix-project $PWD
+        else
+          [[ -f $1/shell.nix ]] || {
+            if [[ $1 = / ]]; then
+              false
+            else
+              in-nix-project $(dirname $1)
+            fi
+          }
+        fi
+      }
+
+      add-zsh-hook -Uz chpwd (){ in-nix-project && nix-shell || [[ -n $IN_NIX_SHELL ]] && exit }'';
 
     terminal-title = ''
       precmd() { print -Pn "\e]0;TTY\a" }
       preexec() { print -Pn "\e]0;$1\a" }'';
-
-    vim-mode = ''
-      bindkey -v
-
-      export KEYTIMEOUT=1
-
-      autoload -U edit-command-line; zle -N edit-command-line
-      autoload -U select-bracketed; zle -N select-bracketed
-      autoload -U select-quoted; zle -N select-quoted
-      autoload -U surround; zle -N delete-surround surround; zle -N change-surround surround; zle -N add-surround surround
-
-      bindkey -M vicmd '^x^e' edit-command-line; bindkey -M viins '^x^e' edit-command-line
-      bindkey -M vicmd 'H' run-help
-
-      bindkey ''${terminfo[kcbt]:-^\[\[Z} reverse-menu-complete
-
-      bindkey '^n' expand-or-complete
-      bindkey '^p' reverse-menu-complete
-
-      for m in visual viopp; do
-        for c in {a,i}''${(s..)^:-'()[]{}<>bB'}; do
-          bindkey -M $m $c select-bracketed
-        done
-      done
-      for m in visual viopp; do
-        for c in {a,i}{\',\",\`}; do
-          bindkey -M $m $c select-quoted
-        done
-      done
-
-      bindkey -a cs change-surround
-      bindkey -a ds delete-surround
-      bindkey -a ys add-surround
-      bindkey -M visual S add-surround
-
-      # change cursor shape with mode
-      function zle-keymap-select zle-line-init zle-line-finish {
-        case $KEYMAP in
-          vicmd) print -n '\033[1 q' ;;
-          viins|main) print -n '\033[5 q' ;;
-        esac
-      }
-      zle -N zle-line-init; zle -N zle-line-finish; zle -N zle-keymap-select'';
   in concatStringsSep "\n" [
     "setopt autocd"
     autopair
     completion
-    direnv
     fast-syntax-highlighting
     global-aliases
     globbing
     history
-    # nix-shell-auto-enter
+    # nix-shell-auto
     terminal-title
-    vim-mode
-    fzf ];
-
- systemd.services.remotectl =
-   (import (pkgs.fetchFromGitHub {
-     owner = "lessrest";
-     repo = "restless-cgi";
-     rev = "bf95bccc2ce65bcda1b91a149a2764d97b185319";
-     sha256 = "0kfkcdskij3ngv43ajlhwm31yqy3a3mbnx9kbdjaqhp0179cjx8j";
-   }) { inherit pkgs; }) {
-     port = 1988;
-     user = "root";
-     scripts = {
-       suspend = ''
-         #!${pkgs.bash}/bin/bash
-         systemctl suspend
-       '';
-     };
-   };
+    fzf
+  ];
 }

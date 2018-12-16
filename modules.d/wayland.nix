@@ -34,8 +34,6 @@ in {
     bspwc    # Wayland compositor based on BSPWM
   ];
 
-  environment.variables.GDK_SCALE = "2";
-
   services.xserver.videoDrivers = [ "nouveau" ];
 
   services.compton.extraOptions = mkAfter ''

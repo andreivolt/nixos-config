@@ -3,7 +3,7 @@ self: super:
 with self;
 with super; {
 
-inbox = writeShellScriptBin "email" ''
+emacs-notmuch = writeShellScriptBin "emacs-notmuch" ''
   exec &>/dev/null setsid \
     ${avo.emacs}/bin/emacsclient \
       --socket-name notmuch \

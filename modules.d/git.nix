@@ -22,5 +22,6 @@ with lib;
       st = "status --short"; };
     core.pager = "${gitAndTools.diff-so-fancy}/bin/diff-so-fancy | ${wrapped.less}/bin/less -X";
     core.excludesFile = "${writeText "_" (concatStringsSep "\n" global-exclude-patterns)}";
-    push.default = "current"; };
+    push.default = "current";
+  };
 }

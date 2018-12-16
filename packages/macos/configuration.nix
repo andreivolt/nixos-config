@@ -1,10 +1,10 @@
 { config, pkgs, ... }:
 
 {
-  environment.systemPackages = with pkgs;
-    [ vim
-      # osxfuse sshfs
-      darwin.xcode ];
+  environment.systemPackages = with pkgs; [ vim
+    # osxfuse sshfs
+    darwin.xcode
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
