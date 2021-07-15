@@ -3,13 +3,7 @@
 let
   theme = import ./modules.d/theme.nix;
 
-  packages = let
-    moreutilsWithoutParallel = lib.overrideDerivation pkgs.moreutils (attrs: {
-      postInstall =
-        attrs.postInstall + "\n" +
-        "rm $out/bin/parallel $out/share/man/man1/parallel.1";
-    });
-  in with pkgs; [
+  packages = with pkgs; [
     # chromium
     # kotakogram-desktop
     # libreoffice-fresh
@@ -17,6 +11,14 @@ let
     (callPackage ./packages/colorpicker.nix {})
     (callPackage ./packages/pushover.nix { user = builtins.getEnv "PUSHOVER_USER"; token = builtins.getEnv "PUSHOVER_TOKEN"; })
     (callPackage ./packages/zprint.nix {})
+    (
+      # moreutils parallel conflicts with GNU parallel
+      lib.overrideDerivation pkgs.moreutils (attrs: {
+        postInstall =
+          attrs.postInstall + "\n" +
+          "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+      })
+    )
     acpi
     aria
     babashka
@@ -236,6 +238,7 @@ in {
 
       zstyle ':completion:*' menu select
       zstyle ':completion:*' rehash true
+
       source ${pkgs.fzf}/share/fzf/completion.zsh
 
       HISTSIZE=99999 SAVEHIST=$HISTSIZE
@@ -248,12 +251,9 @@ in {
         share_history
 
       source ${pkgs.fzf}/share/fzf/key-bindings.zsh
-
       ${import ./modules.d/zsh/zsh.d/prompt.nix}
-
       source ${./modules.d/zsh/zsh.d/global-aliases.zsh}
-
-      precmd () { echo -e "\e]2;\ue795 $(pwd)\007" }
+      source ${./modules.d/zsh/zsh.d/terminal-title.zsh}
     '';
   };
 
