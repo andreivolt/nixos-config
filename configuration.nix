@@ -15,7 +15,10 @@ let
     # libreoffice-fresh
     # torbrowser
     (callPackage ./packages/colorpicker.nix {})
-    (callPackage ./packages/pushover.nix {})
+    (callPackage ./packages/pushover.nix {
+      user = builtins.getEnv "PUSHOVER_USER";
+      token = builtins.getEnv "PUSHOVER_TOKEN";
+    })
     (callPackage ./packages/zprint.nix {})
     acpi
     alacritty
@@ -50,7 +53,6 @@ let
     insync
     iotop
     jq
-    kdeconnect
     lastpass-cli
     libarchive # bsdtar
     libnotify
@@ -110,27 +112,28 @@ in {
     ./hardware-configuration.nix
     (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos")
 
+    # ./modules.d/curl.nix
     ./modules.d/ad-hosts-block.nix
     ./modules.d/adb.nix
-    ./modules.d/hardware-video-acceleration.nix
     ./modules.d/alacritty/alacritty.nix
     ./modules.d/audio.nix
     ./modules.d/cloudflare-dns.nix
     ./modules.d/docker.nix
+    ./modules.d/readline/inputrc.nix
     ./modules.d/firefox.nix
     ./modules.d/fonts.nix
     ./modules.d/fzf.nix
+    ./modules.d/git.nix
+    ./modules.d/hardware-video-acceleration.nix
     ./modules.d/insync.nix
     ./modules.d/kdeconnect.nix
     ./modules.d/low-bat-suspend.nix
     ./modules.d/map-test-tld-to-localhost.nix
     ./modules.d/npm.nix
+    ./modules.d/ripgrep.nix
     ./modules.d/sway.nix
     ./modules.d/tor.nix
     ./modules.d/vim.nix
-    ./modules.d/git.nix
-    ./modules.d/ripgrep.nix
-    # ./modules.d/curl.nix
   ];
 
   system.autoUpgrade.enable = true;
@@ -186,7 +189,6 @@ in {
   home-manager.users.avo = { pkgs, config, ... }: {
     gtk.enable = true;
     gtk.theme.name = "dark";
-
     # gtk.theme.package = pkgs.gnome-breeze;
 
     gtk.font.name = "Source Sans Pro 8";
@@ -257,23 +259,7 @@ in {
 
       source ${./modules.d/zsh/zsh.d/global-aliases.zsh}
     '';
-
-    home.file.".inputrc".text = ''
-      set editing-mode vi
-
-      set completion-ignore-case on
-      set show-all-if-ambiguous on
-
-      set keymap vi
-      C-r: reverse-search-history
-      C-f: forward-search-history
-      C-l: clear-screen
-      v: rlwrap-call-editor
-    '';
   };
-
-  environment.variables.PUSHOVER_USER = builtins.getEnv "PUSHOVER_USER";
-  environment.variables.PUSHOVER_TOKEN = builtins.getEnv "PUSHOVER_TOKEN";
 
   services.upower.enable = true;
   services.batteryNotifier = {

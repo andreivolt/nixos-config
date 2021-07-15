@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixpkgs> {}, user, token }:
 
 pkgs.writeScriptBin "pushover" ''
   #!${pkgs.python}/bin/python
@@ -17,9 +17,9 @@ pkgs.writeScriptBin "pushover" ''
       message = ""
       priority = priorities["normal"]
       title = ""
-      token = os.environ['PUSHOVER_TOKEN']
+      token = ${token}
       url = None
-      user = os.environ['PUSHOVER_USER']
+      user = ${user}
 
       def exit(self, code):
           sys.exit(code)
