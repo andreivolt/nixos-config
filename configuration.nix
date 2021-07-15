@@ -31,6 +31,8 @@ let
     dnsutils
     dtach
     dtrx
+    fzy
+    delta
     ffmpeg-full # -full for ffplay
     file
     firefox
@@ -55,7 +57,6 @@ let
     libnotify
     lsof
     mediainfo
-    moreutilsWithoutParallel
     mosh
     mpv
     msmtp
@@ -187,7 +188,6 @@ in {
     gtk.enable = true;
     gtk.theme.name = "dark";
     # gtk.theme.package = pkgs.gnome-breeze;
-
     gtk.font.name = "Source Sans Pro 8";
 
     home.sessionPath = [ "$HOME/.local/bin" ];
@@ -251,7 +251,7 @@ in {
         share_history
 
       source ${pkgs.fzf}/share/fzf/key-bindings.zsh
-      ${import ./modules.d/zsh/zsh.d/prompt.nix}
+      source ${./modules.d/zsh/zsh.d/prompt.zsh}
       source ${./modules.d/zsh/zsh.d/global-aliases.zsh}
       source ${./modules.d/zsh/zsh.d/terminal-title.zsh}
     '';
