@@ -45,21 +45,6 @@
 
     output * scale 1
 
-    set $cyan #00877c
-    set $darkgray #484848
-    set $black #000000
-    set $white #ffffff
-    set $gray #333333
-    set $green #00ff00
-    set $orange #873200
-    set $blue #1a0099
-    set $gray-bg #595959
-    set $gray-fg #bfbfbf
-    set $lightgray #777777
-    set $inactive-bg $gray-bg
-    set $active-fg $darkgray
-    set $active-bg $darkgray
-
     for_window [class=".*mpv$"] inhibit_idle visible
 
     set $mod Mod4
@@ -69,7 +54,7 @@
     set $up k
     set $right l
 
-    hide_edge_borders both
+    # hide_edge_borders both
 
     set $term alacritty
 
@@ -134,11 +119,30 @@
     bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
     bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 
-    client.unfocused $black $black $lightgray $black $black
-    client.focused $darkgray $darkgray $white $darkgray $darkgray
+
+    set $cyan #00877c
+    set $darkgray #181818
+    set $black #000000
+    set $white #ffffff
+    set $gray #333333
+    set $green #00ff00
+    set $red #ff0000
+    set $orange #873200
+    set $blue #304E59
+    set $gray-bg #595959
+    set $gray-fg #bfbfbf
+    set $lightgray #777777
+    set $inactive-bg $gray-bg
+    set $active-fg $darkgray
+    set $active-bg $darkgray
+
+
+    client.unfocused $darkgray $darkgray $lightgray $darkgray $darkgray
+    client.focused $blue $blue $white $blue $blue
     client.focused_inactive $black $black $gray $black $black
 
-    default_border normal 1
+
+    default_border normal 5
 
     input "1133:45081:MX_Master_2S_Mouse" {
       accel_profile flat
@@ -152,7 +156,7 @@
       middle_emulation enabled
     }
 
-    font pango:Roboto Condensed 18
+    font pango:Roboto Condensed Nerd Font Bold 18
 
     bindsym F5 mode "default"
 

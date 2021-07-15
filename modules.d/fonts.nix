@@ -9,5 +9,6 @@
     corefonts
     google-fonts
     nerdfonts
+    jetbrains-mono
   ];
 }

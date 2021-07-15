@@ -255,6 +255,8 @@ in {
       ${import ./modules.d/zsh/zsh.d/prompt.nix}
 
       source ${./modules.d/zsh/zsh.d/global-aliases.zsh}
+
+      precmd () { echo -e "\e]2;\ue795 $(pwd)\007" }
     '';
   };
 

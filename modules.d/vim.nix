@@ -185,8 +185,6 @@ let
     hi NERDTreeCWD ctermfg=8 guifg=${black_bg}
     hi NERDTreeClosable ctermfg=8 guifg=${black_bg} | hi NERDTreeOpenable ctermfg=8 guifg=${black_bg}
 
-    set foldcolumn=3
-
     set autoread
   '';
 in {
