@@ -152,7 +152,7 @@
       middle_emulation enabled
     }
 
-    font pango:Source Sans Pro 18
+    font pango:Roboto Condensed 18
 
     bindsym F5 mode "default"
 
