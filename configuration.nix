@@ -14,7 +14,11 @@ in {
     ./modules.d/audio.nix
     ./modules.d/cloudflare-dns.nix
     ./modules.d/docker.nix
+    ./modules.d/firefox.nix
     ./modules.d/fonts.nix
+    ./modules.d/fzf.nix
+    ./modules.d/insync.nix
+    ./modules.d/kdeconnect.nix
     ./modules.d/low-bat-suspend.nix
     ./modules.d/map-test-tld-to-localhost.nix
     ./modules.d/npm.nix
@@ -72,32 +76,13 @@ in {
     --quit-if-one-screen\
   '';
 
-  # block ads
-
-  # fzf
-  programs.zsh.shellAliases.fzf = ''
-    fzf \
-      --color bg:15,fg:8,bg+:4,fg+:0,hl:3,hl+:3,info:15,pointer:12,prompt:8 \
-      --no-bold\
-  '';
-
   environment.variables.LS_COLORS = "di=0;35:fi=0;37:ex=0;96:ln=0;37";
 
   # hardware video acceleration
   hardware.opengl.extraPackages = [ pkgs.vaapiVdpau ];
   environment.variables.LIBVA_DRIVER_NAME = "vdpau";
 
-  systemd.user.services.insync = {
-    after = [ "network.target" ]; wantedBy = [ "default.target" ];
-    script = "${pkgs.insync}/bin/insync start";
-    serviceConfig = { Type = "forking"; Restart = "always"; };
-  };
-
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
-
-  # kdeconnect
-  networking.firewall.allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
-  networking.firewall.allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
 
   home-manager.users.avo = { pkgs, config, ... }: {
     gtk.enable = true;
@@ -395,6 +380,4 @@ in {
   networking.enableIPv6 = false;
 
   networking.networkmanager.enable = true;
-
-  environment.variables.GDK_SCALE = "2";
 }
