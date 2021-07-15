@@ -25,6 +25,8 @@ in {
     ./modules.d/sway.nix
     ./modules.d/tor.nix
     ./modules.d/vim.nix
+    ./modules.d/git.nix
+    ./modules.d/ripgrep.nix
     # ./modules.d/curl.nix
   ];
 
@@ -39,7 +41,6 @@ in {
 
   console.keyMap = "fr";
 
-
   # hidpi in console
   console.font = "latarcyrheb-sun32";
 
@@ -48,9 +49,6 @@ in {
 
   hardware.bluetooth.enable = true;
   hardware.opengl.enable = true;
-
-  # fix Sway "failed to take device"
-  hardware.opengl.driSupport = true;
 
   nix.buildCores = 0;
   nix.gc.automatic = true;
@@ -64,6 +62,10 @@ in {
   security.sudo.wheelNeedsPassword = false;
 
   networking.hostName = builtins.getEnv "HOSTNAME";
+
+  networking.enableIPv6 = false;
+
+  networking.networkmanager.enable = true;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -90,7 +92,7 @@ in {
 
     # gtk.theme.package = pkgs.gnome-breeze;
 
-    gtk.font.name = "Product Sans 8";
+    gtk.font.name = "Source Sans Pro 8";
 
     services.kdeconnect.enable = true;
 
@@ -111,32 +113,33 @@ in {
       # chromium
       # kotakogram-desktop
       # libreoffice-fresh
+      # torbrowser
+      (pkgs.callPackage ./packages/colorpicker.nix {})
+      (pkgs.callPackage ./packages/pushover.nix {})
+      (pkgs.callPackage ./packages/zprint.nix {})
       acpi
       alacritty
       aria
+      babashka
+      bat
       bc
       chromedriver
       clipman
       clojure
       curl
       dnsutils
-      nodePackages.peerflix
-      glpaper
-      nodePackages.webtorrent-cli
-      wf-recorder
-      pamixer
       dtach
       dtrx
-      babashka
-      t
       ffmpeg-full # -full for ffplay
       file
       firefox
       fzf
       geoip
       gh
+      gist
       git
       git-hub
+      glpaper
       gnumake
       gnupg
       google-chrome
@@ -161,7 +164,10 @@ in {
       netcat
       nethogs
       nmap
+      nodePackages.peerflix
+      nodePackages.webtorrent-cli
       openssl
+      pamixer
       pandoc
       parallel
       patchelf
@@ -172,11 +178,6 @@ in {
       python3
       python39Packages.pip
       qemu
-      gist
-      bat
-      (pkgs.callPackage ./packages/colorpicker.nix {})
-      (pkgs.callPackage ./packages/zprint.nix {})
-      (pkgs.callPackage ./packages/pushover.nix {})
       recode
       ripgrep
       rlwrap
@@ -186,15 +187,16 @@ in {
       strace
       sublime3
       surf
+      t
       tdesktop
       telnet
       tmate
-      # torbrowser
       tree
       ungoogled-chromium
       unzip
       usbutils
       vlc
+      wf-recorder
       wget
       xdg_utils
       xfce.thunar
@@ -219,7 +221,6 @@ in {
     programs.zsh.shellAliases.ll = "ls -l";
 
     programs.zsh.shellAliases.grep = "grep --color=auto";
-    programs.zsh.shellAliases.rg = "rg --smart-case --colors=match:fg:yellow";
     programs.zsh.shellAliases.vi = "vim";
 
     programs.zsh.enable = true;
@@ -348,23 +349,6 @@ in {
       C-l: clear-screen
       v: rlwrap-call-editor
     '';
-
-    home.file.".gitconfig".text = lib.generators.toINI {} {
-      user.name = "Andrei Volt";
-      user.email = "andrei@avolt.net";
-      alias = {
-        am = "commit --all --amend --no-edit";
-        ap = "add --patch";
-        ci = "commit";
-        co = "checkout";
-        dc = "diff --cached";
-        di = "diff";
-        st = "status --short";
-      };
-      core.pager = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less -X";
-      push.default = "current";
-      hub.oauthtoken = builtins.getEnv "GITHUB_TOKEN";
-    };
   };
 
   environment.variables.PUSHOVER_USER = builtins.getEnv "PUSHOVER_USER";
@@ -376,8 +360,4 @@ in {
     notifyCapacity = 40;
     suspendCapacity = 10;
   };
-
-  networking.enableIPv6 = false;
-
-  networking.networkmanager.enable = true;
 }
