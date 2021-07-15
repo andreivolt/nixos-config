@@ -95,10 +95,6 @@ in {
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
-  environment.variables.BROWSER = "browser";
-  environment.variables.EDITOR = "vim";
-  environment.variables.PAGER = "less";
-
   # kdeconnect
   networking.firewall.allowedTCPPortRanges = [ { from = 1714; to = 1764; } ];
   networking.firewall.allowedUDPPortRanges = [ { from = 1714; to = 1764; } ];
@@ -114,140 +110,18 @@ in {
     services.kdeconnect.enable = true;
 
     home.sessionPath = [ "$HOME/.local/bin" ];
+
     home.sessionVariables.BROWSER = "google-chrome-stable";
+    home.sessionVariables.EDITOR = "vim";
+    home.sessionVariables.PAGER = "less";
 
     home.packages = let
-      pushover = pkgs.writeScriptBin "pushover" ''
-        #!${pkgs.python}/bin/python
-
-        import getopt
-        import sys
-        import os
-        import StringIO
-        import httplib
-        import urllib
-
-
-        class Pushover:
-            priorities = {"high": 1, "normal": 0, 'low': -1}
-
-            message = ""
-            priority = priorities["normal"]
-            title = ""
-            token = os.environ['PUSHOVER_TOKEN']
-            url = None
-            user = os.environ['PUSHOVER_USER']
-
-            def exit(self, code):
-                sys.exit(code)
-
-            def usage(self):
-                file = os.path.basename(__file__)
-                print "Usage:   " + file + " [options] <message> <title>"
-                print "Stdin:   " + file + " [options] - <title>"
-                print "Example: " + file + " \"Hello World\""
-                print ""
-                print "  -p --priority <high, normal, low>   Default: normal"
-                print "  -l --url      <url>                 Link the message to this URL"
-
-            def main(self):
-                try:
-                    opts, args = getopt.getopt(sys.argv[1:], "hu:t:p:u:c:l:",
-                                              ["help",
-                                                "user=",
-                                                "token=",
-                                                "priority=",
-                                                "url="])
-                except getopt.GetoptError as err:
-                    print str(err)
-                    self.usage()
-                    self.exit(2)
-
-                if len(args) > 0:
-                    self.message = args.pop(0)
-
-                    if len(args) > 0:
-                        self.title = args.pop(0)
-
-                    for o, a in opts:
-                        if o in ("-h", "--help"):
-                            self.usage()
-                            self.exit(0)
-                        elif o in ("-u", "--user"):
-                            self.user = a
-                        elif o in ("-t", "--token"):
-                            self.token = a
-                        elif o in ("-p", "--priority"):
-                            for name, priority in self.priorities.iteritems():
-                                if name == a:
-                                    self.priority = priority
-                        elif o in ("-l", "--url"):
-                            self.url = a
-
-                    if self.message == "-":
-                        while True:
-                            try:
-                                line = sys.stdin.readline().strip()
-                                if len(line) > 0:
-                                    self.message = line
-                                    self.send()
-                            except KeyboardInterrupt:
-                                break
-                            if not line:
-                                break
-
-                    else:
-                        self.send()
-
-                else:
-                    self.usage()
-                    self.exit(2)
-
-            def send(self):
-                conn = httplib.HTTPSConnection("api.pushover.net:443")
-                conn.request("POST", "/1/messages.json",
-                            urllib.urlencode({
-                                "token": self.token,
-                                "user": self.user,
-                                "url": self.url,
-                                "title": self.title,
-                                "message": self.message,
-                                "priority": self.priority,
-                            }), {"Content-type": "application/x-www-form-urlencoded"})
-
-        if __name__ == "__main__":
-            pushover = Pushover()
-            pushover.main()
-      '';
-
-      colorpicker = pkgs.writeShellScriptBin "colorpicker" ''
-        grim -g "$(slurp -p)" -t ppm - | gm convert - -format '%[pixel:p{0,0}]' txt:-
-      '';
-
       moreutilsWithoutParallel = lib.overrideDerivation pkgs.moreutils (attrs: {
         postInstall =
           attrs.postInstall + "\n" +
           "rm $out/bin/parallel $out/share/man/man1/parallel.1";
       });
 
-      zprint = pkgs.stdenv.mkDerivation rec {
-        name = "zprint";
-        src = pkgs.fetchurl {
-          url = "https://github.com/kkinnear/zprint/releases/download/0.4.10/zprintl-0.4.10";
-          sha256 = "0iab2gvynb0njhr2vy26li165sc2v6p5pld7ifp6jlf7yj3yr4gl";
-        };
-        unpackPhase = ":";
-        dontStrip = true;
-        preFixup =
-          let rpath = with pkgs; lib.makeLibraryPath [ zlib ];
-          in ''
-            patchelf \
-              --set-interpreter "$(cat $NIX_CC/nix-support/dynamic-linker)" \
-              --set-rpath "${rpath}" \
-              $out/bin/zprint
-          '';
-        installPhase = "mkdir -p $out/bin && cp $src $out/bin/zprint && chmod +x $out/bin/zprint";
-      };
     in with pkgs; [
       # chromium
       # kotakogram-desktop
@@ -259,7 +133,6 @@ in {
       chromedriver
       clipman
       clojure
-      colorpicker
       curl
       dnsutils
       nodePackages.peerflix
@@ -311,13 +184,14 @@ in {
       protonvpn-cli
       psmisc
       pup
-      pushover
       python3
       python39Packages.pip
       qemu
       gist
       bat
+      (pkgs.callPackage ./packages/colorpicker.nix {})
       (pkgs.callPackage ./packages/zprint.nix {})
+      (pkgs.callPackage ./packages/pushover.nix {})
       recode
       ripgrep
       rlwrap
@@ -330,7 +204,7 @@ in {
       tdesktop
       telnet
       tmate
-      torbrowser
+      # torbrowser
       tree
       ungoogled-chromium
       unzip

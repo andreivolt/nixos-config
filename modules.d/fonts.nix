@@ -9,6 +9,5 @@
     corefonts
     google-fonts
     nerdfonts
-    input-fonts
   ];
 }
