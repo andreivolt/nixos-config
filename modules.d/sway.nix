@@ -156,7 +156,7 @@
       middle_emulation enabled
     }
 
-    font pango:Roboto Condensed Nerd Font Bold 18
+    font pango:Liberation Sans Bold 18
 
     bindsym F5 mode "default"
 
