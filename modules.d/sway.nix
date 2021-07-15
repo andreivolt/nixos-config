@@ -1,8 +1,10 @@
 { lib, pkgs, ... }:
 
 {
-
   environment.pathsToLink = [ "/libexec" ];
+
+  # fix "failed to take device"
+  hardware.opengl.driSupport = true;
 
   programs.sway.enable = true;
   programs.sway.extraPackages = with pkgs; [
