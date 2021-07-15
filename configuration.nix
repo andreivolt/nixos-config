@@ -3,6 +3,108 @@
 let
   theme = import ./modules.d/theme.nix;
 
+  packages = let
+    moreutilsWithoutParallel = lib.overrideDerivation pkgs.moreutils (attrs: {
+      postInstall =
+        attrs.postInstall + "\n" +
+        "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+    });
+  in with pkgs; [
+    # chromium
+    # kotakogram-desktop
+    # libreoffice-fresh
+    # torbrowser
+    (callPackage ./packages/colorpicker.nix {})
+    (callPackage ./packages/pushover.nix {})
+    (callPackage ./packages/zprint.nix {})
+    acpi
+    alacritty
+    aria
+    babashka
+    bat
+    bc
+    chromedriver
+    clipman
+    clojure
+    curl
+    dnsutils
+    dtach
+    dtrx
+    ffmpeg-full # -full for ffplay
+    file
+    firefox
+    fzf
+    geoip
+    gh
+    gist
+    git
+    git-hub
+    glpaper
+    gnumake
+    gnupg
+    google-chrome
+    graphicsmagick
+    httpie
+    iftop
+    imv
+    insync
+    iotop
+    jq
+    kdeconnect
+    lastpass-cli
+    libarchive # bsdtar
+    libnotify
+    lsof
+    mediainfo
+    moreutilsWithoutParallel
+    mosh
+    mpv
+    msmtp
+    mupdf
+    netcat
+    nethogs
+    nmap
+    nodePackages.peerflix
+    nodePackages.webtorrent-cli
+    openssl
+    pamixer
+    pandoc
+    parallel
+    patchelf
+    pavucontrol
+    protonvpn-cli
+    psmisc
+    pup
+    python3
+    qemu
+    recode
+    ripgrep
+    rlwrap
+    socat
+    sox
+    spotify
+    strace
+    sublime3
+    surf
+    t
+    tdesktop
+    telnet
+    tmate
+    tree
+    ungoogled-chromium
+    unzip
+    usbutils
+    vlc
+    wf-recorder
+    wget
+    xdg_utils
+    xfce.thunar
+    xurls
+    xxd
+    youtube-dl
+    youtube-viewer
+  ];
+
 in {
   imports = [
     ./hardware-configuration.nix
@@ -10,6 +112,7 @@ in {
 
     ./modules.d/ad-hosts-block.nix
     ./modules.d/adb.nix
+    ./modules.d/hardware-video-acceleration.nix
     ./modules.d/alacritty/alacritty.nix
     ./modules.d/audio.nix
     ./modules.d/cloudflare-dns.nix
@@ -78,10 +181,6 @@ in {
 
   environment.variables.LS_COLORS = "di=0;35:fi=0;37:ex=0;96:ln=0;37";
 
-  # hardware video acceleration
-  hardware.opengl.extraPackages = [ pkgs.vaapiVdpau ];
-  environment.variables.LIBVA_DRIVER_NAME = "vdpau";
-
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
   home-manager.users.avo = { pkgs, config, ... }: {
@@ -98,109 +197,7 @@ in {
     home.sessionVariables.EDITOR = "vim";
     home.sessionVariables.PAGER = "less";
 
-    home.packages = let
-      moreutilsWithoutParallel = lib.overrideDerivation pkgs.moreutils (attrs: {
-        postInstall =
-          attrs.postInstall + "\n" +
-          "rm $out/bin/parallel $out/share/man/man1/parallel.1";
-      });
-
-    in with pkgs; [
-      # chromium
-      # kotakogram-desktop
-      # libreoffice-fresh
-      # torbrowser
-      (pkgs.callPackage ./packages/colorpicker.nix {})
-      (pkgs.callPackage ./packages/pushover.nix {})
-      (pkgs.callPackage ./packages/zprint.nix {})
-      acpi
-      alacritty
-      aria
-      babashka
-      bat
-      bc
-      chromedriver
-      clipman
-      clojure
-      curl
-      dnsutils
-      dtach
-      dtrx
-      ffmpeg-full # -full for ffplay
-      file
-      firefox
-      fzf
-      geoip
-      gh
-      gist
-      git
-      git-hub
-      glpaper
-      gnumake
-      gnupg
-      google-chrome
-      graphicsmagick
-      httpie
-      iftop
-      imv
-      insync
-      iotop
-      jq
-      kdeconnect
-      lastpass-cli
-      libarchive # bsdtar
-      libnotify
-      lsof
-      mediainfo
-      moreutilsWithoutParallel
-      mosh
-      mpv
-      msmtp
-      mupdf
-      netcat
-      nethogs
-      nmap
-      nodePackages.peerflix
-      nodePackages.webtorrent-cli
-      openssl
-      pamixer
-      pandoc
-      parallel
-      patchelf
-      pavucontrol
-      protonvpn-cli
-      psmisc
-      pup
-      python3
-      python39Packages.pip
-      qemu
-      recode
-      ripgrep
-      rlwrap
-      socat
-      sox
-      spotify
-      strace
-      sublime3
-      surf
-      t
-      tdesktop
-      telnet
-      tmate
-      tree
-      ungoogled-chromium
-      unzip
-      usbutils
-      vlc
-      wf-recorder
-      wget
-      xdg_utils
-      xfce.thunar
-      xurls
-      xxd
-      youtube-dl
-      youtube-viewer
-    ];
+    home.packages = packages;
 
     programs.direnv.enable = true;
     programs.direnv.enableZshIntegration = true;
@@ -224,8 +221,6 @@ in {
     programs.zsh.enableCompletion = true;
 
     programs.zsh.initExtra = ''
-      unsetopt beep
-
       setopt \
         case_glob \
         extended_glob \
@@ -243,9 +238,9 @@ in {
 
       source ${./modules.d/zsh/zsh.d/vi.zsh}
 
-      source ${pkgs.fzf}/share/fzf/completion.zsh
       zstyle ':completion:*' menu select
       zstyle ':completion:*' rehash true
+      source ${pkgs.fzf}/share/fzf/completion.zsh
 
       HISTSIZE=99999 SAVEHIST=$HISTSIZE
       HISTFILE=~/.cache/zsh_history
@@ -260,17 +255,7 @@ in {
 
       source ${./modules.d/zsh/zsh.d/prompt.zsh}
 
-      alias -g H='| head'
-      alias -g T='| tail'
-      alias -g C='| wc -l'
-      alias -g G='| grep'
-      alias -g L="| less"
-      alias -g M="| most"
-      alias -g LL='2>&1 | less'
-      alias -g CA='2>&1 | cat -A'
-      alias -g NE='2> /dev/null'
-      alias -g NUL='> /dev/null 2>&1'
-      alias -g P='2>&1| pygmentize -l pytb'
+      source ${./modules.d/zsh/zsh.d/global-aliases.zsh}
     '';
 
     home.file.".inputrc".text = ''
