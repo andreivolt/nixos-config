@@ -34,20 +34,18 @@ in {
   system.autoUpgrade.channel = https://nixos.org/channels/nixos-unstable;
   system.stateVersion = "19.09";
 
-  # automount removable devices
-  services.devmon.enable = true;
+  services.devmon.enable = true; # automount removable devices
 
   i18n.defaultLocale = "en_US.UTF-8";
 
   console.keyMap = "fr";
 
-  # hidpi in console
-  console.font = "latarcyrheb-sun32";
-
+  console.font = "latarcyrheb-sun32"; # hidpi in console
 
   time.timeZone = "Europe/Paris";
 
   hardware.bluetooth.enable = true;
+
   hardware.opengl.enable = true;
 
   nix.buildCores = 0;
@@ -93,8 +91,6 @@ in {
     # gtk.theme.package = pkgs.gnome-breeze;
 
     gtk.font.name = "Source Sans Pro 8";
-
-    services.kdeconnect.enable = true;
 
     home.sessionPath = [ "$HOME/.local/bin" ];
 
@@ -305,24 +301,7 @@ in {
 
       source ${pkgs.fzf}/share/fzf/key-bindings.zsh
 
-      prompt_precmd() {
-        rehash
-        setopt promptsubst
-
-        local jobs; unset jobs
-        local prompt_jobs
-        for a (''${(k)jobstates}) {
-          j=$jobstates[$a];i=\'''''${''${(@s,:,)j}[2]}'
-          jobs+=($a''${i//[^+-]/})
-        }
-        prompt_jobs=""
-        [[ -n $jobs ]] && prompt_jobs="["''${(j:,:)jobs}"] "
-
-        PROMPT="%(?.%F{green}.%F{red})%~ $ %f%K{black}%F{white}$prompt_jobs%f%k"
-      }
-      prompt_opts=(cr percent sp subst)
-      autoload -U add-zsh-hook
-      add-zsh-hook precmd prompt_precmd
+      source ${./modules.d/zsh/zsh.d/prompt.zsh}
 
       alias -g H='| head'
       alias -g T='| tail'
