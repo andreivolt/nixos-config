@@ -18,7 +18,6 @@ let
     (callPackage ./packages/pushover.nix { user = builtins.getEnv "PUSHOVER_USER"; token = builtins.getEnv "PUSHOVER_TOKEN"; })
     (callPackage ./packages/zprint.nix {})
     acpi
-    alacritty
     aria
     babashka
     bat
@@ -47,7 +46,6 @@ let
     httpie
     iftop
     imv
-    insync
     iotop
     jq
     lastpass-cli
@@ -110,8 +108,8 @@ in {
     (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos")
 
     # ./modules.d/curl.nix
-    ./modules.d/ad-hosts-block.nix
     ./modules.d/adb.nix
+    ./modules.d/adblock.nix
     ./modules.d/alacritty/alacritty.nix
     ./modules.d/audio.nix
     ./modules.d/cloudflare-dns.nix
@@ -204,7 +202,6 @@ in {
     programs.zsh.shellAliases.ls = ''
       LC_COLLATE=C \
         ls \
-          --dereference \
           --human-readable \
           --indicator-style=slash \
     '';
