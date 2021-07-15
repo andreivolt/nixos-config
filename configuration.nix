@@ -15,10 +15,7 @@ let
     # libreoffice-fresh
     # torbrowser
     (callPackage ./packages/colorpicker.nix {})
-    (callPackage ./packages/pushover.nix {
-      user = builtins.getEnv "PUSHOVER_USER";
-      token = builtins.getEnv "PUSHOVER_TOKEN";
-    })
+    (callPackage ./packages/pushover.nix { user = builtins.getEnv "PUSHOVER_USER"; token = builtins.getEnv "PUSHOVER_TOKEN"; })
     (callPackage ./packages/zprint.nix {})
     acpi
     alacritty
@@ -255,7 +252,7 @@ in {
 
       source ${pkgs.fzf}/share/fzf/key-bindings.zsh
 
-      source ${./modules.d/zsh/zsh.d/prompt.zsh}
+      ${import ./modules.d/zsh/zsh.d/prompt.nix}
 
       source ${./modules.d/zsh/zsh.d/global-aliases.zsh}
     '';
