@@ -121,14 +121,14 @@
 
 
     set $cyan #00877c
-    set $darkgray #181818
+    set $darkgray #222222
     set $black #000000
     set $white #ffffff
     set $gray #333333
     set $green #00ff00
     set $red #ff0000
     set $orange #873200
-    set $blue #304E59
+    set $blue #6c0094
     set $gray-bg #595959
     set $gray-fg #bfbfbf
     set $lightgray #777777
@@ -137,8 +137,8 @@
     set $active-bg $darkgray
 
 
-    client.unfocused $darkgray $darkgray $lightgray $darkgray $darkgray
-    client.focused $blue $blue $white $blue $blue
+    client.unfocused $black $black $lightgray $black $black
+    client.focused $darkgray $darkgray $white $darkgray $darkgray
     client.focused_inactive $black $black $gray $black $black
 
 
@@ -156,7 +156,7 @@
       middle_emulation enabled
     }
 
-    font pango:Liberation Sans Bold 18
+    font pango:Roboto Condensed Bold 18
 
     bindsym F5 mode "default"
 

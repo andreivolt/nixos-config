@@ -21,6 +21,7 @@ let
     }))
     acpi
     aria
+    google-cloud-sdk
     babashka
     bat
     bc
@@ -53,6 +54,7 @@ let
     iotop
     jq
     lastpass-cli
+    nixops
     libarchive # bsdtar
     libnotify
     lsof
@@ -60,6 +62,8 @@ let
     mosh
     mpv
     msmtp
+    nix-index
+    nix-update
     mupdf
     netcat
     nethogs
@@ -218,21 +222,44 @@ in {
 
     programs.zsh.enableCompletion = true;
 
+    programs.zsh.plugins = [
+      {
+        name = "zsh-nix-shell";
+        file = "nix-shell.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "chisui";
+          repo = "zsh-nix-shell";
+          rev = "v0.2.0";
+          sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
+        };
+      }
+      {
+        name = "fast-syntax-highlighting";
+        file = "fast-syntax-highlighting.plugin.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "zdharma";
+          repo = "fast-syntax-highlighting";
+          rev = "5ed7c0fa0be5e456a131a2378af10b5c03131a7e";
+          sha256 = "0g3vzaixwjl9rjxc8waq1458kqjg8hsgsaz3ln6a1jm8cd7qca50";
+        };
+      }
+      {
+        name = "autopair";
+        file = "autopair.zsh";
+        src = pkgs.fetchFromGitHub {
+          owner = "hlissner";
+          repo = "zsh-autopair";
+          rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
+          sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
+        };
+      }
+    ];
+
     programs.zsh.initExtra = ''
       setopt \
         case_glob \
         extended_glob \
         glob_complete
-
-      source ${pkgs.fetchFromGitHub {
-        owner = "zdharma"; repo = "fast-syntax-highlighting";
-        rev = "5ed7c0fa0be5e456a131a2378af10b5c03131a7e"; sha256 = "0g3vzaixwjl9rjxc8waq1458kqjg8hsgsaz3ln6a1jm8cd7qca50";
-      }}/fast-syntax-highlighting.plugin.zsh
-
-      source ${pkgs.fetchFromGitHub {
-        owner = "hlissner"; repo = "zsh-autopair";
-        rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1"; sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
-      }}/autopair.zsh
 
       source ${./modules.d/zsh/zsh.d/vi.zsh}
 
