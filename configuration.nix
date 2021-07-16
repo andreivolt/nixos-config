@@ -21,7 +21,6 @@ let
     }))
     acpi
     aria
-    google-cloud-sdk
     babashka
     bat
     bc
@@ -29,15 +28,15 @@ let
     clipman
     clojure
     curl
+    delta
     dnsutils
     dtach
     dtrx
-    fzy
-    delta
     ffmpeg-full # -full for ffplay
     file
     firefox
     fzf
+    fzy
     geoip
     gh
     gist
@@ -47,6 +46,7 @@ let
     gnumake
     gnupg
     google-chrome
+    google-cloud-sdk
     graphicsmagick
     httpie
     iftop
@@ -54,7 +54,6 @@ let
     iotop
     jq
     lastpass-cli
-    nixops
     libarchive # bsdtar
     libnotify
     lsof
@@ -62,11 +61,12 @@ let
     mosh
     mpv
     msmtp
-    nix-index
-    nix-update
     mupdf
     netcat
     nethogs
+    nix-index
+    nix-update
+    nixops
     nmap
     nodePackages.peerflix
     nodePackages.webtorrent-cli
@@ -101,6 +101,7 @@ let
     vlc
     wf-recorder
     wget
+    with-shell
     xdg_utils
     xfce.thunar
     xurls
