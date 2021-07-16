@@ -8,10 +8,10 @@
 
   programs.sway.enable = true;
   programs.sway.extraPackages = with pkgs; [
+    gammastep
     gebaar-libinput
     grim
     mako
-    gammastep
     slurp
     swayidle
     swaylock
@@ -42,10 +42,11 @@
         before-sleep '$lock'
 
     output * background #000000 solid_color
-
     output * scale 1
 
     for_window [class=".*mpv$"] inhibit_idle visible
+
+    for_window [title="Picture in picture"] floating enable
 
     set $mod Mod4
 
@@ -120,29 +121,31 @@
     bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 
 
-    set $cyan #00877c
-    set $darkgray #222222
     set $black #000000
     set $white #ffffff
     set $gray #333333
-    set $green #00ff00
-    set $red #ff0000
-    set $orange #873200
-    set $blue #6c0094
-    set $gray-bg #595959
-    set $gray-fg #bfbfbf
+    set $darkgray #222222
     set $lightgray #777777
-    set $inactive-bg $gray-bg
-    set $active-fg $darkgray
-    set $active-bg $darkgray
 
+    set $border $black
+    set $background $black
+    set $text $lightgray
+    set $indicator $black
+    set $child_border $black
+    client.unfocused $border $background $text $indicator $child_border
+    set $border $black
+    set $background $darkgray
+    set $text $white
+    set $indicator $black
+    set $child_border $black
+    client.focused $border $background $text $indicator $child_border
+    set $border $black
+    set $background $black
+    set $text $gray
+    set $indicator $black
+    set $child_border $black
+    client.focused_inactive $border $background $text $indicator $child_border
 
-    client.unfocused $black $black $lightgray $black $black
-    client.focused $darkgray $darkgray $white $darkgray $darkgray
-    client.focused_inactive $black $black $gray $black $black
-
-
-    default_border normal 5
 
     input "1133:45081:MX_Master_2S_Mouse" {
       accel_profile flat
@@ -156,7 +159,7 @@
       middle_emulation enabled
     }
 
-    font pango:Roboto Condensed Bold 18
+    font pango:Liberation Sans Bold 18
 
     bindsym F5 mode "default"
 
