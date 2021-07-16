@@ -5,20 +5,20 @@ let
 
   packages = with pkgs; [
     # chromium
-    # kotakogram-desktop
     # libreoffice-fresh
     # torbrowser
     (callPackage ./packages/colorpicker.nix {})
-    (callPackage ./packages/pushover.nix { user = builtins.getEnv "PUSHOVER_USER"; token = builtins.getEnv "PUSHOVER_TOKEN"; })
+    (callPackage ./packages/pushover.nix {
+      user = builtins.getEnv "PUSHOVER_USER";
+      token = builtins.getEnv "PUSHOVER_TOKEN";
+    })
     (callPackage ./packages/zprint.nix {})
-    (
-      # moreutils parallel conflicts with GNU parallel
-      lib.overrideDerivation pkgs.moreutils (attrs: {
-        postInstall =
-          attrs.postInstall + "\n" +
-          "rm $out/bin/parallel $out/share/man/man1/parallel.1";
-      })
-    )
+    # moreutils parallel conflicts with GNU parallel
+    (lib.overrideDerivation pkgs.moreutils (attrs: {
+      postInstall =
+        attrs.postInstall + "\n" +
+        "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+    }))
     acpi
     aria
     babashka

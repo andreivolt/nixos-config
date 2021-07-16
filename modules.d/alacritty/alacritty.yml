@@ -90,7 +90,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) monospace
     #   - (Windows) Consolas
-    family: Liberation Mono
+    family: Hack Nerd Font
 
     # The `style` can be specified to pick a specific face.
     # style: Regular
@@ -118,12 +118,12 @@ font:
     #style: Italic
 
   # Point size
-  size: 22
+  size: 24
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.
   offset:
-    x: 0
+    x: -1
     y: -3
 
   # Glyph offset determines the locations of the glyphs within their cells with
@@ -157,7 +157,7 @@ colors:
   # Default colors
   primary:
     background: '0x000000'
-    foreground: '0xdddddd'
+    foreground: '0xffffff'
 
     # Bright and dim foreground colors
     #

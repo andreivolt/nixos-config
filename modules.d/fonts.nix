@@ -10,5 +10,7 @@
     google-fonts
     nerdfonts
     jetbrains-mono
+    d2coding
+    proggyfonts
   ];
 }
