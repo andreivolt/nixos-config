@@ -204,6 +204,7 @@ in {
         { name = "spell-ro"; }
         { name = "supertab"; }
         { name = "surround"; }
+        { name = "vim-grepper"; }
         { name = "vim-autoclose"; }
         { name = "vim-better-whitespace"; }
         { name = "vim-bracketed-paste"; }

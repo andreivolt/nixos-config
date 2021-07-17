@@ -41,6 +41,8 @@
         timeout 7200 'systemctl suspend' \
         before-sleep '$lock'
 
+    exec mako
+
     output * background #000000 solid_color
     output * scale 1
 
@@ -69,6 +71,9 @@
     bindsym $mod+p exec $menu
 
     bindsym $mod+q reload
+
+    bindsym $mod+i exec /home/avo/gdrive/colortemp up
+    bindsym $mod+o exec /home/avo/gdrive/colortemp down
 
     bindsym $mod+Tab focus right
     bindsym $mod+Shift+Tab focus left

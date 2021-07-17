@@ -3,10 +3,9 @@
 let
   theme = import ./modules.d/theme.nix;
 
+  font = "Ubuntu";
+
   packages = with pkgs; [
-    # chromium
-    # libreoffice-fresh
-    # torbrowser
     (callPackage ./packages/colorpicker.nix {})
     (callPackage ./packages/pushover.nix {
       user = builtins.getEnv "PUSHOVER_USER";
@@ -14,11 +13,11 @@ let
     })
     (callPackage ./packages/zprint.nix {})
     # moreutils parallel conflicts with GNU parallel
-    (lib.overrideDerivation pkgs.moreutils (attrs: {
-      postInstall =
-        attrs.postInstall + "\n" +
+    (lib.overrideDerivation moreutils (attrs: {
+      postInstall = attrs.postInstall + "\n" +
         "rm $out/bin/parallel $out/share/man/man1/parallel.1";
     }))
+    # torbrowser
     acpi
     aria
     babashka
@@ -56,6 +55,7 @@ let
     lastpass-cli
     libarchive # bsdtar
     libnotify
+    libreoffice-fresh
     lsof
     mediainfo
     mosh
@@ -95,13 +95,13 @@ let
     telnet
     tmate
     tree
-    ungoogled-chromium
+    ungoogled-chromium # or chromium
     unzip
     usbutils
     vlc
     wf-recorder
     wget
-    with-shell
+    with-shell # cd inside commands
     xdg_utils
     xfce.thunar
     xurls
@@ -119,10 +119,8 @@ in {
     ./modules.d/adb.nix
     ./modules.d/adblock.nix
     ./modules.d/alacritty/alacritty.nix
-    ./modules.d/audio.nix
     ./modules.d/cloudflare-dns.nix
     ./modules.d/docker.nix
-    ./modules.d/readline/inputrc.nix
     ./modules.d/firefox.nix
     ./modules.d/fonts.nix
     ./modules.d/fzf.nix
@@ -133,9 +131,12 @@ in {
     ./modules.d/low-bat-suspend.nix
     ./modules.d/map-test-tld-to-localhost.nix
     ./modules.d/npm.nix
+    ./modules.d/pipewire.nix
+    ./modules.d/readline/inputrc.nix
     ./modules.d/ripgrep.nix
     ./modules.d/sway.nix
     ./modules.d/tor.nix
+    ./modules.d/command-not-found.nix
     ./modules.d/vim.nix
   ];
 
@@ -157,14 +158,14 @@ in {
 
   hardware.opengl.enable = true;
 
-  nix.buildCores = 0;
   nix.gc.automatic = true;
   nix.optimise.automatic = true;
-  nix.useSandbox = false;
 
-  users.users.avo.isNormalUser = true;
-  users.users.avo.shell = pkgs.zsh;
-  users.users.avo.extraGroups = [ "wheel" ];
+  users.users.avo = {
+    isNormalUser = true;
+    shell = pkgs.zsh;
+    extraGroups = [ "wheel" ];
+  };
 
   security.sudo.wheelNeedsPassword = false;
 
@@ -176,113 +177,146 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
-  environment.variables.GREP_COLOR = "1";
-
-  environment.variables.LESS = ''
-    --RAW-CONTROL-CHARS \
-    --ignore-case \
-    --no-init \
-    --quit-if-one-screen\
-  '';
-
-  environment.variables.LS_COLORS = "di=0;35:fi=0;37:ex=0;96:ln=0;37";
-
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
   home-manager.users.avo = { pkgs, config, ... }: {
     gtk.enable = true;
     gtk.theme.name = "dark";
     # gtk.theme.package = pkgs.gnome-breeze;
-    gtk.font.name = "Source Sans Pro 8";
+    gtk.font.name = "${font} 8";
 
     home.sessionPath = [ "$HOME/.local/bin" ];
 
-    home.sessionVariables.BROWSER = "google-chrome-stable";
-    home.sessionVariables.EDITOR = "vim";
-    home.sessionVariables.PAGER = "less";
+    # notifications
+    programs.mako = {
+      enable = true;
+      width = 500;
+      backgroundColor = "#00000050";
+      font = "${font} 30";
+      layer = "overlay";
+      borderSize = 0;
+      margin = "20";
+      padding = "20";
+    };
+
+    home.sessionVariables = {
+      BROWSER = "google-chrome-stable";
+      EDITOR = "vim";
+      PAGER = "less";
+      LC_COLLATE = "C";
+      GREP_COLOR = "1"; # color matches yellow
+      LESS = ''
+        --RAW-CONTROL-CHARS \
+        --ignore-case \
+        --no-init \
+        --quit-if-one-screen\
+      '';
+      LS_COLORS = ''
+        di=0;35:\
+        fi=0;37:\
+        ex=0;96:\
+        ln=0;37\
+      '';
+    };
 
     home.packages = packages;
 
-    programs.direnv.enable = true;
-    programs.direnv.enableZshIntegration = true;
+    programs.direnv = {
+      enable = true;
+      enableZshIntegration = true;
+    };
 
-    programs.zsh.shellAliases.ls = ''
-      LC_COLLATE=C \
-        ls \
-          --human-readable \
-          --indicator-style=slash \
-    '';
-    programs.zsh.shellAliases.l = "ls -1";
-    programs.zsh.shellAliases.la = "ls -a";
-    programs.zsh.shellAliases.ll = "ls -l";
+    programs.zsh = {
+      enable = true;
 
-    programs.zsh.shellAliases.grep = "grep --color=auto";
-    programs.zsh.shellAliases.vi = "vim";
+      enableCompletion = true;
 
-    programs.zsh.enable = true;
+      shellGlobalAliases = {
+        H = "| head";
+        T = "| tail";
+        C = "| wc -l";
+        G = "| grep";
+        L = "| less";
+        M = "| most";
+        LL = "2>&1 | less";
+        CA = "2>&1 | cat -A";
+        NE = "2> /dev/null";
+        NUL = "> /dev/null 2>&1";
+      };
 
-    programs.zsh.enableCompletion = true;
+      shellAliases = {
+        ls = "ls --human-readable --indicator-style=slash";
+        l = "ls -1";
+        la = "ls -a";
+        ll = "ls -l";
+        grep = "grep --color=auto";
+        vi = "vim";
+      };
 
-    programs.zsh.plugins = [
-      {
-        name = "zsh-nix-shell";
-        file = "nix-shell.plugin.zsh";
-        src = pkgs.fetchFromGitHub {
-          owner = "chisui";
-          repo = "zsh-nix-shell";
-          rev = "v0.2.0";
-          sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
-        };
-      }
-      {
-        name = "fast-syntax-highlighting";
-        file = "fast-syntax-highlighting.plugin.zsh";
-        src = pkgs.fetchFromGitHub {
-          owner = "zdharma";
-          repo = "fast-syntax-highlighting";
-          rev = "5ed7c0fa0be5e456a131a2378af10b5c03131a7e";
-          sha256 = "0g3vzaixwjl9rjxc8waq1458kqjg8hsgsaz3ln6a1jm8cd7qca50";
-        };
-      }
-      {
-        name = "autopair";
-        file = "autopair.zsh";
-        src = pkgs.fetchFromGitHub {
-          owner = "hlissner";
-          repo = "zsh-autopair";
-          rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
-          sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
-        };
-      }
-    ];
+      plugins = [
+        {
+          name = "zsh-nix-shell";
+          file = "nix-shell.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "chisui";
+            repo = "zsh-nix-shell";
+            rev = "v0.2.0";
+            sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
+          };
+        }
+        {
+          name = "fast-syntax-highlighting";
+          file = "fast-syntax-highlighting.plugin.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "zdharma";
+            repo = "fast-syntax-highlighting";
+            rev = "5ed7c0fa0be5e456a131a2378af10b5c03131a7e";
+            sha256 = "0g3vzaixwjl9rjxc8waq1458kqjg8hsgsaz3ln6a1jm8cd7qca50";
+          };
+        }
+        {
+          name = "autopair";
+          file = "autopair.zsh";
+          src = pkgs.fetchFromGitHub {
+            owner = "hlissner";
+            repo = "zsh-autopair";
+            rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
+            sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
+          };
+        }
+      ];
 
-    programs.zsh.initExtra = ''
-      setopt \
-        case_glob \
-        extended_glob \
-        glob_complete
+      history = rec {
+        save = size;
+        size = 99999;
+        share = true;
+        ignoreSpace = true;
+        ignoreDups = true;
+        extended = true;
+        path = ".cache/zsh_history";
+      };
 
-      source ${./modules.d/zsh/zsh.d/vi.zsh}
+      initExtra = ''
+        setopt \
+          case_glob \
+          extended_glob \
+          glob_complete
 
-      zstyle ':completion:*' menu select
-      zstyle ':completion:*' rehash true
+        setopt hist_reduce_blanks
 
-      source ${pkgs.fzf}/share/fzf/completion.zsh
+        zstyle ':completion:*' menu select
 
-      HISTSIZE=99999 SAVEHIST=$HISTSIZE
-      HISTFILE=~/.cache/zsh_history
-      setopt \
-        extended_history \
-        hist_ignore_all_dups \
-        hist_ignore_space \
-        hist_reduce_blanks \
-        share_history
+        # automatically update PATH
+        zstyle ':completion:*' rehash true
 
-      source ${pkgs.fzf}/share/fzf/key-bindings.zsh
-      source ${./modules.d/zsh/zsh.d/prompt.zsh}
-      source ${./modules.d/zsh/zsh.d/global-aliases.zsh}
-      source ${./modules.d/zsh/zsh.d/terminal-title.zsh}
-    '';
+        source ${./modules.d/zsh/zsh.d/prompt.zsh}
+        source ${./modules.d/zsh/zsh.d/terminal-title.zsh}
+        source ${./modules.d/zsh/zsh.d/vi.zsh}
+
+        source ${pkgs.fzf}/share/fzf/completion.zsh
+        source ${pkgs.fzf}/share/fzf/key-bindings.zsh
+      '';
+    };
   };
 
   services.upower.enable = true;

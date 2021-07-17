@@ -13,6 +13,7 @@
         dc = "diff --cached";
         di = "diff";
         st = "status --short";
+        ups = "!git add --update && git commit --amend --reuse-message HEAD && git push --force";
       };
       # core.pager = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less -X";
       push.default = "current";
