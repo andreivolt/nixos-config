@@ -5,8 +5,6 @@ let
 
   font = "Ubuntu";
 
-  browser = "google-chrome-stable";
-
   packages = with pkgs; [
     (callPackage ./packages/colorpicker.nix {})
     (callPackage ./packages/pushover.nix {
@@ -136,7 +134,7 @@ in {
     ./modules.d/hardware-video-acceleration.nix
     ./modules.d/insync.nix
     ./modules.d/kdeconnect.nix
-    ./modules.d/low-bat-suspend.nix
+    ./modules.d/battery-suspend.nix
     ./modules.d/map-test-tld-to-localhost.nix
     ./modules.d/npm.nix
     ./modules.d/pipewire.nix
@@ -193,7 +191,10 @@ in {
     # gtk.theme.package = pkgs.gnome-breeze;
     gtk.font.name = "${font} 8";
 
-    home.sessionPath = [ "$HOME/.local/bin" ];
+    home.sessionPath = [
+      "$HOME/.local/bin"
+      (builtins.toString ./bin)
+    ];
 
     dconf.settings = {
       "org/gnome/desktop/interface" = {
@@ -214,9 +215,9 @@ in {
     };
 
     home.sessionVariables = {
-      BROWSER = browser;
+      BROWSER = "google-chrome-stable";
       EDITOR = "vim";
-      PAGER = "less";
+      PAGER = "page";
       LC_COLLATE = "C";
       GREP_COLOR = "1"; # color matches yellow
       LESS = ''
@@ -246,7 +247,7 @@ in {
         "image/jpeg" = "imv.desktop";
         "image/png" = "imv.desktop";
         "text/html" = "google-chrome.desktop";
-        "text/plain" = "nvim.desktop";
+        "text/plain" = "neovide.desktop";
         "x-scheme-handler/http" = "google-chrome.desktop";
       };
     };
@@ -345,11 +346,13 @@ in {
   };
 
   services.upower.enable = true;
-  services.batteryNotifier = {
+  services.battery-suspend = {
     enable = true;
     notifyCapacity = 40;
     suspendCapacity = 10;
   };
 
   programs.dconf.enable = true;
+
+  services.sshd.enable = true;
 }

@@ -171,6 +171,9 @@ let
     nnoremap <silent> <leader>b :Buffers<CR>
     nnoremap <silent> <leader>f :FuzzyOpen<CR>
 
+
+    map <silent> <leader>g :Goyo<CR>
+
     set termguicolors
 
     for i in [ 'Keyword', 'Boolean', 'Character', 'Comment', 'Conceal', 'Conditional', 'Constant', 'Cursor', 'Cursor2', 'CursorLine', 'Debug', 'Define', 'Delimiter', 'Directory', 'Error', 'ErrorMsg', 'Exception', 'Float', 'FoldColumn', 'Function', 'Identifier', 'Ignore', 'Include', 'IncSearch', 'Keyword', 'Label', 'Macro', 'MatchParen', 'Normal', 'Number', 'Operator', 'PreCondit', 'PreProc', 'Repeat', 'Search', 'SignColumn', 'Special', 'SpecialChar', 'SpecialComment', 'SpellBad', 'Statement', 'StorageClass', 'String', 'Structure', 'Tag', 'Title', 'Todo', 'Type', 'Typedef', 'Underlined', 'VertSplit', 'WarningMsg' ]

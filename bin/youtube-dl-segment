@@ -1,0 +1,21 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -i bash -p ffmpeg youtube-dl
+
+url=$1
+start=$2 end=$3
+
+
+noverbose='-hide_banner -loglevel error'
+
+ffmpeg \
+  $noverbose \
+  -ss $start -to $end \
+  -i $(youtube-dl -f 22 --get-url $url) \
+  -c copy \
+  -f matroska - \
+| ffmpeg -i - \
+  $noverbose \
+  -c:v libx265 -crf 28 \
+  -preset ultrafast \
+  -movflags +faststart \
+  -f matroska -

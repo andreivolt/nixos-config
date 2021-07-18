@@ -1,0 +1,24 @@
+#!/usr/bin/env bb
+
+(require '[clojure.java.io :as io])
+(require '[babashka.process :refer [process]])
+
+(def f (io/file "/tmp/colortemp"))
+
+(def MAX 6500)
+(def MIN 1000)
+(def INCR 100)
+
+(def new
+  (let [curr (if (.exists f) (Integer/parseInt (slurp f)) MIN)]
+    (max (min ((resolve ({"up" '+, "down" '-} (first *command-line-args*)))
+                curr
+                INCR)
+              MAX)
+         MIN)))
+
+@(process ["pkill" "gammastep"])
+(process ["gammastep" '-O new])
+(process ["notify-send" new '--expire-time 500])
+
+(spit (io/file f) new)

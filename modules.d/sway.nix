@@ -73,8 +73,8 @@
 
     bindsym $mod+q reload
 
-    bindsym $mod+i exec /home/avo/gdrive/colortemp up
-    bindsym $mod+o exec /home/avo/gdrive/colortemp down
+    bindsym $mod+i exec colortemp up
+    bindsym $mod+o exec colortemp down
 
     bindsym $mod+Tab focus right
     bindsym $mod+Shift+Tab focus left
