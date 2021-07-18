@@ -2,6 +2,27 @@
 
 let
   theme = import ./theme.nix;
+
+  python-neovim = with pkgs.python3Packages; buildPythonPackage rec {
+    pname = "neovim";
+    version = "0.3.1";
+
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "03znibklxyyqx2w05l2r8bcff2qp8kzwbifbvpkg8fs3njjyg856";
+    };
+
+    nativeBuildInputs = [
+      pynvim
+    ];
+
+    # Tests require pkgs.neovim,
+    # which we cannot add because of circular dependency.
+    doCheck = false;
+
+    # propagatedBuildInputs = [ msgpack ];
+  };
+
   plugins = with pkgs; {
     parinfer-rust = vimUtils.buildVimPlugin {
       name = "parinfer";
@@ -129,8 +150,8 @@ let
     set noruler
     set laststatus=1 noshowmode
 
-    " hide messages after 2s
-    set updatetime=2000 | autocmd CursorHold * :echo
+    " hide messages after 1.5s
+    set updatetime=1500 | autocmd CursorHold * :echo
 
     let mapleader = "\<Space>"
     let maplocalleader = ","
@@ -158,7 +179,7 @@ let
 
     hi Comment gui=italic guifg=${black_fg}
     hi Cursor guibg=${red_fg}
-    hi Cursor2 guibg=${blue_fg}
+    hi Cursor2 guibg=${green_fg}
     hi Delimiter gui=bold
     hi EndOfBuffer guifg=${background}
     hi Folded guibg=${white_bg} guifg=${white_fg}
@@ -186,9 +207,14 @@ let
     hi NERDTreeClosable ctermfg=8 guifg=${black_bg} | hi NERDTreeOpenable ctermfg=8 guifg=${black_bg}
 
     set autoread
+
+    set title
+
+    set guifont=Ubuntu\ Mono:h36
+    let g:neovide_cursor_animation_length=0.02
   '';
 in {
-  environment.systemPackages = [ (with pkgs; neovim.override {
+  environment.systemPackages = [ python-neovim (with pkgs; neovim.override {
     vimAlias = true;
     configure.vam = {
       knownPlugins = vimPlugins // plugins;
@@ -211,6 +237,7 @@ in {
         { name = "vim-eunuch"; }
         { name = "vim-indent-guides"; }
         { name = "vim-indent-object"; }
+        { name = "goyo"; }
         { name = "vim-nix"; }
         { name = "vim-iced"; }
       ];

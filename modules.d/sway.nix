@@ -12,6 +12,7 @@
     gebaar-libinput
     grim
     mako
+    wev
     slurp
     swayidle
     swaylock
@@ -35,7 +36,7 @@
   environment.etc."sway/config".text = ''
     set $lock swaylock -f -c 000000
 
-    exec_always swayidle -w \
+    exec swayidle -w \
         timeout 1200 '$lock' \
         timeout 180 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
         timeout 7200 'systemctl suspend' \
@@ -118,13 +119,15 @@
 
     input * xkb_options ctrl:nocaps
 
-    bindsym F1 exec pulseaudio-ctl mute
-    bindsym F2 exec pulseaudio-ctl down 1
-    bindsym F3 exec pulseaudio-ctl up 1
+    bindsym F1 exec pamixer --toggle-mute
+    bindsym F2 exec pamixer --decrease 1 && notify-send --expire-time 1000 $(pamixer --get-volume)
+    bindsym F3 exec pamixer --increase 1 && notify-send --expire-time 1000 $(pamixer --get-volume)
     bindsym F4 exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-    bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 
+    bindsym $mod+d exec notify-send --expire-time 2000 $(date +%H:%M)
+
+    bindsym Home exec playerctl previous
+    bindsym End exec playerctl next
 
     set $black #000000
     set $white #ffffff

@@ -84,7 +84,7 @@ scrolling:
 font:
   normal:
     family: Ubuntu Mono Nerd Font
-  size: 24
+  size: 26
   offset:
     x: -1
     y: -2
