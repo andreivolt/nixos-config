@@ -2,7 +2,7 @@
 
 {
   home-manager.users.avo = { pkgs, config, ... }: {
-    home.file.".gitconfig".text = lib.generators.toINI {} {
+    home.file.".gitconfig".text = lib.generators.toINI { } {
       user.name = "Andrei Volt";
       user.email = "andrei@avolt.net";
       alias = {
@@ -13,7 +13,8 @@
         dc = "diff --cached";
         di = "diff";
         st = "status --short";
-        ups = "!git add --update && git commit --amend --reuse-message HEAD && git push --force";
+        ups =
+          "!git add --update && git commit --amend --reuse-message HEAD && git push --force";
       };
       # core.pager = "${pkgs.gitAndTools.diff-so-fancy}/bin/diff-so-fancy | less -X";
       push.default = "current";
