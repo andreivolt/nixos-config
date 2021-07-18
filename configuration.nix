@@ -5,6 +5,8 @@ let
 
   font = "Ubuntu";
 
+  browser = "google-chrome-stable";
+
   packages = with pkgs; [
     (callPackage ./packages/colorpicker.nix {})
     (callPackage ./packages/pushover.nix {
@@ -23,12 +25,14 @@ let
     babashka
     bat
     bc
+    bluetooth_battery
     chromedriver
     clipman
     clojure
     curl
     delta
     dnsutils
+    dogdns
     dtach
     dtrx
     ffmpeg-full # -full for ffplay
@@ -46,6 +50,7 @@ let
     gnupg
     google-chrome
     google-cloud-sdk
+    gphotos-sync
     graphicsmagick
     httpie
     iftop
@@ -76,9 +81,11 @@ let
     parallel
     patchelf
     pavucontrol
+    playerctl
     protonvpn-cli
     psmisc
     pup
+    puppeteer-cli
     python3
     qemu
     recode
@@ -118,6 +125,7 @@ in {
     # ./modules.d/curl.nix
     ./modules.d/adb.nix
     ./modules.d/adblock.nix
+    ./modules.d/ipfs.nix
     ./modules.d/alacritty/alacritty.nix
     ./modules.d/cloudflare-dns.nix
     ./modules.d/docker.nix
@@ -187,6 +195,12 @@ in {
 
     home.sessionPath = [ "$HOME/.local/bin" ];
 
+    dconf.settings = {
+      "org/gnome/desktop/interface" = {
+        scaling-factor = 2;
+      };
+    };
+
     # notifications
     programs.mako = {
       enable = true;
@@ -200,7 +214,7 @@ in {
     };
 
     home.sessionVariables = {
-      BROWSER = "google-chrome-stable";
+      BROWSER = browser;
       EDITOR = "vim";
       PAGER = "less";
       LC_COLLATE = "C";
@@ -224,6 +238,17 @@ in {
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
+    };
+
+    xdg.configFile."mimeapps.list".text = lib.generators.toINI {} {
+      "Default Applications" = {
+        "application/pdf" = "mupdf.desktop";
+        "image/jpeg" = "imv.desktop";
+        "image/png" = "imv.desktop";
+        "text/html" = "google-chrome.desktop";
+        "text/plain" = "nvim.desktop";
+        "x-scheme-handler/http" = "google-chrome.desktop";
+      };
     };
 
     programs.zsh = {
@@ -325,4 +350,6 @@ in {
     notifyCapacity = 40;
     suspendCapacity = 10;
   };
+
+  programs.dconf.enable = true;
 }
