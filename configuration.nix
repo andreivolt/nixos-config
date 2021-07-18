@@ -5,21 +5,25 @@ let
 
   font = "Ubuntu";
 
+  user = "avo";
+
   packages = with pkgs; [
-    (callPackage ./packages/colorpicker.nix {})
+    (callPackage ./packages/colorpicker.nix { })
     (callPackage ./packages/pushover.nix {
       user = builtins.getEnv "PUSHOVER_USER";
       token = builtins.getEnv "PUSHOVER_TOKEN";
     })
-    (callPackage ./packages/zprint.nix {})
+    (callPackage ./packages/zprint.nix { })
     # moreutils parallel conflicts with GNU parallel
     (lib.overrideDerivation moreutils (attrs: {
-      postInstall = attrs.postInstall + "\n" +
-        "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+      postInstall = attrs.postInstall + "\n"
+        + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
     }))
     # torbrowser
     acpi
     aria
+    awscli
+    pv
     babashka
     bat
     bc
@@ -28,6 +32,33 @@ let
     clipman
     clojure
     curl
+
+    aspell
+    aspellDicts.en
+    dos2unix
+    fuse
+    gitAndTools.tig
+    gnumake
+    haskellPackages.ShellCheck
+    ncdu
+    neomutt
+    ngrok
+    pwgen
+    ranger
+    rmlint
+    skype
+    speedtest_cli
+    sqlite
+    sshfsFuse
+    sshuttle
+    unrar
+    vifm
+    wgetpaste
+    wine
+    wireshark
+    entr
+    abduco
+
     delta
     dnsutils
     dogdns
@@ -118,14 +149,15 @@ let
 in {
   imports = [
     ./hardware-configuration.nix
-    (import "${builtins.fetchTarball https://github.com/rycee/home-manager/archive/master.tar.gz}/nixos")
-
+    (import "${builtins.fetchTarball "https://github.com/rycee/home-manager/archive/master.tar.gz"}/nixos")
     # ./modules.d/curl.nix
     ./modules.d/adb.nix
     ./modules.d/adblock.nix
-    ./modules.d/ipfs.nix
     ./modules.d/alacritty/alacritty.nix
+    ./modules.d/hidpi.nix
+    ./modules.d/battery-suspend.nix
     ./modules.d/cloudflare-dns.nix
+    ./modules.d/command-not-found.nix
     ./modules.d/docker.nix
     ./modules.d/firefox.nix
     ./modules.d/fonts.nix
@@ -133,8 +165,9 @@ in {
     ./modules.d/git.nix
     ./modules.d/hardware-video-acceleration.nix
     ./modules.d/insync.nix
+    ./modules.d/ipfs.nix
     ./modules.d/kdeconnect.nix
-    ./modules.d/battery-suspend.nix
+    ./modules.d/locate.nix
     ./modules.d/map-test-tld-to-localhost.nix
     ./modules.d/npm.nix
     ./modules.d/pipewire.nix
@@ -142,12 +175,11 @@ in {
     ./modules.d/ripgrep.nix
     ./modules.d/sway.nix
     ./modules.d/tor.nix
-    ./modules.d/command-not-found.nix
     ./modules.d/vim.nix
   ];
 
   system.autoUpgrade.enable = true;
-  system.autoUpgrade.channel = https://nixos.org/channels/nixos-unstable;
+  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
   system.stateVersion = "19.09";
 
   services.devmon.enable = true; # automount removable devices
@@ -196,12 +228,6 @@ in {
       (builtins.toString ./bin)
     ];
 
-    dconf.settings = {
-      "org/gnome/desktop/interface" = {
-        scaling-factor = 2;
-      };
-    };
-
     # notifications
     programs.mako = {
       enable = true;
@@ -241,13 +267,14 @@ in {
       enableZshIntegration = true;
     };
 
-    xdg.configFile."mimeapps.list".text = lib.generators.toINI {} {
+    xdg.configFile."mimeapps.list".text = lib.generators.toINI { } {
       "Default Applications" = {
         "application/pdf" = "mupdf.desktop";
         "image/jpeg" = "imv.desktop";
         "image/png" = "imv.desktop";
         "text/html" = "google-chrome.desktop";
         "text/plain" = "neovide.desktop";
+        "video/mp4" = "mpv.desktop";
         "x-scheme-handler/http" = "google-chrome.desktop";
       };
     };
@@ -263,7 +290,6 @@ in {
         C = "| wc -l";
         G = "| grep";
         L = "| less";
-        M = "| most";
         LL = "2>&1 | less";
         CA = "2>&1 | cat -A";
         NE = "2> /dev/null";
@@ -352,7 +378,7 @@ in {
     suspendCapacity = 10;
   };
 
-  programs.dconf.enable = true;
-
   services.sshd.enable = true;
+
+  services.interception-tools.enable = true;
 }
