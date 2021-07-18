@@ -3,14 +3,14 @@
 with lib;
 
 let
-  cfg = config.services.batteryNotifier;
+  cfg = config.services.battery-suspend;
 in {
   options = {
-    services.batteryNotifier = {
+    services.battery-suspend = {
       enable = mkOption {
         default = false;
         description = ''
-          Whether to enable battery notifier.
+          Whether to enable low battery suspend.
         '';
       };
       device = mkOption {
@@ -35,14 +35,14 @@ in {
   };
 
   config = mkIf cfg.enable {
-    systemd.user.timers."lowbatt" = {
+    systemd.user.timers."battery-suspend" = {
       description = "check battery level";
       timerConfig.OnBootSec = "1m";
       timerConfig.OnUnitInactiveSec = "1m";
-      timerConfig.Unit = "lowbatt.service";
+      timerConfig.Unit = "battery-suspend.service";
       wantedBy = ["timers.target"];
     };
-    systemd.user.services."lowbatt" = {
+    systemd.user.services."battery-suspend" = {
       description = "battery level notifier";
       serviceConfig.PassEnvironment = "DISPLAY";
       script = ''
