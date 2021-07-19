@@ -176,7 +176,7 @@ in {
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
-    ./modules/sway.nix
+    ./modules/sway/sway.nix
     ./modules/tor.nix
     ./modules/vim.nix
     ./modules/zsh/fzf.nix
@@ -190,8 +190,10 @@ in {
 
   system.stateVersion = "19.09";
 
-  nix.gc.automatic = true;
-  nix.optimise.automatic = true;
+  nix = {
+    gc.automatic = true;
+    optimise.automatic = true;
+  };
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -226,27 +228,12 @@ in {
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
   home-manager.users.avo = { pkgs, config, ... }: {
-    gtk.enable = true;
-    gtk.theme.name = "dark";
-    # gtk.theme.package = pkgs.gnome-breeze;
-    gtk.font.name = "${font} 8";
+    home.packages = packages;
 
     home.sessionPath = [
       "$HOME/.local/bin"
       (builtins.toString ./bin)
     ];
-
-    # notifications
-    programs.mako = {
-      enable = true;
-      width = 500;
-      backgroundColor = "#00000050";
-      font = "${font} 30";
-      layer = "overlay";
-      borderSize = 0;
-      margin = "20";
-      padding = "20";
-    };
 
     home.sessionVariables = {
       BROWSER = "google-chrome-stable";
@@ -268,11 +255,16 @@ in {
       '';
     };
 
-    home.packages = packages;
-
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
+    };
+
+    gtk = {
+      enable = true;
+      theme.name = "dark";
+      # gtk.theme.package = pkgs.gnome-breeze;
+      font.name = "${font} 8";
     };
 
     xdg.configFile."mimeapps.list".text = lib.generators.toINI { } {
@@ -346,16 +338,6 @@ in {
         }
       ];
 
-      history = rec {
-        save = size;
-        size = 99999;
-        share = true;
-        ignoreSpace = true;
-        ignoreDups = true;
-        extended = true;
-        path = ".cache/zsh_history";
-      };
-
       initExtra = ''
         setopt \
           case_glob \
@@ -369,9 +351,9 @@ in {
         # automatically update PATH
         zstyle ':completion:*' rehash true
 
-        source ${./modules/zsh/zsh.d/prompt.zsh}
+        source ${./modules/zsh/prompt.zsh}
 
-        source ${./modules/zsh/zsh.d/terminal-title.zsh}
+        source ${./modules/zsh/terminal-title.zsh}
       '';
     };
   };

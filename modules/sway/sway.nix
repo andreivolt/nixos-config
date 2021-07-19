@@ -1,6 +1,12 @@
 { lib, pkgs, ... }:
 
-{
+let
+  font = "Ubuntu";
+in {
+  imports = [
+    ./service.nix
+  ];
+
   environment.pathsToLink = [ "/libexec" ];
 
   # fix "failed to take device"
@@ -19,6 +25,19 @@
     wl-clipboard
     xwayland
   ];
+
+  # notifications
+  home-manager.users.avo.programs.mako = {
+    enable = true;
+    width = 500;
+    backgroundColor = "#00000050";
+    font = "${font} 30";
+    layer = "overlay";
+    borderSize = 0;
+    margin = "20";
+    padding = "20";
+  };
+
   programs.sway.extraSessionCommands = ''
     export XKB_DEFAULT_LAYOUT=fr
   '';
@@ -237,8 +256,7 @@
 
   environment.systemPackages = with pkgs; [
     polkit_gnome
-    (
-    pkgs.writeTextFile {
+    (pkgs.writeTextFile {
       name = "startsway";
       destination = "/bin/startsway";
       executable = true;
@@ -250,6 +268,6 @@
         # then start the service
         exec systemctl --user start sway2.service
       '';
-    }
-  ) ];
+    })
+  ];
 }
