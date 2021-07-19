@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 
 let
-  theme = import ./modules.d/theme.nix;
+  theme = import ./modules/theme.nix;
 
   font = "Ubuntu";
 
@@ -149,40 +149,49 @@ let
 in {
   imports = [
     ./hardware-configuration.nix
+
     (import "${builtins.fetchTarball "https://github.com/rycee/home-manager/archive/master.tar.gz"}/nixos")
-    # ./modules.d/curl.nix
-    ./modules.d/adb.nix
-    ./modules.d/adblock.nix
-    ./modules.d/alacritty/alacritty.nix
-    ./modules.d/hidpi.nix
-    ./modules.d/battery-suspend.nix
-    ./modules.d/cloudflare-dns.nix
-    ./modules.d/command-not-found.nix
-    ./modules.d/docker.nix
-    ./modules.d/firefox.nix
-    ./modules.d/fonts.nix
-    ./modules.d/fzf.nix
-    ./modules.d/git.nix
-    ./modules.d/hardware-video-acceleration.nix
-    ./modules.d/insync.nix
-    ./modules.d/ipfs.nix
-    ./modules.d/kdeconnect.nix
-    ./modules.d/locate.nix
-    ./modules.d/map-test-tld-to-localhost.nix
-    ./modules.d/npm.nix
-    ./modules.d/pipewire.nix
-    ./modules.d/readline/inputrc.nix
-    ./modules.d/ripgrep.nix
-    ./modules.d/sway.nix
-    ./modules.d/tor.nix
-    ./modules.d/vim.nix
+
+    ./modules/adb.nix
+    ./modules/adblock.nix
+    ./modules/alacritty/alacritty.nix
+    ./modules/battery-suspend.nix
+    ./modules/cloudflare-dns.nix
+    ./modules/command-not-found.nix
+    ./modules/curl.nix
+    ./modules/docker.nix
+    ./modules/firefox.nix
+    ./modules/fonts.nix
+    ./modules/fzf.nix
+    ./modules/git.nix
+    ./modules/hardware-video-acceleration.nix
+    ./modules/hidpi.nix
+    ./modules/insync.nix
+    ./modules/ipfs.nix
+    ./modules/kdeconnect.nix
+    ./modules/locate.nix
+    ./modules/map-test-tld-to-localhost.nix
+    ./modules/mpv.nix
+    ./modules/npm.nix
+    ./modules/pipewire.nix
+    ./modules/readline/inputrc.nix
+    ./modules/ripgrep.nix
+    ./modules/sway.nix
+    ./modules/tor.nix
+    ./modules/vim.nix
+    ./modules/zsh/fzf.nix
+    ./modules/zsh/vi.nix
   ];
 
-  system.autoUpgrade.enable = true;
-  system.autoUpgrade.channel = "https://nixos.org/channels/nixos-unstable";
+  system.autoUpgrade = {
+    enable = true;
+    channel = "https://nixos.org/channels/nixos-unstable";
+  };
+
   system.stateVersion = "19.09";
 
-  services.devmon.enable = true; # automount removable devices
+  nix.gc.automatic = true;
+  nix.optimise.automatic = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -196,8 +205,7 @@ in {
 
   hardware.opengl.enable = true;
 
-  nix.gc.automatic = true;
-  nix.optimise.automatic = true;
+  services.devmon.enable = true; # automount removable devices
 
   users.users.avo = {
     isNormalUser = true;
@@ -243,7 +251,7 @@ in {
     home.sessionVariables = {
       BROWSER = "google-chrome-stable";
       EDITOR = "vim";
-      PAGER = "page";
+      PAGER = "${pkgs.page}/bin/page";
       LC_COLLATE = "C";
       GREP_COLOR = "1"; # color matches yellow
       LESS = ''
@@ -361,17 +369,15 @@ in {
         # automatically update PATH
         zstyle ':completion:*' rehash true
 
-        source ${./modules.d/zsh/zsh.d/prompt.zsh}
-        source ${./modules.d/zsh/zsh.d/terminal-title.zsh}
-        source ${./modules.d/zsh/zsh.d/vi.zsh}
+        source ${./modules/zsh/zsh.d/prompt.zsh}
 
-        source ${pkgs.fzf}/share/fzf/completion.zsh
-        source ${pkgs.fzf}/share/fzf/key-bindings.zsh
+        source ${./modules/zsh/zsh.d/terminal-title.zsh}
       '';
     };
   };
 
   services.upower.enable = true;
+
   services.battery-suspend = {
     enable = true;
     notifyCapacity = 40;
@@ -379,6 +385,4 @@ in {
   };
 
   services.sshd.enable = true;
-
-  services.interception-tools.enable = true;
 }
