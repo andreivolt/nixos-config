@@ -79,7 +79,6 @@ let
     gnupg
     google-chrome
     google-cloud-sdk
-    gphotos-sync
     graphicsmagick
     httpie
     iftop
@@ -153,26 +152,26 @@ in {
     (import "${builtins.fetchTarball "https://github.com/rycee/home-manager/archive/master.tar.gz"}/nixos")
 
     ./modules/adb.nix
-    ./modules/adblock.nix
     ./modules/alacritty/alacritty.nix
     ./modules/battery-suspend.nix
     ./modules/cloudflare-dns.nix
     ./modules/command-not-found.nix
     ./modules/curl.nix
     ./modules/docker.nix
-    ./modules/firefox.nix
     ./modules/fonts.nix
     ./modules/fzf.nix
     ./modules/git.nix
     ./modules/hardware-video-acceleration.nix
     ./modules/hidpi.nix
+    ./modules/hosts-blocking.nix
     ./modules/insync.nix
     ./modules/ipfs.nix
     ./modules/kdeconnect.nix
+    ./modules/less.nix
     ./modules/locate.nix
     ./modules/map-test-tld-to-localhost.nix
     ./modules/mpv.nix
-    ./modules/npm.nix
+    ./modules/npm-global-packages.nix
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
@@ -195,13 +194,13 @@ in {
     optimise.automatic = true;
   };
 
+  nixpkgs.config.allowUnfree = true;
+
   i18n.defaultLocale = "en_US.UTF-8";
 
-  console.keyMap = "fr";
-
-  console.font = "latarcyrheb-sun32"; # hidpi in console
-
   time.timeZone = "Europe/Paris";
+
+  console.keyMap = "fr";
 
   hardware.bluetooth.enable = true;
 
@@ -223,11 +222,9 @@ in {
 
   networking.networkmanager.enable = true;
 
-  nixpkgs.config.allowUnfree = true;
-
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
-  home-manager.users.avo = { pkgs, config, ... }: {
+  home-manager.users.avo = { pkgs, ... }: {
     home.packages = packages;
 
     home.sessionPath = [
@@ -236,17 +233,11 @@ in {
     ];
 
     home.sessionVariables = {
-      BROWSER = "google-chrome-stable";
       EDITOR = "vim";
       PAGER = "${pkgs.page}/bin/page";
+      BROWSER = "google-chrome-stable";
       LC_COLLATE = "C";
       GREP_COLOR = "1"; # color matches yellow
-      LESS = ''
-        --RAW-CONTROL-CHARS \
-        --ignore-case \
-        --no-init \
-        --quit-if-one-screen\
-      '';
       LS_COLORS = ''
         di=0;35:\
         fi=0;37:\
@@ -284,6 +275,16 @@ in {
 
       enableCompletion = true;
 
+      history = rec {
+        save = size;
+        size = 99999;
+        share = true;
+        ignoreSpace = true;
+        ignoreDups = true;
+        extended = true;
+        path = ".cache/zsh_history";
+      };
+
       shellGlobalAliases = {
         H = "| head";
         T = "| tail";
@@ -297,15 +298,18 @@ in {
       };
 
       shellAliases = {
-        ls = "ls --human-readable --indicator-style=slash";
+        ls = ''ls \
+          --human-readable \
+          --indicator-style=slash
+        '';
         l = "ls -1";
         la = "ls -a";
         ll = "ls -l";
-        grep = "grep --color=auto";
+        grep = "grep --color";
         vi = "vim";
       };
 
-      plugins = [
+      plugins = with pkgs; [
         {
           name = "zsh-nix-shell";
           file = "nix-shell.plugin.zsh";

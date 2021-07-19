@@ -1,4 +1,6 @@
 {
+  console.font = "latarcyrheb-sun32";
+
   programs.dconf.enable = true;
 
   home-manager.users.avo.dconf.settings = {
