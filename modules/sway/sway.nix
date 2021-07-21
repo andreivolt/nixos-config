@@ -52,7 +52,16 @@ in {
   #   '';
   # };
 
-  environment.etc."sway/config".text = ''
+  environment.etc."sway/config".text = let
+    # display_width = 2560;
+    # display_height = 1600;
+    # scratchpad_height = builtins.floor (display_height / 1.5);
+    scratchpad_width = "1900";
+    scratchpad_height = "1100";
+    scratchpad_position_y = "90";
+    scratchpad_position_x = "300";
+    scratchpad_opacity = "0.75";
+  in ''
     set $lock swaylock -f -c 000000
 
     exec swayidle -w \
@@ -66,9 +75,13 @@ in {
     output * background #000000 solid_color
     output * scale 1
 
-    for_window [class=".*mpv$"] inhibit_idle visible
+    # for_window [app_id="mpv"] inhibit_idle visible
+
+    for_window [app_id="mpv"] floating enable
 
     for_window [title="Picture in picture"] floating enable
+
+    for_window [app_id="imv"] floating enable
 
     set $mod Mod4
 
@@ -134,7 +147,15 @@ in {
 
     include @sysconfdir@/sway/config.d/*
 
-    titlebar_padding 16 5
+    titlebar_padding 20 8
+
+    for_window [app_id="scratchpad"] floating enable
+    for_window [app_id="scratchpad"] move scratchpad
+    for_window [app_id="scratchpad"] scratchpad show
+    for_window [app_id="scratchpad"] resize set ${scratchpad_width} ${scratchpad_height}
+    for_window [app_id="scratchpad"] move position ${scratchpad_position_x} ${scratchpad_position_y}
+
+    set $scratchpad_command alacritty --class scratchpad -o 'background_opacity=${scratchpad_opacity}'
 
     input * xkb_options ctrl:nocaps
 
@@ -153,6 +174,7 @@ in {
     set $gray #333333
     set $darkgray #222222
     set $lightgray #777777
+    set $blue #285577
 
     set $border $black
     set $background $black
@@ -160,18 +182,27 @@ in {
     set $indicator $black
     set $child_border $black
     client.unfocused $border $background $text $indicator $child_border
-    set $border $black
-    set $background $darkgray
+
+    set $border $blue
+    set $background $blue
     set $text $white
     set $indicator $black
-    set $child_border $black
+    set $child_border $blue
     client.focused $border $background $text $indicator $child_border
+
     set $border $black
     set $background $black
     set $text $gray
     set $indicator $black
     set $child_border $black
     client.focused_inactive $border $background $text $indicator $child_border
+
+    # set $border $black
+    # set $background $black
+    # set $text $gray
+    # set $indicator $black
+    # set $child_border $black
+    # client.urgent $border $background $text $indicator $child_border
 
 
     input "1133:45081:MX_Master_2S_Mouse" {
@@ -186,7 +217,7 @@ in {
       middle_emulation enabled
     }
 
-    font pango:Liberation Sans Bold 18
+    font pango:Ubuntu 18
 
     bindsym F5 mode "default"
 
