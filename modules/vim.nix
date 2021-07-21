@@ -3,26 +3,6 @@
 let
   theme = import ./theme.nix;
 
-  python-neovim = with pkgs.python3Packages; buildPythonPackage rec {
-    pname = "neovim";
-    version = "0.3.1";
-
-    src = fetchPypi {
-      inherit pname version;
-      sha256 = "03znibklxyyqx2w05l2r8bcff2qp8kzwbifbvpkg8fs3njjyg856";
-    };
-
-    nativeBuildInputs = [
-      pynvim
-    ];
-
-    # Tests require pkgs.neovim,
-    # which we cannot add because of circular dependency.
-    doCheck = false;
-
-    # propagatedBuildInputs = [ msgpack ];
-  };
-
   plugins = with pkgs; {
     parinfer-rust = vimUtils.buildVimPlugin {
       name = "parinfer";
@@ -72,7 +52,7 @@ let
     };
   };
 
-  rc = with theme; ''
+  conf = with theme; ''
     set noswapfile
     set hidden
     set clipboard=unnamedplus
@@ -215,36 +195,33 @@ let
 
     set guifont=Ubuntu\ Mono:h36
     let g:neovide_cursor_animation_length=0.02
-  '';
-in {
-  environment.systemPackages = [ python-neovim (with pkgs; neovim.override {
-    vimAlias = true;
-    configure.vam = {
-      knownPlugins = vimPlugins // plugins;
+''; in pkgs.neovim.override {
+  vimAlias = true;
+  configure.vam = {
+    knownPlugins = pkgs.vimPlugins // plugins;
 
-      pluginDictionaries = [
-        { name = "commentary"; }
-        # { name = "floobits-neovim"; }
-        # { name = "fzf-vim"; }
-        { name = "neovim-fuzzy"; }
-        { name = "nerdtree"; }
-        { name = "parinfer-rust"; }
-        { name = "spell-fr"; }
-        { name = "spell-ro"; }
-        { name = "supertab"; }
-        { name = "surround"; }
-        { name = "vim-grepper"; }
-        { name = "vim-autoclose"; }
-        { name = "vim-better-whitespace"; }
-        { name = "vim-bracketed-paste"; }
-        { name = "vim-eunuch"; }
-        { name = "vim-indent-guides"; }
-        { name = "vim-indent-object"; }
-        { name = "goyo"; }
-        { name = "vim-nix"; }
-        { name = "vim-iced"; }
-      ];
-    };
-    configure.customRC = rc;
-  }) ];
+    pluginDictionaries = [
+      { name = "commentary"; }
+      # { name = "floobits-neovim"; }
+      # { name = "fzf-vim"; }
+      { name = "neovim-fuzzy"; }
+      { name = "nerdtree"; }
+      { name = "parinfer-rust"; }
+      { name = "spell-fr"; }
+      { name = "spell-ro"; }
+      { name = "supertab"; }
+      { name = "surround"; }
+      { name = "vim-grepper"; }
+      { name = "vim-autoclose"; }
+      { name = "vim-better-whitespace"; }
+      { name = "vim-bracketed-paste"; }
+      { name = "vim-eunuch"; }
+      { name = "vim-indent-guides"; }
+      { name = "vim-indent-object"; }
+      { name = "goyo"; }
+      { name = "vim-nix"; }
+      { name = "vim-iced"; }
+    ];
+  };
+  configure.customRC = conf;
 }
