@@ -19,7 +19,7 @@ let
       token = builtins.getEnv "PUSHOVER_TOKEN";
     })
     (callPackage ./packages/zprint.nix { })
-    (callPackage ./bin { })
+    (callPackage ./scripts { })
     # moreutils parallel conflicts with GNU parallel
     (lib.overrideDerivation moreutils (attrs: {
       postInstall = attrs.postInstall + "\n"
@@ -286,8 +286,8 @@ in {
       enableCompletion = true;
 
       history = rec {
-        save = size;
         size = 99999;
+        save = size;
         share = true;
         ignoreSpace = true;
         ignoreDups = true;
@@ -348,20 +348,14 @@ in {
       ];
 
       initExtra = ''
-        setopt \
-          case_glob \
-          extended_glob \
-          glob_complete
-
+        # remove extraneous spaces from saved commands
         setopt hist_reduce_blanks
-
+        # show menu when completing
         zstyle ':completion:*' menu select
-
         # automatically update PATH
         zstyle ':completion:*' rehash true
 
         source ${./modules/zsh/prompt.zsh}
-
         source ${./modules/zsh/terminal-title.zsh}
       '';
     };
