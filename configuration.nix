@@ -163,11 +163,12 @@ in {
 
     ./modules/adb.nix
     ./modules/alacritty/alacritty.nix
-    ./modules/battery-suspend.nix
+    ./modules/aria2.nix
     ./modules/cloudflare-dns.nix
     ./modules/command-not-found.nix
     ./modules/curl.nix
     ./modules/docker.nix
+    ./modules/firefox-wayland.nix
     ./modules/fonts.nix
     ./modules/fzf.nix
     ./modules/git.nix
@@ -176,16 +177,15 @@ in {
     ./modules/hosts-blocking.nix
     ./modules/insync.nix
     ./modules/ipfs.nix
-    ./modules/firefox-wayland.nix
     ./modules/kdeconnect.nix
     ./modules/less.nix
     ./modules/locate.nix
+    ./modules/lowbatt.nix
     ./modules/map-test-tld-to-localhost.nix
     ./modules/mpv.nix
     ./modules/npm-global-packages.nix
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
-    ./modules/aria2.nix
     ./modules/ripgrep.nix
     ./modules/sway/sway.nix
     ./modules/tor.nix
@@ -257,16 +257,12 @@ in {
 
     gtk = {
       enable = true;
-      theme.name = "dark";
-      # gtk.theme.package = pkgs.gnome-breeze;
+      theme = {
+        name = "dark";
+        package = pkgs.callPackage ./packages/gtk-theme-dark {  };
+      };
       font.name = "${font} 8";
     };
-
-    # xdg.configFile."chrome-flags.conf" = ''
-    #   --enable-features=OverlayScrollbar
-    #   --enable-features=UseOzonePlatform
-    #   --ozone-platform=wayland
-    # '';
 
     xdg.configFile."mimeapps.list".text = lib.generators.toINI { } {
       "Default Applications" = {
@@ -361,9 +357,7 @@ in {
     };
   };
 
-  services.upower.enable = true;
-
-  services.battery-suspend = {
+  services.lowbatt = {
     enable = true;
     notifyCapacity = 40;
     suspendCapacity = 10;
