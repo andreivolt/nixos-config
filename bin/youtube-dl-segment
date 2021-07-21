@@ -11,11 +11,11 @@ ffmpeg \
   $noverbose \
   -ss $start -to $end \
   -i $(youtube-dl -f 22 --get-url $url) \
-  -c copy \
+  -c:a copy -c:v copy \
   -f matroska - \
 | ffmpeg -i - \
   $noverbose \
-  -c:v libx265 -crf 28 \
+  -c:v libx265 -crf 28 -c:a copy \
   -preset ultrafast \
   -movflags +faststart \
   -f matroska -

@@ -29,9 +29,12 @@ let
     bc
     bluetooth_battery
     chromedriver
+    gcc
     clipman
     clojure
     curl
+    fx # JSON processing tool
+    # chromiumDev
 
     aspell
     aspellDicts.en
@@ -74,6 +77,7 @@ let
     gist
     git
     git-hub
+    hub
     glpaper
     gnumake
     gnupg
@@ -166,6 +170,7 @@ in {
     ./modules/hosts-blocking.nix
     ./modules/insync.nix
     ./modules/ipfs.nix
+    ./modules/firefox-wayland.nix
     ./modules/kdeconnect.nix
     ./modules/less.nix
     ./modules/locate.nix
@@ -174,6 +179,7 @@ in {
     ./modules/npm-global-packages.nix
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
+    ./modules/aria2.nix
     ./modules/ripgrep.nix
     ./modules/sway/sway.nix
     ./modules/tor.nix
@@ -258,6 +264,12 @@ in {
       font.name = "${font} 8";
     };
 
+    # xdg.configFile."chrome-flags.conf" = ''
+    #   --enable-features=OverlayScrollbar
+    #   --enable-features=UseOzonePlatform
+    #   --ozone-platform=wayland
+    # '';
+
     xdg.configFile."mimeapps.list".text = lib.generators.toINI { } {
       "Default Applications" = {
         "application/pdf" = "mupdf.desktop";
@@ -300,7 +312,7 @@ in {
       shellAliases = {
         ls = ''ls \
           --human-readable \
-          --indicator-style=slash
+          --indicator-style=slash \
         '';
         l = "ls -1";
         la = "ls -a";
