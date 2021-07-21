@@ -7,13 +7,15 @@ let
 
   user = "avo";
 
-  EDITOR = "vim";
+  EDITOR = "${vim}/bin/vim";
   PAGER = "${pkgs.page}/bin/page";
-  BROWSER = "google-chrome-stable";
+  BROWSER = "${pkgs.google-chrome}/bin/google-chrome-stable";
+
+  vim = pkgs.callPackage ./modules/vim.nix { };
 
   packages = with pkgs; [
+    vim
     (callPackage ./packages/colorpicker.nix { })
-    (callPackage ./packages/gtk-theme-dark { })
     (callPackage ./packages/pushover.nix {
       user = builtins.getEnv "PUSHOVER_USER";
       token = builtins.getEnv "PUSHOVER_TOKEN";
@@ -56,6 +58,22 @@ let
     ranger
     rmlint
     skype
+    (weechat.override {
+      configure = {availablePlugins, ...}: {
+        init = ''
+          /set foo bar
+          /server add freenode chat.freenode.org
+        '';
+        scripts = [
+          weechatScripts.weechat-notify-send
+          weechatScripts.weechat-matrix
+          weechatScripts.wee-slack
+        ];
+        plugins = [
+          (availablePlugins.python.withPackages (_: [ weechatScripts.weechat-matrix ]))
+        ];
+      };
+    })
     speedtest_cli
     sqlite
     sshfsFuse
@@ -125,13 +143,13 @@ let
     pup
     puppeteer-cli
     python3
+    cloc
     qemu
     recode
     ripgrep
     rlwrap
     socat
     sox
-    spotify
     strace
     sublime3
     surf
@@ -162,6 +180,7 @@ in {
     (import "${builtins.fetchTarball "https://github.com/rycee/home-manager/archive/master.tar.gz"}/nixos")
 
     ./modules/adb.nix
+    # ./modules/weechat-matrix.nix
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
     ./modules/cloudflare-dns.nix
@@ -187,9 +206,9 @@ in {
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
+    ./modules/spotify.nix
     ./modules/sway/sway.nix
     ./modules/tor.nix
-    ./modules/vim.nix
     ./modules/zsh/fzf.nix
     ./modules/zsh/vi.nix
   ];
@@ -273,6 +292,7 @@ in {
         "text/plain" = "neovide.desktop";
         "video/mp4" = "mpv.desktop";
         "x-scheme-handler/http" = "google-chrome.desktop";
+        "x-scheme-handler/tg" = "telegramdesktop.desktop";
       };
     };
 
@@ -297,8 +317,8 @@ in {
         C = "| wc -l";
         G = "| grep";
         L = "| ${PAGER}";
-        NE = "2> /dev/null";
-        NUL = "> /dev/null 2>&1";
+        NE = "2>/dev/null";
+        NUL = "&>/dev/null";
       };
 
       shellAliases = {
@@ -363,5 +383,11 @@ in {
     suspendCapacity = 10;
   };
 
+  services.upower.enable = true;
+
   services.sshd.enable = true;
+
+  services.gnome.gnome-keyring.enable = true;
+
+security.pam.services.login.enableGnomeKeyring = true;
 }
