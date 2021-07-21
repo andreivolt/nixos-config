@@ -7,13 +7,19 @@ let
 
   user = "avo";
 
+  EDITOR = "vim";
+  PAGER = "${pkgs.page}/bin/page";
+  BROWSER = "google-chrome-stable";
+
   packages = with pkgs; [
     (callPackage ./packages/colorpicker.nix { })
+    (callPackage ./packages/gtk-theme-dark { })
     (callPackage ./packages/pushover.nix {
       user = builtins.getEnv "PUSHOVER_USER";
       token = builtins.getEnv "PUSHOVER_TOKEN";
     })
     (callPackage ./packages/zprint.nix { })
+    (callPackage ./bin { })
     # moreutils parallel conflicts with GNU parallel
     (lib.overrideDerivation moreutils (attrs: {
       postInstall = attrs.postInstall + "\n"
@@ -233,16 +239,8 @@ in {
   home-manager.users.avo = { pkgs, ... }: {
     home.packages = packages;
 
-    home.sessionPath = [
-      "$HOME/.local/bin"
-      (builtins.toString ./bin)
-    ];
-
     home.sessionVariables = {
-      EDITOR = "vim";
-      PAGER = "${pkgs.page}/bin/page";
-      BROWSER = "google-chrome-stable";
-      LC_COLLATE = "C";
+      inherit EDITOR PAGER BROWSER;
       GREP_COLOR = "1"; # color matches yellow
       LS_COLORS = ''
         di=0;35:\
@@ -302,18 +300,13 @@ in {
         T = "| tail";
         C = "| wc -l";
         G = "| grep";
-        L = "| less";
-        LL = "2>&1 | less";
-        CA = "2>&1 | cat -A";
+        L = "| ${PAGER}";
         NE = "2> /dev/null";
         NUL = "> /dev/null 2>&1";
       };
 
       shellAliases = {
-        ls = ''ls \
-          --human-readable \
-          --indicator-style=slash \
-        '';
+        ls = "ls --human-readable --classify";
         l = "ls -1";
         la = "ls -a";
         ll = "ls -l";
