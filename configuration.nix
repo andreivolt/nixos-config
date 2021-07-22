@@ -3,10 +3,6 @@
 let
   theme = import ./modules/theme.nix;
 
-  font = "Ubuntu";
-
-  user = "avo";
-
   EDITOR = "${vim}/bin/vim";
   PAGER = "${pkgs.page}/bin/page";
   BROWSER = "${pkgs.google-chrome}/bin/google-chrome-stable";
@@ -14,101 +10,59 @@ let
   vim = pkgs.callPackage ./modules/vim.nix { };
 
   packages = with pkgs; [
-    vim
-    (callPackage ./packages/colorpicker.nix { })
-    (callPackage ./packages/pushover.nix {
-      user = builtins.getEnv "PUSHOVER_USER";
-      token = builtins.getEnv "PUSHOVER_TOKEN";
-    })
-    (callPackage ./packages/zprint.nix { })
-    (callPackage ./scripts { })
-    # moreutils parallel conflicts with GNU parallel
-    (lib.overrideDerivation moreutils (attrs: {
-      postInstall = attrs.postInstall + "\n"
-        + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
-    }))
+    # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
+    # chromiumDev
     # torbrowser
+    abduco
     acpi
     aria
+    aspell
+    aspellDicts.en
+    avo.colorpicker
+    avo.pushover
+    avo.scripts
+    avo.zprint
     awscli
-    pv
     babashka
     bat
     bc
     bluetooth_battery
     chromedriver
-    gcc
     clipman
+    cloc
     clojure
     curl
-    fx # JSON processing tool
-    # chromiumDev
-
-    aspell
-    aspellDicts.en
-    dos2unix
-    fuse
-    gitAndTools.tig
-    gnumake
-    haskellPackages.ShellCheck
-    ncdu
-    neomutt
-    ngrok
-    pwgen
-    ranger
-    rmlint
-    skype
-    (weechat.override {
-      configure = {availablePlugins, ...}: {
-        init = ''
-          /set foo bar
-          /server add freenode chat.freenode.org
-        '';
-        scripts = [
-          weechatScripts.weechat-notify-send
-          weechatScripts.weechat-matrix
-          weechatScripts.wee-slack
-        ];
-        plugins = [
-          (availablePlugins.python.withPackages (_: [ weechatScripts.weechat-matrix ]))
-        ];
-      };
-    })
-    speedtest_cli
-    sqlite
-    sshfsFuse
-    sshuttle
-    unrar
-    vifm
-    wgetpaste
-    wine
-    wireshark
-    entr
-    abduco
-
     delta
     dnsutils
     dogdns
+    dos2unix
     dtach
     dtrx
+    entr
     ffmpeg-full # -full for ffplay
     file
     firefox
+    fuse
+    fx # JSON processing tool
     fzf
     fzy
+    gcc
     geoip
     gh
     gist
     git
     git-hub
-    hub
+    gitAndTools.tig
     glpaper
     gnumake
     gnupg
     google-chrome
     google-cloud-sdk
     graphicsmagick
+    haskellPackages.ShellCheck
+    heroku
     httpie
+    hub
     iftop
     imv
     iotop
@@ -119,12 +73,15 @@ let
     libreoffice-fresh
     lsof
     mediainfo
+    moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel
     mosh
-    mpv
     msmtp
     mupdf
+    ncdu
+    neomutt
     netcat
     nethogs
+    ngrok
     nix-index
     nix-update
     nixops
@@ -142,14 +99,22 @@ let
     psmisc
     pup
     puppeteer-cli
+    pv
+    pwgen
     python3
-    cloc
     qemu
+    ranger
     recode
     ripgrep
     rlwrap
+    rmlint
+    skype
     socat
     sox
+    speedtest_cli
+    sqlite
+    sshfsFuse
+    sshuttle
     strace
     sublime3
     surf
@@ -159,11 +124,17 @@ let
     tmate
     tree
     ungoogled-chromium # or chromium
+    unrar
     unzip
     usbutils
+    vifm
+    vim
     vlc
     wf-recorder
     wget
+    wgetpaste
+    wine
+    wireshark
     with-shell # cd inside commands
     xdg_utils
     xfce.thunar
@@ -179,20 +150,28 @@ in {
 
     (import "${builtins.fetchTarball "https://github.com/rycee/home-manager/archive/master.tar.gz"}/nixos")
 
-    ./modules/adb.nix
+    ./profiles/gui.nix
+    ./profiles/workstation.nix
+
     # ./modules/weechat-matrix.nix
+    ./modules/adb.nix
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
     ./modules/cloudflare-dns.nix
     ./modules/command-not-found.nix
     ./modules/curl.nix
+    ./modules/weechat.nix
     ./modules/docker.nix
     ./modules/firefox-wayland.nix
     ./modules/fonts.nix
     ./modules/fzf.nix
     ./modules/git.nix
+    ./modules/gnome-keyring.nix
+    ./modules/grep.nix
     ./modules/hardware-video-acceleration.nix
-    ./modules/hidpi.nix
+    ./modules/hardware-video-acceleration/mpv.nix
+    ./modules/hidpi/console.nix
+    ./modules/hidpi/gnome.nix
     ./modules/hosts-blocking.nix
     ./modules/insync.nix
     ./modules/ipfs.nix
@@ -201,6 +180,7 @@ in {
     ./modules/locate.nix
     ./modules/lowbatt.nix
     ./modules/map-test-tld-to-localhost.nix
+    ./modules/matrix-cli.nix
     ./modules/mpv.nix
     ./modules/npm-global-packages.nix
     ./modules/pipewire.nix
@@ -227,17 +207,21 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
+  nixpkgs.overlays = with pkgs; [
+    (import ./packages)
+    (self: super: {
+      moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
+        postInstall = attrs.postInstall + "\n"
+          + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+      });
+    })
+  ];
+
   i18n.defaultLocale = "en_US.UTF-8";
 
   time.timeZone = "Europe/Paris";
 
   console.keyMap = "fr";
-
-  hardware.bluetooth.enable = true;
-
-  hardware.opengl.enable = true;
-
-  services.devmon.enable = true; # automount removable devices
 
   users.users.avo = {
     isNormalUser = true;
@@ -245,42 +229,16 @@ in {
     extraGroups = [ "wheel" ];
   };
 
-  security.sudo.wheelNeedsPassword = false;
-
-  networking.hostName = builtins.getEnv "HOSTNAME";
-
-  networking.enableIPv6 = false;
-
-  networking.networkmanager.enable = true;
-
-  environment.etc."mailcap".text = "*/*; xdg-open '%s'";
-
   home-manager.users.avo = { pkgs, ... }: {
     home.packages = packages;
 
     home.sessionVariables = {
       inherit EDITOR PAGER BROWSER;
-      GREP_COLOR = "1"; # color matches yellow
-      LS_COLORS = ''
-        di=0;35:\
-        fi=0;37:\
-        ex=0;96:\
-        ln=0;37\
-      '';
     };
 
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
-    };
-
-    gtk = {
-      enable = true;
-      theme = {
-        name = "dark";
-        package = pkgs.callPackage ./packages/gtk-theme-dark {  };
-      };
-      font.name = "${font} 8";
     };
 
     xdg.configFile."mimeapps.list".text = lib.generators.toINI { } {
@@ -364,6 +322,8 @@ in {
       ];
 
       initExtra = ''
+        # trigger completion on globbing
+        setopt glob_complete
         # remove extraneous spaces from saved commands
         setopt hist_reduce_blanks
         # show menu when completing
@@ -386,8 +346,4 @@ in {
   services.upower.enable = true;
 
   services.sshd.enable = true;
-
-  services.gnome.gnome-keyring.enable = true;
-
-security.pam.services.login.enableGnomeKeyring = true;
 }

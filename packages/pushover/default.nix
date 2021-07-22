@@ -1,6 +1,9 @@
-{ pkgs ? import <nixpkgs> {}, user, token }:
+{ pkgs ? import <nixpkgs> {} }:
 
-pkgs.writeScriptBin "pushover" ''
+let
+  user = builtins.getEnv "PUSHOVER_USER";
+  token = builtins.getEnv "PUSHOVER_TOKEN";
+in pkgs.writeScriptBin "pushover" ''
   #!${pkgs.python}/bin/python
 
   import getopt
