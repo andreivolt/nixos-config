@@ -1,4 +1,5 @@
 { pkgs ? import <nixpkgs> {}, stdenv, zlib, lib, qt5, saneBackends, makeWrapper, fetchurl }:
+
 stdenv.mkDerivation rec {
   name = "zprint-bin-${version}";
   version = "1.0.2";
