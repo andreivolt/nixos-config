@@ -4,13 +4,23 @@ let
   theme = import ./theme.nix;
 
   plugins = with pkgs; {
-    parinfer-rust = vimUtils.buildVimPlugin {
-      name = "parinfer";
+    # parinfer-rust = vimUtils.buildVimPlugin {
+    #   name = "parinfer";
+    #   src = fetchFromGitHub {
+    #     owner = "eraserhd"; repo = "parinfer-rust";
+    #     rev = "642fec5698f21758029988890c6683763beee5fd"; sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
+    #   };
+    #   buildPhase = "HOME=$TMP ${cargo}/bin/cargo build --release";
+    # };
+
+    challenger-deep-theme = vimUtils.buildVimPlugin {
+      name = "challenger-deep-theme";
       src = fetchFromGitHub {
-        owner = "eraserhd"; repo = "parinfer-rust";
-        rev = "642fec5698f21758029988890c6683763beee5fd"; sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
+        owner = "challenger-deep-theme";
+        repo = "vim";
+        rev = "b3109644b30f6a34279be7a7c9354360be207105";
+        sha256 = "1q3zjp9p5irkwmnz2c3fk8xrpivkwv1kc3y5kzf1sxdrbicbqda8";
       };
-      buildPhase = "HOME=$TMP ${cargo}/bin/cargo build --release";
     };
 
     vim-iced = vimUtils.buildVimPlugin {
@@ -206,12 +216,13 @@ let
       # { name = "fzf-vim"; }
       { name = "neovim-fuzzy"; }
       { name = "nerdtree"; }
-      { name = "parinfer-rust"; }
+      # { name = "parinfer-rust"; }
       { name = "spell-fr"; }
       { name = "spell-ro"; }
       { name = "supertab"; }
       { name = "surround"; }
       { name = "vim-grepper"; }
+      { name = "challenger-deep-theme"; }
       { name = "vim-autoclose"; }
       { name = "vim-better-whitespace"; }
       { name = "vim-bracketed-paste"; }
