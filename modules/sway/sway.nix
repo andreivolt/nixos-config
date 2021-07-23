@@ -22,7 +22,11 @@ in {
     slurp
     swayidle
     swaylock
+    wmfocus # window picker
     wl-clipboard
+    kanshi  # display configuration
+    oguri # animated background
+    waybar
     xwayland
   ];
 
@@ -96,6 +100,8 @@ in {
 
     set $menu dmenu_path | dmenu -fn 'Source Sans Pro-25' | xargs swaymsg exec --
 
+    bindsym $mod+w [title="todo.txt"] focus
+
     bindsym $mod+Return exec $term
     bindsym $mod+Shift+c kill
 
@@ -129,10 +135,11 @@ in {
     bindsym $mod+Shift+Up move up
     bindsym $mod+Shift+Right move right
 
-    bindsym $mod+Alt+$left resize shrink width 160px
-    bindsym $mod+Alt+$down resize grow height 160px
-    bindsym $mod+Alt+$up resize shrink height 160px
-    bindsym $mod+Alt+$right resize grow width 160px
+    set $resize_increment 40px
+    bindsym $mod+Alt+$left resize shrink width $resize_increment
+    bindsym $mod+Alt+$down resize grow height $resize_increment
+    bindsym $mod+Alt+$up resize shrink height $resize_increment
+    bindsym $mod+Alt+$right resize grow width $resize_increment
 
     bindsym $mod+b splith
     bindsym $mod+v splitv
