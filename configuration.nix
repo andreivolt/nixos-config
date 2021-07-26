@@ -376,6 +376,8 @@ in {
     (let rev = "0423a7b40cd29aec0bb02fa30f61ffe60f5dfc19";
     in import "${builtins.fetchTarball "https://github.com/rycee/home-manager/archive/${rev}.tar.gz"}/nixos")
 
+    ./cachix.nix
+
     ./profiles/gui.nix
     ./profiles/workstation.nix
 
