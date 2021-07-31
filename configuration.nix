@@ -1,58 +1,47 @@
 { lib, pkgs, ... }:
 
 let
-  vim = pkgs.callPackage ./modules/vim.nix { };
+  vim = pkgs.callPackage ./modules/vim { };
 
   packages = with pkgs; [
     # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
-    # alsaPlugins
     # chromiumDev
     # csvtotable
-    # docker-compose-zsh-completions
     # docx2txt
-    # geoipWithDatabase
     # ghi
     # gitAndTools.diff-so-fancy
     # hachoir-subfile
-    # haskellPackages.apply-refact
-    # haskellPackages.brittany
-    # haskellPackages.github-backup
-    # haskellPackages.hindent
-    # haskellPackages.hlint
-    # haskellPackages.hoogle
-    # haskellPackages.stylish-haskell
+    # haskellPackages.github-backup # BROKEN
+    # imagemin-cli
     # impressive # PDF presentations
     # jwhois
+    # kefctl
     # libxls # xls2csv
     # mpc
     # mpc_cli
     # mpdas
     # mpdris2
     # mpdscribble # MPD scrobbler
-    # nodePackageS.pnpm
-    # nodePackages.node2nix
     # perlPackages.DBDSQLite # for GNU parallel
     # perlPackages.HTMLParser
     # pfff # source code tool
-    # pnpm
+    # puppeteer-cli # compiles chrome
     # pythonPackages.ipython
     # pythonPackages.jupyter
-    # pythonPackages.piep
     # pythonPackages.piep # Python stream editing
     # pythonPackages.scapy
     # record-query
     # renameutils # imv collision
     # speechd
-    # texlive.combined.scheme-full
-    # torbrowser
+    # texlive.combined.scheme-full # ghostscript collision
     # traceroute
-    # wsta # websocket cli
     # x_x # Excel + CSV cli viewer
     (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
     (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ])) # TODO
     (zathura.override { useMupdf = true; })
     abduco
     acpi
+    alsaPlugins
     alsaUtils
     antiword
     archivemount
@@ -63,18 +52,21 @@ let
     avo.colorpicker
     avo.pushover
     avo.scripts
-    avo.zprint
+    avo.wsta # websocket cli
+    avo.zprint # clojure pretty-printer
     awscli
     babashka
     bashdb # bash debugger
     bat
     bc
+    bemenu
     bfs # breadth-first find
     bindfs
     binutils
     bitcoin
     bluetooth_battery
-    perl532Packages.FileMimeInfo
+    bluez
+    bluez-tools
     boot
     broot # tree file navigator
     cabal2nix
@@ -84,7 +76,7 @@ let
     chromedriver
     cifs-utils
     clipman
-    cloc
+    cloc # count lines of code
     clojure
     colordiff
     copyq # clipboard manager
@@ -101,6 +93,7 @@ let
     docker-machine
     dogdns
     dos2unix
+    dragon-drop # drag-and-drop source/sink
     dropbox-cli
     dstat # resource statistics
     dtach # detach from terminals
@@ -108,12 +101,15 @@ let
     dupd # find duplicates
     dvtm # terminal multiplexer
     ed
+    efibootmgr
+    efivar
     elixir
     enscript # convert to PostScript
-    entr # run commands when files change
+    entr # file watcher, run commands when files change
     envchain
+    ethtool
     evince # fill PDF forms
-    exa
+    exa # ls alternative
     exiftool
     exiv2 # image metadata
     expect
@@ -136,11 +132,12 @@ let
     fswebcam # webcam photo
     fuse
     fx # JSON processing tool
-    fzf
-    fzy
+    fzf # fuzzy finder
+    fzy # fuzzy finder
     gcc
     gcolor2 # color chooser
-    gh
+    geoipWithDatabase
+    gh # github
     ghc # Haskell
     ghostscript
     gifsicle
@@ -162,11 +159,17 @@ let
     gphotos-sync
     graphicsmagick
     graphviz
-    gron # flatten JSON
     grc # syntax highlighter
-    gsettings-desktop-schemas
+    gron # flatten JSON
     hachoir
+    haskellPackages.apply-refact
+    haskellPackages.brittany # haskell pretty-printer
+    haskellPackages.hindent # haskell pretty-printer
+    haskellPackages.hlint
+    haskellPackages.hoogle
     haskellPackages.ShellCheck
+    haskellPackages.stylish-haskell
+    haskellPackages.xml-to-json
     heroku
     highlight # cli syntax highlighter
     himalaya # email client
@@ -177,16 +180,21 @@ let
     httping # http benchmark
     hub # github
     hy # python lisp
+    hydroxide # protonmail
+    hyperfine # benchmarking
     icdiff # side-by-side highlighted diffs
-    iftop
-    imv
+    iftop # network
+    imgur-screenshot # file-sharing
+    imgurbash2 # file-sharing
+    imv # image viewer
     inkscape
-    inotify-tools
+    inotify-tools # file watcher
     inxi
-    iotop
+    iotop # network
     ipfs
-    iptraf-ng
+    iptraf-ng # network
     iw # wifi
+    iwd # wifi
     jdk
     jo # create JSON
     jq
@@ -201,15 +209,16 @@ let
     libreoffice-fresh
     lighttable # Clojure IDE
     linuxPackages.perf
-    llpp # pdf pager
     lm_sensors
     lnav # logfile navigator
     lsd # ls alternative
+    lshw
     lsof
     lsyncd # sync files with remote
     ltrace
     lumo # standalone ClojureScript environment
     mailutils
+    mate.caja # file manager
     matrix-commander # matrix cli
     mediainfo
     megatools
@@ -221,7 +230,6 @@ let
     msmtp
     mtr # network diagnostics
     multitail
-    mupdf
     ncdu
     neochat # matrix client
     neomutt
@@ -229,15 +237,22 @@ let
     net-snmp # network
     netcat
     nethogs
+    netlify-cli
     ngrep
     ngrok
     nix-index
+    nix-prefetch-github
     nix-update
     nixfmt
     nixopsUnstable
     nmap
+    nodePackages.create-react-native-app
+    nodePackages.expo-cli
     nodePackages.firebase-tools
+    nodePackages.node2nix
+    nodePackages.nodemon
     nodePackages.peerflix
+    nodePackages.pnpm # nodejs package manager
     nodePackages.webtorrent-cli
     notmuch
     nox # search Nix packages
@@ -245,6 +260,8 @@ let
     ntfy # send notifications, on demand and when commands finish
     nvimpager
     obex_data_server # bluetooth D-Bus
+    obexd
+    obexfs # bluetooth filesystem
     openssl
     optipng
     page
@@ -257,6 +274,8 @@ let
     pciutils
     pdfgrep
     pdftk
+    perl
+    perl532Packages.FileMimeInfo
     pianobar
     pidgin
     play-with-mpv # open browser videos with mpv
@@ -267,10 +286,10 @@ let
     procmail
     procs # ps alternative
     projectm # music visualizer
+    protonmail-bridge # protonmail
     protonvpn-cli
     psmisc
     pup
-    puppeteer-cli
     pv # pipe viewer
     pwgen
     python3
@@ -290,6 +309,8 @@ let
     rmlint # find duplicates
     rsync
     ruby
+    s3cmd
+    screen
     sd # find & replace
     sdcv # dictionnary
     shadowsocks-libev # SOCKS5 proxy
@@ -314,8 +335,10 @@ let
     tcpflow
     tdesktop # Telegram
     telnet
+    terraform
     tesseract
     tmate
+    torbrowser
     tree
     tsocks
     ttyrec
@@ -338,7 +361,8 @@ let
     watchman # file watcher
     wayback_machine_downloader
     wdiff # word diff
-    wf-recorder
+    wf-recorder # wayland screen recording
+    # wl-recorder # wayland screen recording
     wget
     wgetpaste
     wine
@@ -351,8 +375,6 @@ let
     xh # HTTP client
     xidel
     xlsx2csv
-    haskellPackages.xml-to-json
-    nix-prefetch-github
     xml2
     xmlindent
     xmlstarlet
@@ -367,6 +389,7 @@ let
     youtube-viewer
     ytfzf # YouTube search
     zip
+    zoxide # cd alternative
   ];
 
 in {
@@ -382,6 +405,7 @@ in {
     ./profiles/workstation.nix
 
     # ./modules/weechat-matrix.nix
+    ./modules/wayland/overlay.nix
     ./modules/adb.nix
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
@@ -408,12 +432,12 @@ in {
     ./modules/ipfs.nix
     ./modules/kdeconnect.nix
     ./modules/less.nix
+    ./modules/moreutils-without-parallel/overlay.nix
     ./modules/locate.nix
     ./modules/lowbatt.nix
     ./modules/map-test-tld-to-localhost.nix
     ./modules/matrix-cli.nix
     ./modules/mpv.nix
-    ./modules/npm-global-packages.nix
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
@@ -440,21 +464,8 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = let
-    waylandOverlay =
-      let url =
-        let rev = "fd3be17ace1aa22ed6b1d0bd01a979deb098cbbd";
-        in "https://github.com/colemickens/nixpkgs-wayland/archive/${rev}.tar.gz";
-      in import (builtins.fetchTarball url);
-  in with pkgs; [
-    waylandOverlay
+  nixpkgs.overlays = [
     (import ./packages)
-    (self: super: {
-      moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
-        postInstall = attrs.postInstall + "\n"
-          + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
-      });
-    })
   ];
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -485,7 +496,7 @@ in {
 
     xdg.mimeApps.enable = true;
     xdg.mimeApps.defaultApplications = {
-      "application/pdf" = "mupdf.desktop";
+      "application/pdf" = "zathura.desktop";
       "image/jpeg" = "imv.desktop";
       "image/png" = "imv.desktop";
       "text/html" = "google-chrome-stable.desktop";
@@ -500,6 +511,10 @@ in {
       enable = true;
 
       enableCompletion = true;
+
+      enableSyntaxHighlighting = true;
+
+      defaultKeymap = "viins";
 
       # enableInteractiveComments = true;
 

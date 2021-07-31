@@ -12,9 +12,9 @@ C-f: forward-search-history
 C-l: clear-screen
 v: rlwrap-call-editor
 
-set keymap vi-insert
-
-# Pressing tab will list all completions & select the first one. Pressing it again will cycle through available completions.
-TAB: menu-complete
-# Shift-TAB cycles completions backward
-"\e[Z": menu-complete-backward
+#set keymap vi-insert
+#
+## Pressing tab will list all completions & select the first one. Pressing it again will cycle through available completions.
+#TAB: menu-complete
+## Shift-TAB cycles completions backward
+#"\e[Z": menu-complete-backward

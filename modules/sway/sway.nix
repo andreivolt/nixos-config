@@ -25,6 +25,7 @@ in {
     wmfocus # window picker
     wl-clipboard
     kanshi  # display configuration
+    wdisplays  # display configuration
     oguri # animated background
     waybar
     xwayland
