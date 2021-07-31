@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.home.file.".curl/curlrc".text = ''
+  home-manager.users.avo.xdg.configFile.".curl/curlrc".text = ''
     --silent
   '';
 }
