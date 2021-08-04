@@ -25,7 +25,12 @@
       pager.reflog = "${pkgs.delta}/bin/delta";
       pager.show = "${pkgs.delta}/bin/delta";
 
+      user.signingkey = "36D6CB5336F68AC5";
+      commit.gpgsign = true;
+
       interactive.diffFilter = "${pkgs.delta}/bin/delta --color-only";
+
+      "credential \"https://github.com\"".helper = "!${pkgs.gh}/bin/gh auth git-credential";
     };
   };
 }

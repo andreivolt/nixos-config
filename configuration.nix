@@ -626,5 +626,10 @@ in {
 
   virtualisation.virtualbox.host.enable = true;
 
+  programs.gnupg.agent.enable = true;
+
+  services.keybase.enable = true;
+  services.kbfs.enable = true;
+
   # services.udisks2.enable = true;
 }
