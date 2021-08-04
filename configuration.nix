@@ -5,6 +5,7 @@ let
 
   packages = with pkgs; [
     # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
+    # avo.wsta # websocket cli
     # chromiumDev
     # csvtotable
     # docx2txt
@@ -14,6 +15,7 @@ let
     # haskellPackages.github-backup # BROKEN
     # imagemin-cli
     # impressive # PDF presentations
+    # ipfs-deploy
     # jwhois
     # kefctl
     # libxls # xls2csv
@@ -35,6 +37,7 @@ let
     # speechd
     # texlive.combined.scheme-full # ghostscript collision
     # traceroute
+    # wl-recorder # wayland screen recording
     # x_x # Excel + CSV cli viewer
     (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
     (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ])) # TODO
@@ -52,7 +55,6 @@ let
     avo.colorpicker
     avo.pushover
     avo.scripts
-    avo.wsta # websocket cli
     avo.zprint # clojure pretty-printer
     awscli
     babashka
@@ -136,6 +138,7 @@ let
     fzy # fuzzy finder
     gcc
     gcolor2 # color chooser
+    geckodriver # Firefox automation
     geoipWithDatabase
     gh # github
     ghc # Haskell
@@ -205,6 +208,7 @@ let
     lastpass-cli
     lf # file navigator
     libarchive # bsdtar
+    libguestfs # for mounting qcow2 images
     libnotify
     libreoffice-fresh
     lighttable # Clojure IDE
@@ -242,10 +246,12 @@ let
     ngrok
     nix-index
     nix-prefetch-github
+    nix-prefetch-scripts
     nix-update
     nixfmt
-    nixopsUnstable
+    nixops
     nmap
+    nnn # file browser
     nodePackages.create-react-native-app
     nodePackages.expo-cli
     nodePackages.firebase-tools
@@ -294,11 +300,13 @@ let
     pwgen
     python3
     python39Packages.internetarchive
+    python3Packages.pipx # install & run Python packages in isolated environments
     pythonPackages.pygments
     qemu
     qutebrowser
     racket
     ranger
+    rclone # backups
     recode
     recutils
     remarshal # CBOR/JSON/MessagePack/TOML/YAML converter
@@ -327,9 +335,11 @@ let
     stack
     steam
     strace
+    stress-ng # benchmarking
     sublime3
     surf
     surfraw
+    sysbench # benchmarking
     t
     tcpdump
     tcpflow
@@ -338,6 +348,7 @@ let
     terraform
     tesseract
     tmate
+    tmux # terminal multiplexer
     torbrowser
     tree
     tsocks
@@ -360,15 +371,16 @@ let
     w3m
     watchman # file watcher
     wayback_machine_downloader
+    wayvnc # remote desktop
     wdiff # word diff
     wf-recorder # wayland screen recording
-    # wl-recorder # wayland screen recording
     wget
     wgetpaste
     wine
     wirelesstools
     wireshark
     with-shell # cd inside commands
+    wol # wake-on-lan
     wpa_supplicant
     wtype # GUI automation
     xdg_utils
