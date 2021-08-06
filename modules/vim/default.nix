@@ -4,14 +4,42 @@ let
   theme = import ../theme.nix;
 
   plugins = with pkgs; {
-    # parinfer-rust = vimUtils.buildVimPlugin {
-    #   name = "parinfer";
-    #   src = fetchFromGitHub {
-    #     owner = "eraserhd"; repo = "parinfer-rust";
-    #     rev = "642fec5698f21758029988890c6683763beee5fd"; sha256 = "09gr3klm057l0ix9l4qxg65s2pw669k9l4prrr9gp7z30q1y5bi8";
-    #   };
-    #   buildPhase = "HOME=$TMP ${cargo}/bin/cargo build --release";
-    # };
+    parinfer-rust = vimUtils.buildVimPlugin {
+      name = "parinfer";
+      src = (rustPlatform.buildRustPackage rec {
+        pname = "parinfer-rust";
+        version = "0.4.3";
+
+        src = fetchFromGitHub {
+          owner = "eraserhd";
+          repo = "parinfer-rust";
+          rev = "v${version}";
+          sha256 = "0hj5in5h7pj72m4ag80ing513fh65q8xlsf341qzm3vmxm3y3jgd";
+        };
+
+        cargoSha256 = "1lam4gwzcj6w0pyxf61l2cpbvvf5gmj2gwi8dangnhd60qhlnvrx";
+
+        nativeBuildInputs = [ llvmPackages.clang ];
+        buildInputs = [ llvmPackages.libclang ];
+        LIBCLANG_PATH = "${llvmPackages.libclang.lib}/lib";
+
+        postInstall = ''
+          mkdir -p $out/share/kak/autoload/plugins
+          cp rc/parinfer.kak $out/share/kak/autoload/plugins/
+          rtpPath=$out/share/vim-plugins/parinfer-rust
+          mkdir -p $rtpPath/plugin
+          sed "s,let s:libdir = .*,let s:libdir = '${placeholder "out"}/lib'," \
+            plugin/parinfer.vim >$rtpPath/plugin/parinfer.vim
+        '';
+
+        meta = with lib; {
+          description = "Infer parentheses for Clojure, Lisp, and Scheme";
+          homepage = "https://github.com/eraserhd/parinfer-rust";
+          license = licenses.isc;
+          maintainers = with maintainers; [ eraserhd ];
+        };
+      }) + "/share/vim-plugins/parinfer-rust";
+    };
 
     challenger-deep-theme = vimUtils.buildVimPlugin {
       name = "challenger-deep-theme";
@@ -194,7 +222,7 @@ let
       { name = "fzf-vim"; }
       { name = "neovim-fuzzy"; }
       { name = "nerdtree"; }
-      # { name = "parinfer-rust"; }
+      { name = "parinfer-rust"; }
       { name = "spell-fr"; }
       { name = "spell-ro"; }
       { name = "supertab"; }
@@ -210,6 +238,11 @@ let
       { name = "goyo"; }
       { name = "vim-nix"; }
       { name = "vim-iced"; }
+      { name = "vim-sexp"; }
+      { name = "vim-sexp-mappings-for-regular-people"; }
+      { name = "conjure"; }
+      { name = "rainbow_parentheses-vim"; }
+      # { name = "rainbow"; }
     ];
   };
   configure.customRC = conf;

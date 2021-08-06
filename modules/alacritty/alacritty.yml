@@ -83,10 +83,12 @@ scrolling:
 # Font configuration (changes require restart)
 font:
   normal:
-    family: Ubuntu Mono Nerd Font
-  size: 28
+    family: Source Code Pro
+    # family: Iosevka Nerd Font
+    # family: Ubuntu Mono Nerd Font
+  size: 24
   offset:
-    x: 0
+    x: -1
     y: -1
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the right,
