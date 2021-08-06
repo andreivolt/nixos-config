@@ -41,8 +41,11 @@ let
     # x_x # Excel + CSV cli viewer
     (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
     (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ])) # TODO
+    # mailutils # home-manager comsatd conflict
     (zathura.override { useMupdf = true; })
     abduco
+    jtc # json
+    envsubst
     acpi
     alsaPlugins
     alsaUtils
@@ -203,6 +206,7 @@ let
     jq
     jre # for Android
     keybase
+    keybase-gui
     kotatogram-desktop # Telegram
     lastfmsubmitd
     lastpass-cli
@@ -221,6 +225,7 @@ let
     lsyncd # sync files with remote
     ltrace
     lumo # standalone ClojureScript environment
+    lynx # terminal browser
     mailutils
     mate.caja # file manager
     matrix-commander # matrix cli
@@ -262,6 +267,7 @@ let
     nodePackages.webtorrent-cli
     notmuch
     nox # search Nix packages
+    nodejs
     nq # queue
     ntfy # send notifications, on demand and when commands finish
     nvimpager
@@ -300,6 +306,7 @@ let
     pwgen
     python3
     python39Packages.internetarchive
+    python3Packages.pip
     python3Packages.pipx # install & run Python packages in isolated environments
     pythonPackages.pygments
     qemu
@@ -307,6 +314,7 @@ let
     racket
     ranger
     rclone # backups
+    rdrview # content extractor
     recode
     recutils
     remarshal # CBOR/JSON/MessagePack/TOML/YAML converter
@@ -348,6 +356,7 @@ let
     terraform
     tesseract
     tmate
+    tmpmail # disposable email
     tmux # terminal multiplexer
     torbrowser
     tree
@@ -610,6 +619,9 @@ in {
           archivemount "$*" $tmp
           cd $tmp
         }
+
+        # overwrite previous line
+        overwrite() { echo -e "\r\033[1A\033[0K$@" }
       '';
     };
   };
