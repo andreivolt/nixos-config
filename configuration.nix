@@ -16,9 +16,11 @@ let
     # imagemin-cli
     # impressive # PDF presentations
     # ipfs-deploy
+    # jdk11 # collision
     # jwhois
     # kefctl
     # libxls # xls2csv
+    # mailutils # home-manager comsatd conflict
     # mpc
     # mpc_cli
     # mpdas
@@ -41,11 +43,8 @@ let
     # x_x # Excel + CSV cli viewer
     (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
     (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ])) # TODO
-    # mailutils # home-manager comsatd conflict
     (zathura.override { useMupdf = true; })
     abduco
-    jtc # json
-    envsubst
     acpi
     alsaPlugins
     alsaUtils
@@ -82,7 +81,8 @@ let
     cifs-utils
     clipman
     cloc # count lines of code
-    clojure
+    nixpkgsUnstable.clojure
+    clojure-lsp
     colordiff
     copyq # clipboard manager
     cups
@@ -112,6 +112,7 @@ let
     enscript # convert to PostScript
     entr # file watcher, run commands when files change
     envchain
+    envsubst
     ethtool
     evince # fill PDF forms
     exa # ls alternative
@@ -162,6 +163,7 @@ let
     google-chrome
     google-cloud-sdk
     google-drive-ocamlfuse
+    googler # google search cli
     gphotos-sync
     graphicsmagick
     graphviz
@@ -169,10 +171,8 @@ let
     gron # flatten JSON
     hachoir
     haskellPackages.apply-refact
-    haskellPackages.brittany # haskell pretty-printer
-    haskellPackages.hindent # haskell pretty-printer
     haskellPackages.hlint
-    haskellPackages.hoogle
+    haskellPackages.hnix
     haskellPackages.ShellCheck
     haskellPackages.stylish-haskell
     haskellPackages.xml-to-json
@@ -201,15 +201,16 @@ let
     iptraf-ng # network
     iw # wifi
     iwd # wifi
-    jdk
     jo # create JSON
     jq
     jre # for Android
+    jtc # json
     keybase
     keybase-gui
     kotatogram-desktop # Telegram
     lastfmsubmitd
     lastpass-cli
+    leiningen # clojure
     lf # file navigator
     libarchive # bsdtar
     libguestfs # for mounting qcow2 images
@@ -257,6 +258,7 @@ let
     nixops
     nmap
     nnn # file browser
+    nodejs
     nodePackages.create-react-native-app
     nodePackages.expo-cli
     nodePackages.firebase-tools
@@ -267,7 +269,6 @@ let
     nodePackages.webtorrent-cli
     notmuch
     nox # search Nix packages
-    nodejs
     nq # queue
     ntfy # send notifications, on demand and when commands finish
     nvimpager
@@ -354,7 +355,7 @@ let
     tdesktop # Telegram
     telnet
     terraform
-    tesseract
+    tesseract4 # ocr
     tmate
     tmpmail # disposable email
     tmux # terminal multiplexer
@@ -368,6 +369,7 @@ let
     unoconv
     unrar
     unzip
+    urlscan
     urlview
     urlwatch
     usbutils
@@ -414,12 +416,14 @@ let
   ];
 
 in {
-  imports = [
+  imports = let
+    home-manager-module =
+      let rev = "2c4234cb79684646657f9cfcd4075c3122845670";
+      in import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz"}/nixos";
+  in [
     ./hardware-configuration.nix
 
-    (let rev = "0423a7b40cd29aec0bb02fa30f61ffe60f5dfc19";
-    in import "${builtins.fetchTarball "https://github.com/rycee/home-manager/archive/${rev}.tar.gz"}/nixos")
-
+    home-manager-module
     ./cachix.nix
 
     ./profiles/gui.nix
@@ -428,7 +432,9 @@ in {
     # ./modules/weechat-matrix.nix
     ./modules/wayland/overlay.nix
     ./modules/adb.nix
+    ./modules/clojure
     ./modules/alacritty/alacritty.nix
+    ./modules/clojure/boot
     ./modules/aria2.nix
     ./modules/cloudflare-dns.nix
     ./modules/clojure/rebel-readline.nix
@@ -461,7 +467,9 @@ in {
     ./modules/mpv.nix
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
+    ./modules/keybase.nix
     ./modules/ripgrep.nix
+    ./modules/gnupg.nix
     ./modules/spotify.nix
     ./modules/sway/sway.nix
     ./modules/tor.nix
@@ -485,7 +493,17 @@ in {
 
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = [
+  nixpkgs.overlays = let
+    nixpkgsUnstable = self: super: {
+      nixpkgsUnstable = let
+        nixpkgs-unstable-src = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
+      in
+        # sudo nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
+        # nixpkgs-unstable-src = <nixpkgs-unstable>;
+        import nixpkgs-unstable-src { config = { allowUnfree = true; }; };
+    };
+  in [
+    nixpkgsUnstable
     (import ./packages)
   ];
 
@@ -513,6 +531,20 @@ in {
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
+    };
+
+    home.sessionPath = [
+      "$HOME/gdrive/bin"
+      (builtins.toString ./bin)
+    ];
+
+    xdg.mimeApps.associations.added = {
+      "x-scheme-handler/http" = "google-chrome-stable.desktop";
+      "x-scheme-handler/https" = "google-chrome-stable.desktop";
+    };
+    xdg.mimeApps.associations.removed = {
+      "x-scheme-handler/http" = "chromium-browser.desktop";
+      "x-scheme-handler/https" = "chromium-browser.desktop";
     };
 
     xdg.mimeApps.enable = true;
@@ -569,38 +601,10 @@ in {
       };
 
       plugins = with pkgs; [
-        {
-          name = "zsh-nix-shell";
-          file = "nix-shell.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "chisui";
-            repo = "zsh-nix-shell";
-            rev = "v0.2.0";
-            sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
-          };
-        }
-        {
-          name = "fast-syntax-highlighting";
-          file = "fast-syntax-highlighting.plugin.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "zdharma";
-            repo = "fast-syntax-highlighting";
-            rev = "5ed7c0fa0be5e456a131a2378af10b5c03131a7e";
-            sha256 = "0g3vzaixwjl9rjxc8waq1458kqjg8hsgsaz3ln6a1jm8cd7qca50";
-          };
-        }
-        {
-          name = "autopair";
-          file = "autopair.zsh";
-          src = pkgs.fetchFromGitHub {
-            owner = "hlissner";
-            repo = "zsh-autopair";
-            rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
-            sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
-          };
-        }
+        { name = "zsh-nix-shell"; file = "nix-shell.plugin.zsh"; src = zsh-nix-shell; }
+        { name = "fast-syntax-highlighting"; file = "fast-syntax-highlighting.plugin.zsh"; src = zsh-fast-syntax-highlighting; }
+        { name = "autopair"; file = "autopair.zsh"; src = zsh-autopair; }
       ];
-
       initExtra = ''
         # trigger completion on globbing
         setopt glob_complete
@@ -637,11 +641,6 @@ in {
   services.sshd.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
-
-  programs.gnupg.agent.enable = true;
-
-  services.keybase.enable = true;
-  services.kbfs.enable = true;
 
   # services.udisks2.enable = true;
 }
