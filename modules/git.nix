@@ -5,6 +5,9 @@
     home.file.".gitconfig".text = lib.generators.toINI { } {
       user.name = "Andrei Volt";
       user.email = "andrei@avolt.net";
+      core.excludesFile = builtins.toString (pkgs.writeText "_" ''
+        .nrepl-history
+      '');
       alias = {
         am = "commit --all --amend --no-edit";
         ap = "add --patch";

@@ -6,15 +6,19 @@ set show-all-if-ambiguous on
 # # on menu-complete, first display the common prefix, then cycle through the options when hitting TAB
 # menu-complete-display-prefix on
 
+set blink-matching-paren on
+set colored-stats on # colored completion
 set keymap vi
+set completion-display-width 0 # single column
+set completion-map-case # consider - and _ as equivalent when doing case-insensitive matching
 C-r: reverse-search-history
 C-f: forward-search-history
 C-l: clear-screen
 v: rlwrap-call-editor
 
-#set keymap vi-insert
+set keymap vi-insert
 #
 ## Pressing tab will list all completions & select the first one. Pressing it again will cycle through available completions.
-#TAB: menu-complete
+TAB: menu-complete
 ## Shift-TAB cycles completions backward
 #"\e[Z": menu-complete-backward

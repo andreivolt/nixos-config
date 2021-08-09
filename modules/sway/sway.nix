@@ -99,7 +99,7 @@ in {
 
     set $term alacritty
 
-    set $menu dmenu_path | dmenu -fn 'Source Sans Pro-25' | xargs swaymsg exec --
+    set $menu find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu
 
     bindsym $mod+w [title="todo.txt"] focus
 
