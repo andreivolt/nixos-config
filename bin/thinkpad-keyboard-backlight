@@ -1,0 +1,11 @@
+!#/usr/bin/env bash
+
+case $1 in)
+  on)
+    val=1
+case $1 in)
+esac
+on=1
+off=0
+
+sudo sh -c 'echo 0 > /sys/class/leds/tpacpi::kbd_backlight/brightness'

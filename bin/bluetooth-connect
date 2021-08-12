@@ -1,0 +1,5 @@
+bluetoothctl devices \
+| sed 's/^Device //; s/\([^ ]*\) \(.*\)/\2 \1/' \
+| menu \
+| awk '{ print $NF }' \
+| xargs bluetoothctl connect

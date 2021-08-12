@@ -1,0 +1,12 @@
+jo \
+  input=$(jo text="$*") \
+  voice=$(
+    jo \
+      languageCode=en-us \
+      name=en-US-Wavenet-C \
+      ssmlGender=FEMALE) \
+  audioConfig=$(jo audioEncoding=OGG_OPUS) \
+| http https://texttospeech.googleapis.com/v1beta1/text:synthesize key==$GCLOUD_API_KEY \
+| jq -r .audioContent \
+| base64 -d \
+| play -q -

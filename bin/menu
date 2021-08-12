@@ -1,0 +1,12 @@
+BEMENU_SCALE=2 bemenu \
+  --prompt '> ' \
+  --list 10 \
+  --bottom \
+  --ignorecase \
+  --scrollbar autohide \
+  --fn 'Ubuntu 16' \
+  --line-height 28 \
+  --nb '#000000cc' \
+  --nf '#ffffff' \
+  --sf '#ffffff' \
+  --sb '#00ff00'
