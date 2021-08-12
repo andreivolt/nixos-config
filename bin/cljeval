@@ -1,0 +1,2 @@
+socat - TCP4:localhost:40404 \
+| bb "(require 'clojure.pprint) (-> *input* :val read-string clojure.pprint/pprint)"

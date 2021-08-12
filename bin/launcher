@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+find ~/.nix-profile/share -name '*.desktop' \
+| xargs basename -s .desktop \
+| dmenu-wl \
+    --bottom \
+    --font-name 'Ubuntu 24' \
+    --height 38 \
+    --normal-background '#00000050' \
+    --normal-foreground '#ffffff' \
+    --selected-foreground '#ffffff' \
+    --selected-background '#00ff00' \
+| xargs gtk-launch
