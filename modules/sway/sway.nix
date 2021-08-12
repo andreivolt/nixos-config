@@ -165,6 +165,8 @@ in {
 
     set $scratchpad_command alacritty --class scratchpad -o 'background_opacity=${scratchpad_opacity}'
 
+    for_window [app_id="pavucontrol"] floating enable
+
     input * xkb_options ctrl:nocaps
 
     bindsym F1 exec pamixer --toggle-mute

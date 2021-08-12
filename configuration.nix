@@ -9,10 +9,13 @@ let
     # chromiumDev
     # csvtotable
     # docx2txt
+    # espeak-classic # tts
+    # firefox # TODO: xdg desktop associations
     # ghi
     # gitAndTools.diff-so-fancy
     # hachoir-subfile
     # haskellPackages.github-backup # BROKEN
+    # home-manager
     # imagemin-cli
     # impressive # PDF presentations
     # ipfs-deploy
@@ -39,6 +42,7 @@ let
     # speechd
     # texlive.combined.scheme-full # ghostscript collision
     # traceroute
+    # ungoogled-chromium # or chromium # TODO: xdg desktop associations
     # wl-recorder # wayland screen recording
     # x_x # Excel + CSV cli viewer
     (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
@@ -54,9 +58,7 @@ let
     asciinema
     at
     atool # archive
-    avo.colorpicker
     avo.pushover
-    avo.scripts
     avo.zprint # clojure pretty-printer
     awscli
     babashka
@@ -81,7 +83,6 @@ let
     cifs-utils
     clipman
     cloc # count lines of code
-    nixpkgsUnstable.clojure
     clojure-lsp
     colordiff
     copyq # clipboard manager
@@ -90,6 +91,7 @@ let
     curlie
     dateutils
     delta
+    desktop_file_utils
     discord
     dmenu-wayland
     dnscontrol
@@ -120,12 +122,11 @@ let
     exiv2 # image metadata
     expect
     fastlane # automate mobile app releases
-    fatrace
+    fatrace # file access events
     fd
     fdupes # find duplicates
     ffmpeg-full # -full for ffplay
     file
-    firefox
     flac
     flac123
     flashfocus # Wayland window animations
@@ -133,7 +134,8 @@ let
     foot # Wayland terminal
     forkstat
     fpp # path picker
-    freerdp
+    freerdp # RDP client
+    remmina # RDP client
     fswatch
     fswebcam # webcam photo
     fuse
@@ -144,7 +146,6 @@ let
     gcolor2 # color chooser
     geckodriver # Firefox automation
     geoipWithDatabase
-    gh # github
     ghc # Haskell
     ghostscript
     gifsicle
@@ -179,7 +180,6 @@ let
     heroku
     highlight # cli syntax highlighter
     himalaya # email client
-    home-manager
     html2text
     htmlTidy # html
     httpie # http client
@@ -212,6 +212,7 @@ let
     lastpass-cli
     leiningen # clojure
     lf # file navigator
+    lftp
     libarchive # bsdtar
     libguestfs # for mounting qcow2 images
     libnotify
@@ -236,6 +237,7 @@ let
     mitmproxy
     moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel
     mosh
+    apktool
     mpvc # mpv remote
     msmtp
     mtr # network diagnostics
@@ -256,6 +258,10 @@ let
     nix-update
     nixfmt
     nixops
+    nixpkgsUnstable.arcan.espeak # tts
+    nixpkgsUnstable.clojure
+    nixpkgsUnstable.gh # github
+    nixpkgsUnstable.youtube-viewer
     nmap
     nnn # file browser
     nodejs
@@ -267,11 +273,10 @@ let
     nodePackages.peerflix
     nodePackages.pnpm # nodejs package manager
     nodePackages.webtorrent-cli
-    notmuch
+    notmuch # email indexer
     nox # search Nix packages
     nq # queue
     ntfy # send notifications, on demand and when commands finish
-    nvimpager
     obex_data_server # bluetooth D-Bus
     obexd
     obexfs # bluetooth filesystem
@@ -322,6 +327,7 @@ let
     rename
     reptyr # reparent process to new terminal
     ripgrep
+    ripmime # email attachments
     rlwrap
     rmlint # find duplicates
     rsync
@@ -337,6 +343,7 @@ let
     slop # query a selection and print to stdout
     socat
     sox
+    speech-tools # tts
     speedtest_cli
     sqlite
     sshfsFuse
@@ -350,20 +357,19 @@ let
     surfraw
     sysbench # benchmarking
     t
-    tcpdump
-    tcpflow
+    tcpdump # network
+    tcpflow # network
     tdesktop # Telegram
-    telnet
-    terraform
+    telnet # network
+    terraform # ops
     tesseract4 # ocr
-    tmate
+    tmate # tmux remote sharing
     tmpmail # disposable email
     tmux # terminal multiplexer
     torbrowser
     tree
     tsocks
     ttyrec
-    ungoogled-chromium # or chromium
     unison # file sync
     units
     unoconv
@@ -409,17 +415,17 @@ let
     ydotool
     you-get
     youtube-dl
-    youtube-viewer
     ytfzf # YouTube search
     zip
     zoxide # cd alternative
   ];
 
-in {
+in rec {
   imports = let
     home-manager-module =
-      let rev = "2c4234cb79684646657f9cfcd4075c3122845670";
-      in import "${builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz"}/nixos";
+      # let rev = "b39647e52ed3c0b989e9d5c965e598ae4c38d7e";
+      let rev = "604561ba9ac45ee30385670b18f15731c541287b"; # latest
+      in import "${fetchTarball "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz"}/nixos";
   in [
     ./hardware-configuration.nix
 
@@ -449,11 +455,13 @@ in {
     ./modules/fzf.nix
     ./modules/git.nix
     ./modules/gnome-keyring.nix
+    ./modules/scanning.nix
     ./modules/grep.nix
     ./modules/hardware-video-acceleration.nix
+    ./modules/git-hub.nix
     ./modules/hardware-video-acceleration/mpv.nix
     ./modules/hidpi/console.nix
-    ./modules/hidpi/gnome.nix
+    ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hosts-blocking.nix
     ./modules/insync.nix
     ./modules/ipfs.nix
@@ -477,16 +485,16 @@ in {
     ./modules/zsh/vi.nix
   ];
 
-  system.autoUpgrade = {
-    enable = true;
-    channel = "https://nixos.org/channels/nixos-unstable";
-  };
-
   system.stateVersion = "19.09";
 
   nix = {
     gc.automatic = true;
     optimise.automatic = true;
+    nixPath = [
+      "/home/avo/gdrive/nixos-config"
+      "nixpkgs=/home/avo/gdrive/nixpkgs"
+      "nixos-config=/home/avo/nixos-config/configuration.nix"
+    ];
   };
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -495,12 +503,9 @@ in {
 
   nixpkgs.overlays = let
     nixpkgsUnstable = self: super: {
-      nixpkgsUnstable = let
-        nixpkgs-unstable-src = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
-      in
-        # sudo nix-channel --add https://nixos.org/channels/nixpkgs-unstable nixpkgs-unstable
-        # nixpkgs-unstable-src = <nixpkgs-unstable>;
-        import nixpkgs-unstable-src { config = { allowUnfree = true; }; };
+      nixpkgsUnstable =
+        let nixpkgs-unstable-src = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
+        in import nixpkgs-unstable-src { config = nixpkgs.config; };
     };
   in [
     nixpkgsUnstable
@@ -524,7 +529,7 @@ in {
 
     home.sessionVariables = {
       EDITOR = "${vim}/bin/vim";
-      PAGER = "${pkgs.page}/bin/page";
+      PAGER = "${pkgs.nvimpager}/bin/nvimpager";
       BROWSER = "${pkgs.google-chrome}/bin/google-chrome-stable";
     };
 
@@ -538,14 +543,7 @@ in {
       (builtins.toString ./bin)
     ];
 
-    xdg.mimeApps.associations.added = {
-      "x-scheme-handler/http" = "google-chrome-stable.desktop";
-      "x-scheme-handler/https" = "google-chrome-stable.desktop";
-    };
-    xdg.mimeApps.associations.removed = {
-      "x-scheme-handler/http" = "chromium-browser.desktop";
-      "x-scheme-handler/https" = "chromium-browser.desktop";
-    };
+    xdg.enable = true;
 
     xdg.mimeApps.enable = true;
     xdg.mimeApps.defaultApplications = {
@@ -642,5 +640,11 @@ in {
 
   virtualisation.virtualbox.host.enable = true;
 
+  services.avahi.enable = true;
+  services.avahi.nssmdns = true;
   # services.udisks2.enable = true;
+
+  # environment.systemPackages = [ pkgs.xdg_utils ];
+  # # printing
+  # users.users.avo.extraGroups = [ "lp" ];
 }

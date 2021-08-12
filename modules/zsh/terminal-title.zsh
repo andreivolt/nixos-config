@@ -1,1 +1,2 @@
-precmd () { echo -e "\e]2;\ue795 $(pwd)\007" }
+tty_icon="\ue795"
+preexec () { echo -e "\e]2;$tty_icon $1 ($(print -rD $PWD))\a" }
