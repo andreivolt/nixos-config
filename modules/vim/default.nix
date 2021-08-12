@@ -124,8 +124,8 @@ let
     " toggle line numbers
     map <silent> <leader>tn :set number!<CR>
     " fuzzy find
-    nnoremap <silent> <leader>b :Buffers<CR>
-    nnoremap <silent> <leader>f :Files<CR>
+    nnoremap <silent> <leader>b :LeaderfBuffer<CR>
+    nnoremap <silent> <leader>f :LeaderfFile<CR>
 
 
     map <silent> <leader>g :Goyo<CR>
@@ -166,7 +166,7 @@ let
       \ 'nvim_lsp': v:true,
       \ 'conjure': v:true,
       \ }
-''; in pkgs.neovim.override {
+''; in pkgs.nixpkgsUnstable.neovim.override {
   vimAlias = true;
   configure.vam = {
     knownPlugins = pkgs.vimPlugins // plugins;
@@ -174,9 +174,6 @@ let
     pluginDictionaries = [
       { name = "commentary"; }
       # { name = "floobits-neovim"; }
-      { name = "fzfWrapper"; }
-      { name = "fzf-vim"; }
-      { name = "neovim-fuzzy"; }
       { name = "nerdtree"; }
       { name = "parinfer-rust"; }
       { name = "spell-fr"; }
@@ -202,12 +199,20 @@ let
       { name = "vim-clojure-highlight"; }
       { name = "LanguageClient-neovim"; }
       # { name = "nvim-treesitter"; }
-      # { name = "nvim-treesitter-refactor"; }
-      # { name = "compe-conjure"; }
-      # { name = "nvim-compe"; }
-      # { name = "nvim-treesitter-context"; }
+      #{ name = "nvim-treesitter-refactor"; }
+      { name = "compe-conjure"; }
+      { name = "nvim-compe"; }
+      #{ name = "nvim-treesitter-context"; }
       { name = "open-browser-vim"; }
       { name = "vim-avanced-sorters"; }
+      { name = "vim-sort-motion"; }
+
+      # TODO: choose
+      { name = "fzfWrapper"; }
+      { name = "fzf-vim"; }
+      { name = "neovim-fuzzy"; }
+      { name = "LeaderF"; }
+      { name = "ctrlp"; }
       # { name = "rainbow"; }
     ];
   };

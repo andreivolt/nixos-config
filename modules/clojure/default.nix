@@ -2,6 +2,6 @@
 
 {
   home-manager.users.avo = { pkgs, config, ... }: {
-    home.file.".clojure/deps.edn".source = config.lib.file.mkOutOfStoreSymlink ./deps.edn;
+    xdg.configFile."clojure/deps.edn".source = config.lib.file.mkOutOfStoreSymlink ./deps.edn;
   };
 }
