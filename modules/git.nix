@@ -3,6 +3,7 @@
 {
   home-manager.users.avo.programs.git = {
     enable = true;
+    package = pkgs.gitFull;
     aliases = {
       am = "commit --all --amend --no-edit";
       ap = "add --patch";
@@ -29,6 +30,7 @@
     };
     ignores = [
       ".nrepl-history"
+      ".rebel_readline_history"
     ];
   };
 
