@@ -7,6 +7,7 @@ let
     # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
     # avo.wsta # websocket cli
     # chromiumDev
+    libxml2 # xmllint
     # csvtotable
     # docx2txt
     # espeak-classic # tts
@@ -25,6 +26,7 @@ let
     # libxls # xls2csv
     # mailutils # home-manager comsatd conflict
     # mpc
+    nixpkgsUnstable.google-chrome-dev
     # mpc_cli
     # mpdas
     # mpdris2
@@ -50,9 +52,14 @@ let
     (zathura.override { useMupdf = true; })
     abduco
     acpi
+    adb-sync
     alsaPlugins
     alsaUtils
+    # anbox # android
+    android-file-transfer # androd mtp
     antiword
+    maven
+    apktool
     archivemount
     aria
     asciinema
@@ -74,9 +81,12 @@ let
     bluez
     bluez-tools
     boot
+    breeze-gtk # gtk qt
+    breeze-qt5 # gtk qt
     broot # tree file navigator
     cabal2nix
     cachix
+    # cargo2nix # rust
     catdoc # Word/Excel/PowerPoint to text
     choose # cut/ awk alternative
     chromedriver
@@ -115,6 +125,7 @@ let
     entr # file watcher, run commands when files change
     envchain
     envsubst
+    eternal-terminal # ssh
     ethtool
     evince # fill PDF forms
     exa # ls alternative
@@ -135,7 +146,6 @@ let
     forkstat
     fpp # path picker
     freerdp # RDP client
-    remmina # RDP client
     fswatch
     fswebcam # webcam photo
     fuse
@@ -145,18 +155,22 @@ let
     gcc
     gcolor2 # color chooser
     geckodriver # Firefox automation
+    genymotion # android
     geoipWithDatabase
     ghc # Haskell
     ghostscript
     gifsicle
     gist
-    git
+    gitFull # for gitk
     git-hub
     git-imerge # Git incremental merge
     gitAndTools.tig
     glava # audio spectrum visualizer
     glib.bin
     glpaper
+    xmlto # xml converter
+    gnirehtet # android reverse tethering
+    gnome-breeze # gtk
     gnumake
     gnupg
     go
@@ -185,6 +199,7 @@ let
     httpie # http client
     httping # http benchmark
     hub # github
+    hugs # haskell
     hy # python lisp
     hydroxide # protonmail
     hyperfine # benchmarking
@@ -228,16 +243,18 @@ let
     ltrace
     lumo # standalone ClojureScript environment
     lynx # terminal browser
+    # mach # python nix # nix-env -if https://github.com/DavHau/mach-nix/tarball/3.3.0 -A mach-nix
     mailutils
     mate.caja # file manager
     matrix-commander # matrix cli
     mediainfo
     megatools
     miller # field processing for CSV
+    mimeo # mime opener
+    mimic # tts
     mitmproxy
     moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel
     mosh
-    apktool
     mpvc # mpv remote
     msmtp
     mtr # network diagnostics
@@ -277,6 +294,7 @@ let
     nox # search Nix packages
     nq # queue
     ntfy # send notifications, on demand and when commands finish
+    nvimpager
     obex_data_server # bluetooth D-Bus
     obexd
     obexfs # bluetooth filesystem
@@ -289,10 +307,13 @@ let
     pass
     patchelf
     pavucontrol
+    lxqt.pavucontrol-qt
     pciutils
     pdfgrep
     pdftk
     perl
+    perl532Packages.XMLTwig # xml_grep
+    perl532Packages.XMLXPath # xpath tool
     perl532Packages.FileMimeInfo
     pianobar
     pidgin
@@ -312,10 +333,13 @@ let
     pwgen
     python3
     python39Packages.internetarchive
+    # pip2nix # nix-env -f pip2nix/release.nix -iA pip2nix.python39
     python3Packages.pip
     python3Packages.pipx # install & run Python packages in isolated environments
     pythonPackages.pygments
     qemu
+    qt5ct # qt config
+    libsForQt5.qtstyleplugin-kvantum # qt theme engine
     qutebrowser
     racket
     ranger
@@ -324,6 +348,7 @@ let
     recode
     recutils
     remarshal # CBOR/JSON/MessagePack/TOML/YAML converter
+    remmina # RDP client
     rename
     reptyr # reparent process to new terminal
     ripgrep
@@ -370,6 +395,7 @@ let
     tree
     tsocks
     ttyrec
+    unionfs-fuse
     unison # file sync
     units
     unoconv
@@ -379,6 +405,7 @@ let
     urlview
     urlwatch
     usbutils
+    # vgo2nix # go
     vgrep # grep pager
     vifm
     vim
@@ -405,6 +432,7 @@ let
     xidel
     xlsx2csv
     xml2
+    xmlformat
     xmlindent
     xmlstarlet
     xsel
@@ -437,6 +465,7 @@ in rec {
 
     # ./modules/weechat-matrix.nix
     ./modules/wayland/overlay.nix
+    ./modules/tmux.nix
     ./modules/adb.nix
     ./modules/clojure
     ./modules/alacritty/alacritty.nix

@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.home.file."hub".text = ''
+  home-manager.users.avo.xdg.configFile."hub".text = ''
     ---
     github.com:
     - user: andreivolt

@@ -61,8 +61,8 @@ in {
     # display_width = 2560;
     # display_height = 1600;
     # scratchpad_height = builtins.floor (display_height / 1.5);
-    scratchpad_width = "1900";
-    scratchpad_height = "1100";
+    scratchpad_width = "2100";
+    scratchpad_height = "1300";
     scratchpad_position_y = "90";
     scratchpad_position_x = "300";
     scratchpad_opacity = "0.75";
