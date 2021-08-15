@@ -5,9 +5,10 @@ let
 
   packages = with pkgs; [
     # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
+    # anbox # android
     # avo.wsta # websocket cli
+    # cargo2nix # rust
     # chromiumDev
-    libxml2 # xmllint
     # csvtotable
     # docx2txt
     # espeak-classic # tts
@@ -24,9 +25,9 @@ let
     # jwhois
     # kefctl
     # libxls # xls2csv
+    # mach # python nix # nix-env -if https://github.com/DavHau/mach-nix/tarball/3.3.0 -A mach-nix
     # mailutils # home-manager comsatd conflict
     # mpc
-    nixpkgsUnstable.google-chrome-dev
     # mpc_cli
     # mpdas
     # mpdris2
@@ -34,6 +35,7 @@ let
     # perlPackages.DBDSQLite # for GNU parallel
     # perlPackages.HTMLParser
     # pfff # source code tool
+    # pip2nix # nix-env -f pip2nix/release.nix -iA pip2nix.python39
     # puppeteer-cli # compiles chrome
     # pythonPackages.ipython
     # pythonPackages.jupyter
@@ -45,6 +47,7 @@ let
     # texlive.combined.scheme-full # ghostscript collision
     # traceroute
     # ungoogled-chromium # or chromium # TODO: xdg desktop associations
+    # vgo2nix # go
     # wl-recorder # wayland screen recording
     # x_x # Excel + CSV cli viewer
     (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
@@ -55,11 +58,10 @@ let
     adb-sync
     alsaPlugins
     alsaUtils
-    # anbox # android
     android-file-transfer # androd mtp
     antiword
-    maven
     apktool
+    (lowPrio mandoc)
     archivemount
     aria
     asciinema
@@ -86,7 +88,6 @@ let
     broot # tree file navigator
     cabal2nix
     cachix
-    # cargo2nix # rust
     catdoc # Word/Excel/PowerPoint to text
     choose # cut/ awk alternative
     chromedriver
@@ -110,8 +111,9 @@ let
     docker-machine
     dogdns
     dos2unix
-    dragon-drop # drag-and-drop source/sink
-    dropbox-cli
+    dragon-drop # file drag-and-drop source/sink
+    podman # containers
+    dropbox-cli # filesharing, backup
     dstat # resource statistics
     dtach # detach from terminals
     dtrx # unarchiver
@@ -161,26 +163,25 @@ let
     ghostscript
     gifsicle
     gist
-    gitFull # for gitk
     git-hub
     git-imerge # Git incremental merge
     gitAndTools.tig
+    gitFull # for gitk
     glava # audio spectrum visualizer
     glib.bin
     glpaper
-    xmlto # xml converter
     gnirehtet # android reverse tethering
     gnome-breeze # gtk
     gnumake
     gnupg
-    go
+    go # proglang
     goldendict # dictionnary
-    google-chrome
-    google-cloud-sdk
-    google-drive-ocamlfuse
+    google-chrome # browser
+    google-cloud-sdk # cloud
+    google-drive-ocamlfuse # filesharing, backup, filesystem
     googler # google search cli
-    gphotos-sync
-    graphicsmagick
+    gphotos-sync # photos
+    graphicsmagick # image, tools
     graphviz
     grc # syntax highlighter
     gron # flatten JSON
@@ -192,8 +193,9 @@ let
     haskellPackages.stylish-haskell
     haskellPackages.xml-to-json
     heroku
-    highlight # cli syntax highlighter
+    # highlight # cli syntax highlighter
     himalaya # email client
+    hr # horizontal rule
     html2text
     htmlTidy # html
     httpie # http client
@@ -232,6 +234,8 @@ let
     libguestfs # for mounting qcow2 images
     libnotify
     libreoffice-fresh
+    libsForQt5.qtstyleplugin-kvantum # qt theme engine
+    libxml2 # xmllint
     lighttable # Clojure IDE
     linuxPackages.perf
     lm_sensors
@@ -242,11 +246,13 @@ let
     lsyncd # sync files with remote
     ltrace
     lumo # standalone ClojureScript environment
+    lxqt.pavucontrol-qt
     lynx # terminal browser
-    # mach # python nix # nix-env -if https://github.com/DavHau/mach-nix/tarball/3.3.0 -A mach-nix
     mailutils
     mate.caja # file manager
     matrix-commander # matrix cli
+    # (hiPrio mandoc)
+    maven
     mediainfo
     megatools
     miller # field processing for CSV
@@ -278,6 +284,7 @@ let
     nixpkgsUnstable.arcan.espeak # tts
     nixpkgsUnstable.clojure
     nixpkgsUnstable.gh # github
+    # nixpkgsUnstable.google-chrome-dev
     nixpkgsUnstable.youtube-viewer
     nmap
     nnn # file browser
@@ -294,6 +301,15 @@ let
     nox # search Nix packages
     nq # queue
     ntfy # send notifications, on demand and when commands finish
+    csvkit # csv
+    grab-site # web-archive
+    htop # system
+    linode-cli # cloud
+    photon # web-archive
+    pscircle # system
+    websocat # network
+    xwayland # xorg wayland
+    yq # json jq yaml
     nvimpager
     obex_data_server # bluetooth D-Bus
     obexd
@@ -307,14 +323,13 @@ let
     pass
     patchelf
     pavucontrol
-    lxqt.pavucontrol-qt
     pciutils
     pdfgrep
     pdftk
     perl
+    perl532Packages.FileMimeInfo
     perl532Packages.XMLTwig # xml_grep
     perl532Packages.XMLXPath # xpath tool
-    perl532Packages.FileMimeInfo
     pianobar
     pidgin
     play-with-mpv # open browser videos with mpv
@@ -333,13 +348,11 @@ let
     pwgen
     python3
     python39Packages.internetarchive
-    # pip2nix # nix-env -f pip2nix/release.nix -iA pip2nix.python39
     python3Packages.pip
     python3Packages.pipx # install & run Python packages in isolated environments
     pythonPackages.pygments
     qemu
     qt5ct # qt config
-    libsForQt5.qtstyleplugin-kvantum # qt theme engine
     qutebrowser
     racket
     ranger
@@ -405,7 +418,6 @@ let
     urlview
     urlwatch
     usbutils
-    # vgo2nix # go
     vgrep # grep pager
     vifm
     vim
@@ -435,6 +447,7 @@ let
     xmlformat
     xmlindent
     xmlstarlet
+    xmlto # xml converter
     xsel
     xurls
     xxd
@@ -451,17 +464,18 @@ let
 in rec {
   imports = let
     home-manager-module =
-      # let rev = "b39647e52ed3c0b989e9d5c965e598ae4c38d7e";
-      let rev = "604561ba9ac45ee30385670b18f15731c541287b"; # latest
-      in import "${fetchTarball "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz"}/nixos";
+      let
+        rev = "604561ba9ac45ee30385670b18f15731c541287b"; # latest
+        sha256 = "01mj8kqk8gv5v64dmbhx5mk0sz22cs2i0jybnlicv7318xzndzxk";
+      in import "${fetchTarball {
+        inherit sha256;
+        url = "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz";}
+      }/nixos";
   in [
     ./hardware-configuration.nix
 
     home-manager-module
     ./cachix.nix
-
-    ./profiles/gui.nix
-    ./profiles/workstation.nix
 
     # ./modules/weechat-matrix.nix
     ./modules/wayland/overlay.nix
@@ -651,8 +665,35 @@ in rec {
           cd $tmp
         }
 
+        ancestors() {
+          pstree -p --show-parents --arguments $$ --unicode \
+          | highlight yellow '(?<=,)[0-9]*'
+        }
+
+        highlight() {
+          rg \
+            --passthru \
+            --colors "match:fg:$1" --color always \
+            --pcre2 "$2"
+        }
+
+        bcat() {
+          local f=$(mktemp).html
+          cat /dev/stdin > $f
+          $BROWSER $f
+        }
+
         # overwrite previous line
-        overwrite() { echo -e "\r\033[1A\033[0K$@" }
+        overwrite() {
+          echo -e "\r\033[1A\033[0K$@"
+        }
+
+        html-man() {
+          local x=$(mktemp).html
+          man $@ \
+          | rman -f html > $x \
+          && BROWSER $x
+        }
       '';
     };
   };
@@ -663,6 +704,61 @@ in rec {
     suspendCapacity = 10;
   };
 
+
+  security.chromiumSuidSandbox.enable = true;
+  programs.chromium = {
+    # homepageLocation = "https://www.google.com";
+    # defaultSearchProviderSuggestURL = "https://encrypted.google.com/complete/search?output=chrome&q={searchTerms}";
+    # defaultSearchProviderSearchURL = "https://encrypted.google.com/search?q={searchTerms}&{google:RLZ}{google:originalQueryForSuggestion}{google:assistedQueryStats}{google:searchFieldtrialParameter}{google:searchClient}{google:sourceId}{google:instantExtendedEnabledParameter}ie={inputEncoding}";
+    enable = true;
+    extensions = [
+      "adelhekhakakocomdfejiipdnaadiiib" # Text Mode
+      "bkegjcmidjgnmjbeninfbhoaelblpgic" # Plain Text Linker
+      "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
+      "dhdgffkkebhmkfjojejmpbldmpobfkfo" # Tampermonkey
+      "dneaehbmnbhcippjikoajpoabadpodje" # Old Reddit Redirect
+      "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
+      "fpnmgdkabkmnadcjpehmlllkndpkmiak" # Wayback Machine
+      "gneobebnilffgkejpfhlgkmpkipgbcno" # Death To _blank
+      "hahklcmnfgffdlchjigehabfbiigleji" # Play with MPV
+      "hdokiejnpimakedhajhdlcegeplioahd" # LastPass: Free Password Manager
+      "hkgfoiooedgoejojocmhlaklaeopbecg" # Picture-in-Picture Extension (by Google)
+      "igiofjhpmpihnifddepnpngfjhkfenbp" # AutoPagerize
+      "jchobbjgibcahbheicfocecmhocglkco" # Neat URL
+      "jeogkiiogjbmhklcnbgkdcjoioegiknm" # Slack
+      "mgijmajocgfcbeboacabfgobmjgjcoja" # Google Dictionary (by Google)
+      "mmcgnaachjapbbchcpjihhgjhpfcnoan" # Open New Tab After Current Tab
+      "ncppfjladdkdaemaghochfikpmghbcpc" # Open-as-Popup
+      "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
+      "nlnkcinjjeoojlhdiedbbolilahmnldj" # Tab Sorter
+      "pgdnlhfefecpicbbihgmbmffkjpaplco" # uBlock Origin Extra
+      "pkedcjkdefgpdelpbcmbmeomcjbeemfm" # Chrome Media Router
+      "padekgcemlokbadohgkifijomclgjgif" # Proxy SwitchyOmega
+      "jlkpnekpomdbobkdokohimfcbgcpldfp" # QuickBlock
+      "lpcaedmchfhocbbapmcbpinfpgnhiddi" # Google Keep Chrome Extension
+      "fihnjjcciajhdojfnbdddfaoknhalnja" # I don't care about cookies
+      "iipjdmnoigaobkamfhnojmglcdbnfaaf" # Clutter Free - Prevent duplicate tabs
+      "gkmndgjgpolmikgnipipfekglbbgjcel" # AutoHideDownloadsBar
+      "hfjbmagddngcpeloejdejnfgbamkjaeg" # Vimium C - All by Keyboard
+    ];
+    extraOpts = {
+      # "BrowserSignin" = 0;
+      "WelcomePageOnOSUpgradeEnabled" = false;
+      # "SyncDisabled" = true;
+      # "PasswordManagerEnabled" = false;
+      "SpellcheckEnabled" = true;
+      "SpellcheckLanguage" = [
+        "fr-FR"
+        "en-US"
+        "ro"
+      ];
+      # "JavascriptEnabled" = false;
+      # "ManagedBookmarks" = [
+      #   { name = "example.com"; url = "https://example.com"; }
+      # ];
+    };
+  };
+
   services.upower.enable = true;
 
   services.sshd.enable = true;
@@ -671,9 +767,30 @@ in rec {
 
   services.avahi.enable = true;
   services.avahi.nssmdns = true;
+
   # services.udisks2.enable = true;
 
   # environment.systemPackages = [ pkgs.xdg_utils ];
   # # printing
   # users.users.avo.extraGroups = [ "lp" ];
+
+  programs.xwayland.enable = true;
+
+  documentation.man.generateCaches = true;
+
+  networking = {
+    hostName = builtins.getEnv "HOSTNAME";
+    enableIPv6 = false;
+    networkmanager.enable = true;
+  };
+
+  security.sudo.wheelNeedsPassword = false;
+
+  services.devmon.enable = true; # automount removable devices
+
+  environment.etc."mailcap".text = "*/*; xdg-open '%s'";
+
+  hardware.bluetooth.enable = true;
+
+  hardware.opengl.enable = true;
 }

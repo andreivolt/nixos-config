@@ -98,7 +98,7 @@
  :deps {com.bhauman/rebel-readline {:mvn/version "0.1.4"},
         org.clojure/tools.deps.alpha {:git/url "https://github.com/clojure/tools.deps.alpha"
                                       :sha "241cd24c35ba770aea4773ea161d45276e5d3a73"}
-        etaoin {:mvn/version "0.4.5"}
+        etaoin/etaoin {:mvn/version "0.4.5"}
 
         ; com.qatrend/pomegranate {:mvn/version "1.0"}
 
