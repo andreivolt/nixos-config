@@ -43,7 +43,7 @@
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hosts-blocking.nix
     ./modules/insync.nix
-    ./modules/ipfs.nix
+    # ./modules/ipfs.nix
     ./modules/kdeconnect.nix
     ./modules/keybase.nix
     ./modules/less.nix

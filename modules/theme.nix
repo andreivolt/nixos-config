@@ -8,11 +8,11 @@ rec {
     };
     inactive = {
       background = "#000000";
-      foreground = "#cccccc";
+      foreground = "#aaaaaa";
     };
     active = {
-      background = "#aaaaaa";
-      foreground = background;
+      background = "#3c3c3c";
+      foreground = foreground;
     };
   };
 
