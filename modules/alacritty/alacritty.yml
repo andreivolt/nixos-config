@@ -85,9 +85,9 @@ font:
   normal:
     # family: Source Code Pro
     # family: Iosevka Nerd Font
-    family: Ubuntu Mono Nerd Font
-    # family: Hack Nerd Font
-  size: 28
+    # family: Ubuntu Mono Nerd Font
+    family: Hack Nerd Font
+  size: 24
   offset:
     x: -1
     y: -1
