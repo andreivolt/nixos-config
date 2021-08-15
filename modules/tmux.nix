@@ -52,7 +52,7 @@ in {
   #   '';
   # };
 
-  environment.etc."tmux/tmux.conf".text = ''
+  environment.etc."tmux.conf".text = ''
     set -g @plugin 'tmux-plugins/tpm'
 
     set -g @plugin 'tmux-plugins/tmux-sensible'
@@ -80,13 +80,14 @@ in {
     set  -g set-titles on
     set  -g set-titles-string "#T"
 
-    set  -g status-style                 bg=black,fg=white
     set  -g status-left                  '''
     set  -g status-right                 ' #S '
     set  -g window-status-format         ' #I: #W '
     set  -g window-status-current-format ' #I: #W '
-    setw -g window-status-current-style  bg=black,fg=white
-    setw -g window-status-activity-style bg=yellow
+
+    set  -g status-style                 bg='${theme.dark.inactive.background}',fg='${theme.dark.inactive.foreground}'
+    setw -g window-status-activity-style bg='${theme.dark.urgent.background}',fg='${theme.dark.urgent.foreground}'
+    setw -g window-status-current-style  bg='${theme.dark.active.background}',fg='${theme.dark.active.foreground}'
 
     set status-justify left
     setw -g pane-base-index 1

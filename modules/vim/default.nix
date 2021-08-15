@@ -124,8 +124,8 @@ let
     " toggle line numbers
     map <silent> <leader>tn :set number!<CR>
     " fuzzy find
-    nnoremap <silent> <leader>b :LeaderfBuffer<CR>
-    nnoremap <silent> <leader>f :LeaderfFile<CR>
+    nnoremap <silent> <leader>b :CtrlPBuffer<CR>
+    nnoremap <silent> <leader>f :CtrlP<CR>
 
 
     map <silent> <leader>g :Goyo<CR>

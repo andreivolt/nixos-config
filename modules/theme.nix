@@ -1,5 +1,20 @@
 rec {
-  background = "#000000"; foreground = "#ccccc";
+  background = "#000000"; foreground = "#cccccc";
+
+  dark = rec {
+    urgent = {
+      background = "#f0c674";
+      foreground = background;
+    };
+    inactive = {
+      background = "#000000";
+      foreground = "#cccccc";
+    };
+    active = {
+      background = "#aaaaaa";
+      foreground = background;
+    };
+  };
 
   white_bg = "#707880"; white_fg = "#aaaaaa";
   black_bg = "#131313"; black_fg = "#373b41";
