@@ -58,16 +58,26 @@ in {
   # };
 
   environment.etc."sway/config".text = let
-    # display_width = 2560;
-    # display_height = 1600;
+    display_width = 2560;
+    display_height = 1600;
     # scratchpad_height = builtins.floor (display_height / 1.5);
-    scratchpad_width = "2100";
-    scratchpad_height = "1300";
+    scratchpad_width = builtins.replaceStrings [".000000"] [""] (toString (display_width * 0.85));
+    scratchpad_height = builtins.replaceStrings [".000000"] [""] (toString (display_height * 0.85));
     scratchpad_position_y = "90";
     scratchpad_position_x = "300";
     scratchpad_opacity = "0.75";
+    floating_window_criteria = [
+      "[app_id='imv']"
+      "[app_id='mpv']"
+      "[title='Picture in picture']"
+    ];
   in ''
     set $lock swaylock -f -c 000000
+
+    # set $height $(swaymsg -t get_tree | jq .rect.height)
+    # set $width $(swaymsg -t get_tree | jq .rect.width)
+
+    default_border none
 
     exec swayidle -w \
         timeout 1200 '$lock' \
@@ -81,12 +91,7 @@ in {
     output * scale 1
 
     # for_window [app_id="mpv"] inhibit_idle visible
-
-    for_window [app_id="mpv"] floating enable
-
-    for_window [title="Picture in picture"] floating enable
-
-    for_window [app_id="imv"] floating enable
+    ${lib.concatStringsSep "\n" (map (_: "for_window ${_} floating enable") floating_window_criteria)}
 
     set $mod Mod4
 
@@ -105,32 +110,23 @@ in {
 
     bindsym $mod+Return exec $term
     bindsym $mod+Shift+c kill
-
     bindsym Print exec grim -g "$(slurp)" - | wl-copy -t image/png
-
     bindsym $mod+p exec $menu
-
     bindsym $mod+q reload
-
     bindsym $mod+i exec colortemp up
     bindsym $mod+o exec colortemp down
-
     bindsym $mod+Tab focus right
     bindsym $mod+Shift+Tab focus left
-
     bindsym $mod+$left focus left
     bindsym $mod+$down focus down
     bindsym $mod+$up focus up
     bindsym $mod+$right focus right
-
     bindsym $mod+t layout tabbed
     bindsym $mod+s layout toggle split
-
     bindsym $mod+Shift+$left move left
     bindsym $mod+Shift+$down move down
     bindsym $mod+Shift+$up move up
     bindsym $mod+Shift+$right move right
-
     bindsym $mod+Shift+Left move left
     bindsym $mod+Shift+Down move down
     bindsym $mod+Shift+Up move up
@@ -161,7 +157,7 @@ in {
     for_window [app_id="scratchpad"] move scratchpad
     for_window [app_id="scratchpad"] scratchpad show
     for_window [app_id="scratchpad"] resize set ${scratchpad_width} ${scratchpad_height}
-    for_window [app_id="scratchpad"] move position ${scratchpad_position_x} ${scratchpad_position_y}
+    # for_window [app_id="scratchpad"] move position ${scratchpad_position_x} ${scratchpad_position_y}
 
     set $scratchpad_command alacritty --class scratchpad -o 'background_opacity=${scratchpad_opacity}'
 
@@ -173,8 +169,6 @@ in {
     bindsym F2 exec pamixer --decrease 1 && notify-send --expire-time 1000 $(pamixer --get-volume)
     bindsym F3 exec pamixer --increase 1 && notify-send --expire-time 1000 $(pamixer --get-volume)
     bindsym F4 exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
-
-    bindsym $mod+d exec notify-send --expire-time 2000 $(date +%H:%M)
 
     bindsym Home exec playerctl previous
     bindsym End exec playerctl next
