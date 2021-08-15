@@ -125,8 +125,8 @@ let
     " toggle line numbers
     map <silent> <leader>tn :set number!<CR>
     " fuzzy find
-    nnoremap <silent> <leader>b :CtrlPBuffer<CR>
-    nnoremap <silent> <leader>f :CtrlP<CR>
+    nnoremap <silent> <leader>b :CommandTBuffer<CR>
+    nnoremap <silent> <leader>f :CommandT<CR>
 
 
     let g:ctrlp_clear_cache_on_exit = 0
@@ -178,27 +178,25 @@ let
     pluginDictionaries = [
       { name = "commentary"; }
       # { name = "floobits-neovim"; }
-      { name = "nerdtree"; }
+      # { name = "nerdtree"; }
       { name = "parinfer-rust"; }
       { name = "spell-fr"; }
       { name = "vim-ripgrep"; }
       { name = "spell-ro"; }
-      { name = "supertab"; }
+      # { name = "supertab"; }
       { name = "surround"; }
-      { name = "vim-grepper"; }
+      # { name = "vim-grepper"; }
       { name = "challenger-deep-theme"; }
       { name = "vim-autoclose"; }
       { name = "vim-better-whitespace"; }
       { name = "vim-bracketed-paste"; }
       { name = "vim-eunuch"; }
-      { name = "vim-indent-guides"; }
+      # { name = "vim-indent-guides"; }
       { name = "vim-indent-object"; }
-      { name = "goyo"; }
+      # { name = "goyo"; }
       { name = "vim-nix"; }
-      { name = "vim-iced"; }
-      { name = "vim-sexp"; }
-      { name = "vim-sexp-mappings-for-regular-people"; }
-      { name = "conjure"; }
+      # { name = "vim-iced"; } # clojure
+      { name = "conjure"; } # clojure
       { name = "rainbow_parentheses-vim"; }
       { name = "vim-clojure-static"; }
       { name = "vim-clojure-highlight"; }
@@ -209,16 +207,14 @@ let
       { name = "nvim-compe"; }
       #{ name = "nvim-treesitter-context"; }
       { name = "open-browser-vim"; }
-      { name = "vim-avanced-sorters"; }
-      { name = "vim-sort-motion"; }
-
-      # TODO: choose
-      { name = "fzfWrapper"; }
-      { name = "fzf-vim"; }
-      { name = "neovim-fuzzy"; }
-      { name = "LeaderF"; }
-      { name = "ctrlp"; }
+      # { name = "vim-avanced-sorters"; }
+      # { name = "vim-sort-motion"; }
+      { name = "command-t"; }
+      { name = "vim-ripgrep"; }
       # { name = "rainbow"; }
+
+      # { name = "vim-sexp"; }
+      # { name = "vim-sexp-mappings-for-regular-people"; }
     ];
   };
   configure.customRC = conf;

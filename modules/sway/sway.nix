@@ -1,7 +1,12 @@
 { lib, pkgs, ... }:
 
 let
-  font = "Ubuntu";
+  font = {
+   family = "Ubuntu";
+   size = 36;
+  };
+  theme = import ../theme.nix;
+
 in {
   imports = [
     ./service.nix
@@ -36,7 +41,7 @@ in {
     enable = true;
     width = 500;
     backgroundColor = "#00000050";
-    font = "${font} 30";
+    font = "${font.family} ${toString font.size}";
     layer = "overlay";
     borderSize = 0;
     margin = "20";
@@ -61,34 +66,39 @@ in {
     display_width = 2560;
     display_height = 1600;
     # scratchpad_height = builtins.floor (display_height / 1.5);
-    scratchpad_width = builtins.replaceStrings [".000000"] [""] (toString (display_width * 0.85));
-    scratchpad_height = builtins.replaceStrings [".000000"] [""] (toString (display_height * 0.85));
+    scratchpad_width = builtins.replaceStrings [".000000"] [""] (toString (display_width * 0.65));
+    scratchpad_height = builtins.replaceStrings [".000000"] [""] (toString (display_height * 0.65));
     scratchpad_position_y = "90";
     scratchpad_position_x = "300";
     scratchpad_opacity = "0.75";
     floating_window_criteria = [
-      "[app_id='imv']"
-      "[app_id='mpv']"
-      "[title='Picture in picture']"
+      "[app_id=imv]"
+      "[app_id=mpv]"
+      ''[title="Picture in picture"]''
     ];
   in ''
-    set $lock swaylock -f -c 000000
+    include @sysconfdir@/sway/config.d/*
 
-    # set $height $(swaymsg -t get_tree | jq .rect.height)
-    # set $width $(swaymsg -t get_tree | jq .rect.width)
-
-    default_border none
-
+    set $lock swaylock -f -c -000001
     exec swayidle -w \
         timeout 1200 '$lock' \
         timeout 180 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
         timeout 7200 'systemctl suspend' \
         before-sleep '$lock'
-
     exec mako
 
+    # set $height $(swaymsg -t get_tree | jq .rect.height)
+    # set $width $(swaymsg -t get_tree | jq .rect.width)
+
+    default_border none
+    smart_borders on
+    # hide_edge_borders both
+
+    bar mode invisible
+    titlebar_padding 20 8
+
+
     output * background #000000 solid_color
-    output * scale 1
 
     # for_window [app_id="mpv"] inhibit_idle visible
     ${lib.concatStringsSep "\n" (map (_: "for_window ${_} floating enable") floating_window_criteria)}
@@ -100,13 +110,9 @@ in {
     set $up k
     set $right l
 
-    # hide_edge_borders both
-
     set $term alacritty
 
     set $menu find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu
-
-    bindsym $mod+w [title="todo.txt"] focus
 
     bindsym $mod+Return exec $term
     bindsym $mod+Shift+c kill
@@ -147,12 +153,6 @@ in {
 
     floating_modifier $mod normal
 
-    bar mode invisible
-
-    include @sysconfdir@/sway/config.d/*
-
-    titlebar_padding 20 8
-
     for_window [app_id="scratchpad"] floating enable
     for_window [app_id="scratchpad"] move scratchpad
     for_window [app_id="scratchpad"] scratchpad show
@@ -192,7 +192,7 @@ in {
     set $text $white
     set $indicator $black
     set $child_border $blue
-    client.focused $border $background $text $indicator $child_border
+    client.focused ${theme.dark.active.background} ${theme.dark.active.background} ${theme.dark.active.foreground} $indicator $child_border
 
     set $border $black
     set $background $black
@@ -221,7 +221,7 @@ in {
       middle_emulation enabled
     }
 
-    font pango:Ubuntu 18
+    font pango:${font.family} 22
 
     bindsym F5 mode "default"
 
@@ -255,8 +255,6 @@ in {
 
     # Swap focus between the tiling area and the floating area
     bindsym $mod+space focus mode_toggle
-
-    smart_borders on
   '';
 
   systemd.user.targets.sway-session = {
