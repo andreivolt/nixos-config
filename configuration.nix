@@ -1,6 +1,6 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, config, ... }:
 
-rec {
+{
   imports = let
     home-manager-module =
       let
@@ -17,30 +17,27 @@ rec {
     ./cachix.nix
 
     # ./modules/weechat-matrix.nix
-    ./modules/wayland/overlay.nix
-    ./modules/tmux.nix
     ./modules/adb.nix
-    ./modules/clojure
     ./modules/alacritty/alacritty.nix
-    ./modules/clojure/boot
     ./modules/aria2.nix
-    ./modules/cloudflare-dns.nix
+    ./modules/chrome
+    ./modules/clojure
+    ./modules/clojure/boot
     ./modules/clojure/rebel-readline.nix
+    ./modules/cloudflare-dns.nix
     ./modules/command-not-found.nix
     ./modules/curl.nix
-    ./modules/gtk.nix
-    ./modules/weechat.nix
     ./modules/docker.nix
-    ./modules/libvirt.nix
     ./modules/firefox-wayland.nix
     ./modules/fonts.nix
     ./modules/fzf.nix
+    ./modules/git-hub.nix
     ./modules/git.nix
     ./modules/gnome-keyring.nix
-    ./modules/scanning.nix
+    ./modules/gnupg.nix
     ./modules/grep.nix
+    ./modules/gtk.nix
     ./modules/hardware-video-acceleration.nix
-    ./modules/git-hub.nix
     ./modules/hardware-video-acceleration/mpv.nix
     ./modules/hidpi/console.nix
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
@@ -48,8 +45,9 @@ rec {
     ./modules/insync.nix
     ./modules/ipfs.nix
     ./modules/kdeconnect.nix
+    ./modules/keybase.nix
     ./modules/less.nix
-    ./modules/moreutils-without-parallel/overlay.nix
+    ./modules/libvirt.nix
     ./modules/locate.nix
     ./modules/lowbatt.nix
     ./modules/map-test-tld-to-localhost.nix
@@ -57,12 +55,14 @@ rec {
     ./modules/mpv.nix
     ./modules/pipewire.nix
     ./modules/readline/inputrc.nix
-    ./modules/keybase.nix
     ./modules/ripgrep.nix
-    ./modules/gnupg.nix
+    ./modules/scanning.nix
     ./modules/spotify.nix
     ./modules/sway/sway.nix
+    ./modules/tmux.nix
     ./modules/tor.nix
+    ./modules/wayland/overlay.nix
+    ./modules/weechat.nix
     ./modules/zsh/fzf.nix
     ./modules/zsh/vi.nix
   ];
@@ -115,16 +115,6 @@ rec {
 
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = let
-    nixpkgsUnstable = self: super: {
-      nixpkgsUnstable =
-        let nixpkgs-unstable-src = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
-        in import nixpkgs-unstable-src { config = nixpkgs.config; };
-    };
-  in [
-    nixpkgsUnstable
-    (import ./packages)
-  ];
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -141,6 +131,23 @@ rec {
   home-manager.users.avo = { pkgs, ... }: let
     vim = pkgs.callPackage ./modules/vim { };
   in rec {
+    nixpkgs.overlays = let
+      nixpkgsUnstable = self: super: {
+        nixpkgsUnstable =
+          let nixpkgs-unstable-src = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
+          in import nixpkgs-unstable-src { };
+      };
+    in [
+      (self: super: {
+        moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
+          postInstall = attrs.postInstall + "\n"
+          + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+        });
+      })
+      nixpkgsUnstable
+      (import ./packages)
+    ];
+
     home.packages = with pkgs; [
       # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
       # anbox # android
@@ -188,6 +195,7 @@ rec {
       # vgo2nix # go
       # wl-recorder # wayland screen recording
       # x_x # Excel + CSV cli viewer
+
       (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
       (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ])) # TODO
       (zathura.override { useMupdf = true; })
@@ -278,6 +286,7 @@ rec {
       fdupes # find duplicates
       ffmpeg-full # -full for ffplay
       file
+      ripgrep-all
       flac
       flac123
       flashfocus # Wayland window animations
@@ -665,6 +674,7 @@ rec {
 
       shellAliases = {
         ls = "ls --human-readable --classify";
+        git = "GPG_TTY=$(tty) git";
         l = "ls -1";
         la = "ls -a";
         ll = "ls -l";
@@ -673,18 +683,16 @@ rec {
       };
 
       plugins = with pkgs; [
-        { name = "zsh-nix-shell"; file = "nix-shell.plugin.zsh"; src = zsh-nix-shell; }
-        { name = "fast-syntax-highlighting"; file = "fast-syntax-highlighting.plugin.zsh"; src = zsh-fast-syntax-highlighting; }
-        # {
-        #   name = "zsh-nix-shell";
-        #   file = "nix-shell.plugin.zsh";
-        #   src = fetchFromGitHub {
-        #     owner = "chisui";
-        #     repo = "zsh-nix-shell";
-        #     rev = "v0.2.0";
-        #     sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
-        #   };
-        # }
+        {
+          name = "zsh-nix-shell";
+          file = "nix-shell.plugin.zsh";
+          src = fetchFromGitHub {
+            owner = "chisui";
+            repo = "zsh-nix-shell";
+            rev = "v0.2.0";
+            sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
+          };
+        }
         # {
         #   name = "fast-syntax-highlighting";
         #   file = "fast-syntax-highlighting.plugin.zsh";
@@ -762,60 +770,5 @@ rec {
     enable = true;
     notifyCapacity = 40;
     suspendCapacity = 10;
-  };
-
-
-  security.chromiumSuidSandbox.enable = true;
-  programs.chromium = {
-    # homepageLocation = "https://www.google.com";
-    # defaultSearchProviderSuggestURL = "https://encrypted.google.com/complete/search?output=chrome&q={searchTerms}";
-    # defaultSearchProviderSearchURL = "https://encrypted.google.com/search?q={searchTerms}&{google:RLZ}{google:originalQueryForSuggestion}{google:assistedQueryStats}{google:searchFieldtrialParameter}{google:searchClient}{google:sourceId}{google:instantExtendedEnabledParameter}ie={inputEncoding}";
-    enable = true;
-    extensions = [
-      "adelhekhakakocomdfejiipdnaadiiib" # Text Mode
-      "bkegjcmidjgnmjbeninfbhoaelblpgic" # Plain Text Linker
-      "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
-      "dhdgffkkebhmkfjojejmpbldmpobfkfo" # Tampermonkey
-      "dneaehbmnbhcippjikoajpoabadpodje" # Old Reddit Redirect
-      "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
-      "fpnmgdkabkmnadcjpehmlllkndpkmiak" # Wayback Machine
-      "gneobebnilffgkejpfhlgkmpkipgbcno" # Death To _blank
-      "hahklcmnfgffdlchjigehabfbiigleji" # Play with MPV
-      "hdokiejnpimakedhajhdlcegeplioahd" # LastPass: Free Password Manager
-      "hkgfoiooedgoejojocmhlaklaeopbecg" # Picture-in-Picture Extension (by Google)
-      "igiofjhpmpihnifddepnpngfjhkfenbp" # AutoPagerize
-      "jchobbjgibcahbheicfocecmhocglkco" # Neat URL
-      "jeogkiiogjbmhklcnbgkdcjoioegiknm" # Slack
-      "mgijmajocgfcbeboacabfgobmjgjcoja" # Google Dictionary (by Google)
-      "mmcgnaachjapbbchcpjihhgjhpfcnoan" # Open New Tab After Current Tab
-      "ncppfjladdkdaemaghochfikpmghbcpc" # Open-as-Popup
-      "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
-      "nlnkcinjjeoojlhdiedbbolilahmnldj" # Tab Sorter
-      "pgdnlhfefecpicbbihgmbmffkjpaplco" # uBlock Origin Extra
-      "pkedcjkdefgpdelpbcmbmeomcjbeemfm" # Chrome Media Router
-      "padekgcemlokbadohgkifijomclgjgif" # Proxy SwitchyOmega
-      "jlkpnekpomdbobkdokohimfcbgcpldfp" # QuickBlock
-      "lpcaedmchfhocbbapmcbpinfpgnhiddi" # Google Keep Chrome Extension
-      "fihnjjcciajhdojfnbdddfaoknhalnja" # I don't care about cookies
-      "iipjdmnoigaobkamfhnojmglcdbnfaaf" # Clutter Free - Prevent duplicate tabs
-      "gkmndgjgpolmikgnipipfekglbbgjcel" # AutoHideDownloadsBar
-      # "hfjbmagddngcpeloejdejnfgbamkjaeg" # Vimium C - All by Keyboard
-    ];
-    extraOpts = {
-      # "BrowserSignin" = 0;
-      "WelcomePageOnOSUpgradeEnabled" = false;
-      # "SyncDisabled" = true;
-      # "PasswordManagerEnabled" = false;
-      "SpellcheckEnabled" = true;
-      "SpellcheckLanguage" = [
-        "fr-FR"
-        "en-US"
-        "ro"
-      ];
-      # "JavascriptEnabled" = false;
-      # "ManagedBookmarks" = [
-      #   { name = "example.com"; url = "https://example.com"; }
-      # ];
-    };
   };
 }

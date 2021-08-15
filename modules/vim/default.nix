@@ -12,6 +12,7 @@ let
     spell-fr = import ./plugins/spell-fr.nix;
     vim-autoclose = import ./plugins/vim-autoclose.nix;
     vim-avanced-sorters = import ./plugins/vim-advanced-sorters.nix;
+    vim-ripgrep = import ./plugins/vim-advanced-sorters.nix;
   };
 
   conf = with theme; ''
@@ -128,6 +129,9 @@ let
     nnoremap <silent> <leader>f :CtrlP<CR>
 
 
+    let g:ctrlp_clear_cache_on_exit = 0
+
+
     map <silent> <leader>g :Goyo<CR>
 
     ${import ./colorscheme.nix { inherit theme; } }
@@ -177,6 +181,7 @@ let
       { name = "nerdtree"; }
       { name = "parinfer-rust"; }
       { name = "spell-fr"; }
+      { name = "vim-ripgrep"; }
       { name = "spell-ro"; }
       { name = "supertab"; }
       { name = "surround"; }
