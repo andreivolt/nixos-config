@@ -28,9 +28,11 @@ in {
     swayidle
     swaylock
     wmfocus # window picker
+    wob
     wl-clipboard
     kanshi  # display configuration
     wdisplays  # display configuration
+    swaybg
     oguri # animated background
     waybar
     xwayland
@@ -63,20 +65,42 @@ in {
   # };
 
   environment.etc."sway/config".text = let
-    display_width = 2560;
-    display_height = 1600;
+    display = { width = 2560; height = 1600; };
     # scratchpad_height = builtins.floor (display_height / 1.5);
-    scratchpad_width = builtins.replaceStrings [".000000"] [""] (toString (display_width * 0.65));
-    scratchpad_height = builtins.replaceStrings [".000000"] [""] (toString (display_height * 0.65));
-    scratchpad_position_y = "90";
-    scratchpad_position_x = "300";
-    scratchpad_opacity = "0.75";
+    scratchpad = rec {
+      width = display.width * 0.83;
+      height = width / 1.5;
+      pos_y = 0;
+      pos_x = (display.width - width) / 2;
+      opacity = 0.75;
+    };
     floating_window_criteria = [
       "[app_id=imv]"
       "[app_id=mpv]"
       ''[title="Picture in picture"]''
     ];
+    x = x: builtins.elemAt (builtins.match "(.*).{7}" (toString x)) 0;
+    # set $scratchpad.width ${x scratchpad.width}
+    # set $scratchpad.height ${x scratchpad.height}
+    # set $scratchpad.pos_x ${toString scratchpad.pos_x}
+    # set $scratchpad.pos_y ${x scratchpad.pos_y}
+    # set $scratchpad.opacity ${x scratchpad.opacity}
   in ''
+    set $scratchpad.width 2560
+    set $scratchpad.height 1440
+    set $scratchpad.pos_x 0
+    set $scratchpad.pos_y 0
+    set $scratchpad.opacity 0.75
+
+    # set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
+    # exec mkfifo $WOBSOCK && tail -f $WOBSOCK | wob
+    # exec mkfifo /tmp/wob.sock && tail -f /tmp/wob.sock | wob
+    # set $WOBSOCK $XDG_RUNTIME_DIR/wob.sock
+    set $WOBSOCK /tmp/wob.sock
+    exec mkfifo /tmp/wob.sock
+    exec tail -f /tmp/wob.sock | wob
+
+
     include @sysconfdir@/sway/config.d/*
 
     set $lock swaylock -f -c -000001
@@ -86,6 +110,11 @@ in {
         timeout 7200 'systemctl suspend' \
         before-sleep '$lock'
     exec mako
+
+    # store clipboard history
+    exec wl-paste -t text --watch clipman store
+    # restore last history item at startup
+    exec clipman restore
 
     # set $height $(swaymsg -t get_tree | jq .rect.height)
     # set $width $(swaymsg -t get_tree | jq .rect.width)
@@ -97,6 +126,7 @@ in {
     bar mode invisible
     titlebar_padding 20 8
 
+    output * scale 1
 
     output * background #000000 solid_color
 
@@ -110,7 +140,7 @@ in {
     set $up k
     set $right l
 
-    set $term alacritty
+    set $term wayst
 
     set $menu find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu
 
@@ -153,21 +183,21 @@ in {
 
     floating_modifier $mod normal
 
-    for_window [app_id="scratchpad"] floating enable
-    for_window [app_id="scratchpad"] move scratchpad
-    for_window [app_id="scratchpad"] scratchpad show
-    for_window [app_id="scratchpad"] resize set ${scratchpad_width} ${scratchpad_height}
-    # for_window [app_id="scratchpad"] move position ${scratchpad_position_x} ${scratchpad_position_y}
+    for_window [app_id=scratchpad] floating enable
+    for_window [app_id=scratchpad] move scratchpad
+    for_window [app_id=scratchpad] scratchpad show
+    for_window [app_id=scratchpad] resize set $scratchpad.width $scratchpad.height
+    for_window [app_id=scratchpad] move position $scratchpad.pos_x $scratchpad.pos_y
 
-    set $scratchpad_command alacritty --class scratchpad -o 'background_opacity=${scratchpad_opacity}'
+    set $scratchpad_command alacritty --app-id scratchpad -o 'background_opacity=$scratchpad.opacity'
 
     for_window [app_id="pavucontrol"] floating enable
 
     input * xkb_options ctrl:nocaps
 
-    bindsym F1 exec pamixer --toggle-mute
-    bindsym F2 exec pamixer --decrease 1 && notify-send --expire-time 1000 $(pamixer --get-volume)
-    bindsym F3 exec pamixer --increase 1 && notify-send --expire-time 1000 $(pamixer --get-volume)
+    bindsym F1 exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > $WOBSOCK ) || pamixer --get-volume > $WOBSOCK
+    bindsym F2 exec pamixer --decrease 3 && pamixer --get-volume > $WOBSOCK
+    bindsym F3 exec pamixer --increase 3 && pamixer --get-volume > $WOBSOCK
     bindsym F4 exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
 
     bindsym Home exec playerctl previous

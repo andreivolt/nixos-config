@@ -149,6 +149,16 @@
     ];
 
     home.packages = with pkgs; [
+      appimage-run
+      cargo
+      gnome.gnome-tweaks
+      # poetry2nix # TODO
+      swappy # image annotation
+      telegram-cli
+      vieb
+      wayst # terminal
+      # (hiPrio mandoc)
+      # tg # TODO
       # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
       # anbox # android
       # avo.wsta # websocket cli
@@ -162,6 +172,7 @@
       # gitAndTools.diff-so-fancy
       # hachoir-subfile
       # haskellPackages.github-backup # BROKEN
+      # highlight # cli syntax highlighter
       # home-manager
       # imagemin-cli
       # impressive # PDF presentations
@@ -177,6 +188,7 @@
       # mpdas
       # mpdris2
       # mpdscribble # MPD scrobbler
+      # nixpkgsUnstable.google-chrome-dev
       # perlPackages.DBDSQLite # for GNU parallel
       # perlPackages.HTMLParser
       # pfff # source code tool
@@ -193,11 +205,13 @@
       # traceroute
       # ungoogled-chromium # or chromium # TODO: xdg desktop associations
       # vgo2nix # go
+      # vimiv # image viewer, vim # TODO: broken
       # wl-recorder # wayland screen recording
       # x_x # Excel + CSV cli viewer
-
+      # zoom-us
       (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
       (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ])) # TODO
+      (lowPrio mandoc)
       (zathura.override { useMupdf = true; })
       abduco
       acpi
@@ -207,7 +221,6 @@
       android-file-transfer # androd mtp
       antiword
       apktool
-      (lowPrio mandoc)
       archivemount
       aria
       asciinema
@@ -225,6 +238,7 @@
       bindfs
       binutils
       bitcoin
+      blender
       bluetooth_battery
       bluez
       bluez-tools
@@ -243,9 +257,12 @@
       clojure-lsp
       colordiff
       copyq # clipboard manager
+      crudini # manipulate ini files
+      csvkit # csv
       cups
       curl
       curlie
+      cv # progress viewer
       dateutils
       delta
       desktop_file_utils
@@ -258,7 +275,6 @@
       dogdns
       dos2unix
       dragon-drop # file drag-and-drop source/sink
-      podman # containers
       dropbox-cli # filesharing, backup
       dstat # resource statistics
       dtach # terminal, detach
@@ -269,6 +285,7 @@
       efibootmgr # system
       efivar # system
       elixir # proglang
+      elvish
       enscript # convert to PostScript
       entr # file-watcher
       envchain # security
@@ -286,7 +303,6 @@
       fdupes # find duplicates
       ffmpeg-full # -full for ffplay
       file
-      ripgrep-all
       flac
       flac123
       flashfocus # Wayland window animations
@@ -310,7 +326,6 @@
       ghostscript
       gifsicle
       gist # github
-      crudini # manipulate ini files
       git-hub # github
       git-imerge # Git incremental merge
       gitAndTools.tig
@@ -329,6 +344,7 @@
       google-drive-ocamlfuse # filesharing, backup, filesystem
       googler # google search cli
       gphotos-sync # photos
+      grab-site # web-archive
       graphicsmagick # image, tools
       graphviz
       grc # syntax highlighter
@@ -341,11 +357,11 @@
       haskellPackages.stylish-haskell
       haskellPackages.xml-to-json
       heroku
-      # highlight # cli syntax highlighter
       himalaya # email client
       hr # horizontal rule
       html2text
       htmlTidy # html
+      htop # system
       httpie # http client
       httping # http benchmark
       hub # github
@@ -360,14 +376,13 @@
       imv # image viewer
       inkscape
       inotify-tools # file watcher
-      inxi
       iotop # network
-      ipfs
+      ipfs # decentralized
       iptraf-ng # network
       iw # wifi
       iwd # wifi
       jo # create JSON
-      jq
+      jq # json
       jre # for Android
       jtc # json
       keybase
@@ -377,70 +392,70 @@
       lastpass-cli
       leiningen # clojure
       lf # file navigator
-      lftp
+      lftp # ftp
       libarchive # bsdtar
       libguestfs # for mounting qcow2 images
-      libnotify
+      libnotify # ui
       libreoffice-fresh
       libsForQt5.qtstyleplugin-kvantum # qt theme engine
       libxml2 # xmllint
       lighttable # Clojure IDE
+      linode-cli # cloud
       linuxPackages.perf
       lm_sensors
       lnav # logfile navigator
       lsd # ls alternative
-      lshw
-      lsof
+      lshw # system
+      lsof # system
       lsyncd # sync files with remote
-      ltrace
+      ltrace # system
       lumo # standalone ClojureScript environment
       lxqt.pavucontrol-qt
       lynx # terminal browser
-      mailutils
+      mailutils # email
       mate.caja # file manager
       matrix-commander # matrix cli
-      # (hiPrio mandoc)
-      maven
+      maven # package-management
       mediainfo
       megatools
+      meld # diff
       miller # field processing for CSV
       mimeo # mime opener
       mimic # tts
       mitmproxy
-      moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel
-      mosh
+      moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel # for vipe & vidir
+      mosh # ssh
       mpvc # mpv remote
-      msmtp
+      msmtp # email
       mtr # network diagnostics
-      multitail
-      ncdu
+      multitail # system
+      ncdu # disk usage
       neochat # matrix client
-      neomutt
-      neovide
+      neomutt # email
+      neovide # text editor
       net-snmp # network
-      netcat
-      nethogs
-      netlify-cli
-      ngrep
-      ngrok
-      nix-index
-      nix-prefetch-github
-      nix-prefetch-scripts
-      nix-update
-      nixfmt
-      nixops
+      netcat # networking
+      nethogs # system, networking
+      netlify-cli # cloud
+      ngrep # networking
+      ngrok # networking
+      nix-index # nixos
+      nix-prefetch-github # nixos
+      nix-prefetch-scripts # nixos
+      nix-update # nixos
+      nixfmt # nixos
+      nixops # cloud, nixos
       nixpkgsUnstable.arcan.espeak # tts
       nixpkgsUnstable.clojure
       nixpkgsUnstable.gh # github
-      # nixpkgsUnstable.google-chrome-dev
       nixpkgsUnstable.youtube-viewer
-      nmap
+      nmap # network
       nnn # file browser
-      nodejs
+      nodejs # proglang
       nodePackages.create-react-native-app
-      nodePackages.expo-cli
-      nodePackages.firebase-tools
-      nodePackages.node2nix
+      nodePackages.expo-cli # android
+      nodePackages.firebase-tools # cloud
+      nodePackages.node2nix # package-management
       nodePackages.nodemon
       nodePackages.peerflix
       nodePackages.pnpm # nodejs package manager
@@ -449,72 +464,70 @@
       nox # search Nix packages
       nq # queue
       ntfy # send notifications, on demand and when commands finish
-      csvkit # csv
-      grab-site # web-archive
-      htop # system
-      linode-cli # cloud
-      photon # web-archive
-      pscircle # system
-      websocat # network
-      xwayland # xorg wayland
-      yq # json jq yaml
-      nvimpager
-      obex_data_server # bluetooth D-Bus
-      obexd
+      nushell
+      nvimpager # vim
+      obex_data_server # bluetooth, d-bus
+      obexd # bluetooth
       obexfs # bluetooth filesystem
       openssl
-      optipng
-      page
-      pamixer
+      optipng # images
+      page # vim
+      pamixer # audio
       pandoc
       parallel
-      pass
+      pass # security
       patchelf
-      pavucontrol
-      pciutils
+      pavucontrol # audio
+      pciutils # system
       pdfgrep
       pdftk
-      perl
+      perl # proglang
       perl532Packages.FileMimeInfo
       perl532Packages.XMLTwig # xml_grep
       perl532Packages.XMLXPath # xpath tool
-      pianobar
-      pidgin
+      photon # web-archive
+      pianobar # audio
+      pidgin # chat
       play-with-mpv # open browser videos with mpv
       playerctl # mpris cli
-      ponymix
+      podman # containers
+      ponymix # audio, system
       poppler_utils # pdf2text
       pqiv # image viewer
-      procmail
+      procmail # email
       procs # ps alternative
       projectm # music visualizer
+      proot
       protonmail-bridge # protonmail
-      protonvpn-cli
+      protonvpn-cli # networking
+      pscircle # system
       psmisc
-      pup
+      pup # html
       pv # pipe viewer
-      pwgen
-      python3
-      python39Packages.internetarchive
-      python3Packages.pip
+      pwgen # security
+      python3 # proglang
+      python39Packages.internetarchive # internet-archive
+      python3Packages.pip # proglang, packaging
       python3Packages.pipx # install & run Python packages in isolated environments
-      pythonPackages.pygments
-      qemu
+      pythonPackages.pygments # colors, proglang
+      qemu # virtualization
       qt5ct # qt config
-      qutebrowser
-      racket
-      ranger
+      qutebrowser # browser, vim
+      racket # proglang
+      ranger # vim, file-browser
       rclone # backups
       rdrview # content extractor
-      recode
+      recode # encoding
       recutils
       remarshal # CBOR/JSON/MessagePack/TOML/YAML converter
       remmina # RDP client
       rename
       reptyr # reparent process to new terminal
       ripgrep
+      ripgrep-all
       ripmime # email attachments
       rlwrap
+      rman
       rmlint # find duplicates
       rsync
       ruby
@@ -555,7 +568,7 @@
       torbrowser
       tree
       tsocks
-      ttyrec
+      ttyrec # terminal, collaboration
       unionfs-fuse
       unison # file sync
       units
@@ -563,13 +576,15 @@
       unrar
       unzip
       urlscan
-      urlview
+      urlview # terminal, ui
       urlwatch
       usbutils
+      vagrant # virtualization
       vgrep # grep pager
       vifm
       vim
-      virt-viewer
+      vimv # image viewer, vim
+      virt-viewer # virtualization
       virtualbox
       vlc
       w3m
@@ -577,6 +592,7 @@
       wayback_machine_downloader
       wayvnc # remote desktop
       wdiff # word diff
+      websocat # network
       wf-recorder # wayland screen recording
       wget
       wgetpaste
@@ -593,18 +609,19 @@
       xlsx2csv
       xml2
       xmlformat
-      rman
       xmlindent
       xmlstarlet
       xmlto # xml converter
       xsel
       xurls
+      xwayland # xorg wayland
       xxd
       yarn
       yarn2nix
       ydotool
       you-get
       youtube-dl
+      yq # json jq yaml
       ytfzf # YouTube search
       zip
       zoxide # cd alternative
@@ -635,7 +652,7 @@
       "image/png" = "imv.desktop";
       "text/html" = "google-chrome-stable.desktop";
       "text/plain" = "neovide.desktop";
-      "video/mp4" = "mpv.desktop";
+      "video/mp4" = "vlc";
       "x-scheme-handler/http" = "google-chrome-stable.desktop";
       "x-scheme-handler/https" = "google-chrome-stable.desktop";
       "x-scheme-handler/tg" = "telegramdesktop.desktop";
