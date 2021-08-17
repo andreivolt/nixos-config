@@ -83,8 +83,9 @@ scrolling:
 # Font configuration (changes require restart)
 font:
   normal:
-    family: Ubuntu Mono Nerd Font
-  size: 28
+    # family: Ubuntu Mono Nerd Font
+    family: JetBrainsMono Nerd Font Mono
+  size: 24
   offset:
     x: -1
     y: -1

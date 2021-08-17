@@ -4,28 +4,10 @@ in {
   #   enable = true;
 
   #   extraConfig = ''
-  #     set -g @plugin 'tmux-plugins/tpm'
 
-  #     set -g @plugin 'tmux-plugins/tmux-sensible'
-
-  #     set -g @plugin 'tmux-plugins/tmux-pain-control'
-
-  #     set -g @plugin 'nhdaly/tmux-better-mouse-mode'
   #     set -g @scroll-speed-num-lines-per-scroll 1
   #     set -g mouse on
 
-  #     set -g @plugin 'tmux-plugins/tmux-copycat'
-  #     set -g @plugin 'tmux-plugins/tmux-yank'
-  #     # bind -T copy-mode-vi v   send -X begin-selection
-  #     # bind -T copy-mode-vi C-v send -X rectangle-toggle
-  #     # bind -T copy-mode-vi y   send -X copy-selection
-  #     unbind               p
-  #     bind                 p   paste-buffer
-
-  #     if "test ! -d ~/.tmux/plugins/tpm" \
-  #       "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
-
-  #     run '~/.tmux/plugins/tpm/tpm'
 
   #     set  -g base-index 1
   #     set  -g renumber-windows on
@@ -54,12 +36,11 @@ in {
 
   environment.etc."tmux.conf".text = ''
     set -g @plugin 'tmux-plugins/tpm'
-
     set -g @plugin 'tmux-plugins/tmux-sensible'
-
     set -g @plugin 'tmux-plugins/tmux-pain-control'
-
     set -g @plugin 'nhdaly/tmux-better-mouse-mode'
+
+
     set -g @scroll-speed-num-lines-per-scroll 1
     set -g mouse on
 
@@ -69,10 +50,14 @@ in {
     bind -T copy-mode-vi v   send -X begin-selection
     bind -T copy-mode-vi C-v send -X rectangle-toggle
     bind -T copy-mode-vi y   send -X copy-selection
-    unbind p
-    bind   p paste-buffer
+    # unbind p
+    # bind   p paste-buffer
 
+
+    # if "test ! -d ~/.tmux/plugins/tpm" \
+    #   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
     run '~/.tmux/plugins/tpm/tpm'
+
 
     set  -g base-index 1
     set  -g renumber-windows on

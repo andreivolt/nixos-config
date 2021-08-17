@@ -8,4 +8,3 @@
 
 (in-ns boot.user
   (def mktemp java.io.File/createTempFile))
-
