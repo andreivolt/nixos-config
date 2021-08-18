@@ -4,7 +4,7 @@
   imports = let
     home-manager-module =
       let
-        rev = "604561ba9ac45ee30385670b18f15731c541287b"; # latest
+        rev = "604561ba9ac45ee30385670b18f15731c541287b";
         sha256 = "01mj8kqk8gv5v64dmbhx5mk0sz22cs2i0jybnlicv7318xzndzxk";
       in import "${fetchTarball {
         inherit sha256;
@@ -31,7 +31,8 @@
     ./modules/firefox-wayland.nix
     ./modules/fonts.nix
     ./modules/fzf.nix
-    ./modules/git-hub.nix
+    ./modules/emacs.nix
+    ./modules/github.nix
     ./modules/git.nix
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
@@ -114,7 +115,6 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   nixpkgs.config.allowUnfree = true;
-
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -307,7 +307,6 @@
       flac123
       flashfocus # Wayland window animations
       flyctl # fly.io
-      foot # Wayland terminal
       forkstat
       fpp # path picker
       freerdp # RDP client
@@ -458,7 +457,6 @@
       nodePackages.node2nix # package-management
       nodePackages.nodemon
       nodePackages.peerflix
-      nodePackages.pnpm # nodejs package manager
       nodePackages.webtorrent-cli
       notmuch # email indexer
       nox # search Nix packages
@@ -633,6 +631,32 @@
       BROWSER = "${pkgs.google-chrome}/bin/google-chrome-stable";
     };
 
+    programs.foot = {
+      enable = true;
+      server.enable = true;
+      settings = {
+        main = {
+          # term = "xterm-256color";
+          font = "JetBrainsMono Nerd Font Mono:size=10";
+          # dpi-aware = "yes";
+          letter-spacing = "-0.5";
+        };
+
+        colors = {
+          foreground = "ffffff";
+          background = "000000";
+        };
+
+        mouse = {
+          hide-when-typing = "yes";
+        };
+
+        key-bindings = {
+          # show-urls-launch = "Alt+f";
+        };
+      };
+    };
+
     programs.direnv = {
       enable = true;
       enableZshIntegration = true;
@@ -652,10 +676,9 @@
       "image/png" = "imv.desktop";
       "text/html" = "google-chrome-stable.desktop";
       "text/plain" = "neovide.desktop";
-      "video/mp4" = "vlc";
+      "video/mp4" = "mpv.desktop";
       "x-scheme-handler/http" = "google-chrome-stable.desktop";
       "x-scheme-handler/https" = "google-chrome-stable.desktop";
-      "x-scheme-handler/tg" = "telegramdesktop.desktop";
     };
 
     programs.zsh = {
@@ -764,7 +787,7 @@
 
         bcat() {
           local f=$(mktemp).html
-          cat /dev/stdin > $f
+          cat > $f
           $BROWSER $f
         }
 
@@ -774,10 +797,9 @@
         }
 
         html-man() {
-          local x=$(mktemp).html
           man $@ \
-          | rman -f html > $x \
-          && BROWSER $x
+          | rman -f html \
+          | bcat
         }
       '';
     };
