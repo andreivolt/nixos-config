@@ -128,24 +128,26 @@ let
     nnoremap <silent> <leader>b :CommandTBuffer<CR>
     nnoremap <silent> <leader>f :CommandT<CR>
 
+    " narrower file explorer
+    let g:netrw_winsize = 20
 
     let g:ctrlp_clear_cache_on_exit = 0
-
 
     map <silent> <leader>g :Goyo<CR>
 
     ${import ./colorscheme.nix { inherit theme; } }
 
     colorscheme challenger_deep | hi Normal guibg=black
+    hi StatusLineNC guibg=#111111 guifg=#777777 | hi StatusLine guibg=#222222 guifg=#777777 | hi VertSplit guifg=#111111 | hi Normal guifg=white
 
     " indent guides
     let g:indent_guides_auto_colors = 0
     autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=NONE guibg=NONE
     autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=15 guibg=${white_bg}
 
-    " NERD Tree
-    hi NERDTreeCWD ctermfg=8 guifg=${black_bg}
-    hi NERDTreeClosable ctermfg=8 guifg=${black_bg} | hi NERDTreeOpenable ctermfg=8 guifg=${black_bg}
+    "  " NERD Tree
+    "  hi NERDTreeCWD ctermfg=8 guifg=${black_bg}
+    "  hi NERDTreeClosable ctermfg=8 guifg=${black_bg} | hi NERDTreeOpenable ctermfg=8 guifg=${black_bg}
 
     " LanguageClient-neovim
     let g:LanguageClient_serverCommands = {

@@ -6,5 +6,5 @@
 (swap! boot.repl/*default-middleware*
        conj 'cider.nrepl/cider-middleware)
 
-(in-ns boot.user
-  (def mktemp java.io.File/createTempFile))
+; (in-ns boot.user
+;   (def mktemp java.io.File/createTempFile))
