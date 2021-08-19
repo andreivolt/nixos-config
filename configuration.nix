@@ -16,6 +16,7 @@
     home-manager-module
     ./cachix.nix
 
+    # ./modules/ipfs.nix
     # ./modules/weechat-matrix.nix
     ./modules/adb.nix
     ./modules/alacritty/alacritty.nix
@@ -28,12 +29,13 @@
     ./modules/command-not-found.nix
     ./modules/curl.nix
     ./modules/docker.nix
+    ./modules/emacs.nix
     ./modules/firefox-wayland.nix
     ./modules/fonts.nix
+    ./modules/foot.nix
     ./modules/fzf.nix
-    ./modules/emacs.nix
-    ./modules/github.nix
     ./modules/git.nix
+    ./modules/github.nix
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
     ./modules/grep.nix
@@ -44,7 +46,6 @@
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hosts-blocking.nix
     ./modules/insync.nix
-    # ./modules/ipfs.nix
     ./modules/kdeconnect.nix
     ./modules/keybase.nix
     ./modules/less.nix
@@ -149,16 +150,7 @@
     ];
 
     home.packages = with pkgs; [
-      appimage-run
-      cargo
-      gnome.gnome-tweaks
-      # poetry2nix # TODO
-      swappy # image annotation
-      telegram-cli
-      vieb
-      wayst # terminal
       # (hiPrio mandoc)
-      # tg # TODO
       # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
       # anbox # android
       # avo.wsta # websocket cli
@@ -193,6 +185,7 @@
       # perlPackages.HTMLParser
       # pfff # source code tool
       # pip2nix # nix-env -f pip2nix/release.nix -iA pip2nix.python39
+      # poetry2nix # python # TODO
       # puppeteer-cli # compiles chrome
       # pythonPackages.ipython
       # pythonPackages.jupyter
@@ -202,6 +195,7 @@
       # renameutils # imv collision
       # speechd
       # texlive.combined.scheme-full # ghostscript collision
+      # tg # TODO
       # traceroute
       # ungoogled-chromium # or chromium # TODO: xdg desktop associations
       # vgo2nix # go
@@ -221,6 +215,7 @@
       android-file-transfer # androd mtp
       antiword
       apktool
+      appimage-run
       archivemount
       aria
       asciinema
@@ -248,6 +243,7 @@
       broot # tree file navigator
       cabal2nix
       cachix
+      cargo # proglang, package-management
       catdoc # Word/Excel/PowerPoint to text
       choose # cut/ awk alternative
       chromedriver
@@ -334,6 +330,7 @@
       glpaper
       gnirehtet # android reverse tethering
       gnome-breeze # gtk
+      gnome.gnome-tweaks
       gnumake
       gnupg
       go # proglang
@@ -552,11 +549,13 @@
       sublime3
       surf
       surfraw
+      swappy # image annotation
       sysbench # benchmarking
       t
       tcpdump # network
       tcpflow # network
       tdesktop # Telegram
+      telegram-cli
       telnet # network
       terraform # ops
       tesseract4 # ocr
@@ -579,6 +578,7 @@
       usbutils
       vagrant # virtualization
       vgrep # grep pager
+      vieb # browser, vim
       vifm
       vim
       vimv # image viewer, vim
@@ -588,6 +588,7 @@
       w3m
       watchman # file watcher
       wayback_machine_downloader
+      wayst # terminal
       wayvnc # remote desktop
       wdiff # word diff
       websocat # network
@@ -629,50 +630,6 @@
       EDITOR = "${vim}/bin/vim";
       PAGER = "${pkgs.nvimpager}/bin/nvimpager";
       BROWSER = "${pkgs.google-chrome}/bin/google-chrome-stable";
-    };
-
-    programs.foot = {
-      enable = true;
-      server.enable = true;
-      settings = {
-        main = {
-          # term = "xterm-256color";
-          font = "JetBrainsMono Nerd Font Mono:size=10";
-          # dpi-aware = "yes";
-          letter-spacing = "-0.5";
-        };
-
-        colors = with (import ./modules/theme.nix); {
-          foreground = foreground;
-          background = background;
-
-          regular0 = black_bg;
-          regular1 = red_fg;
-          regular2 = green_fg;
-          regular3 = yellow_fg;
-          regular4 = blue_fg;
-          regular5 = magenta_fg;
-          regular6 = cyan_fg;
-          regular7 = white_fg;
-
-          bright0 = black_bg;
-          bright1 = red_bg;
-          bright2 = green_bg;
-          bright3 = yellow_bg;
-          bright4 = blue_bg;
-          bright5 = magenta_bg;
-          bright6 = cyan_bg;
-          bright7 = white_bg;
-        };
-
-        mouse = {
-          hide-when-typing = "yes";
-        };
-
-        key-bindings = {
-          # show-urls-launch = "Alt+f";
-        };
-      };
     };
 
     programs.direnv = {
