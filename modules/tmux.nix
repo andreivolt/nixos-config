@@ -70,9 +70,9 @@ in {
     set  -g window-status-format         ' #I: #W '
     set  -g window-status-current-format ' #I: #W '
 
-    set  -g status-style                 bg='${theme.dark.inactive.background}',fg='${theme.dark.inactive.foreground}'
-    setw -g window-status-activity-style bg='${theme.dark.urgent.background}',fg='${theme.dark.urgent.foreground}'
-    setw -g window-status-current-style  bg='${theme.dark.active.background}',fg='${theme.dark.active.foreground}'
+    set  -g status-style                 bg='#${theme.dark.inactive.background}',fg='#${theme.dark.inactive.foreground}'
+    setw -g window-status-activity-style bg='#${theme.dark.urgent.background}',fg='#${theme.dark.urgent.foreground}'
+    setw -g window-status-current-style  bg='#${theme.dark.active.background}',fg='#${theme.dark.active.foreground}'
 
     set status-justify left
     setw -g pane-base-index 1
@@ -118,13 +118,13 @@ in {
     # set  -g set-titles on
     # set  -g set-titles-string "#T"
 
-    # set  -g status-style                 bg='${theme.foreground}',fg='${theme.background}'
+    # set  -g status-style                 bg='#${theme.foreground}',fg='#${theme.background}'
     # set  -g status-left                  '''
     # set  -g status-right                 ' #S '
     # set  -g window-status-format         ' #I: #W '
     # set  -g window-status-current-format ' #I: #W '
-    # setw -g window-status-current-style  bg='${theme.foreground}',fg='${theme.background}'
-    # setw -g window-status-activity-style bg='${theme.yellow_fg}'
+    # setw -g window-status-current-style  bg='#${theme.foreground}',fg='#${theme.background}'
+    # setw -g window-status-activity-style bg='#${theme.yellow_fg}'
 
     # set  -g prefix C-a
     # setw -g mode-keys vi

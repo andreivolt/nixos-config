@@ -1,66 +1,7 @@
 { lib, pkgs, ... }:
 
-let
-  font = {
-   family = "Ubuntu";
-   size = 16.0;
-  };
-
-  theme = import ../theme.nix;
-
-  colors = {
-    black = "#000000";
-    white = "#ffffff";
-
-    red = "#ff0000";
-    blue = "#285577";
-
-    gray = "#333333";
-    lightgray = "#777777";
-    darkgray = "#222222";
-  };
-
-  sway-config = let
-    display = { width = 2560; height = 1600; };
-    # scratchpad_height = builtins.floor (display_height / 1.5);
-    scratchpad = rec {
-      width = display.width * 0.83;
-      height = width / 1.5;
-      pos_y = 0.0;
-      pos_x = 0.0;
-      opacity = 0.75;
-    };
-    x = x: builtins.elemAt (builtins.match "(.*).{7}" (toString x)) 0;
-    # set $scratchpad.width ${x scratchpad.width}
-    # set $scratchpad.height ${x scratchpad.height}
-    # set $scratchpad.pos_x ${toString scratchpad.pos_x}
-    # set $scratchpad.pos_y ${x scratchpad.pos_y}
-    # set $scratchpad.opacity ${x scratchpad.opacity}
-  in ''
-    include @sysconfdir@/sway/config.d/*
-
-    set $display.width ${toString display.width}
-    set $display.height ${toString display.height}
-
-    set $scratchpad.pos_x ${toString scratchpad.pos_x}
-    set $scratchpad.pos_y ${toString scratchpad.pos_y}
-    set $scratchpad.opacity ${toString scratchpad.opacity}
-
-    default_border none
-    smart_borders on
-
-    titlebar_padding 20 8
-  '';
+let theme = import ../theme.nix;
 in {
-  imports = [
-    ./service.nix
-  ];
-
-  # environment.pathsToLink = [ "/libexec" ];
-
-  # # fix "failed to take device"
-  # hardware.opengl.driSupport = true;
-
   home-manager.users.avo = { config, ... }: {
     wayland.windowManager.sway = rec {
       enable = true;
@@ -69,32 +10,32 @@ in {
         menu = "find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu";
         colors = {
           focused = {
-            border = colors.blue;
-            background = colors.blue;
-            text = colors.white;
-            indicator = colors.black;
-            childBorder = colors.blue;
+            border = "#${theme.dark.active.background}";
+            background = "#${theme.dark.active.background}";
+            text = "#${theme.dark.active.foreground}";
+            indicator = "#${theme.dark.active.background}";
+            childBorder = "#${theme.dark.active.background}";
           };
           focusedInactive = {
-            border = colors.black;
-            background = colors.black;
-            text = colors.gray;
-            indicator = colors.black;
-            childBorder = colors.black;
+            border = "#${theme.dark.active.background}";
+            background = "#${theme.dark.active.background}";
+            text = "#${theme.dark.active.foreground}";
+            indicator = "#${theme.dark.active.background}";
+            childBorder = "#${theme.dark.active.background}";
           };
           unfocused = {
-            border = colors.black;
-            background = colors.black;
-            text = colors.lightgray;
-            indicator = colors.black;
-            childBorder = colors.black;
+            border = "#${theme.dark.inactive.background}";
+            background = "#${theme.dark.inactive.background}";
+            text = "#${theme.dark.inactive.foreground}";
+            indicator = "#${theme.dark.inactive.background}";
+            childBorder = "#${theme.dark.inactive.background}";
           };
           urgent = {
-            border = colors.black;
-            background = colors.black;
-            text = colors.gray;
-            indicator = colors.black;
-            childBorder = colors.red;
+            border = "#${theme.dark.urgent.background}";
+            background = "#${theme.dark.urgent.background}";
+            text = "#${theme.dark.urgent.foreground}";
+            indicator = "#${theme.dark.urgent.background}";
+            childBorder = "#${theme.dark.urgent.background}";
           };
         };
         fonts = {
@@ -116,14 +57,19 @@ in {
           { command = "exec tail -f /tmp/wob.sock | wob"; }
 
           { command =
-              let lock = "swaylock -f -c -000001";
-              in ''exec swayidle -w timeout 1200 '${lock}' timeout 180 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'  timeout 7200 'systemctl suspend' before-sleep '${lock}'  '';
+              let
+                lock = "swaylock -f -c 000000";
+                timeouts = {
+                  lock = "1800";
+                  display = "180";
+                  suspend = "7200";
+                };
+              in ''swayidle -w timeout ${timeouts.lock} '${lock}' timeout ${timeouts.display} 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'  timeout ${timeouts.suspend} 'systemctl suspend' before-sleep '${lock}'  '';
            }
         ];
         window = {
           titlebar = true;
           commands = [
-            { criteria = { app_id = "foot"; }; command = "border pixel 5"; }
             { criteria = { app_id = "scratchpad"; }; command = "floating enable"; }
             { criteria = { app_id = "scratchpad"; }; command = "move scratchpad"; }
             { criteria = { app_id = "scratchpad"; }; command = "scratchpad show"; }
@@ -227,7 +173,31 @@ in {
           };
         };
       };
-      extraConfig = sway-config;
+      extraConfig = let
+        display = { width = 2560; height = 1600; };
+        # scratchpad_height = builtins.floor (display_height / 1.5);
+        scratchpad = rec {
+          width = display.width * 0.83;
+          height = width / 1.5;
+          pos_y = 0.0;
+          pos_x = 0.0;
+          opacity = 0.75;
+        };
+      in ''
+        include @sysconfdir@/sway/config.d/*
+
+        set $display.width ${toString display.width}
+        set $display.height ${toString display.height}
+
+        set $scratchpad.pos_x ${toString scratchpad.pos_x}
+        set $scratchpad.pos_y ${toString scratchpad.pos_y}
+        set $scratchpad.opacity ${toString scratchpad.opacity}
+
+        default_border none
+        smart_borders on
+
+        titlebar_padding 20 8
+      '';
       systemdIntegration = true;
       wrapperFeatures.gtk = true;
       extraSessionCommands = ''
@@ -255,18 +225,12 @@ in {
       xwayland
     ];
 
-    # home.file.".zprofile".text = ''
-    #   if [[ $XDG_VTNR -eq 1 ]]; then
-    #     exec dbus-launch --sh-syntax --exit-with-session sway
-    #   fi
-    # '';
-
     # notifications
     programs.mako = {
       enable = true;
       width = 500;
       backgroundColor = "#00000050";
-      font = "${font.family} ${toString font.size}";
+      font = "${theme.font.family} 16";
       layer = "overlay";
       borderSize = 0;
       margin = "20";
