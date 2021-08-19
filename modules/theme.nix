@@ -11,7 +11,7 @@ rec {
       foreground = background;
     };
     inactive = {
-      background = "000000";
+      background = background;
       foreground = "aaaaaa";
     };
     active = {
@@ -19,6 +19,34 @@ rec {
       foreground = foreground;
     };
   };
+
+  colors = {
+    primary = {
+      background = "0x1b182c";
+      foreground = "0xcbe3e7";
+    };
+    normal = {
+      black = "100e23";
+      red = "ff8080";
+      green = "95ffa4";
+      yellow = "ffe9aa";
+      blue = "91ddff";
+      magenta = "c991e1";
+      cyan = "aaffe4";
+      white = "cbe3e7";
+    };
+    bright = {
+      black = "565575";
+      red = "ff5458";
+      green = "62d196";
+      yellow = "ffb378";
+      blue = "65b2ff";
+      magenta = "906cff";
+      cyan = "63f2f1";
+      white = "a6b3cc";
+    };
+  };
+
 
   white_bg = "707880"; white_fg = "aaaaaa";
   black_bg = "131313"; black_fg = "373b41";
@@ -31,6 +59,5 @@ rec {
   magenta_fg = "85678f"; magenta_bg = "b294bb";
 
   success = green_fg; warning = yellow_fg; error = red_fg;
-  highlight_fg = blue_fg; highlight_bg = blue_bg;
   selection = white_fg;
 }

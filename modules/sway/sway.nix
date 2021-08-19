@@ -2,6 +2,9 @@
 
 let theme = import ../theme.nix;
 in {
+  # fix crash on restart
+  hardware.opengl.driSupport = true;
+
   home-manager.users.avo = { config, ... }: {
     wayland.windowManager.sway = rec {
       enable = true;
@@ -45,37 +48,17 @@ in {
         bars = [];
         terminal = "footclient";
         startup = [
-          { command = "systemctl --user restart waybar"; always = true; }
-          { command = "mako"; }
-          { command = "firefox"; }
-          # store clipboard history
-          { command = "wl-paste -t text --watch clipman store"; }
-          # restore last history item at startup
-          { command = "clipman restore"; }
-
-          { command = "exec mkfifo /tmp/wob.sock"; }
-          { command = "exec tail -f /tmp/wob.sock | wob"; }
-
-          { command =
-              let
-                lock = "swaylock -f -c 000000";
-                timeouts = {
-                  lock = "1800";
-                  display = "180";
-                  suspend = "7200";
-                };
-              in ''swayidle -w timeout ${timeouts.lock} '${lock}' timeout ${timeouts.display} 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"'  timeout ${timeouts.suspend} 'systemctl suspend' before-sleep '${lock}'  '';
-           }
+          { command = "${pkgs.autotiling}/bin/autotiling"; }
         ];
         window = {
           titlebar = true;
           commands = [
-            { criteria = { app_id = "scratchpad"; }; command = "floating enable"; }
-            { criteria = { app_id = "scratchpad"; }; command = "move scratchpad"; }
-            { criteria = { app_id = "scratchpad"; }; command = "scratchpad show"; }
-            { criteria = { app_id = "scratchpad"; }; command = "resize set $display.width $display.height"; }
-            { criteria = { app_id = "scratchpad"; }; command = "move position $scratchpad.pos_x $scratchpad.pos_y"; }
-            { criteria = { app_id = "mpv"; }; command = "inhibit_idle visible"; }
+            { criteria.app_id = "scratchpad"; command = "floating enable"; }
+            { criteria.app_id = "scratchpad"; command = "move scratchpad"; }
+            { criteria.app_id = "scratchpad"; command = "scratchpad show"; }
+            { criteria.app_id = "scratchpad"; command = "resize set $display.width $display.height"; }
+            { criteria.app_id = "scratchpad"; command = "move position $scratchpad.pos_x $scratchpad.pos_y"; }
+            { criteria.app_id = "mpv"; command = "inhibit_idle visible"; }
           ];
           border = 0;
           hideEdgeBorders = "both";
@@ -114,9 +97,9 @@ in {
           "${modifier}+t" = "layout tabbed";
           "${modifier}+s" = "layout toggle split";
 
-          "F1" = "exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > /tmp/wob.sock ) || pamixer --get-volume > /tmp/wob.sock";
-          "F2" = "exec pamixer --decrease 3 && pamixer --get-volume > /tmp/wob.sock";
-          "F3" = "exec pamixer --increase 3 && pamixer --get-volume > /tmp/wob.sock";
+          "F1" = "exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > $XDG_RUNTIME_DIR/wob.sock ) || pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F2" = "exec pamixer --decrease 3 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F3" = "exec pamixer --increase 3 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
           "F4" = "exec pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
           "Home" = "exec playerctl previous";
@@ -200,9 +183,6 @@ in {
       '';
       systemdIntegration = true;
       wrapperFeatures.gtk = true;
-      extraSessionCommands = ''
-        export XKB_DEFAULT_LAYOUT=fr
-      '';
     };
 
     home.packages = with pkgs; [
@@ -224,18 +204,6 @@ in {
       waybar
       xwayland
     ];
-
-    # notifications
-    programs.mako = {
-      enable = true;
-      width = 500;
-      backgroundColor = "#00000050";
-      font = "${theme.font.family} 16";
-      layer = "overlay";
-      borderSize = 0;
-      margin = "20";
-      padding = "20";
-    };
   };
 
   programs.qt5ct.enable = true;
