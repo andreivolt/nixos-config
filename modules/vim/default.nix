@@ -137,7 +137,7 @@ let
 
     ${import ./colorscheme.nix { inherit theme; } }
 
-    colorscheme challenger_deep | hi Normal guibg=black
+    " colorscheme challenger_deep | hi Normal guibg=black
     hi StatusLineNC guibg=#111111 guifg=#777777 | hi StatusLine guibg=#222222 guifg=#777777 | hi VertSplit guifg=#111111 | hi Normal guifg=white
 
     " indent guides

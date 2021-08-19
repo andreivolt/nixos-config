@@ -17,11 +17,13 @@
     ./cachix.nix
 
     # ./modules/ipfs.nix
+    # ./modules/wayland/wl-clipboard-x11.nix
     # ./modules/weechat-matrix.nix
     ./modules/adb.nix
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
     ./modules/chrome
+    ./modules/clipman.nix
     ./modules/clojure
     ./modules/clojure/boot
     ./modules/clojure/rebel-readline.nix
@@ -31,6 +33,7 @@
     ./modules/docker.nix
     ./modules/emacs.nix
     ./modules/firefox-wayland.nix
+    ./modules/flashfocus.nix
     ./modules/fonts.nix
     ./modules/foot.nix
     ./modules/fzf.nix
@@ -52,6 +55,7 @@
     ./modules/libvirt.nix
     ./modules/locate.nix
     ./modules/lowbatt.nix
+    ./modules/mako.nix
     ./modules/map-test-tld-to-localhost.nix
     ./modules/matrix-cli.nix
     ./modules/mpv.nix
@@ -61,10 +65,13 @@
     ./modules/scanning.nix
     ./modules/spotify.nix
     ./modules/sway/sway.nix
+    ./modules/swayidle.nix
+    ./modules/swaylock.nix
     ./modules/tmux.nix
     ./modules/tor.nix
     ./modules/wayland/overlay.nix
     ./modules/weechat.nix
+    ./modules/wob.nix
     ./modules/zsh/fzf.nix
     ./modules/zsh/vi.nix
   ];
@@ -94,8 +101,6 @@
   documentation.man.generateCaches = true;
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
-
-  programs.xwayland.enable = true;
 
   security.sudo.wheelNeedsPassword = false;
 
