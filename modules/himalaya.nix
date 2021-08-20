@@ -1,3 +1,5 @@
+{ pkgs, ... }:
+
 {
   home-manager.users.avo.programs.himalaya = {
     enable = true;
@@ -5,7 +7,7 @@
       src = fetchFromGitHub {
         repo = "himalaya";
         owner = "soywod";
-        rev = "fadebf09977df5d5e571d1d9a2f73ccea44390a7";
+        rev = "608057b23bcd067e6f5fe130c6e395655432a448";
         sha256 = "1phwl1s9x3k9dpyyqijik2yq3awrzqcf5j32yb26l9lg3szq1scq";
       };
     });

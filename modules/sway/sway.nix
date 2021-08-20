@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 
-let theme = import ../theme.nix;
+let theme = import (dirOf <nixos-config> + /modules/theme.nix);
 in {
   # # fix crash on restart
   # hardware.opengl.driSupport = true;
@@ -10,7 +10,7 @@ in {
       enable = true;
       config = {
         modifier = "Mod4";
-        menu = "find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu";
+        menu = "find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu | xargs";
         colors = {
           focused = {
             border = "#${theme.dark.active.background}";
@@ -79,6 +79,7 @@ in {
             { app_id = "pavucontrol"; }
             { app_id = "mpv"; }
             { title = "Picture in picture"; }
+            { title = "LastPass: Free Password Manager"; }
           ];
         };
         keybindings = let
@@ -108,7 +109,7 @@ in {
 
           "F1" = "exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > $XDG_RUNTIME_DIR/wob.sock ) || pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
           "F2" = "exec pamixer --decrease 3 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
-          "F3" = "exec pamixer --increase 3 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F3" = "exec pamixer --increase 3 --allow-boost && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
           "F4" = "exec pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
           "Home" = "exec playerctl previous";
@@ -166,7 +167,9 @@ in {
         };
       };
       extraConfig = ''
-        # default_border none
+        # hide titlebar on lone windows
+        default_border none
+
         # smart_borders on
 
         titlebar_padding 20 8

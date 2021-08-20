@@ -11,7 +11,9 @@ prompt_precmd() {
   prompt_jobs=""
   [[ -n $jobs ]] && prompt_jobs="%F{242}["${(j:,:)jobs}"] "
 
-  PROMPT="%(?.%F{green}.%F{red})%~ $ %f%K{black}%F{white}$prompt_jobs%f%k"
+  [[ -n $IN_NIX_SHELL ]] && nix_shell_indicator='%K{3}%F{0} nix-shell %f%k '
+
+  PROMPT="%(?.%F{green}.%F{red})%~ $ %f%K{black}%F{white}$prompt_jobs%f%k$nix_shell_indicator"
 }
 prompt_opts=(cr percent sp subst)
 autoload -U add-zsh-hook
