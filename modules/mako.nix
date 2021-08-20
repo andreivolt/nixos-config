@@ -13,12 +13,14 @@
   };
 
   systemd.user.services.mako = {
-     serviceConfig.ExecStart = "${pkgs.mako}/bin/mako";
-     serviceConfig.Type = "dbus";
-     serviceConfig.BusName = "org.freedesktop.Notifications";
-     wantedBy = [ "sway-session.target" ];
-     restartTriggers = [
-       config.home-manager.users.avo.xdg.configFile."mako/config".source
-     ];
-   };
+    serviceConfig = {
+      ExecStart = "${pkgs.mako}/bin/mako";
+      Type = "dbus";
+      BusName = "org.freedesktop.Notifications";
+    };
+    wantedBy = [ "sway-session.target" ];
+    restartTriggers = [
+      config.home-manager.users.avo.xdg.configFile."mako/config".source
+    ];
+  };
 }
