@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  theme = import ../theme.nix;
+  theme = import (dirOf <nixos-config> + /modules/theme.nix);
 
   plugins = with pkgs; {
     parinfer-rust = import ./plugins/parinfer-rust.nix;

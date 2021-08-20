@@ -1,4 +1,4 @@
-let theme = import ./theme.nix;
+let theme = import (dirOf <nixos-config> + /modules/theme.nix);
 in {
   # programs.tmux = {
   #   enable = true;

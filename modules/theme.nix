@@ -11,7 +11,7 @@ rec {
       foreground = background;
     };
     inactive = {
-      background = background;
+      background = "181818";
       foreground = "aaaaaa";
     };
     active = {
