@@ -2,8 +2,8 @@
 
 let theme = import ../theme.nix;
 in {
-  # fix crash on restart
-  hardware.opengl.driSupport = true;
+  # # fix crash on restart
+  # hardware.opengl.driSupport = true;
 
   home-manager.users.avo = { config, ... }: {
     wayland.windowManager.sway = rec {
@@ -52,14 +52,23 @@ in {
         ];
         window = {
           titlebar = true;
-          commands = [
-            { criteria.app_id = "scratchpad"; command = "floating enable"; }
-            { criteria.app_id = "scratchpad"; command = "move scratchpad"; }
-            { criteria.app_id = "scratchpad"; command = "scratchpad show"; }
-            { criteria.app_id = "scratchpad"; command = "resize set $display.width $display.height"; }
-            { criteria.app_id = "scratchpad"; command = "move position $scratchpad.pos_x $scratchpad.pos_y"; }
-            { criteria.app_id = "mpv"; command = "inhibit_idle visible"; }
-          ];
+          commands =
+            let
+              display = { width = 2560; height = 1600; };
+              scratchpad = rec {
+                width = display.width * 0.83; height = width / 1.5;
+                pos_x = 0.0; pos_y = 0.0;
+              };
+            in [
+              { criteria.app_id = "scratchpad"; command = "floating enable"; }
+              { criteria.app_id = "scratchpad"; command = "move scratchpad"; }
+              { criteria.app_id = "scratchpad"; command = "scratchpad show"; }
+              { criteria.app_id = "scratchpad"; command = "resize set ${toString display.width} ${toString display.height}"; }
+              { criteria.app_id = "scratchpad"; command = "move position ${toString scratchpad.pos_x} ${toString scratchpad.pos_y}"; }
+            ]
+            ++ [
+              { criteria.app_id = "mpv"; command = "inhibit_idle visible"; }
+            ];
           border = 0;
           hideEdgeBorders = "both";
         };
@@ -156,28 +165,9 @@ in {
           };
         };
       };
-      extraConfig = let
-        display = { width = 2560; height = 1600; };
-        # scratchpad_height = builtins.floor (display_height / 1.5);
-        scratchpad = rec {
-          width = display.width * 0.83;
-          height = width / 1.5;
-          pos_y = 0.0;
-          pos_x = 0.0;
-          opacity = 0.75;
-        };
-      in ''
-        include @sysconfdir@/sway/config.d/*
-
-        set $display.width ${toString display.width}
-        set $display.height ${toString display.height}
-
-        set $scratchpad.pos_x ${toString scratchpad.pos_x}
-        set $scratchpad.pos_y ${toString scratchpad.pos_y}
-        set $scratchpad.opacity ${toString scratchpad.opacity}
-
-        default_border none
-        smart_borders on
+      extraConfig = ''
+        # default_border none
+        # smart_borders on
 
         titlebar_padding 20 8
       '';
