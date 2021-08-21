@@ -1,11 +1,16 @@
 {
-  home-manager.users.avo.programs.foot = {
+  home-manager.users.avo.programs.foot = let
+    font = {
+      family = "JetBrainsMono Nerd Font Mono";
+      size = "11";
+    };
+  in {
     enable = true;
     server.enable = true;
     settings = {
       main = {
         # term = "xterm-256color";
-        font = "JetBrainsMono Nerd Font Mono:size=10";
+        font = "${font.family}:size=${font.size}";
         # dpi-aware = "yes";
         letter-spacing = "-0.5";
       };
