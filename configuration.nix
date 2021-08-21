@@ -35,12 +35,14 @@
       ./modules/command-not-found.nix
       ./modules/curl.nix
       ./modules/docker.nix
-      ./modules/emacs.nix
+      # ./modules/emacs.nix
       ./modules/firefox-wayland.nix
       ./modules/flashfocus.nix
       ./modules/fonts.nix
       ./modules/foot.nix
       ./modules/fzf.nix
+      ./modules/mdns.nix
+      ./modules/sway-autorotate-screen.nix
       ./modules/git.nix
       ./modules/github.nix
       ./modules/gnome-keyring.nix
@@ -51,7 +53,7 @@
       ./modules/hardware-video-acceleration/mpv.nix
       ./modules/hidpi/console.nix
       ./modules/hidpi/gnome.nix # TODO: dconf needed?
-      ./modules/hosts-blocking.nix
+      ./modules/adblock.nix
       ./modules/insync.nix
       ./modules/kdeconnect.nix
       ./modules/keybase.nix
@@ -62,6 +64,8 @@
       ./modules/mako.nix
       ./modules/map-test-tld-to-localhost.nix
       ./modules/matrix-cli.nix
+      ./modules/virtualbox-host.nix
+      ./modules/xdg-desktop-portal.nix
       ./modules/mpv.nix
       ./modules/pipewire.nix
       ./modules/readline/inputrc.nix
@@ -78,23 +82,20 @@
       ./modules/wob.nix
       ./modules/zsh/fzf.nix
       ./modules/zsh/vi.nix
+      ./modules/printing.nix
+      ./modules/networkmanager.nix
     ];
 
   hardware.bluetooth.enable = true;
   hardware.opengl.enable = true;
 
   networking.enableIPv6 = false;
+
   networking.hostName = builtins.getEnv "HOSTNAME";
-  networking.networkmanager.enable = true;
 
   services.upower.enable = true;
 
   services.sshd.enable = true;
-
-  virtualisation.virtualbox.host.enable = true;
-
-  services.avahi.enable = true;
-  services.avahi.nssmdns = true;
 
   # services.udisks2.enable = true;
 
@@ -222,66 +223,73 @@
         (zathura.override { useMupdf = true; })
         abduco # terminal
         acpi
-        adb-sync
+        adb-sync # android
         alsaPlugins
         alsaUtils
         android-file-transfer # androd mtp
-        antiword
+        antiword # text
         apktool
         appimage-run
         archivemount
         aria
+        arp-scan # networking
         asciinema
         at
         atool # archive
+        autotiling # sway
         avo.pushover
         avo.zprint # clojure pretty-printer
         awscli
-        babashka
+        babashka # clojure
         bashdb # bash debugger
         bat
-        bc
-        bemenu
+        bc # calculator
+        bemenu # ui
         bfs # breadth-first find
-        bindfs
+        bindfs # filesystems
         binutils
         bitcoin
-        blender
+        blender # 3d
         bluetooth_battery
         bluez
         bluez-tools
         boot
         breeze-gtk # gtk qt
         breeze-qt5 # gtk qt
+        brig # sync, decentralized
         broot # tree file navigator
+        btfs # filesystems
         cabal2nix
         cachix
         cargo # proglang, package-management
+        castnow # chromecast
         catdoc # Word/Excel/PowerPoint to text
         choose # cut/ awk alternative
+        chrome-export # export chrome bookmarks + history
         chromedriver
         cifs-utils
-        clipman
         cloc # count lines of code
         clojure-lsp
+        cmake # proglang
         colordiff
         copyq # clipboard manager
         crudini # manipulate ini files
         csvkit # csv
         cups
         curl
+        curlftpfs # filesystems
         curlie
         cv # progress viewer
         dateutils
         delta
         desktop_file_utils
         discord
-        dmenu-wayland
-        dnscontrol
-        dnsutils
+        dmenu-wayland # ui
+        dnscontrol # cloud
+        dnsutils # networking
         docker-compose
         docker-machine
-        dogdns
+        dogdns # networking
         dos2unix
         dragon-drop # file drag-and-drop source/sink
         dropbox-cli # filesharing, backup
@@ -295,6 +303,7 @@
         efivar # system
         elixir # proglang
         elvish
+        encfs # security, filesystems
         enscript # convert to PostScript
         entr # file-watcher
         envchain # security
@@ -337,6 +346,7 @@
         git-hub # github
         git-imerge # Git incremental merge
         gitAndTools.tig
+        gitfs # filesystems
         gitFull # for gitk
         glava # audio spectrum visualizer
         glib.bin
@@ -349,6 +359,7 @@
         go # proglang
         goldendict # dictionnary
         google-chrome # browser
+        # google-chrome-dev
         google-cloud-sdk # cloud
         google-drive-ocamlfuse # filesharing, backup, filesystem
         googler # google search cli
@@ -357,7 +368,13 @@
         graphicsmagick # image, tools
         graphviz
         grc # syntax highlighter
+        sway-contrib.grimshot # screenshots
         gron # flatten JSON
+        gst_all_1.gst-plugins-bad # video
+        gst_all_1.gst-plugins-base # video
+        gst_all_1.gst-plugins-good # video
+        gst_all_1.gst-plugins-ugly # video
+        gst_all_1.gstreamer # video
         hachoir
         haskellPackages.apply-refact
         haskellPackages.hlint
@@ -367,9 +384,11 @@
         haskellPackages.xml-to-json
         heroku
         hr # horizontal rule
+        html-xml-utils # structured-data
         html2text
         htmlTidy # html
         htop # system
+        httpfs2 # filesystems
         httpie # http client
         httping # http benchmark
         hub # github
@@ -385,16 +404,20 @@
         inkscape
         inotify-tools # file watcher
         iotop # network
+        ip2location
+        ip2unix # networking
         ipfs # decentralized
         iptraf-ng # network
         iw # wifi
         iwd # wifi
+        jmtpfs # filesystems
         jo # create JSON
         jq # json
         jre # for Android
         jtc # json
         keybase
         keybase-gui
+        kitty # terminal
         kotatogram-desktop # Telegram
         lastfmsubmitd
         lastpass-cli
@@ -414,10 +437,12 @@
         lnav # logfile navigator
         lsd # ls alternative
         lshw # system
+        lsix # images, terminal
         lsof # system
         lsyncd # sync files with remote
         ltrace # system
         lumo # standalone ClojureScript environment
+        lxcfs # filesystems, containers
         lxqt.pavucontrol-qt
         lynx # terminal browser
         mailutils # email
@@ -427,14 +452,17 @@
         mediainfo
         megatools
         meld # diff
+        mergerfs # filesystems
         miller # field processing for CSV
         mimeo # mime opener
         mimic # tts
         mitmproxy
+        monolith # web-archive
         moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel # for vipe & vidir
         mosh # ssh
         mpvc # mpv remote
         msmtp # email
+        mtpfs # filesystems
         mtr # network diagnostics
         multitail # system
         ncdu # disk usage
@@ -447,12 +475,19 @@
         netlify-cli # cloud
         ngrep # networking
         ngrok # networking
+        nix-du
+        nix-generate-from-cpan # perl, nix
         nix-index # nixos
+        nix-output-monitor
         nix-prefetch-github # nixos
         nix-prefetch-scripts # nixos
+        nix-top
+        nix-tree
+        nix-universal-prefetch
         nix-update # nixos
         nixfmt # nixos
         nixops # cloud, nixos
+        nixpkgs-fmt # code formater, nix
         nixpkgsUnstable.arcan.espeak # tts
         nixpkgsUnstable.clojure
         nixpkgsUnstable.gh # github
@@ -486,6 +521,7 @@
         patchelf
         pavucontrol # audio
         pciutils # system
+        pdfarranger # pdf
         pdfgrep
         pdftk
         perl # proglang
@@ -495,6 +531,7 @@
         photon # web-archive
         pianobar # audio
         pidgin # chat
+        pitivi # video editor
         play-with-mpv # open browser videos with mpv
         playerctl # mpris cli
         podman # containers
@@ -538,12 +575,17 @@
         rmlint # find duplicates
         rsync
         ruby
+        s3backer # cloud, filesystems
         s3cmd
         screen
         sd # find & replace
         sdcv # dictionnary
+        securefs # security, filesystems
         shadowsocks-libev # SOCKS5 proxy
         siege # http benchmarking
+        signal-cli # messaging
+        signald # messaging
+        signal-desktop # messaging
         skype
         slack
         slop # query a selection and print to stdout
@@ -562,6 +604,8 @@
         surf
         surfraw
         swappy # image annotation
+        sway-contrib.inactive-windows-transparency
+        swaywsr # automatically rename workspaces with contents
         sysbench # benchmarking
         t
         tcpdump # network
@@ -569,6 +613,7 @@
         tdesktop # Telegram
         telegram-cli
         telnet # network
+        terminator # terminal
         terraform # ops
         tesseract4 # ocr
         tmate # tmux remote sharing
@@ -597,6 +642,7 @@
         virt-viewer # virtualization
         virtualbox
         vlc
+        vulnix # security, vulnerability scanner
         w3m
         watchman # file watcher
         wayback_machine_downloader
@@ -604,6 +650,7 @@
         wayvnc # remote desktop
         wdiff # word diff
         websocat # network
+        wezterm # terminal
         wf-recorder # wayland screen recording
         wget
         wgetpaste
@@ -611,12 +658,14 @@
         wirelesstools
         wireshark
         with-shell # cd inside commands
+        wofi # launcher
         wol # wake-on-lan
         wpa_supplicant
         wtype # GUI automation
         xdg_utils
         xh # HTTP client
         xidel
+        xorg.xlsclients # list X clients
         xlsx2csv
         xml2
         xmlformat
@@ -634,6 +683,7 @@
         youtube-dl
         yq # json jq yaml
         ytfzf # YouTube search
+        zellij # terminal
         zip
         zoxide # cd alternative
       ];
@@ -829,7 +879,4 @@
     notifyCapacity = 40;
     suspendCapacity = 10;
   };
-
-  # automatic screen orientation
-  hardware.sensor.iio.enable = true;
 }

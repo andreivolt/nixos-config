@@ -26,6 +26,11 @@
         ConditionEnvironment = "WAYLAND_DISPLAY";
       };
       Install.WantedBy = [ "graphical-session.target" ];
+
+      # bindsTo = [ "sway-session.target" ];
+      # wants = [ "sway-session.target" ];
+      # wantedBy = [ "sway-session.target" ];
+      # after = [ "sway-session.target" ];
       # restartTriggers = [
       #   config.home-manager.users.avo.xdg.configFile."mako/config".source
       # ];

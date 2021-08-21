@@ -15,5 +15,7 @@
     wantedBy = [ "sway-session.target" ];
     after = [ "sway-session.target" ];
   };
+
+  home-manager.users.avo.home.packages = with pkgs; [ clipman ];
 }
 
