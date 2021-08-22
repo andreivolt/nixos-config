@@ -189,6 +189,7 @@ in {
       swaylock
       wmfocus # window picker
       wob
+      autotiling
       wl-clipboard
       kanshi  # display configuration
       wdisplays  # display configuration

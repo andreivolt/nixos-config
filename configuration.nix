@@ -29,6 +29,7 @@
       ./modules/chrome
       ./modules/clipman.nix
       ./modules/clojure
+      ./modules/dropbox.nix
       ./modules/clojure/boot
       ./modules/clojure/rebel-readline.nix
       ./modules/cloudflare-dns.nix
@@ -76,6 +77,7 @@
       ./modules/swayidle.nix
       ./modules/swaylock.nix
       ./modules/tmux.nix
+      # ./modules/keybase-sync-src.nix
       ./modules/tor.nix
       ./modules/wayland/overlay.nix
       ./modules/weechat.nix
@@ -99,10 +101,6 @@
 
   # services.udisks2.enable = true;
 
-  # environment.systemPackages = [ pkgs.xdg_utils ];
-  # # printing
-  # users.users.avo.extraGroups = [ "lp" ];
-
   documentation.man.generateCaches = true;
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
@@ -119,7 +117,7 @@
     nixPath = [
       "/home/avo/gdrive/nixos-config"
       "nixpkgs=/home/avo/gdrive/nixpkgs"
-      "nixos-config=/home/avo/nixos-config/configuration.nix"
+      "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix"
     ];
   };
 
@@ -176,6 +174,7 @@
         # firefox # TODO: xdg desktop associations
         # ghi
         # gitAndTools.diff-so-fancy
+        # google-chrome-dev
         # hachoir-subfile
         # haskellPackages.github-backup # BROKEN
         # highlight # cli syntax highlighter
@@ -188,7 +187,6 @@
         # kefctl
         # libxls # xls2csv
         # mach # python nix # nix-env -if https://github.com/DavHau/mach-nix/tarball/3.3.0 -A mach-nix
-        # mailutils # home-manager comsatd conflict
         # mpc
         # mpc_cli
         # mpdas
@@ -236,7 +234,6 @@
         asciinema
         at
         atool # archive
-        autotiling # sway
         avo.pushover
         avo.zprint # clojure pretty-printer
         awscli
@@ -312,19 +309,19 @@
         ethtool
         evince # fill PDF forms
         exa # ls alternative
-        exiftool
+        exiftool # metadata
         exiv2 # image metadata
         expect
         fastlane # automate mobile app releases
         fatrace # file access events
-        fd
+        fd # find alternative
         fdupes # find duplicates
         ffmpeg-full # -full for ffplay
         file
-        flac
-        flac123
+        flac # audio
+        flac123 # audio
         flashfocus # Wayland window animations
-        flyctl # fly.io
+        flyctl # cloud, fly.io
         forkstat
         fpp # path picker
         freerdp # RDP client
@@ -359,7 +356,6 @@
         go # proglang
         goldendict # dictionnary
         google-chrome # browser
-        # google-chrome-dev
         google-cloud-sdk # cloud
         google-drive-ocamlfuse # filesharing, backup, filesystem
         googler # google search cli
@@ -368,7 +364,6 @@
         graphicsmagick # image, tools
         graphviz
         grc # syntax highlighter
-        sway-contrib.grimshot # screenshots
         gron # flatten JSON
         gst_all_1.gst-plugins-bad # video
         gst_all_1.gst-plugins-base # video
@@ -449,14 +444,14 @@
         mate.caja # file manager
         matrix-commander # matrix cli
         maven # package-management
-        mediainfo
-        megatools
+        mediainfo # metadata
+        megatools # cloud
         meld # diff
         mergerfs # filesystems
         miller # field processing for CSV
         mimeo # mime opener
         mimic # tts
-        mitmproxy
+        mitmproxy # networking
         monolith # web-archive
         moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel # for vipe & vidir
         mosh # ssh
@@ -538,6 +533,7 @@
         ponymix # audio, system
         poppler_utils # pdf2text
         pqiv # image viewer
+        prettyping # networking
         procmail # email
         procs # ps alternative
         projectm # music visualizer
@@ -574,9 +570,10 @@
         rman
         rmlint # find duplicates
         rsync
-        ruby
+        ruby # proglang
         s3backer # cloud, filesystems
-        s3cmd
+        s3cmd # cloud
+        sane-airscan # scanning
         screen
         sd # find & replace
         sdcv # dictionnary
@@ -584,8 +581,9 @@
         shadowsocks-libev # SOCKS5 proxy
         siege # http benchmarking
         signal-cli # messaging
-        signald # messaging
         signal-desktop # messaging
+        signald # messaging
+        simple-scan # scanning
         skype
         slack
         slop # query a selection and print to stdout
@@ -604,10 +602,11 @@
         surf
         surfraw
         swappy # image annotation
+        sway-contrib.grimshot # screenshots
         sway-contrib.inactive-windows-transparency
         swaywsr # automatically rename workspaces with contents
         sysbench # benchmarking
-        t
+        t # twitter
         tcpdump # network
         tcpflow # network
         tdesktop # Telegram
@@ -629,7 +628,7 @@
         unoconv
         unrar
         unzip
-        urlscan
+        urlscan # terminal, ui, urlview alternative
         urlview # terminal, ui
         urlwatch
         usbutils
@@ -665,13 +664,13 @@
         xdg_utils
         xh # HTTP client
         xidel
-        xorg.xlsclients # list X clients
         xlsx2csv
         xml2
         xmlformat
         xmlindent
         xmlstarlet
         xmlto # xml converter
+        xorg.xlsclients # list X clients
         xsel
         xurls
         xwayland # xorg wayland
@@ -679,6 +678,7 @@
         yarn
         yarn2nix
         ydotool
+        yeetgif # gif
         you-get
         youtube-dl
         yq # json jq yaml
@@ -879,4 +879,15 @@
     notifyCapacity = 40;
     suspendCapacity = 10;
   };
+
+  networking.wireless.iwd.enable = true;
+  # networking.networkmanager.wifi.backend = "iwd";
+  networking.networkmanager.wifi.macAddress = "random";
+  networking.networkmanager.ethernet.macAddress = "random";
+  networking.networkmanager.wifi.powersave = true;
+  # networking.networkmanager.dns = "dnsmasq";
+
+  services.logind.lidSwitchExternalPower = "lock";
+
+  services.acpid.powerEventCommands = "systemctl suspend";
 }

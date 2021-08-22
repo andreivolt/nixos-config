@@ -1,136 +1,94 @@
-let theme = import (dirOf <nixos-config> + /modules/theme.nix);
+{ pkgs, ... }:
+
+let
+  theme = import (dirOf <nixos-config> + /modules/theme.nix);
 in {
-  # programs.tmux = {
-  #   enable = true;
+  home-manager.users.avo.programs.tmux = {
+    enable = true;
+    escapeTime = 0;
+    aggressiveResize = true;
+    customPaneNavigationAndResize = true;
+    disableConfirmationPrompt = true;
+    keyMode = "vi";
+    newSession = true;
+    baseIndex = 0;
+    plugins = with pkgs.tmuxPlugins; [
+      sensible
+      pain-control
+      copycat
+      # better-mouse-mode
+      {
+        plugin = yank;
+        extraConfig = "set -g @yank_selection 'primary'";
+      }
+      {
+        plugin = resurrect;
+        extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+      }
+      {
+        plugin = continuum;
+        extraConfig = ''
+          set -g @continuum-restore 'on'
+          set -g @continuum-save-interval '60' # minutes
+        '';
+      }
+    ];
+    extraConfig = ''
+      set -g @plugin 'tmux-plugins/tpm'
+      # if "test ! -d ~/.tmux/plugins/tpm" \
+      #   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 
-  #   extraConfig = ''
+      run '~/.tmux/plugins/tpm/tpm'
 
-  #     set -g @scroll-speed-num-lines-per-scroll 1
-  #     set -g mouse on
+      set -g @plugin 'tmux-plugins/tmux-sensible'
+      set -g @plugin 'tmux-plugins/tmux-pain-control'
 
+      set -g @plugin 'nhdaly/tmux-better-mouse-mode'
+      set -g @scroll-speed-num-lines-per-scroll 1
 
-  #     set  -g base-index 1
-  #     set  -g renumber-windows on
+      set -g mouse on
 
-  #     set  -g monitor-activity on
+      set -g @plugin 'tmux-plugins/tmux-copycat'
 
-  #     set  -g set-titles on
-  #     set  -g set-titles-string "#T"
+      set -g @plugin 'tmux-plugins/tmux-yank'
+      set -g @yank_selection 'primary'
 
-  #     set  -g status-style                 bg='${theme.foreground}',fg='${theme.background}'
-  #     set  -g status-left                  '''
-  #     set  -g status-right                 ' #S '
-  #     set  -g window-status-format         ' #I: #W '
-  #     set  -g window-status-current-format ' #I: #W '
-  #     setw -g window-status-current-style  bg='${theme.foreground}',fg='${theme.background}'
-  #     setw -g window-status-activity-style bg='${theme.yellow_fg}'
+      bind -T copy-mode-vi v send -X begin-selection
+      bind -T copy-mode-vi C-v send -X rectangle-toggle
+      bind -T copy-mode-vi y send -X copy-selection
 
-  #     set  -g prefix C-a
-  #     setw -g mode-keys vi
-  #     set  -g mode-keys vi
+      set -g escape-time 0
+      set -g renumber-windows on
+      set -g monitor-activity on
+      set -g set-titles on
+      set -g set-titles-string "#T"
 
-  #     bind s split-window -v
-  #     bind v split-window -h
-  #   '';
-  # };
+      set -g status-left '''
+      set -g status-right ' #S '
+      set -g window-status-format ' #I: #W '
+      set -g window-status-current-format ' #I: #W '
 
-  environment.etc."tmux.conf".text = ''
-    set -g @plugin 'tmux-plugins/tpm'
-    set -g @plugin 'tmux-plugins/tmux-sensible'
-    set -g @plugin 'tmux-plugins/tmux-pain-control'
-    set -g @plugin 'nhdaly/tmux-better-mouse-mode'
+      set -g status-style bg='#${theme.dark.inactive.background}',fg='#${theme.dark.inactive.foreground}'
+      setw -g window-status-activity-style bg='#${theme.dark.urgent.background}',fg='#${theme.dark.urgent.foreground}'
+      setw -g window-status-current-style  bg='#${theme.dark.active.background}',fg='#${theme.dark.active.foreground}'
 
+      set status-justify left
 
-    set -g @scroll-speed-num-lines-per-scroll 1
-    set -g mouse on
+      setw -g pane-base-index 1
+      # set -g base-index 1
 
-    set -g @plugin 'tmux-plugins/tmux-copycat'
-    set -g @plugin 'tmux-plugins/tmux-yank'
-    set -g @yank_selection 'primary'
-    bind -T copy-mode-vi v   send -X begin-selection
-    bind -T copy-mode-vi C-v send -X rectangle-toggle
-    bind -T copy-mode-vi y   send -X copy-selection
-    # unbind p
-    # bind   p paste-buffer
+      set -g prefix C-a
+      setw -g mode-keys vi
+      set -g mode-keys vi
 
+      bind C-o previous-window
+      bind C-i next-window
 
-    # if "test ! -d ~/.tmux/plugins/tpm" \
-    #   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
-    run '~/.tmux/plugins/tpm/tpm'
+      bind s split-window -v
+      bind v split-window -h
 
-
-    set  -g base-index 1
-    set  -g renumber-windows on
-    set  -g monitor-activity on
-    set  -g set-titles on
-    set  -g set-titles-string "#T"
-
-    set  -g status-left                  '''
-    set  -g status-right                 ' #S '
-    set  -g window-status-format         ' #I: #W '
-    set  -g window-status-current-format ' #I: #W '
-
-    set  -g status-style                 bg='#${theme.dark.inactive.background}',fg='#${theme.dark.inactive.foreground}'
-    setw -g window-status-activity-style bg='#${theme.dark.urgent.background}',fg='#${theme.dark.urgent.foreground}'
-    setw -g window-status-current-style  bg='#${theme.dark.active.background}',fg='#${theme.dark.active.foreground}'
-
-    set status-justify left
-    setw -g pane-base-index 1
-
-    set  -g prefix C-a
-    setw -g mode-keys vi
-    set  -g mode-keys vi
-
-    bind C-o previous-window
-    bind C-i next-window
-    bind s   split-window -v
-    bind v   split-window -h
-
-
-    # set -g @plugin 'tmux-plugins/tpm'
-
-    # set -g @plugin 'tmux-plugins/tmux-sensible'
-
-    # set -g @plugin 'tmux-plugins/tmux-pain-control'
-
-    # set -g @plugin 'nhdaly/tmux-better-mouse-mode'
-    # set -g @scroll-speed-num-lines-per-scroll 1
-    # set -g mouse on
-
-    # set -g @plugin 'tmux-plugins/tmux-copycat'
-    # set -g @plugin 'tmux-plugins/tmux-yank'
-    # # bind -T copy-mode-vi v   send -X begin-selection
-    # # bind -T copy-mode-vi C-v send -X rectangle-toggle
-    # # bind -T copy-mode-vi y   send -X copy-selection
-    # unbind               p
-    # bind                 p   paste-buffer
-
-    # if "test ! -d ~/.tmux/plugins/tpm" \
-    #   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
-
-    # run '~/.tmux/plugins/tpm/tpm'
-
-    # set  -g base-index 1
-    # set  -g renumber-windows on
-
-    # set  -g monitor-activity on
-
-    # set  -g set-titles on
-    # set  -g set-titles-string "#T"
-
-    # set  -g status-style                 bg='#${theme.foreground}',fg='#${theme.background}'
-    # set  -g status-left                  '''
-    # set  -g status-right                 ' #S '
-    # set  -g window-status-format         ' #I: #W '
-    # set  -g window-status-current-format ' #I: #W '
-    # setw -g window-status-current-style  bg='#${theme.foreground}',fg='#${theme.background}'
-    # setw -g window-status-activity-style bg='#${theme.yellow_fg}'
-
-    # set  -g prefix C-a
-    # setw -g mode-keys vi
-    # set  -g mode-keys vi
-
-    # bind s split-window -v
-    # bind v split-window -h
-  '';
+      unbind p
+      bind p paste-buffer
+    '';
+  };
 }
