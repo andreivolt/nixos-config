@@ -4,7 +4,7 @@
   home-manager.users.avo = { pkgs, ...}: {
     programs.foot = let
       font = {
-        family = "JetBrainsMono Nerd Font Mono";
+        family = "Consolas"; # JetBrainsMono Nerd Font Mono
         size = "11";
       };
     in {
@@ -13,34 +13,32 @@
       package = pkgs.nixpkgsUnstable.foot;
       settings = {
         main = {
-          # term = "xterm-256color";
           font = "${font.family}:size=${font.size}";
-          # dpi-aware = "yes";
           letter-spacing = "-0.5";
         };
 
         colors = with (import ./theme.nix); {
           foreground = foreground;
           background = background;
-
-          regular0 = black_bg;
-          regular1 = red_fg;
-          regular2 = green_fg;
-          regular3 = yellow_fg;
-          regular4 = blue_fg;
-          regular5 = magenta_fg;
-          regular6 = cyan_fg;
-          regular7 = white_fg;
-
-          bright0 = black_bg;
-          bright1 = red_bg;
-          bright2 = green_bg;
-          bright3 = yellow_bg;
-          bright4 = blue_bg;
-          bright5 = magenta_bg;
-          bright6 = cyan_bg;
-          bright7 = white_bg;
-        };
+        } // (with colors.normal; {
+          regular0 = black;
+          regular1 = red;
+          regular2 = green;
+          regular3 = yellow;
+          regular4 = blue;
+          regular5 = magenta;
+          regular6 = cyan;
+          regular7 = white;
+        }) // (with colors.bright; {
+          bright0 = black;
+          bright1 = red;
+          bright2 = green;
+          bright3 = yellow;
+          bright4 = blue;
+          bright5 = magenta;
+          bright6 = cyan;
+          bright7 = white;
+        });
 
         mouse.hide-when-typing = "yes";
 

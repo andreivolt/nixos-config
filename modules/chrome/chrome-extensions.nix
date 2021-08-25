@@ -1,35 +1,35 @@
 [
-  "adelhekhakakocomdfejiipdnaadiiib" # Text Mode
-  "aedikcfpfonanffanecfolneiaoakmlc" # User-Agent Switcher
-  "bkegjcmidjgnmjbeninfbhoaelblpgic" # Plain Text Linker
-  "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
-  "dneaehbmnbhcippjikoajpoabadpodje" # Old Reddit Redirect
-  "fihnjjcciajhdojfnbdddfaoknhalnja" # I don't care about cookies
-  "fpnmgdkabkmnadcjpehmlllkndpkmiak" # Wayback Machine
   "gkmndgjgpolmikgnipipfekglbbgjcel" # AutoHideDownloadsBar
-  "gneobebnilffgkejpfhlgkmpkipgbcno" # Death To _blank
-  "hahklcmnfgffdlchjigehabfbiigleji" # Play with MPV
-  "hdokiejnpimakedhajhdlcegeplioahd" # LastPass: Free Password Manager
-  "hkgfoiooedgoejojocmhlaklaeopbecg" # Picture-in-Picture Extension (by Google)
-  "hmafjphdklmdjfcnljjeonfpgafanjjc" # Dark mode / night reader
-  "hokcepcfcicnhalinladgknhaljndhpc" # Witchcraft
-  "iipjdmnoigaobkamfhnojmglcdbnfaaf" # Clutter Free - Prevent duplicate tabs
-  "iokagnmembcjfocpbfmdojdghbfjpmkb" # Next Page
-  "jchobbjgibcahbheicfocecmhocglkco" # Neat URL
-  "jeogkiiogjbmhklcnbgkdcjoioegiknm" # Slack
-  "lfpjkncokllnfokkgpkobnkbkmelfefj" # Linkclump
-  "lifgeihcfpkmmlfjbailfpfhbahhibba" # Smart TOC
-  "lpcaedmchfhocbbapmcbpinfpgnhiddi" # Google Keep Chrome Extension
-  "mgijmajocgfcbeboacabfgobmjgjcoja" # Google Dictionary (by Google)
-  "mmcgnaachjapbbchcpjihhgjhpfcnoan" # Open New Tab After Current Tab
-  "ncppfjladdkdaemaghochfikpmghbcpc" # Open-as-Popup
-  "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
-  "nlnkcinjjeoojlhdiedbbolilahmnldj" # Tab Sorter
-  "ofhbbkphhbklhfoeikjpcbhemlocgigb" # Web Server for Chrome
-  "opokoaglpekkimldnlggpoagmjegichg" # ViolentMonkey
-  "padekgcemlokbadohgkifijomclgjgif" # Proxy SwitchyOmega
-  "pgdnlhfefecpicbbihgmbmffkjpaplco" # uBlock Origin Extra
   "pkedcjkdefgpdelpbcmbmeomcjbeemfm" # Chrome Media Router
-  # "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
+  "iipjdmnoigaobkamfhnojmglcdbnfaaf" # Clutter Free - Prevent duplicate tabs
+  "djdmadneanknadilpjiknlnanaolmbfk" # Copy All Urls
+  "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark Reader
+  "gneobebnilffgkejpfhlgkmpkipgbcno" # Death To _blank
+  "mgijmajocgfcbeboacabfgobmjgjcoja" # Google Dictionary (by Google)
+  "lpcaedmchfhocbbapmcbpinfpgnhiddi" # Google Keep Chrome Extension
+  "fihnjjcciajhdojfnbdddfaoknhalnja" # I don't care about cookies
+  "hdokiejnpimakedhajhdlcegeplioahd" # LastPass: Free Password Manager
+  "lfpjkncokllnfokkgpkobnkbkmelfefj" # Linkclump
+  "jchobbjgibcahbheicfocecmhocglkco" # Neat URL
+  "iokagnmembcjfocpbfmdojdghbfjpmkb" # Next Page
+  "dneaehbmnbhcippjikoajpoabadpodje" # Old Reddit Redirect
+  "ncppfjladdkdaemaghochfikpmghbcpc" # Open-as-Popup
+  "mmcgnaachjapbbchcpjihhgjhpfcnoan" # Open New Tab After Current Tab
+  "hkgfoiooedgoejojocmhlaklaeopbecg" # Picture-in-Picture Extension (by Google)
+  "bkegjcmidjgnmjbeninfbhoaelblpgic" # Plain Text Linker
+  "hahklcmnfgffdlchjigehabfbiigleji" # Play with MPV
+  "padekgcemlokbadohgkifijomclgjgif" # Proxy SwitchyOmega
+  "jeogkiiogjbmhklcnbgkdcjoioegiknm" # Slack
+  "lifgeihcfpkmmlfjbailfpfhbahhibba" # Smart TOC
+  "nlnkcinjjeoojlhdiedbbolilahmnldj" # Tab Sorter
+  "adelhekhakakocomdfejiipdnaadiiib" # Text Mode
+  "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
+  "pgdnlhfefecpicbbihgmbmffkjpaplco" # uBlock Origin Extra
+  "aedikcfpfonanffanecfolneiaoakmlc" # User-Agent Switcher
+  "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
   # "hfjbmagddngcpeloejdejnfgbamkjaeg" # Vimium C - All by Keyboard
+  "opokoaglpekkimldnlggpoagmjegichg" # ViolentMonkey
+  "fpnmgdkabkmnadcjpehmlllkndpkmiak" # Wayback Machine
+  "ofhbbkphhbklhfoeikjpcbhemlocgigb" # Web Server for Chrome
+  "hokcepcfcicnhalinladgknhaljndhpc" # Witchcraft
 ]

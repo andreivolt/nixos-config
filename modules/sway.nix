@@ -2,10 +2,15 @@
 
 let theme = import (dirOf <nixos-config> + /modules/theme.nix);
 in {
+  # TODO
   # # fix crash on restart
   # hardware.opengl.driSupport = true;
 
   home-manager.users.avo = { config, ... }: {
+    nixpkgs.overlays = [
+      (import (dirOf <nixos-config> + /modules/wayland-overlay.nix))
+    ];
+
     wayland.windowManager.sway = rec {
       enable = true;
       config = {
@@ -179,23 +184,27 @@ in {
     };
 
     home.packages = with pkgs; [
+      # gebaar-libinput # TODO: needed?
+      # kanshi  # display configuration # TODO: needed?
+      # oguri # animated background # TODO: needed?
+      # swaybg # TODO: needed?
+      autotiling
+      bemenu # ui
       gammastep
-      gebaar-libinput
       grim
-      # mako
-      wev
       slurp
+      sway-contrib.grimshot # screenshots
+      sway-contrib.inactive-windows-transparency
       swayidle
       swaylock
+      swaywsr # automatically rename workspaces with contents
+      waybar
+      wdisplays  # display configuration
+      wev
+      wf-recorder # screen recorder
+      wl-clipboard
       wmfocus # window picker
       wob
-      autotiling
-      wl-clipboard
-      kanshi  # display configuration
-      wdisplays  # display configuration
-      swaybg
-      oguri # animated background
-      waybar
       xwayland
     ];
   };

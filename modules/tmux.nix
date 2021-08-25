@@ -6,12 +6,16 @@ in {
   home-manager.users.avo.programs.tmux = {
     enable = true;
     escapeTime = 0;
+    prefix = "C-a";
+    shortcut = "a"; # TODO: ?
     aggressiveResize = true;
     customPaneNavigationAndResize = true;
     disableConfirmationPrompt = true;
     keyMode = "vi";
     newSession = true;
-    baseIndex = 0;
+    baseIndex = 1;
+    # tmuxinator.enable = true;
+    # tmuxp.enable = true;
     plugins = with pkgs.tmuxPlugins; [
       sensible
       pain-control
