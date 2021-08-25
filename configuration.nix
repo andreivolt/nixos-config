@@ -1,101 +1,103 @@
 { lib, pkgs, config, ... }:
 
 {
-  imports =
-    let
-      home-manager-module =
-        let
-          rev = "604561ba9ac45ee30385670b18f15731c541287b";
-          sha256 = "01mj8kqk8gv5v64dmbhx5mk0sz22cs2i0jybnlicv7318xzndzxk";
-        in
-        import "${fetchTarball {
-          inherit sha256;
-          url = "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz";}
-        }/nixos";
-    in
-    [
-      ./hardware-configuration.nix
+  imports = let
+    home-manager-module = let
+      rev = "604561ba9ac45ee30385670b18f15731c541287b";
+      sha256 = "01mj8kqk8gv5v64dmbhx5mk0sz22cs2i0jybnlicv7318xzndzxk";
+    in import "${
+      fetchTarball {
+        inherit sha256;
+        url = "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz";
+      }
+    }/nixos";
+  in [
+    ./hardware-configuration.nix
+    home-manager-module
+    ./cachix.nix
 
-      home-manager-module
-      ./cachix.nix
-
-      # ./modules/ipfs.nix
-      # ./modules/wayland/wl-clipboard-x11.nix
-      # ./modules/weechat-matrix.nix
-      ./modules/adb.nix
-      ./modules/himalaya.nix # email client
-      ./modules/alacritty/alacritty.nix
-      ./modules/aria2.nix
-      ./modules/chrome
-      ./modules/clipman.nix
-      ./modules/clojure
-      ./modules/dropbox.nix
-      ./modules/clojure/boot
-      ./modules/clojure/rebel-readline.nix
-      ./modules/cloudflare-dns.nix
-      ./modules/command-not-found.nix
-      ./modules/curl.nix
-      ./modules/docker.nix
-      # ./modules/emacs.nix
-      ./modules/firefox-wayland.nix
-      ./modules/flashfocus.nix
-      ./modules/fonts.nix
-      ./modules/foot.nix
-      ./modules/fzf.nix
-      ./modules/mdns.nix
-      ./modules/sway-autorotate-screen.nix
-      ./modules/git.nix
-      ./modules/github.nix
-      ./modules/gnome-keyring.nix
-      ./modules/gnupg.nix
-      ./modules/grep.nix
-      ./modules/gtk.nix
-      ./modules/hardware-video-acceleration.nix
-      ./modules/hardware-video-acceleration/mpv.nix
-      ./modules/hidpi/console.nix
-      ./modules/hidpi/gnome.nix # TODO: dconf needed?
-      ./modules/adblock.nix
-      ./modules/insync.nix
-      ./modules/kdeconnect.nix
-      ./modules/keybase.nix
-      ./modules/less.nix
-      ./modules/libvirt.nix
-      ./modules/locate.nix
-      ./modules/lowbatt.nix
-      ./modules/mako.nix
-      ./modules/map-test-tld-to-localhost.nix
-      ./modules/matrix-cli.nix
-      ./modules/virtualbox-host.nix
-      ./modules/xdg-desktop-portal.nix
-      ./modules/mpv.nix
-      ./modules/pipewire.nix
-      ./modules/readline/inputrc.nix
-      ./modules/ripgrep.nix
-      ./modules/scanning.nix
-      ./modules/spotify.nix
-      ./modules/sway/sway.nix
-      ./modules/swayidle.nix
-      ./modules/swaylock.nix
-      ./modules/tmux.nix
-      # ./modules/keybase-sync-src.nix
-      ./modules/tor.nix
-      ./modules/wayland/overlay.nix
-      ./modules/weechat.nix
-      ./modules/wob.nix
-      ./modules/zsh/fzf.nix
-      ./modules/zsh/vi.nix
-      ./modules/printing.nix
-      ./modules/networkmanager.nix
-    ];
+    # ./modules/emacs.nix
+    # ./modules/ipfs.nix
+    # ./modules/keybase-sync.nix
+    # ./modules/wayland/wl-clipboard-x11.nix
+    # ./modules/weechat-matrix.nix
+    ./modules/adb.nix
+    ./modules/adblock.nix
+    ./modules/alacritty/alacritty.nix
+    ./modules/aria2.nix
+    ./modules/chrome
+    ./modules/clipman.nix
+    ./modules/clojure
+    ./modules/clojure/boot
+    ./modules/clojure/rebel-readline.nix
+    ./modules/cloudflare-dns.nix
+    ./modules/command-not-found.nix
+    ./modules/curl.nix
+    ./modules/direnv.nix
+    ./modules/docker.nix
+    # ./modules/dropbox.nix
+    ./modules/firefox-wayland.nix
+    ./modules/wayland.nix
+    ./modules/flashfocus.nix
+    ./modules/fonts.nix
+    ./modules/foot.nix
+    ./modules/fzf.nix
+    ./modules/git.nix
+    ./modules/github.nix
+    ./modules/gnome-keyring.nix
+    ./modules/gnupg.nix
+    ./modules/wayvnc.nix
+    ./modules/grep.nix
+    ./modules/gtk.nix
+    ./modules/hardware-video-acceleration.nix
+    ./modules/hardware-video-acceleration/mpv.nix
+    ./modules/hidpi/console.nix
+    ./modules/hidpi/gnome.nix # TODO: dconf needed?
+    ./modules/hidpi/qt.nix
+    # ./modules/himalaya.nix # email client
+    ./modules/insync.nix
+    ./modules/kdeconnect.nix
+    ./modules/play-with-mpv.nix
+    ./modules/keybase.nix
+    ./modules/less.nix
+    ./modules/libvirt.nix
+    ./modules/locate.nix
+    ./modules/lowbatt.nix
+    ./modules/mako.nix
+    ./modules/map-test-tld-to-localhost.nix
+    ./modules/matrix-cli.nix
+    ./modules/mdns.nix
+    ./modules/mpv.nix
+    ./modules/networkmanager.nix
+    ./modules/networkmanager-iwd.nix
+    ./modules/wireguard.nix
+    ./modules/pipewire.nix
+    ./modules/printing.nix
+    ./modules/readline/inputrc.nix
+    ./modules/ripgrep.nix
+    ./modules/scanning.nix
+    ./modules/spotify.nix
+    ./modules/sway-autorotate-screen.nix
+    ./modules/sway-autostart.nix
+    ./modules/sway.nix
+    ./modules/swayidle.nix
+    ./modules/swaylock.nix
+    ./modules/tmux.nix
+    ./modules/tor.nix
+    ./modules/virtualbox-host.nix
+    ./modules/weechat.nix
+    ./modules/wob.nix
+    ./modules/xdg-desktop-portal.nix
+    ./modules/zsh/prompt.nix
+    ./modules/zsh/fzf.nix
+    ./modules/zsh/vi.nix
+    ./modules/tailscale.nix
+  ];
 
   hardware.bluetooth.enable = true;
   hardware.opengl.enable = true;
 
-  networking.enableIPv6 = false;
-
   networking.hostName = builtins.getEnv "HOSTNAME";
-
-  services.upower.enable = true;
 
   services.sshd.enable = true;
 
@@ -107,21 +109,20 @@
 
   security.sudo.wheelNeedsPassword = false;
 
-  services.devmon.enable = true; # automount removable devices
+  # automount removable devices
+  services.devmon.enable = true;
 
   system.stateVersion = "19.09";
 
   nix = {
     gc.automatic = true;
     optimise.automatic = true;
-    nixPath = [
-      "/home/avo/gdrive/nixos-config"
-      "nixpkgs=/home/avo/gdrive/nixpkgs"
-      "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix"
-    ];
+    # nixPath = [
+    #   "/home/avo/gdrive/nixos-config"
+    #   "nixpkgs=/home/avo/gdrive/nixpkgs"
+    #   "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix"
+    # ];
   };
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   nixpkgs.config.allowUnfree = true;
 
@@ -130,6 +131,8 @@
   time.timeZone = "Europe/Paris";
 
   console.keyMap = "fr";
+
+  # users.mutableUsers = false; # TODO
 
   users.users.avo = {
     isNormalUser = true;
@@ -140,552 +143,177 @@
   home-manager.users.avo = { pkgs, ... }:
     let
       vim = pkgs.callPackage ./modules/vim { };
-    in
-    rec {
-      nixpkgs.overlays =
-        let
-          nixpkgsUnstable = self: super: {
-            nixpkgsUnstable =
-              let nixpkgs-unstable-src = fetchTarball https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz;
-              in import nixpkgs-unstable-src { };
-          };
-        in
-        [
-          (self: super: {
-            moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
-              postInstall = attrs.postInstall + "\n"
-                + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
-            });
-          })
-          nixpkgsUnstable
-          (import ./packages)
-        ];
+      startsway = pkgs.writeShellScriptBin "startsway" ''
+        systemctl --user import-environment
+
+        exec systemd-cat \
+          --identifier sway \
+          dbus-run-session -- \
+            ${pkgs.sway}/bin/sway --debug
+      '';
+    in rec {
+      nixpkgs.overlays = let
+        nixpkgsUnstable = self: super: {
+          nixpkgsUnstable = let
+            nixpkgs-unstable-src = fetchTarball
+              "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
+          in import nixpkgs-unstable-src { };
+        };
+      in [
+        (_: _: { inherit startsway; })
+        (_: super: {
+          moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
+            postInstall = attrs.postInstall + "\n"
+              + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+          });
+        })
+        nixpkgsUnstable
+        (import ./packages)
+      ];
 
       home.packages = with pkgs; [
-        # (hiPrio mandoc)
-        # (pkgs.youtube-viewer.overrideAttrs (oldAttrs: rec { src = /home/avo/gdrive/youtube-viewer; }))
-        # anbox # android
-        # avo.wsta # websocket cli
-        # cargo2nix # rust
-        # chromiumDev
-        # csvtotable
-        # docx2txt
-        # espeak-classic # tts
-        # firefox # TODO: xdg desktop associations
-        # ghi
-        # gitAndTools.diff-so-fancy
-        # google-chrome-dev
-        # hachoir-subfile
-        # haskellPackages.github-backup # BROKEN
-        # highlight # cli syntax highlighter
-        # home-manager
-        # imagemin-cli
-        # impressive # PDF presentations
-        # ipfs-deploy
-        # jdk11 # collision
-        # jwhois
-        # kefctl
-        # libxls # xls2csv
-        # mach # python nix # nix-env -if https://github.com/DavHau/mach-nix/tarball/3.3.0 -A mach-nix
-        # mpc
-        # mpc_cli
-        # mpdas
-        # mpdris2
-        # mpdscribble # MPD scrobbler
-        # nixpkgsUnstable.google-chrome-dev
-        # perlPackages.DBDSQLite # for GNU parallel
-        # perlPackages.HTMLParser
-        # pfff # source code tool
-        # pip2nix # nix-env -f pip2nix/release.nix -iA pip2nix.python39
-        # poetry2nix # python # TODO
-        # puppeteer-cli # compiles chrome
-        # pythonPackages.ipython
-        # pythonPackages.jupyter
-        # pythonPackages.piep # Python stream editing
-        # pythonPackages.scapy
-        # record-query
-        # renameutils # imv collision
-        # speechd
-        # texlive.combined.scheme-full # ghostscript collision
-        # tg # TODO
-        # traceroute
-        # ungoogled-chromium # or chromium # TODO: xdg desktop associations
-        # vgo2nix # go
-        # vimiv # image viewer, vim # TODO: broken
-        # wl-recorder # wayland screen recording
-        # x_x # Excel + CSV cli viewer
-        # zoom-us
-        (aspellWithDicts (dicts: with dicts; [ en en-computers fr ])) # TODO
-        (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ])) # TODO
         (lowPrio mandoc)
         (zathura.override { useMupdf = true; })
-        abduco # terminal
         acpi
-        adb-sync # android
-        alsaPlugins
-        alsaUtils
-        android-file-transfer # androd mtp
-        antiword # text
-        apktool
         appimage-run
         archivemount
         aria
-        arp-scan # networking
-        asciinema
-        at
         atool # archive
         avo.pushover
         avo.zprint # clojure pretty-printer
         awscli
         babashka # clojure
-        bashdb # bash debugger
         bat
         bc # calculator
-        bemenu # ui
         bfs # breadth-first find
-        bindfs # filesystems
         binutils
-        bitcoin
-        blender # 3d
-        bluetooth_battery
-        bluez
-        bluez-tools
-        boot
         breeze-gtk # gtk qt
         breeze-qt5 # gtk qt
-        brig # sync, decentralized
-        broot # tree file navigator
-        btfs # filesystems
-        cabal2nix
-        cachix
-        cargo # proglang, package-management
-        castnow # chromecast
-        catdoc # Word/Excel/PowerPoint to text
-        choose # cut/ awk alternative
-        chrome-export # export chrome bookmarks + history
+        cachix # nixos
         chromedriver
-        cifs-utils
         cloc # count lines of code
-        clojure-lsp
-        cmake # proglang
-        colordiff
-        copyq # clipboard manager
         crudini # manipulate ini files
-        csvkit # csv
-        cups
         curl
-        curlftpfs # filesystems
-        curlie
         cv # progress viewer
-        dateutils
-        delta
-        desktop_file_utils
-        discord
-        dmenu-wayland # ui
+        dateutils # dategrep
         dnscontrol # cloud
         dnsutils # networking
-        docker-compose
-        docker-machine
-        dogdns # networking
-        dos2unix
         dragon-drop # file drag-and-drop source/sink
-        dropbox-cli # filesharing, backup
-        dstat # resource statistics
-        dtach # terminal, detach
         dtrx # unarchiver
-        dupd # file-management, duplicates
-        dvtm # terminal-multiplexer
-        ed # text-editor
-        efibootmgr # system
-        efivar # system
-        elixir # proglang
-        elvish
         encfs # security, filesystems
-        enscript # convert to PostScript
-        entr # file-watcher
-        envchain # security
-        envsubst
-        eternal-terminal # ssh
-        ethtool
         evince # fill PDF forms
-        exa # ls alternative
-        exiftool # metadata
-        exiv2 # image metadata
-        expect
-        fastlane # automate mobile app releases
+        expect # terminal automation
         fatrace # file access events
         fd # find alternative
-        fdupes # find duplicates
         ffmpeg-full # -full for ffplay
         file
+        firefox # TODO: xdg desktop associations
         flac # audio
         flac123 # audio
-        flashfocus # Wayland window animations
-        flyctl # cloud, fly.io
-        forkstat
         fpp # path picker
-        freerdp # RDP client
-        fswatch
         fswebcam # webcam photo
-        fuse
-        fx # JSON processing tool
         fzf # fuzzy finder
-        fzy # fuzzy finder
-        gcc
         gcolor2 # color chooser
         geckodriver # Firefox automation
-        genymotion # android
-        geoipWithDatabase
-        ghc # Haskell
-        ghostscript
-        gifsicle
+        gh # github
         gist # github
         git-hub # github
-        git-imerge # Git incremental merge
-        gitAndTools.tig
-        gitfs # filesystems
-        gitFull # for gitk
-        glava # audio spectrum visualizer
-        glib.bin
-        glpaper
-        gnirehtet # android reverse tethering
-        gnome-breeze # gtk
-        gnome.gnome-tweaks
-        gnumake
         gnupg
-        go # proglang
-        goldendict # dictionnary
         google-chrome # browser
         google-cloud-sdk # cloud
-        google-drive-ocamlfuse # filesharing, backup, filesystem
         googler # google search cli
-        gphotos-sync # photos
         grab-site # web-archive
         graphicsmagick # image, tools
-        graphviz
-        grc # syntax highlighter
         gron # flatten JSON
-        gst_all_1.gst-plugins-bad # video
-        gst_all_1.gst-plugins-base # video
-        gst_all_1.gst-plugins-good # video
-        gst_all_1.gst-plugins-ugly # video
-        gst_all_1.gstreamer # video
-        hachoir
-        haskellPackages.apply-refact
-        haskellPackages.hlint
-        haskellPackages.hnix
-        haskellPackages.ShellCheck
-        haskellPackages.stylish-haskell
-        haskellPackages.xml-to-json
-        heroku
         hr # horizontal rule
-        html-xml-utils # structured-data
-        html2text
         htmlTidy # html
-        htop # system
-        httpfs2 # filesystems
         httpie # http client
-        httping # http benchmark
         hub # github
-        hugs # haskell
-        hy # python lisp
-        hydroxide # protonmail
-        hyperfine # benchmarking
-        icdiff # side-by-side highlighted diffs
         iftop # network
-        imgur-screenshot # file-sharing
         imgurbash2 # file-sharing
         imv # image viewer
-        inkscape
         inotify-tools # file watcher
         iotop # network
-        ip2location
-        ip2unix # networking
-        ipfs # decentralized
-        iptraf-ng # network
-        iw # wifi
-        iwd # wifi
-        jmtpfs # filesystems
+        jc # json
         jo # create JSON
         jq # json
-        jre # for Android
-        jtc # json
         keybase
-        keybase-gui
-        kitty # terminal
-        kotatogram-desktop # Telegram
-        lastfmsubmitd
         lastpass-cli
         leiningen # clojure
-        lf # file navigator
-        lftp # ftp
-        libarchive # bsdtar
-        libguestfs # for mounting qcow2 images
-        libnotify # ui
+        libnotify # notify-send
         libreoffice-fresh
-        libsForQt5.qtstyleplugin-kvantum # qt theme engine
-        libxml2 # xmllint
-        lighttable # Clojure IDE
-        linode-cli # cloud
-        linuxPackages.perf
         lm_sensors
-        lnav # logfile navigator
-        lsd # ls alternative
-        lshw # system
-        lsix # images, terminal
         lsof # system
-        lsyncd # sync files with remote
-        ltrace # system
-        lumo # standalone ClojureScript environment
-        lxcfs # filesystems, containers
         lxqt.pavucontrol-qt
-        lynx # terminal browser
         mailutils # email
-        mate.caja # file manager
-        matrix-commander # matrix cli
-        maven # package-management
         mediainfo # metadata
-        megatools # cloud
-        meld # diff
-        mergerfs # filesystems
-        miller # field processing for CSV
-        mimeo # mime opener
-        mimic # tts
-        mitmproxy # networking
         monolith # web-archive
         moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel # for vipe & vidir
-        mosh # ssh
-        mpvc # mpv remote
-        msmtp # email
-        mtpfs # filesystems
-        mtr # network diagnostics
-        multitail # system
-        ncdu # disk usage
         neochat # matrix client
-        neomutt # email
         neovide # text editor
-        net-snmp # network
         netcat # networking
         nethogs # system, networking
-        netlify-cli # cloud
         ngrep # networking
         ngrok # networking
-        nix-du
-        nix-generate-from-cpan # perl, nix
-        nix-index # nixos
-        nix-output-monitor
         nix-prefetch-github # nixos
         nix-prefetch-scripts # nixos
-        nix-top
-        nix-tree
-        nix-universal-prefetch
-        nix-update # nixos
-        nixfmt # nixos
+        nixfmt # code formatter, nix
         nixops # cloud, nixos
-        nixpkgs-fmt # code formater, nix
-        nixpkgsUnstable.arcan.espeak # tts
-        nixpkgsUnstable.clojure
-        nixpkgsUnstable.gh # github
-        nixpkgsUnstable.youtube-viewer
         nmap # network
-        nnn # file browser
-        nodejs # proglang
-        nodePackages.create-react-native-app
-        nodePackages.expo-cli # android
-        nodePackages.firebase-tools # cloud
-        nodePackages.node2nix # package-management
-        nodePackages.nodemon
-        nodePackages.peerflix
-        nodePackages.webtorrent-cli
-        notmuch # email indexer
         nox # search Nix packages
         nq # queue
         ntfy # send notifications, on demand and when commands finish
-        nushell
-        nvimpager # vim
-        obex_data_server # bluetooth, d-bus
-        obexd # bluetooth
-        obexfs # bluetooth filesystem
         openssl
-        optipng # images
-        page # vim
         pamixer # audio
         pandoc
         parallel
-        pass # security
         patchelf
         pavucontrol # audio
-        pciutils # system
-        pdfarranger # pdf
-        pdfgrep
-        pdftk
-        perl # proglang
-        perl532Packages.FileMimeInfo
-        perl532Packages.XMLTwig # xml_grep
-        perl532Packages.XMLXPath # xpath tool
-        photon # web-archive
-        pianobar # audio
-        pidgin # chat
-        pitivi # video editor
-        play-with-mpv # open browser videos with mpv
         playerctl # mpris cli
-        podman # containers
-        ponymix # audio, system
+        ponymix # audio
         poppler_utils # pdf2text
         pqiv # image viewer
-        prettyping # networking
-        procmail # email
-        procs # ps alternative
-        projectm # music visualizer
-        proot
-        protonmail-bridge # protonmail
-        protonvpn-cli # networking
-        pscircle # system
+        protonvpn-cli # vpn
         psmisc
         pup # html
         pv # pipe viewer
-        pwgen # security
-        python3 # proglang
-        python39Packages.internetarchive # internet-archive
-        python3Packages.pip # proglang, packaging
         python3Packages.pipx # install & run Python packages in isolated environments
-        pythonPackages.pygments # colors, proglang
-        qemu # virtualization
-        qt5ct # qt config
-        qutebrowser # browser, vim
-        racket # proglang
-        ranger # vim, file-browser
-        rclone # backups
         rdrview # content extractor
         recode # encoding
-        recutils
-        remarshal # CBOR/JSON/MessagePack/TOML/YAML converter
-        remmina # RDP client
         rename
-        reptyr # reparent process to new terminal
         ripgrep
-        ripgrep-all
-        ripmime # email attachments
         rlwrap
-        rman
-        rmlint # find duplicates
         rsync
-        ruby # proglang
-        s3backer # cloud, filesystems
-        s3cmd # cloud
-        sane-airscan # scanning
-        screen
-        sd # find & replace
-        sdcv # dictionnary
-        securefs # security, filesystems
-        shadowsocks-libev # SOCKS5 proxy
-        siege # http benchmarking
-        signal-cli # messaging
-        signal-desktop # messaging
-        signald # messaging
         simple-scan # scanning
         skype
-        slack
-        slop # query a selection and print to stdout
         socat
-        sox
-        speech-tools # tts
-        speedtest_cli
         sqlite
-        sshfsFuse
-        sshuttle # ssh VPN
-        stack
-        steam
+        startsway
         strace
-        stress-ng # benchmarking
-        sublime3
-        surf
+        sublime3 # text-editor
         surfraw
         swappy # image annotation
-        sway-contrib.grimshot # screenshots
-        sway-contrib.inactive-windows-transparency
-        swaywsr # automatically rename workspaces with contents
-        sysbench # benchmarking
         t # twitter
         tcpdump # network
-        tcpflow # network
         tdesktop # Telegram
         telegram-cli
         telnet # network
-        terminator # terminal
-        terraform # ops
         tesseract4 # ocr
         tmate # tmux remote sharing
         tmpmail # disposable email
-        tmux # terminal multiplexer
-        torbrowser
         tree
-        tsocks
-        ttyrec # terminal, collaboration
-        unionfs-fuse
-        unison # file sync
         units
-        unoconv
-        unrar
-        unzip
         urlscan # terminal, ui, urlview alternative
         urlview # terminal, ui
         urlwatch
-        usbutils
-        vagrant # virtualization
-        vgrep # grep pager
-        vieb # browser, vim
-        vifm
         vim
-        vimv # image viewer, vim
-        virt-viewer # virtualization
-        virtualbox
-        vlc
-        vulnix # security, vulnerability scanner
         w3m
-        watchman # file watcher
-        wayback_machine_downloader
-        wayst # terminal
-        wayvnc # remote desktop
-        wdiff # word diff
-        websocat # network
-        wezterm # terminal
-        wf-recorder # wayland screen recording
         wget
-        wgetpaste
-        wine
-        wirelesstools
-        wireshark
-        with-shell # cd inside commands
-        wofi # launcher
-        wol # wake-on-lan
-        wpa_supplicant
-        wtype # GUI automation
         xdg_utils
-        xh # HTTP client
-        xidel
-        xlsx2csv
-        xml2
-        xmlformat
-        xmlindent
-        xmlstarlet
-        xmlto # xml converter
-        xorg.xlsclients # list X clients
         xsel
         xurls
-        xwayland # xorg wayland
-        xxd
-        yarn
-        yarn2nix
-        ydotool
-        yeetgif # gif
-        you-get
-        youtube-dl
-        yq # json jq yaml
-        ytfzf # YouTube search
-        zellij # terminal
-        zip
-        zoxide # cd alternative
+        youtube-viewer
+        yt-dlp # youtube
       ];
 
       home.sessionVariables = {
@@ -694,15 +322,7 @@
         BROWSER = "${pkgs.google-chrome}/bin/google-chrome-stable";
       };
 
-      programs.direnv = {
-        enable = true;
-        enableZshIntegration = true;
-      };
-
-      home.sessionPath = [
-        "$HOME/gdrive/bin"
-        (builtins.toString ./bin)
-      ];
+      home.sessionPath = [ "$HOME/gdrive/bin" (builtins.toString ./bin) ];
 
       xdg.enable = true;
 
@@ -716,17 +336,6 @@
         "video/mp4" = "mpv.desktop";
         "x-scheme-handler/http" = "google-chrome-stable.desktop";
         "x-scheme-handler/https" = "google-chrome-stable.desktop";
-      };
-
-      programs.starship = {
-        enable = true;
-        enableZshIntegration = true;
-        settings = {
-          character = {
-            success_symbol = "[➜](bold green)";
-            error_symbol = "[➜](bold red)";
-          };
-        };
       };
 
       programs.zsh = {
@@ -802,75 +411,55 @@
             };
           }
         ];
-        initExtra =
-          let
-            startsway = ''
-              # if not running interactively, don't do anything
-              [[ $- != *i* ]] && return
+        initExtra = ''
+          # trigger completion on globbing
+          setopt glob_complete
+          # remove extraneous spaces from saved commands
+          setopt hist_reduce_blanks
+          # show menu when completing
+          zstyle ':completion:*' menu select
+          # automatically update PATH
+          zstyle ':completion:*' rehash true
+          # automatically add directories to the directory stack
+          setopt auto_pushd
 
-              # start sway on first console
-              if [[ "$(tty)" == "/dev/tty1" ]]; then
-                systemctl --user import-environment
+          source ${./modules/zsh/terminal-title.zsh}
 
-                exec systemd-cat \
-                  --identifier sway \
-                  dbus-run-session -- \
-                    sway --debug
-              fi
-            '';
-          in
-          ''
-            # trigger completion on globbing
-            setopt glob_complete
-            # remove extraneous spaces from saved commands
-            setopt hist_reduce_blanks
-            # show menu when completing
-            zstyle ':completion:*' menu select
-            # automatically update PATH
-            zstyle ':completion:*' rehash true
-            # automatically add directories to the directory stack
-            setopt auto_pushd
+          acd() {
+            local tmp=$(mktemp -d)
+            archivemount "$*" $tmp
+            cd $tmp
+          }
 
-            # source ${./modules/zsh/prompt.zsh}
-            source ${./modules/zsh/terminal-title.zsh}
+          ancestors() {
+            pstree -p --show-parents --arguments $$ --unicode \
+            | highlight yellow '(?<=,)[0-9]*'
+          }
 
-            acd() {
-              local tmp=$(mktemp -d)
-              archivemount "$*" $tmp
-              cd $tmp
-            }
+          highlight() {
+            rg \
+              --passthru \
+              --colors "match:fg:$1" --color always \
+              --pcre2 "$2"
+          }
 
-            ancestors() {
-              pstree -p --show-parents --arguments $$ --unicode \
-              | highlight yellow '(?<=,)[0-9]*'
-            }
+          bcat() {
+            local f=$(mktemp).html
+            cat > $f
+            $BROWSER $f
+          }
 
-            highlight() {
-              rg \
-                --passthru \
-                --colors "match:fg:$1" --color always \
-                --pcre2 "$2"
-            }
+          # overwrite previous line
+          overwrite() {
+            echo -e "\r\033[1A\033[0K$@"
+          }
 
-            bcat() {
-              local f=$(mktemp).html
-              cat > $f
-              $BROWSER $f
-            }
-
-            # overwrite previous line
-            overwrite() {
-              echo -e "\r\033[1A\033[0K$@"
-            }
-
-            html-man() {
-              man $@ \
-              | rman -f html \
-              | bcat
-            }
-
-            ${startsway}
-          '';
+          html-man() {
+            man $@ \
+            | ${pkgs.rman}/bin/rman -f html \
+            | bcat
+          }
+        '';
       };
     };
 
@@ -880,14 +469,11 @@
     suspendCapacity = 10;
   };
 
-  networking.wireless.iwd.enable = true;
-  # networking.networkmanager.wifi.backend = "iwd";
-  networking.networkmanager.wifi.macAddress = "random";
-  networking.networkmanager.ethernet.macAddress = "random";
-  networking.networkmanager.wifi.powersave = true;
   # networking.networkmanager.dns = "dnsmasq";
 
-  services.logind.lidSwitchExternalPower = "lock";
+  services.upower.enable = true;
 
-  services.acpid.powerEventCommands = "systemctl suspend";
+  networking.wireless.iwd.enable = true;
+
+  programs.steam.enable = true;
 }

@@ -13,6 +13,8 @@
     d2coding
     proggyfonts
     ia-writer-duospace
+    cascadia-code
+    vistafonts
 
     # emacs-all-the-icons-fonts
     # font-awesome-ttf

@@ -8,7 +8,7 @@
         repo = "himalaya";
         owner = "soywod";
         rev = "608057b23bcd067e6f5fe130c6e395655432a448";
-        sha256 = "1phwl1s9x3k9dpyyqijik2yq3awrzqcf5j32yb26l9lg3szq1scq";
+        sha256 = "0h055fdd5mnla5s8yxrbr52l3bnmccs085gc1wqd5g40v4rln273";
       };
     });
     settings = {
@@ -27,7 +27,7 @@
 
         smtp-host = "smtp.gmail.com";
         smtp-port = 465;
-        smtp-login = "your.email@gmail.com";
+        smtp-login = "andrei.volt@gmail.com";
         smtp-passwd-cmd = "cat ~/gdrive/gmail-app-password.txt";
       };
     };
