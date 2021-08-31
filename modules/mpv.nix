@@ -7,8 +7,9 @@
       scripts = with pkgs.mpvScripts; [ mpris ];
       config = {
         input-ipc-server = "/tmp/mpvsocket";
-        geometry = "25%";
-        script-opts = "osc-vidscale=no";
+        geometry = "30%";
+        script-opts = "osc-vidscale=no"; # prevent UI scaling
+        audio-display = false; # don't display album art
       };
     };
   };

@@ -3,7 +3,7 @@
 {
   home-manager.users.avo.programs.himalaya = {
     enable = true;
-    package = with pkgs; pkgs.himalaya.overrideAttrs (oldAttrs: rec {
+    package = with pkgs; himalaya.overrideAttrs (oldAttrs: rec {
       src = fetchFromGitHub {
         repo = "himalaya";
         owner = "soywod";
