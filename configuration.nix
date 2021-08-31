@@ -16,10 +16,15 @@
     home-manager-module
     ./cachix.nix
 
+    # ./modules/dropbox.nix
     # ./modules/emacs.nix
+    # ./modules/himalaya.nix # email client
     # ./modules/ipfs.nix
     # ./modules/keybase-sync.nix
+    # ./modules/networkmanager-iwd.nix
+    # ./modules/plymouth.nix
     # ./modules/wayland/wl-clipboard-x11.nix
+    # ./modules/wayvnc.nix
     # ./modules/weechat-matrix.nix
     ./modules/adb.nix
     ./modules/adblock.nix
@@ -35,9 +40,7 @@
     ./modules/curl.nix
     ./modules/direnv.nix
     ./modules/docker.nix
-    # ./modules/dropbox.nix
     ./modules/firefox-wayland.nix
-    ./modules/wayland.nix
     ./modules/flashfocus.nix
     ./modules/fonts.nix
     ./modules/foot.nix
@@ -46,7 +49,6 @@
     ./modules/github.nix
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
-    ./modules/wayvnc.nix
     ./modules/grep.nix
     ./modules/gtk.nix
     ./modules/hardware-video-acceleration.nix
@@ -54,10 +56,8 @@
     ./modules/hidpi/console.nix
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hidpi/qt.nix
-    # ./modules/himalaya.nix # email client
     ./modules/insync.nix
     ./modules/kdeconnect.nix
-    ./modules/play-with-mpv.nix
     ./modules/keybase.nix
     ./modules/less.nix
     ./modules/libvirt.nix
@@ -69,9 +69,9 @@
     ./modules/mdns.nix
     ./modules/mpv.nix
     ./modules/networkmanager.nix
-    ./modules/networkmanager-iwd.nix
-    ./modules/wireguard.nix
+    ./modules/ngrok.nix
     ./modules/pipewire.nix
+    ./modules/play-with-mpv.nix
     ./modules/printing.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
@@ -82,16 +82,19 @@
     ./modules/sway.nix
     ./modules/swayidle.nix
     ./modules/swaylock.nix
+    ./modules/tailscale.nix
     ./modules/tmux.nix
     ./modules/tor.nix
+    ./modules/v4l2loopback.nix
     ./modules/virtualbox-host.nix
+    ./modules/wayland.nix
     ./modules/weechat.nix
+    ./modules/wireguard.nix
     ./modules/wob.nix
     ./modules/xdg-desktop-portal.nix
-    ./modules/zsh/prompt.nix
     ./modules/zsh/fzf.nix
+    ./modules/zsh/prompt.nix
     ./modules/zsh/vi.nix
-    ./modules/tailscale.nix
   ];
 
   hardware.bluetooth.enable = true;
@@ -125,6 +128,9 @@
   };
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (import ./packages)
+  ];
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -159,7 +165,7 @@
               "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
           in import nixpkgs-unstable-src { };
         };
-      in [
+      in config.nixpkgs.overlays ++ [
         (_: _: { inherit startsway; })
         (_: super: {
           moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
@@ -168,72 +174,65 @@
           });
         })
         nixpkgsUnstable
-        (import ./packages)
       ];
 
       home.packages = with pkgs; [
-        (lowPrio mandoc)
+        # (pulseaudio.overrideAttrs (oldAttrs: rec {
+        #   patches = [
+        #     (fetchpatch {
+        #       url = "https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/commit/19adddee31ca34bf4e0db95df01b4ec595f2d267.patch";
+        #       sha256 = "0kqw1nnlzcx7k5n7mmgin219r2gc6j3ygxvdds9nc7p8b4qis1w6";
+        #     })
+        #   ];
+        # }))
+
         (zathura.override { useMupdf = true; })
         acpi
-        appimage-run
         archivemount
         aria
         atool # archive
         avo.pushover
         avo.zprint # clojure pretty-printer
-        awscli
         babashka # clojure
         bat
         bc # calculator
-        bfs # breadth-first find
         binutils
         breeze-gtk # gtk qt
         breeze-qt5 # gtk qt
+        gnome-breeze # gtk
         cachix # nixos
         chromedriver
-        cloc # count lines of code
-        crudini # manipulate ini files
+        # cloc # count lines of code
         curl
-        cv # progress viewer
         dateutils # dategrep
-        dnscontrol # cloud
-        dnsutils # networking
         dragon-drop # file drag-and-drop source/sink
         dtrx # unarchiver
-        encfs # security, filesystems
-        evince # fill PDF forms
-        expect # terminal automation
+        # expect # terminal automation
         fatrace # file access events
         fd # find alternative
-        ffmpeg-full # -full for ffplay
+        ffmpeg
         file
         firefox # TODO: xdg desktop associations
-        flac # audio
-        flac123 # audio
         fpp # path picker
-        fswebcam # webcam photo
         fzf # fuzzy finder
         gcolor2 # color chooser
-        geckodriver # Firefox automation
         gh # github
         gist # github
         git-hub # github
         gnupg
         google-chrome # browser
         google-cloud-sdk # cloud
+        usbutils # lsusb
         googler # google search cli
-        grab-site # web-archive
         graphicsmagick # image, tools
         gron # flatten JSON
         hr # horizontal rule
         htmlTidy # html
         httpie # http client
         hub # github
-        iftop # network
         imgurbash2 # file-sharing
         imv # image viewer
         inotify-tools # file watcher
-        iotop # network
         jc # json
         jo # create JSON
         jq # json
@@ -242,6 +241,7 @@
         leiningen # clojure
         libnotify # notify-send
         libreoffice-fresh
+        ngrok
         lm_sensors
         lsof # system
         lxqt.pavucontrol-qt
@@ -250,18 +250,15 @@
         monolith # web-archive
         moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel # for vipe & vidir
         neochat # matrix client
-        neovide # text editor
+        neovide # vim, gui
         netcat # networking
-        nethogs # system, networking
         ngrep # networking
-        ngrok # networking
         nix-prefetch-github # nixos
         nix-prefetch-scripts # nixos
         nixfmt # code formatter, nix
         nixops # cloud, nixos
         nmap # network
         nox # search Nix packages
-        nq # queue
         ntfy # send notifications, on demand and when commands finish
         openssl
         pamixer # audio
@@ -269,9 +266,8 @@
         parallel
         patchelf
         pavucontrol # audio
-        playerctl # mpris cli
+        playerctl # mpris, cli
         ponymix # audio
-        poppler_utils # pdf2text
         pqiv # image viewer
         protonvpn-cli # vpn
         psmisc
@@ -280,7 +276,6 @@
         python3Packages.pipx # install & run Python packages in isolated environments
         rdrview # content extractor
         recode # encoding
-        rename
         ripgrep
         rlwrap
         rsync
@@ -294,22 +289,16 @@
         surfraw
         swappy # image annotation
         t # twitter
-        tcpdump # network
         tdesktop # Telegram
-        telegram-cli
+        # telegram-cli
         telnet # network
         tesseract4 # ocr
         tmate # tmux remote sharing
         tmpmail # disposable email
         tree
         units
-        urlscan # terminal, ui, urlview alternative
-        urlview # terminal, ui
-        urlwatch
         vim
-        w3m
         wget
-        xdg_utils
         xsel
         xurls
         youtube-viewer
@@ -322,7 +311,10 @@
         BROWSER = "${pkgs.google-chrome}/bin/google-chrome-stable";
       };
 
-      home.sessionPath = [ "$HOME/gdrive/bin" (builtins.toString ./bin) ];
+      home.sessionPath = [
+        "$HOME/gdrive/bin"
+        (builtins.toString ./bin)
+      ];
 
       xdg.enable = true;
 
@@ -473,7 +465,7 @@
 
   services.upower.enable = true;
 
-  networking.wireless.iwd.enable = true;
+  # networking.wireless.iwd.enable = true;
 
   programs.steam.enable = true;
 }
