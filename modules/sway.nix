@@ -8,12 +8,8 @@ in {
 
   home-manager.users.avo = { config, ... }: let
     startsway = pkgs.writeShellScriptBin "startsway" ''
-      systemctl --user import-environment
-
-      exec systemd-cat \
-        --identifier sway \
-        dbus-run-session -- \
-          sway --debug
+      exec systemd-cat --identifier sway \
+        sway --debug
     '';
   in {
     nixpkgs.overlays = [
@@ -25,7 +21,7 @@ in {
       enable = true;
       config = {
         modifier = "Mod4";
-        menu = "find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu | xargs";
+        menu = "find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu | xargs ${pkgs.gtk3-x11}/bin/gtk-launch";
         colors = {
           focused = {
             border = "#${theme.dark.active.background}";
@@ -61,7 +57,7 @@ in {
           size = 16.0;
         };
         bars = [];
-        terminal = "footclient";
+        terminal = "foot -o colors.alpha=0.85";
         startup = [
           { command = "${pkgs.autotiling}/bin/autotiling"; }
         ];
@@ -158,6 +154,8 @@ in {
           "${modifier}+Shift+ccedilla" = "move container to workspace 9";
           "${modifier}+Shift+agrave" = "move container to workspace 10";
 
+          # "${modifier}+l" = "lock";
+
           "${modifier}+Alt+${left}" = "resize shrink width ${resize_increment}";
           "${modifier}+Alt+${down}" = "resize grow height ${resize_increment}";
           "${modifier}+Alt+${up}" = "resize shrink height ${resize_increment}";
@@ -196,23 +194,23 @@ in {
       '';
       systemdIntegration = true;
       wrapperFeatures.gtk = true;
+      wrapperFeatures.base = true;
     };
 
     home.packages = with pkgs; [
-      # gebaar-libinput # TODO: needed?
-      # kanshi  # display configuration # TODO: needed?
-      # oguri # animated background # TODO: needed?
-      # swaybg # TODO: needed?
-      startsway
       autotiling
       bemenu # ui
       gammastep
       grim
+      # kanshi  # display configuration # TODO: needed?
+      # oguri # animated background # TODO: needed?
       slurp
+      startsway # start sway with logs going to systemd
       sway-contrib.grimshot # screenshots
       sway-contrib.inactive-windows-transparency
       swayidle
       swaylock
+      swaybg # set background
       swaywsr # automatically rename workspaces with contents
       waybar
       wdisplays  # display configuration
@@ -220,7 +218,6 @@ in {
       wf-recorder # screen recorder
       wl-clipboard
       wmfocus # window picker
-      wob
       xwayland
     ];
   };

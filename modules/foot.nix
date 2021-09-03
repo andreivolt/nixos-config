@@ -1,16 +1,12 @@
-{ ... }:
-
 {
   home-manager.users.avo = { pkgs, ...}: {
     programs.foot = let
       font = {
-        family = "Consolas"; # JetBrainsMono Nerd Font Mono
-        size = "11";
+        family = "Input Mono Narrow"; # JetBrainsMono Nerd Font Mono
+        size = "10";
       };
     in {
       enable = true;
-      server.enable = true;
-      package = pkgs.nixpkgsUnstable.foot;
       settings = {
         main = {
           font = "${font.family}:size=${font.size}";

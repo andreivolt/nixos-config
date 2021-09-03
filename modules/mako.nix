@@ -21,11 +21,11 @@
         BusName = "org.freedesktop.Notifications";
       };
       Unit = {
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
+        PartOf = [ "sway-session.target" ];
+        After = [ "sway-session.target" ];
         ConditionEnvironment = "WAYLAND_DISPLAY";
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "sway-session.target" ];
 
       # bindsTo = [ "sway-session.target" ];
       # wants = [ "sway-session.target" ];

@@ -4,14 +4,14 @@ let
   theme = import (dirOf <nixos-config> + /modules/theme.nix);
 
   plugins = with pkgs; {
-    parinfer-rust = import ./plugins/parinfer-rust.nix;
     challenger-deep-theme = import ./plugins/challenger-deep-theme.nix;
-    vim-iced = import ./plugins/vim-iced.nix;
-    vim-bracketed-paste = import ./plugins/vim-bracketed-paste.nix;
-    spell-ro = import ./plugins/spell-ro.nix;
+    parinfer-rust = import ./plugins/parinfer-rust.nix;
     spell-fr = import ./plugins/spell-fr.nix;
+    spell-ro = import ./plugins/spell-ro.nix;
     vim-autoclose = import ./plugins/vim-autoclose.nix;
     vim-avanced-sorters = import ./plugins/vim-advanced-sorters.nix;
+    vim-bracketed-paste = import ./plugins/vim-bracketed-paste.nix;
+    vim-iced = import ./plugins/vim-iced.nix;
     vim-ripgrep = import ./plugins/vim-advanced-sorters.nix;
   };
 
@@ -21,7 +21,7 @@ let
       \ breakindent
       \ clipboard=unnamedplus
       \ expandtab
-      \ grepprg=rg\ --smart-case\ --vimgrep
+      \ grepprg=${pkgs.ripgrep}/bin/rg\ --smart-case\ --vimgrep
       \ hidden
       \ ignorecase infercase smartcase
       \ linebreak " don't cut words on wrap
@@ -174,6 +174,7 @@ let
       \ }
 ''; in pkgs.nixpkgsUnstable.neovim.override {
   vimAlias = true;
+  viAlias = true;
   configure.vam = {
     knownPlugins = pkgs.vimPlugins // plugins;
 
