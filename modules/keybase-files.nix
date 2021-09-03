@@ -1,0 +1,3 @@
+{
+  services.kbfs.enable = true;
+}
