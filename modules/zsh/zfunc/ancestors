@@ -1,0 +1,2 @@
+pstree -p --show-parents --arguments $$ --unicode \
+| highlight yellow '(?<=,)[0-9]*'

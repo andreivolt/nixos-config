@@ -16,16 +16,6 @@
     home-manager-module
     ./cachix.nix
 
-    # ./modules/dropbox.nix
-    # ./modules/emacs.nix
-    # ./modules/himalaya.nix # email client
-    # ./modules/ipfs.nix
-    # ./modules/keybase-sync.nix
-    # ./modules/networkmanager-iwd.nix
-    # ./modules/plymouth.nix
-    # ./modules/wayland/wl-clipboard-x11.nix
-    # ./modules/wayvnc.nix
-    # ./modules/weechat-matrix.nix
     ./modules/adb.nix
     ./modules/adblock.nix
     ./modules/alacritty/alacritty.nix
@@ -37,9 +27,12 @@
     ./modules/clojure/rebel-readline.nix
     ./modules/cloudflare-dns.nix
     ./modules/command-not-found.nix
+    ./modules/cuff.nix # torrent search cli
     ./modules/curl.nix
     ./modules/direnv.nix
     ./modules/docker.nix
+    # ./modules/dropbox.nix
+    # ./modules/emacs.nix
     ./modules/firefox-wayland.nix
     ./modules/flashfocus.nix
     ./modules/fonts.nix
@@ -56,8 +49,12 @@
     ./modules/hidpi/console.nix
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hidpi/qt.nix
+    # ./modules/himalaya.nix # email client
     ./modules/insync.nix
+    # ./modules/ipfs.nix
     ./modules/kdeconnect.nix
+    ./modules/keybase-files.nix
+    # ./modules/keybase-sync.nix
     ./modules/keybase.nix
     ./modules/less.nix
     ./modules/libvirt.nix
@@ -68,10 +65,12 @@
     ./modules/matrix-cli.nix
     ./modules/mdns.nix
     ./modules/mpv.nix
+    # ./modules/networkmanager-iwd.nix
     ./modules/networkmanager.nix
     ./modules/ngrok.nix
     ./modules/pipewire.nix
     ./modules/play-with-mpv.nix
+    # ./modules/plymouth.nix # boot animations
     ./modules/printing.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
@@ -88,6 +87,9 @@
     ./modules/v4l2loopback.nix
     ./modules/virtualbox-host.nix
     ./modules/wayland.nix
+    # ./modules/wayland/wl-clipboard-x11.nix
+    # ./modules/wayvnc.nix
+    # ./modules/weechat-matrix.nix
     ./modules/weechat.nix
     ./modules/wireguard.nix
     ./modules/wob.nix
@@ -95,6 +97,7 @@
     ./modules/zsh/fzf.nix
     ./modules/zsh/prompt.nix
     ./modules/zsh/vi.nix
+    ./modules/zsh/functions.nix
   ];
 
   hardware.bluetooth.enable = true;
@@ -128,7 +131,15 @@
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [
+
+  nixpkgs.overlays = let
+    nixpkgsUnstable = self: super: {
+      nixpkgsUnstable =
+        let nixpkgs-unstable-src = fetchTarball "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
+        in import nixpkgs-unstable-src { };
+    };
+  in [
+    nixpkgsUnstable
     (import ./packages)
   ];
 
@@ -137,8 +148,6 @@
   time.timeZone = "Europe/Paris";
 
   console.keyMap = "fr";
-
-  # users.mutableUsers = false; # TODO
 
   users.users.avo = {
     isNormalUser = true;
@@ -149,45 +158,22 @@
   home-manager.users.avo = { pkgs, ... }:
     let
       vim = pkgs.callPackage ./modules/vim { };
-      startsway = pkgs.writeShellScriptBin "startsway" ''
-        systemctl --user import-environment
-
-        exec systemd-cat \
-          --identifier sway \
-          dbus-run-session -- \
-            ${pkgs.sway}/bin/sway --debug
-      '';
     in rec {
-      nixpkgs.overlays = let
-        nixpkgsUnstable = self: super: {
-          nixpkgsUnstable = let
-            nixpkgs-unstable-src = fetchTarball
-              "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
-          in import nixpkgs-unstable-src { };
-        };
-      in config.nixpkgs.overlays ++ [
-        (_: _: { inherit startsway; })
-        (_: super: {
-          moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
-            postInstall = attrs.postInstall + "\n"
-              + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
-          });
-        })
-        nixpkgsUnstable
-      ];
+      nixpkgs.overlays =
+        config.nixpkgs.overlays
+        ++ [
+          (_: super: {
+            moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
+              postInstall = attrs.postInstall + "\n"
+                + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
+            });
+          })
+        ];
 
       home.packages = with pkgs; [
-        # (pulseaudio.overrideAttrs (oldAttrs: rec {
-        #   patches = [
-        #     (fetchpatch {
-        #       url = "https://gitlab.freedesktop.org/pulseaudio/pulseaudio/-/commit/19adddee31ca34bf4e0db95df01b4ec595f2d267.patch";
-        #       sha256 = "0kqw1nnlzcx7k5n7mmgin219r2gc6j3ygxvdds9nc7p8b4qis1w6";
-        #     })
-        #   ];
-        # }))
-
-        (zathura.override { useMupdf = true; })
+        # audd-cli # music recognition cli
         acpi
+        apktool
         archivemount
         aria
         atool # archive
@@ -199,11 +185,12 @@
         binutils
         breeze-gtk # gtk qt
         breeze-qt5 # gtk qt
-        gnome-breeze # gtk
         cachix # nixos
         chromedriver
+        cloc
         # cloc # count lines of code
         curl
+        cv # progress viewer for running coreutils
         dateutils # dategrep
         dragon-drop # file drag-and-drop source/sink
         dtrx # unarchiver
@@ -217,21 +204,26 @@
         fzf # fuzzy finder
         gcolor2 # color chooser
         gh # github
+        rnix-lsp # nix language server
         gist # github
         git-hub # github
+        gnome-breeze # gtk
         gnupg
         google-chrome # browser
         google-cloud-sdk # cloud
-        usbutils # lsusb
         googler # google search cli
         graphicsmagick # image, tools
         gron # flatten JSON
+        haskellPackages.aeson-pretty # format json
         hr # horizontal rule
+        html2text
         htmlTidy # html
         httpie # http client
         hub # github
+        imagemagick # some things don't work with graphicsmagick
         imgurbash2 # file-sharing
         imv # image viewer
+        inkscape
         inotify-tools # file watcher
         jc # json
         jo # create JSON
@@ -241,11 +233,11 @@
         leiningen # clojure
         libnotify # notify-send
         libreoffice-fresh
-        ngrok
         lm_sensors
         lsof # system
         lxqt.pavucontrol-qt
         mailutils # email
+        mdcat # terminal markdown viewer
         mediainfo # metadata
         monolith # web-archive
         moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel # for vipe & vidir
@@ -253,11 +245,17 @@
         neovide # vim, gui
         netcat # networking
         ngrep # networking
+        ngrok
+        # nix-info
         nix-prefetch-github # nixos
         nix-prefetch-scripts # nixos
         nixfmt # code formatter, nix
         nixops # cloud, nixos
+        # nixos-shell
         nmap # network
+        nodePackages.webtorrent-cli
+        # nodePackages.json
+        nodejs
         nox # search Nix packages
         ntfy # send notifications, on demand and when commands finish
         openssl
@@ -266,13 +264,17 @@
         parallel
         patchelf
         pavucontrol # audio
+        pciutils # lspci
         playerctl # mpris, cli
         ponymix # audio
+        potrace # convert bitmap to vector
         pqiv # image viewer
         protonvpn-cli # vpn
         psmisc
+        pulseaudio # for pactl
         pup # html
         pv # pipe viewer
+        python3
         python3Packages.pipx # install & run Python packages in isolated environments
         rdrview # content extractor
         recode # encoding
@@ -283,7 +285,6 @@
         skype
         socat
         sqlite
-        startsway
         strace
         sublime3 # text-editor
         surfraw
@@ -293,16 +294,21 @@
         # telegram-cli
         telnet # network
         tesseract4 # ocr
+        tldr # documentation
         tmate # tmux remote sharing
         tmpmail # disposable email
         tree
         units
+        unzip
+        # urlscan
+        usbutils # lsusb
         vim
         wget
         xsel
         xurls
         youtube-viewer
         yt-dlp # youtube
+        (zathura.override { useMupdf = true; })
       ];
 
       home.sessionVariables = {
@@ -416,41 +422,6 @@
           setopt auto_pushd
 
           source ${./modules/zsh/terminal-title.zsh}
-
-          acd() {
-            local tmp=$(mktemp -d)
-            archivemount "$*" $tmp
-            cd $tmp
-          }
-
-          ancestors() {
-            pstree -p --show-parents --arguments $$ --unicode \
-            | highlight yellow '(?<=,)[0-9]*'
-          }
-
-          highlight() {
-            rg \
-              --passthru \
-              --colors "match:fg:$1" --color always \
-              --pcre2 "$2"
-          }
-
-          bcat() {
-            local f=$(mktemp).html
-            cat > $f
-            $BROWSER $f
-          }
-
-          # overwrite previous line
-          overwrite() {
-            echo -e "\r\033[1A\033[0K$@"
-          }
-
-          html-man() {
-            man $@ \
-            | ${pkgs.rman}/bin/rman -f html \
-            | bcat
-          }
         '';
       };
     };
@@ -461,11 +432,10 @@
     suspendCapacity = 10;
   };
 
-  # networking.networkmanager.dns = "dnsmasq";
-
   services.upower.enable = true;
 
-  # networking.wireless.iwd.enable = true;
-
   programs.steam.enable = true;
+
+  # networking.networkmanager.dns = "dnsmasq";
+  # networking.wireless.iwd.enable = true;
 }

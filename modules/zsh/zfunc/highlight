@@ -1,0 +1,4 @@
+rg \
+--passthru \
+--colors "match:fg:$1" --color always \
+--pcre2 "$2"
