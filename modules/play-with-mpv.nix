@@ -2,11 +2,11 @@
   home-manager.users.avo = { pkgs, ... }: {
     systemd.user.services.play-with-mpv = {
       Unit = {
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
+        PartOf = [ "sway-session.target" ];
+        After = [ "sway-session.target" ];
       };
       Service.ExecStart = "${pkgs.play-with-mpv}/bin/play-with-mpv";
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "sway-session.target" ];
     };
   };
 }

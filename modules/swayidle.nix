@@ -9,8 +9,8 @@ let
 in {
   home-manager.users.avo.systemd.user.services.swayidle = {
     Unit = {
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
+      PartOf = [ "sway-session.target" ];
+      After = [ "sway-session.target" ];
       ConditionEnvironment = [ "WAYLAND_DISPLAY" ];
     };
 
@@ -22,6 +22,6 @@ in {
         timeout ${timeouts.suspend} 'systemctl suspend'
     '';
 
-    Install.WantedBy = [ "graphical-session.target" ];
+    Install.WantedBy = [ "sway-session.target" ];
   };
 }

@@ -23,8 +23,8 @@
 
     systemd.user.services.wayvnc = {
       Unit = {
-        PartOf = [ "graphical-session.target" ];
-        After = [ "netns@tailscale0.service" "graphical-session.target" ];
+        PartOf = [ "sway-session.target" ];
+        After = [ "netns@tailscale0.service" "sway-session.target" ];
         BindsTo = [ "netns@tailscale0.service" ];
         ConditionEnvironment = [ "WAYLAND_DISPLAY" ];
         JoinsNameSpaceOf = "netns@tailscale0.service";
@@ -35,7 +35,7 @@
       # serviceConfig.PrivateNetwork = true;
       Service.PrivateNetwork = true;
       Service.ExecStart = "${pkgs.wayvnc}/bin/wayvnc";
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "sway-session.target" ];
     };
   };
 }

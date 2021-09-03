@@ -1,5 +1,6 @@
 {
   security.chromiumSuidSandbox.enable = true;
+
   programs.chromium = {
       # homepageLocation = "https://www.google.com";
       # defaultSearchProviderSuggestURL = "https://encrypted.google.com/complete/search?output=chrome&q={searchTerms}";
