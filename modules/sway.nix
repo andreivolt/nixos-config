@@ -6,8 +6,18 @@ in {
   # # fix crash on restart
   # hardware.opengl.driSupport = true;
 
-  home-manager.users.avo = { config, ... }: {
+  home-manager.users.avo = { config, ... }: let
+    startsway = pkgs.writeShellScriptBin "startsway" ''
+      systemctl --user import-environment
+
+      exec systemd-cat \
+        --identifier sway \
+        dbus-run-session -- \
+          sway --debug
+    '';
+  in {
     nixpkgs.overlays = [
+      (_: _: { inherit startsway; })
       (import (dirOf <nixos-config> + /modules/wayland-overlay.nix))
     ];
 
@@ -73,6 +83,9 @@ in {
             ]
             ++ [
               { criteria.app_id = "mpv"; command = "inhibit_idle visible"; }
+            ]
+            ++ [
+              { criteria.title = "Volume Control"; command = "resize set 1000 1000"; } # pavucontrol-qt
             ];
           border = 0;
           hideEdgeBorders = "both";
@@ -80,11 +93,13 @@ in {
         floating = {
           titlebar = true;
           criteria = [
+            { window_role = "pop-up"; }
+            { title = "Volume Control"; } # pavucontrol-qt
             { app_id = "imv"; }
             { app_id = "pavucontrol"; }
             { app_id = "mpv"; }
-            { title = "Picture in picture"; }
-            { title = "LastPass: Free Password Manager"; }
+            { title = "Picture in picture"; } # Chrome PIP
+            { title = "LastPass: Free Password Manager"; } # Chrome LastPass
           ];
         };
         keybindings = let
@@ -188,6 +203,7 @@ in {
       # kanshi  # display configuration # TODO: needed?
       # oguri # animated background # TODO: needed?
       # swaybg # TODO: needed?
+      startsway
       autotiling
       bemenu # ui
       gammastep
@@ -208,6 +224,4 @@ in {
       xwayland
     ];
   };
-
-  programs.qt5ct.enable = true;
 }

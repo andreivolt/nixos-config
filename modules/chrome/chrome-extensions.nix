@@ -11,7 +11,7 @@
   "hdokiejnpimakedhajhdlcegeplioahd" # LastPass: Free Password Manager
   "lfpjkncokllnfokkgpkobnkbkmelfefj" # Linkclump
   "jchobbjgibcahbheicfocecmhocglkco" # Neat URL
-  "iokagnmembcjfocpbfmdojdghbfjpmkb" # Next Page
+  # "iokagnmembcjfocpbfmdojdghbfjpmkb" # Next Page
   "dneaehbmnbhcippjikoajpoabadpodje" # Old Reddit Redirect
   "ncppfjladdkdaemaghochfikpmghbcpc" # Open-as-Popup
   "mmcgnaachjapbbchcpjihhgjhpfcnoan" # Open New Tab After Current Tab
@@ -22,14 +22,13 @@
   "jeogkiiogjbmhklcnbgkdcjoioegiknm" # Slack
   "lifgeihcfpkmmlfjbailfpfhbahhibba" # Smart TOC
   "nlnkcinjjeoojlhdiedbbolilahmnldj" # Tab Sorter
-  "adelhekhakakocomdfejiipdnaadiiib" # Text Mode
   "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
   "pgdnlhfefecpicbbihgmbmffkjpaplco" # uBlock Origin Extra
   "aedikcfpfonanffanecfolneiaoakmlc" # User-Agent Switcher
-  "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
-  # "hfjbmagddngcpeloejdejnfgbamkjaeg" # Vimium C - All by Keyboard
+  "hfjbmagddngcpeloejdejnfgbamkjaeg" # Vimium C - All by Keyboard
   "opokoaglpekkimldnlggpoagmjegichg" # ViolentMonkey
   "fpnmgdkabkmnadcjpehmlllkndpkmiak" # Wayback Machine
   "ofhbbkphhbklhfoeikjpcbhemlocgigb" # Web Server for Chrome
   "hokcepcfcicnhalinladgknhaljndhpc" # Witchcraft
+  "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
 ]

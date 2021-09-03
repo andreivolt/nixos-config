@@ -1,26 +1,35 @@
 { pkgs, ... }:
 
 {
+  imports = [
+    ./input-fonts.nix
+  ];
+
   fonts.fontconfig.defaultFonts = {
     monospace = [ "Source Code Pro" ];
     sansSerif = [ "Source Sans Pro" ];
   };
   fonts.fonts = with pkgs; [
-    corefonts
-    google-fonts
-    nerdfonts
-    jetbrains-mono
-    d2coding
-    proggyfonts
-    ia-writer-duospace
     cascadia-code
+    corefonts
+    d2coding
+    google-fonts
+    hack-font
+    ia-writer-duospace
+    jetbrains-mono
+    # material-icons
+    nerdfonts
+    # overpass
+    # powerline-fonts
+    proggyfonts
+    ubuntu_font_family
     vistafonts
+    sudo-font
 
-    # emacs-all-the-icons-fonts
-    # font-awesome-ttf
-    # google-fonts
-    # hack-font
     # hasklig
+    # emacs-all-the-icons-fonts
+
+    # font-awesome-ttf
     # (iosevka.override {
     #   set = "custom";
     #   weights = ["light"];
@@ -35,12 +44,5 @@
     #     "v-zshaped-l"
     #   ];
     # })
-    # material-icons
-    # nerdfonts
-    # overpass
-    # powerline-fonts
-    # ubuntu_font_family
-    # vistafonts
-    # input-fonts
   ];
 }
