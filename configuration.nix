@@ -11,9 +11,20 @@
         url = "https://github.com/nix-community/home-manager/archive/${rev}.tar.gz";
       }
     }/nixos";
+
+    nix-ld-module = let
+      rev = "cac5bd577da26aefdabc742340a156414ac08890";
+      sha256 = "11ayyqdl2a36h5zl6mmcahla4zl7rdg5nqyxbnwvmaz90gry10s1";
+    in import "${
+      fetchTarball {
+        inherit sha256;
+        url = "https://github.com/Mic92/nix-ld/archive/${rev}.tar.gz";
+      }
+    }/modules/nix-ld.nix";
   in [
     ./hardware-configuration.nix
     home-manager-module
+    nix-ld-module
     ./cachix.nix
 
     ./modules/adb.nix
@@ -123,11 +134,10 @@
   nix = {
     gc.automatic = true;
     optimise.automatic = true;
-    # nixPath = [
-    #   "/home/avo/gdrive/nixos-config"
-    #   "nixpkgs=/home/avo/gdrive/nixpkgs"
-    #   "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix"
-    # ];
+    nixPath = [
+      "nixpkgs=/home/avo/gdrive/nixpkgs"
+      "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix"
+    ];
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -163,7 +173,7 @@
         config.nixpkgs.overlays
         ++ [
           (_: super: {
-            moreutilsWithoutParallel = lib.overrideDerivation super.moreutils (attrs: {
+            moreutilsWithoutParallel = super.moreutils.overrideAttrs (attrs: {
               postInstall = attrs.postInstall + "\n"
                 + "rm $out/bin/parallel $out/share/man/man1/parallel.1";
             });
@@ -178,7 +188,6 @@
         aria
         atool # archive
         avo.pushover
-        avo.zprint # clojure pretty-printer
         babashka # clojure
         bat
         bc # calculator
@@ -209,7 +218,7 @@
         git-hub # github
         gnome-breeze # gtk
         gnupg
-        google-chrome # browser
+        (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
         google-cloud-sdk # cloud
         googler # google search cli
         graphicsmagick # image, tools
@@ -348,7 +357,7 @@
         # enableInteractiveComments = true;
 
         history = rec {
-          size = 99999;
+          size = 999999;
           save = size;
           share = true;
           ignoreSpace = true;
@@ -438,4 +447,5 @@
 
   # networking.networkmanager.dns = "dnsmasq";
   # networking.wireless.iwd.enable = true;
+  services.flatpak.enable = true;
 }
