@@ -7,6 +7,7 @@
       };
     in {
       enable = true;
+      package = pkgs.nixpkgsUnstable.foot;
       settings = {
         main = {
           font = "${font.family}:size=${font.size}";

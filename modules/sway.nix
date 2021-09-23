@@ -57,7 +57,7 @@ in {
           size = 16.0;
         };
         bars = [];
-        terminal = "foot -o colors.alpha=0.85";
+        terminal = "foot -o colors.alpha=0.80";
         startup = [
           { command = "${pkgs.autotiling}/bin/autotiling"; }
         ];

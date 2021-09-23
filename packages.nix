@@ -46,6 +46,7 @@ in [
   gnome-breeze # gtk
   gnupg
   (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
+  google-chrome-dev
   google-cloud-sdk # cloud
   googler # google search cli
   graphicsmagick # image, tools
@@ -168,6 +169,6 @@ in [
   xurls
   youtube-dl
   youtube-viewer
-  poppler-utils # pdf tools
+  poppler_utils # pdf tools
   (zathura.override { useMupdf = true; })
 ]
