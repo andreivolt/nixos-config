@@ -7,6 +7,6 @@
   };
 
   environment.etc."dict.conf".text = ''
-      server localhost
+    server localhost
   '';
 }

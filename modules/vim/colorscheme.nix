@@ -21,7 +21,7 @@ with theme;
   hi MatchParen gui=bold guifg=#${red_fg}
   hi NonText ctermfg=red guifg=red cterm=bold gui=bold
   hi NonText guifg=#${foreground}
-  hi Normal guifg=#${foreground} guibg=#${background}
+  hi Normal guifg=#${foreground} guibg=NONE
   hi Search gui=bold,underline guifg=#${yellow_fg}
   hi SpellBad NONE cterm=undercurl gui=undercurl guifg=#${red_fg}
   hi StatusLine gui=NONE guibg=#222222 guifg=#ffffff

@@ -21,7 +21,6 @@
   "padekgcemlokbadohgkifijomclgjgif" # Proxy SwitchyOmega
   "jeogkiiogjbmhklcnbgkdcjoioegiknm" # Slack
   "lifgeihcfpkmmlfjbailfpfhbahhibba" # Smart TOC
-  "nlnkcinjjeoojlhdiedbbolilahmnldj" # Tab Sorter
   "cjpalhdlnbpafiamejdnhcphjbkeiagm" # uBlock Origin
   "pgdnlhfefecpicbbihgmbmffkjpaplco" # uBlock Origin Extra
   "aedikcfpfonanffanecfolneiaoakmlc" # User-Agent Switcher

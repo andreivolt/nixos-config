@@ -82,7 +82,7 @@
     ./modules/tailscale.nix
     ./modules/tmux.nix
     ./modules/tor.nix
-    # ./modules/v5l2loopback.nix
+    # ./modules/v4l2loopback.nix
     ./modules/virtualbox-host.nix
     ./modules/wayland.nix
     ./modules/wayland-qt.nix
@@ -156,128 +156,124 @@
     extraGroups = [ "wheel" ];
   };
 
-  home-manager.users.avo = { pkgs, ... }:
-    let
-      vim = pkgs.callPackage ./modules/vim { };
-    in rec {
-      nixpkgs.overlays = config.nixpkgs.overlays;
+  home-manager.users.avo = { pkgs, ... }: rec {
+    nixpkgs.overlays = config.nixpkgs.overlays;
 
-      home.packages = (import ./packages.nix pkgs) ++ [
-        vim
-      ];
+    home.packages = import ./packages.nix pkgs;
 
-      home.sessionVariables = {
-        EDITOR = "vim";
-        PAGER = "nvimpager";
-        BROWSER = "google-chrome-stable";
-      };
-
-      home.sessionPath = [
-        "$HOME/gdrive/bin"
-        (builtins.toString ./bin)
-      ];
-
-      xdg.enable = true;
-
-      xdg.mimeApps.enable = true;
-      xdg.mimeApps.defaultApplications = {
-        "application/pdf" = "zathura.desktop";
-        "image/jpeg" = "imv.desktop";
-        "image/png" = "imv.desktop";
-        "text/html" = "google-chrome-stable.desktop";
-        "text/plain" = "neovide.desktop";
-        "video/mp4" = "mpv.desktop";
-        "x-scheme-handler/http" = "google-chrome-stable.desktop";
-        "x-scheme-handler/https" = "google-chrome-stable.desktop";
-      };
-
-      programs.lesspipe.enable = true;
-
-      programs.zsh = {
-        enable = true;
-
-        enableCompletion = true;
-
-        enableSyntaxHighlighting = true;
-
-        defaultKeymap = "viins";
-
-        # enableInteractiveComments = true;
-
-        history = rec {
-          size = 999999;
-          save = size;
-          share = true;
-          ignoreSpace = true;
-          ignoreDups = true;
-          extended = true;
-          path = ".cache/zsh_history";
-        };
-
-        shellGlobalAliases = {
-          C = "| wc -l";
-          G = "| grep";
-          H = "| head";
-          L = "| nvimpager";
-          NE = "2>/dev/null";
-          NUL = "&>/dev/null";
-          T = "| tail";
-          X = "| xargs";
-        };
-
-        shellAliases = {
-          git = "GPG_TTY=$(tty) git";
-          rm = "rm --verbose";
-          grep = "grep --color";
-          l = "ls -1";
-          la = "ls -a";
-          ll = "ls -l";
-          ls = "ls --human-readable --classify";
-        };
-
-        plugins = with pkgs; [
-          {
-            name = "zsh-nix-shell";
-            file = "nix-shell.plugin.zsh";
-            src = fetchFromGitHub {
-              owner = "chisui";
-              repo = "zsh-nix-shell";
-              rev = "v0.2.0";
-              sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
-            };
-          }
-          {
-            name = "autopair";
-            file = "autopair.zsh";
-            src = fetchFromGitHub {
-              owner = "hlissner";
-              repo = "zsh-autopair";
-              rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
-              sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
-            };
-          }
-        ];
-        initExtra = ''
-          # trigger completion on globbing
-          setopt glob_complete
-
-          # remove extraneous spaces from saved commands
-          setopt hist_reduce_blanks
-
-          # show menu when completing
-          zstyle ':completion:*' menu select
-
-          # automatically update PATH
-          zstyle ':completion:*' rehash true
-
-          # automatically add directories to the directory stack
-          setopt auto_pushd
-
-          # set terminal title
-          source ${./modules/zsh/terminal-title.zsh}
-        '';
-      };
+    home.sessionVariables = {
+      EDITOR = "vim";
+      PAGER = "nvimpager";
+      BROWSER = "google-chrome-stable";
     };
+
+    home.sessionPath = [
+      "$HOME/gdrive/bin"
+      "$HOME/.local/bin"
+      (builtins.toString ./bin)
+    ];
+
+    xdg.enable = true;
+
+    xdg.mimeApps.enable = true;
+    xdg.mimeApps.defaultApplications = {
+      "application/pdf" = "zathura.desktop";
+      "image/jpeg" = "imv.desktop";
+      "image/png" = "imv.desktop";
+      "text/html" = "google-chrome-stable.desktop";
+      "text/plain" = "neovide.desktop";
+      "video/mp4" = "mpv.desktop";
+      "x-scheme-handler/http" = "google-chrome-stable.desktop";
+      "x-scheme-handler/https" = "google-chrome-stable.desktop";
+    };
+
+    programs.lesspipe.enable = true;
+
+    programs.zsh = {
+      enable = true;
+
+      enableCompletion = true;
+
+      enableSyntaxHighlighting = true;
+
+      defaultKeymap = "viins";
+
+      # enableInteractiveComments = true;
+
+      history = rec {
+        size = 999999;
+        save = size;
+        share = true;
+        ignoreSpace = true;
+        ignoreDups = true;
+        extended = true;
+        path = ".cache/zsh_history";
+      };
+
+      shellGlobalAliases = {
+        C = "| wc -l";
+        G = "| grep";
+        H = "| head";
+        L = "| nvimpager";
+        NE = "2>/dev/null";
+        NUL = "&>/dev/null";
+        T = "| tail";
+        X = "| xargs";
+      };
+
+      shellAliases = {
+        git = "GPG_TTY=$(tty) git";
+        rm = "rm --verbose";
+        grep = "grep --color";
+        l = "ls -1";
+        la = "ls -a";
+        ll = "ls -l";
+        ls = "ls --human-readable --classify";
+      };
+
+      plugins = with pkgs; [
+        {
+          name = "zsh-nix-shell";
+          file = "nix-shell.plugin.zsh";
+          src = fetchFromGitHub {
+            owner = "chisui";
+            repo = "zsh-nix-shell";
+            rev = "v0.2.0";
+            sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
+          };
+        }
+        {
+          name = "autopair";
+          file = "autopair.zsh";
+          src = fetchFromGitHub {
+            owner = "hlissner";
+            repo = "zsh-autopair";
+            rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
+            sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
+          };
+        }
+      ];
+      initExtra = ''
+        # trigger completion on globbing
+        setopt glob_complete
+
+        # remove extraneous spaces from saved commands
+        setopt hist_reduce_blanks
+
+        # show menu when completing
+        zstyle ':completion:*' menu select
+
+        # automatically update PATH
+        zstyle ':completion:*' rehash true
+
+        # automatically add directories to the directory stack
+        setopt auto_pushd
+
+        # set terminal title
+        source ${./modules/zsh/terminal-title.zsh}
+      '';
+    };
+  };
 
   services.lowbatt = {
     enable = true;
