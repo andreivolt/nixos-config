@@ -14,10 +14,8 @@
   # "iokagnmembcjfocpbfmdojdghbfjpmkb" # Next Page
   "dneaehbmnbhcippjikoajpoabadpodje" # Old Reddit Redirect
   "ncppfjladdkdaemaghochfikpmghbcpc" # Open-as-Popup
-  "mmcgnaachjapbbchcpjihhgjhpfcnoan" # Open New Tab After Current Tab
   "hkgfoiooedgoejojocmhlaklaeopbecg" # Picture-in-Picture Extension (by Google)
   "bkegjcmidjgnmjbeninfbhoaelblpgic" # Plain Text Linker
-  "hahklcmnfgffdlchjigehabfbiigleji" # Play with MPV
   "padekgcemlokbadohgkifijomclgjgif" # Proxy SwitchyOmega
   "jeogkiiogjbmhklcnbgkdcjoioegiknm" # Slack
   "lifgeihcfpkmmlfjbailfpfhbahhibba" # Smart TOC

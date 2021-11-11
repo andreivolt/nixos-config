@@ -27,7 +27,7 @@
     ./modules/direnv.nix
     ./modules/docker.nix
     # ./modules/dropbox.nix
-    ./modules/emacs.nix
+    # ./modules/emacs.nix
     ./modules/firefox-wayland.nix
     ./modules/flashfocus.nix
     ./modules/fonts.nix
@@ -45,11 +45,12 @@
     ./modules/hidpi/console.nix
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hidpi/qt.nix
+    ./modules/qt.nix
     # ./modules/himalaya.nix # email client
     ./modules/insync.nix
     # ./modules/ipfs.nix
     ./modules/kdeconnect.nix
-    ./modules/keybase-files.nix
+    # ./modules/keybase-files.nix
     # ./modules/keybase-sync.nix
     ./modules/keybase.nix
     ./modules/less.nix
@@ -72,7 +73,7 @@
     ./modules/printing.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
-    # ./modules/scanning.nix
+    ./modules/scanning.nix
     ./modules/spotify.nix
     ./modules/sway-autorotate-screen.nix
     ./modules/sway-autostart.nix
@@ -82,12 +83,12 @@
     ./modules/tailscale.nix
     ./modules/tmux.nix
     ./modules/tor.nix
-    # ./modules/v4l2loopback.nix
+    ./modules/v4l2loopback.nix
     ./modules/virtualbox-host.nix
     ./modules/wayland.nix
     ./modules/wayland-qt.nix
     # ./modules/wl-clipboard-x11.nix
-    # ./modules/wayvnc.nix
+    ./modules/wayvnc.nix
     # ./modules/weechat-matrix.nix
     ./modules/weechat.nix
     ./modules/wireguard.nix
@@ -95,6 +96,7 @@
     # ./modules/xdg-desktop-portal.nix
     ./modules/zsh/functions.nix
     ./modules/zsh/fzf.nix
+    ./modules/zsh/starship.nix
     ./modules/zsh/prompt.nix
     ./modules/zsh/vi.nix
   ];
@@ -113,6 +115,10 @@
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
+  # 24-hour time format
+  environment.variables.LC_TIME = "C.UTF-8";
+
+  # don't show boot options
   boot.loader.timeout = 0;
 
   security.sudo.wheelNeedsPassword = false;
@@ -126,10 +132,7 @@
 
   nix.optimise.automatic = true;
 
-  # nix.nixPath = [
-  #   "nixpkgs=/home/avo/gdrive/nixpkgs"
-  #   "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix"
-  # ];
+  nix.nixPath = [ "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix" ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -174,6 +177,14 @@
     ];
 
     xdg.enable = true;
+
+    xdg.userDirs = {
+      enable = true;
+      createDirectories = false;
+      desktop = "$HOME/gdrive";
+      documents = "$HOME/gdrive";
+      download = "$HOME/gdrive";
+    };
 
     xdg.mimeApps.enable = true;
     xdg.mimeApps.defaultApplications = {
@@ -222,13 +233,14 @@
       };
 
       shellAliases = {
-        git = "GPG_TTY=$(tty) git";
-        rm = "rm --verbose";
-        grep = "grep --color";
-        l = "ls -1";
-        la = "ls -a";
-        ll = "ls -l";
-        ls = "ls --human-readable --classify";
+        "git" = "GPG_TTY=$(tty) git";
+        "rm" = "rm --verbose";
+        "grep" = "grep --color";
+        "l" = "ls -1";
+        "la" = "ls -a";
+        "ll" = "ls -l";
+        "ls" = "ls --human-readable --classify";
+        ".." = "cd ..";
       };
 
       plugins = with pkgs; [
@@ -269,8 +281,12 @@
         # automatically add directories to the directory stack
         setopt auto_pushd
 
-        # set terminal title
-        source ${./modules/zsh/terminal-title.zsh}
+        # # set terminal title
+        # source ${./modules/zsh/terminal-title.zsh}
+
+        # case-insensitive completion
+        zstyle ':completion:*' matcher-list ''' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+        # autoload -Uz compinit && compinit
       '';
     };
   };

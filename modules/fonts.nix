@@ -12,6 +12,10 @@
   fonts.fonts = with pkgs; [
     cascadia-code
     corefonts
+
+    # joypixels # emoji
+    # nixpkgs.config.joypixels.acceptLicense = true;
+
     d2coding
     google-fonts
     hack-font

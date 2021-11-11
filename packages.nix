@@ -18,7 +18,6 @@ in [
   cdrtools # cd tools
   chromedriver
   cloc # source code language statistics
-  linuxPackages.cpupower # CPU governor
   csvkit # csv
   curl
   cv # progress viewer for running coreutils
@@ -45,8 +44,8 @@ in [
   git-hub # github
   gnome-breeze # gtk
   gnupg
-  (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
   google-chrome-dev
+  (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
   google-cloud-sdk # cloud
   googler # google search cli
   graphicsmagick # image, tools
@@ -57,6 +56,7 @@ in [
   htmlTidy # html
   httpie # http client
   hub # github
+  (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
   iftop
   imagemagick # some things don't work with graphicsmagick
   imgurbash2 # file-sharing
@@ -74,6 +74,7 @@ in [
   libnotify # notify-send
   libreoffice-fresh
   librsvg # rasterize svg
+  linuxPackages.cpupower # CPU governor
   lm_sensors
   lsof # system
   lxqt.pavucontrol-qt
@@ -97,12 +98,13 @@ in [
   nix-prefetch-scripts # nixos
   nix-top
   nixfmt # code formatter, nix
-  nixops # cloud, nixos
+  # nixops # cloud, nixos # TODO: crashing build
   # nixos-shell
+  nixpkgsUnstable.telegram-cli
   nixpkgsUnstable.yt-dlp # youtube
   nmap # network
   # nodePackages.json
-  nodePackages.webtorrent-cli
+  # nodePackages.webtorrent-cli
   nodejs
   nox # search Nix packages
   ntfy # send notifications, on demand and when commands finish
@@ -118,6 +120,7 @@ in [
   pdftk # pdf manipulation
   playerctl # mpris, cli
   ponymix # audio
+  poppler_utils # pdf tools
   potrace # convert bitmap to vector
   pqiv # image viewer
   protonvpn-cli # vpn
@@ -147,7 +150,6 @@ in [
   swappy # image annotation
   t # twitter
   tdesktop # Telegram
-  # telegram-cli
   telnet # network
   tesseract4 # ocr
   tldr # documentation
@@ -161,7 +163,7 @@ in [
   # urlscan
   usbutils # lsusb
   vim
-  vlc
+  vlc_qt5
   w3m
   wget
   xdg_utils
@@ -169,6 +171,31 @@ in [
   xurls
   youtube-dl
   youtube-viewer
-  poppler_utils # pdf tools
+  sox
   (zathura.override { useMupdf = true; })
+  jdk
+  pdfsandwich # pdf, ocr
+  (hiPrio texlive.combined.scheme-full)
+  ghostscript # enscript
+  catt # chromecast
+  appimage-run
+  bluetooth_battery
+
+  yarn # nodejs
+  ytfzf # youtube
+  crow-translate # translate
+  emote # emoji
+  glib.bin # gsettings
+  lsd # ls alternative
+  nheko # Matrix client
+  # kepka # telegram
+  paps # text to PostScript using Pango with UTF-8 support
+  perceptualdiff # image diff
+  proxychains # SOCKS5 proxy
+  rofi-emoji # emoji
+  ruby
+  urlwatch # monitor urls for changes
+  waydroid # android
+  wofi # menu
+  xmlstarlet # xml
 ]
