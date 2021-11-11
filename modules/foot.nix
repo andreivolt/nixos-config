@@ -2,8 +2,8 @@
   home-manager.users.avo = { pkgs, ...}: {
     programs.foot = let
       font = {
-        family = "Input Mono Narrow"; # JetBrainsMono Nerd Font Mono
-        size = "10";
+        family = "Ubuntu Mono Nerd Font";
+        size = "12";
       };
     in {
       enable = true;

@@ -91,6 +91,9 @@ in {
       bind s split-window -v
       bind v split-window -h
 
+      # reorder windows with mouse
+      bind-key -n MouseDrag1Status swap-window -d -t=
+
       unbind p
       bind p paste-buffer
     '';

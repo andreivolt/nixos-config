@@ -12,6 +12,7 @@
         "WelcomePageOnOSUpgradeEnabled" = false;
         # "SyncDisabled" = true;
         # "PasswordManagerEnabled" = false;
+        "DefaultBrowserSettingEnabled" = false;
         "SpellcheckEnabled" = true;
         "SpellcheckLanguage" = [
           "fr-FR"

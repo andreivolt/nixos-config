@@ -9,4 +9,9 @@
       Install.WantedBy = [ "sway-session.target" ];
     };
   };
+
+  programs.chromium = {
+    enable = true;
+    extensions = [ "hahklcmnfgffdlchjigehabfbiigleji" ];
+  };
 }

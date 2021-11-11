@@ -2,9 +2,10 @@
 
 let theme = import (dirOf <nixos-config> + /modules/theme.nix);
 in {
-  # TODO
-  # # fix crash on restart
-  # hardware.opengl.driSupport = true;
+  hardware.opengl = {
+    enable = true;
+    # driSupport = true; # fix crash on restart
+  };
 
   home-manager.users.avo = { config, ... }: let
     startsway = pkgs.writeShellScriptBin "startsway" ''
@@ -109,7 +110,7 @@ in {
           "${modifier}+Shift+c" = "kill";
           "twosuperior" = "scratchpad show";
           "${modifier}+x"  = "move container to scratchpad";
-          "Print" = "exec grim -g $(slurp) - | wl-copy -t image/png";
+          "Print" = "exec grimshot copy area";
 
           "${modifier}+p" = "exec $menu";
           "${modifier}+q" = "reload";
