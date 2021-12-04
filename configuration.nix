@@ -14,6 +14,7 @@
     ./modules/aria2.nix
     # ./modules/chrome
     ./modules/flakes.nix
+    ./modules/fbterm.nix
     ./modules/flatpak.nix
     ./modules/vim-as-manpager.nix
     ./modules/clipman.nix
@@ -46,7 +47,7 @@
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hidpi/qt.nix
     ./modules/qt.nix
-    # ./modules/himalaya.nix # email client
+    ./modules/himalaya.nix # email client
     ./modules/insync.nix
     # ./modules/ipfs.nix
     ./modules/kdeconnect.nix
@@ -61,6 +62,7 @@
     ./modules/map-test-tld-to-localhost.nix
     ./modules/matrix-cli.nix
     ./modules/mdns.nix
+    ./modules/mopidy.nix
     ./modules/moreutils-without-parallel.nix
     ./modules/mpv.nix
     # ./modules/networkmanager-iwd.nix
@@ -93,7 +95,7 @@
     ./modules/weechat.nix
     ./modules/wireguard.nix
     ./modules/wob.nix
-    # ./modules/xdg-desktop-portal.nix
+    ./modules/xdg-desktop-portal.nix
     ./modules/zsh/functions.nix
     ./modules/zsh/fzf.nix
     ./modules/zsh/starship.nix
@@ -132,7 +134,7 @@
 
   nix.optimise.automatic = true;
 
-  nix.nixPath = [ "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix" ];
+  # nix.nixPath = [ "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix" ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -241,6 +243,7 @@
         "ll" = "ls -l";
         "ls" = "ls --human-readable --classify";
         ".." = "cd ..";
+        "cdtmp" = "cd $(mktemp -d)";
       };
 
       plugins = with pkgs; [

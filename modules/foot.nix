@@ -2,7 +2,8 @@
   home-manager.users.avo = { pkgs, ...}: {
     programs.foot = let
       font = {
-        family = "Ubuntu Mono Nerd Font";
+        # family = "Ubuntu Mono Nerd Font";
+        family = "Victor Mono Nerd Font";
         size = "12";
       };
     in {
@@ -38,6 +39,7 @@
         });
 
         mouse.hide-when-typing = "yes";
+        cursor.blink = "yes";
 
         key-bindings = {
           # show-urls-launch = "Alt+f";

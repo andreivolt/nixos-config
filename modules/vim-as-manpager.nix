@@ -2,5 +2,5 @@
 
 {
   environment.variables
-    .MANPAGER = "${pkgs.neovim}/bin/nvim -c 'set ft=man' -";
+    .MANPAGER = "${pkgs.neovim}/bin/nvim +Man!";
 }

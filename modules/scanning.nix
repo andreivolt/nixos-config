@@ -10,9 +10,7 @@
     };
   };
 
-  networking.extraHosts = ''
-    192.168.1.27 BRW0080927AFBCE
-  '';
+  networking.extraHosts = "192.168.1.27 BRW0080927AFBCE";
 
   users.users.avo.extraGroups = [ "scanner" ];
 }
