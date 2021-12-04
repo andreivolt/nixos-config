@@ -46,8 +46,8 @@ in {
       description = "battery level notifier";
       serviceConfig.PassEnvironment = "DISPLAY";
       script = ''
-        export battery_capacity=$(${pkgs.coreutils}/bin/cat /sys/class/power_supply/${cfg.device}/capacity)
-        export battery_status=$(${pkgs.coreutils}/bin/cat /sys/class/power_supply/${cfg.device}/status)
+        battery_capacity=$(${pkgs.coreutils}/bin/cat /sys/class/power_supply/${cfg.device}/capacity)
+        battery_status=$(${pkgs.coreutils}/bin/cat /sys/class/power_supply/${cfg.device}/status)
 
         if [[ $battery_capacity -le ${builtins.toString cfg.notifyCapacity} && $battery_status = "Discharging" ]]; then
             ${pkgs.libnotify}/bin/notify-send --urgency=critical --hint=int:transient:1 --icon=battery_empty "Battery Low" "You should probably plug-in."
@@ -66,3 +66,24 @@ in {
     };
   };
 }
+
+# systemd.timers.suspend-on-low-battery = {
+#   wantedBy = [ "multi-user.target" ];
+#   timerConfig = {
+#     OnUnitActiveSec = "120";
+#     OnBootSec= "120";
+#   };
+# };
+# systemd.services.suspend-on-low-battery =
+#   let
+#     battery-level-sufficient = pkgs.writeShellScriptBin
+#       "battery-level-sufficient" ''
+#       test "$(cat /sys/class/power_supply/BAT1/status)" != Discharging \
+#         || test "$(cat /sys/class/power_supply/BAT1/capacity)" -ge 5
+#     '';
+#   in
+#     {
+#       serviceConfig = { Type = "oneshot"; };
+#       onFailure = [ "suspend.target" ];
+#       script = "${battery-level-sufficient}/bin/battery-level-sufficient";
+#     };
