@@ -15,6 +15,7 @@
       di = "diff";
       st = "status --short";
       ups = "!git add --update && git commit --amend --reuse-message HEAD && git push --force";
+      l = "log --oneline --abbrev-commit --all --graph --decorate --color";
     };
     signing = {
       key = "36D6CB5336F68AC5";

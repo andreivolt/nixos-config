@@ -1,201 +1,327 @@
 pkgs: with pkgs; let
-  vim = callPackage ./modules/vim { };
+  # vim = callPackage ./modules/vim { };
 in [
-  acpi
-  apktool
-  archivemount
-  aria
-  atool # archive
+  # TODO: Linux
+  # emote # emoji
+  # vieb # vim browser
+  # trash-cli
+  # archivemount # mount archives
+  # binutils # strings etc.
+  # linuxPackages.cpupower # CPU governor
+  # shrinkpdf # TODO
+  # neochat # matrix client
+  # neovide # vim, gui
+  # reptyr # reparent tty
+  # # kepka # telegram
+  # sublime4 # text-editor
+  # swappy # image annotation
+  # nheko # Matrix client
+  # lshw
+  # simple-scan # scanning
+  # ioquake3
+  # xdragon # file drag-and-drop source/sink
+  # imv # image viewer
+  # qutebrowser
+  # deadbeef # music player GUI
+  # dhcpcd
+  # fswebcam # webcam image capture
+  # zathura
+  # acpi
+  # dtrx # unarchiver
+  # bluetooth_battery
+  # # vlc_qt5
+  # wine
+  # cog # webkit browser
+  # # (zathura.override { useMupdf = true; })
+  # wkhtmltopdf
+  # libreoffice-fresh
+  # (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
+  # nload # network traffic monitor
+  # inotify-tools # file watcher
+  # libsForQt5.breeze-gtk # gtk
+  # progress # progress viewer for running coreutils
+  # wirelesstools
+  # xsel
+  # tdesktop # Telegram
+  # lxqt.pavucontrol-qt
+  # waydroid # android
+  # fbterm # framebuffer terminal
+  # glib.bin # gsettings
+  # strace
+  # firefox
+  # breeze-gtk # gtk qt
+  # pqiv # image viewer
+  # breeze-qt5 # gtk qt
+  # google-chrome-dev
+  # mbsync # email sync
+  # fatrace # file access events
+  # mpc
+  # libguestfs # guestfsmount
+  # proxychains # SOCKS5 proxy
+  # lm_sensors
+  # appimage-run
+  # rofi-emoji # emoji
+  # efibootmgr # uefi
+  # meli # email client
+  # dip
+  # pdfsandwich # pdf, ocr
+  # freerdp
+  # mopidy
+  # usbutils # lsusb
+  # alsamixer
+  # pulseaudio # for pactl
+  # nvimpager
+  # nethogs
+  # paps # text to PostScript using Pango with UTF-8 support
+  # rdrview # content extractor
+  # lt
+  # wofi # menu
+  # ethtool
+  # alot # email client
+  # grab-site
+  # alsautils
+  # skypeforlinux
+  # playerctl # mpris, cli
+  # psmisc
+  # pciutils # lspci
+  # protonvpn-cli # vpn
+  # mailcheck
+  # pamixer # audio
+  # pavucontrol # audio
+  # ponymix # audio
+  # fuseiso # mount iso
+  # ntfy # send notifications, on demand and when commands finish
+  # expect # terminal automation # TODO: bin/weather conflict
+  # crow-translate # translate
+  # TODO
+  # unixtools TODO error
+  # avo.pushover
   # audd-cli # music recognition cli
-  avo.pushover
+  ngrok
+  # vim
+  # pythonPackages.pip
+  # python3Packages.pip
+
+  libnotify # notify-send
+
+  # jwhois # TODO bin/whois conflict
+  # pry # TODO: ruby conflict
+  (hiPrio texlive.combined.scheme-full)
+  (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
+  apktool # decompile apks
+  aria # torrents
+  atool # archive
+  comma # nix
   babashka # clojure
-  bat
+  fzy # fuzzy finder
+  asciinema
+  bat # cat with syntax highlighting
   bc # calculator
-  binutils
-  breeze-gtk # gtk qt
-  breeze-qt5 # gtk qt
   cachix # nixos
+  catt # chromecast
   cdrtools # cd tools
   chromedriver
+  emacs
+  exa # ls
+  entr # file watcher
+  ctags
+  cht-sh
   cloc # source code language statistics
   csvkit # csv
   curl
-  cv # progress viewer for running coreutils
   dateutils # dategrep
-  dnsutils
-  dragon-drop # file drag-and-drop source/sink
-  dtrx # unarchiver
-  efibootmgr # uefi
-  # expect # terminal automation
-  expect # tty automation
-  fatrace # file access events
+  dnsutils # dig
+  dogdns
   fd # find alternative
   ffmpeg
+  delta # diff
   file
-  firefox
+  flac
   fpp # path picker
-  fswebcam # webcam image capture
-  fuseiso # mount iso
   fzf # fuzzy finder
   gcolor2 # color chooser
   geoipWithDatabase
   gh # github
+  ghostscript # enscript
   gist # github
+  git-extras
   git-hub # github
-  gnome-breeze # gtk
+  git-open
+  gnumake
   gnupg
-  google-chrome-dev
-  (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
+  go
   google-cloud-sdk # cloud
   googler # google search cli
+  htop
+  gitfs
   graphicsmagick # image, tools
   gron # flatten JSON
   haskellPackages.aeson-pretty # format json
+  heroku
   hr # horizontal rule
+  html-tidy # html
   html2text
-  htmlTidy # html
   httpie # http client
   hub # github
-  (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
   iftop
   imagemagick # some things don't work with graphicsmagick
   imgurbash2 # file-sharing
-  imv # image viewer
+  inetutils # telnet
   inkscape
-  inotify-tools # file watcher
+  git
   jc # json
+  ipfs
+  jdk
   jo # create JSON
   jp # json manipulation
   jq # json
   keybase
   lastpass-cli
   leiningen # clojure
-  libguestfs # guestfsmount
-  libnotify # notify-send
-  libreoffice-fresh
   librsvg # rasterize svg
-  linuxPackages.cpupower # CPU governor
-  lm_sensors
+  lsd # ls alternative
   lsof # system
-  lxqt.pavucontrol-qt
   mailutils # email
-  mdcat # terminal markdown viewer
+  mblaze # email
+  mdcat # tui markdown viewer
   mediainfo # metadata
   miller
   monolith # web-archive
-  moreutilsWithoutParallel # moreutils parallel conflicts with GNU parallel # for vipe & vidir
+  moreutils # via overlay; moreutils parallel conflicts with GNU parallel # for vipe & vidir
+  mpc_cli # mpd
+  luajitPackages.luarocks # lua package manager
+  foreman
   mtr # traceroute alternative
+  libarchive # bsdtar
+  fnm # node version manager
+  python39Packages.pipx
   mupdf # for mutool
-  neochat # matrix client
-  neovide # vim, gui
+  mutt
   netcat # networking
-  nethogs
   ngrep # networking
-  ngrok
   nix-index
-  # nix-info
-  nix-prefetch-github # nixos
-  nix-prefetch-scripts # nixos
+  nix-info
+  nix-prefetch-github # nix
+  nix-prefetch-scripts # nix
   nix-top
   nixfmt # code formatter, nix
-  # nixops # cloud, nixos # TODO: crashing build
-  # nixos-shell
+  nixops # cloud, nixos # TODO crashing build
+  nixos-shell
   nixpkgsUnstable.telegram-cli
   nixpkgsUnstable.yt-dlp # youtube
   nmap # network
-  # nodePackages.json
-  # nodePackages.webtorrent-cli
   nodejs
+  nodePackages.json
+  nodePackages.webtorrent-cli
+  notmuch
   nox # search Nix packages
-  ntfy # send notifications, on demand and when commands finish
-  nvimpager
   openssl
+  cargo # rust
+  openjdk # java
+  colordiff # diff
+  cmake
+  awscli2
+  aspell
+  asdf # version manager
+  neovim-nightly
+  rbenv # ruby version manager
   p7zip # 7z
-  pamixer # audio
   pandoc
+  perl
   parallel
   patchelf
-  pavucontrol # audio
-  pciutils # lspci
+  patchutils
   pdftk # pdf manipulation
-  playerctl # mpris, cli
-  ponymix # audio
+  perceptualdiff # image diff
   poppler_utils # pdf tools
   potrace # convert bitmap to vector
-  pqiv # image viewer
-  protonvpn-cli # vpn
-  psmisc
-  pulseaudio # for pactl
   pup # html
   pv # pipe viewer
   python
   python3
   python3Packages.pipx # install & run Python packages in isolated environments
-  rdrview # content extractor
+  rclone
   recode # encoding
   remarshal
-  reptyr # reparent tty
   ripgrep
   rlwrap
   rnix-lsp # nix language server
   rsync
+  ruby
   sdcv
-  simple-scan # scanning
-  skype
   socat
+  sox
+  speedtest-cli
   sqlite
-  strace
-  sublime3 # text-editor
   surfraw
-  swappy # image annotation
   t # twitter
-  tdesktop # Telegram
-  telnet # network
+  tcpdump
   tesseract4 # ocr
+  tig # git
   tldr # documentation
   tmate # tmux remote sharing
   tmpmail # disposable email
   translate-shell
-  trash-cli
   tree
+  tree-sitter
   units
+  lazygit # git
+  meteor
+  lua
   unzip
-  # urlscan
-  usbutils # lsusb
-  vim
-  vlc_qt5
+  urlscan
+  urlwatch # monitor urls for changes
+  viu
   w3m
   wget
   xdg_utils
-  xsel
+  xmlstarlet # xml
+  xml2
   xurls
+  yarn # nodejs
   youtube-dl
   youtube-viewer
-  sox
-  (zathura.override { useMupdf = true; })
-  jdk
-  pdfsandwich # pdf, ocr
-  (hiPrio texlive.combined.scheme-full)
-  ghostscript # enscript
-  catt # chromecast
-  appimage-run
-  bluetooth_battery
-
-  yarn # nodejs
   ytfzf # youtube
-  crow-translate # translate
-  emote # emoji
-  glib.bin # gsettings
-  lsd # ls alternative
-  nheko # Matrix client
-  # kepka # telegram
-  paps # text to PostScript using Pango with UTF-8 support
-  perceptualdiff # image diff
-  proxychains # SOCKS5 proxy
-  rofi-emoji # emoji
-  ruby
-  urlwatch # monitor urls for changes
-  waydroid # android
-  wofi # menu
-  xmlstarlet # xml
+  kitty
+  kubectl
+  mkcert
+  tmux
+  tesseract
+  siege
+  wdiff # word diff
+  xmlto
+  mosh # ssh
+
+  rubyPackages.kramdown
+  rubyPackages.prettier
+  rubyPackages.pry
+  rubyPackages.pry-byebug
+  rubyPackages.pry-doc
+
+  wrk # http benchmarking
+  yq # yaml parsing
+  vscode
+  redis
+  yj
+
+  chruby # ruby version manager TODO
+  eksctl
+  browsh
+
+  # lua53Packages.lua-lsp # TODO lua lsp
+  luajitPackages.lua-lsp
+
+  postgresql_14
+  navi # cheatsheet
+  pwgen
+  scrcpy # android
+
+  weechat # TODO
+  nss # TODO
+  play-with-mpv # TODO
+  rustc # rust
+  weather
+
+  tidyp
+  selenium-server-standalone
 ]

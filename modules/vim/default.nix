@@ -24,11 +24,11 @@ let
       \ grepprg=${pkgs.ripgrep}/bin/rg\ --smart-case\ --vimgrep
       \ hidden
       \ ignorecase infercase smartcase
-      \ linebreak " don't cut words on wrap
+      \ linebreak
       \ mouse=a
       \ nowrap
       \ shiftwidth=2 shiftround tabstop=2
-      \ showbreak=↳ " show wrapped lines
+      \ showbreak=↳
       \ smartindent
       \ wildmode=longest:full,full
       \ statusline=\ %t
@@ -125,8 +125,8 @@ let
     " toggle line numbers
     map <silent> <leader>tn :set number!<CR>
     " fuzzy find
-    nnoremap <silent> <leader>b :CommandTBuffer<CR>
-    nnoremap <silent> <leader>f :CommandT<CR>
+    nnoremap <silent> <leader>b :FuzzyBuffer<CR>
+    nnoremap <silent> <leader>f :FuzzyOpen<CR>
 
     " narrower file explorer
     let g:netrw_winsize = 20
@@ -195,7 +195,10 @@ let
       # { name = "nvim-treesitter-context"; }
       # { name = "nvim-treesitter-refactor"; }
       { name = "challenger-deep-theme"; }
-      { name = "command-t"; }
+
+      { name = "neovim-fuzzy"; }
+      # { name = "command-t"; }
+
       { name = "commentary"; }
 
       { name = "nvim-compe"; }

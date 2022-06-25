@@ -112,3 +112,7 @@ Control-l: clear-screen
 "\e[A": history-search-backward
 "\e[B": history-search-forward
 $endif
+
+set show-mode-in-prompt on
+set vi-ins-mode-string +
+set vi-cmd-mode-string :

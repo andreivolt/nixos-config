@@ -28,15 +28,17 @@ for m in visual viopp; do
   done
 done
 
+# change surroundings
 bindkey -a cs change-surround
 bindkey -a ds delete-surround
 bindkey -a ys add-surround
 bindkey -M visual S add-surround
 
+# change cursor according to mode
 function zle-keymap-select zle-line-init zle-line-finish {
   case $KEYMAP in
-    vicmd) print -n '\033[1 q' ;;
-    viins|main) print -n '\033[6 q' ;;
+    vicmd) print -n '\033[1 q' ;; # block
+    viins|main) print -n '\033[6 q' ;; # line
   esac
 }
 zle -N zle-line-init; zle -N zle-line-finish; zle -N zle-keymap-select
