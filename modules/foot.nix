@@ -2,8 +2,7 @@
   home-manager.users.avo = { pkgs, ...}: {
     programs.foot = let
       font = {
-        # family = "Ubuntu Mono Nerd Font";
-        family = "Victor Mono Nerd Font";
+        family = "PragmataPro for Powerline";
         size = "12";
       };
     in {

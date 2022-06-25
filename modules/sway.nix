@@ -15,7 +15,7 @@ in {
   in {
     nixpkgs.overlays = [
       (_: _: { inherit startsway; })
-      (import (dirOf <nixos-config> + /modules/wayland-overlay.nix))
+      # (import (dirOf <nixos-config> + /modules/wayland-overlay.nix))
     ];
 
     wayland.windowManager.sway = rec {
@@ -110,7 +110,7 @@ in {
           "${modifier}+Shift+c" = "kill";
           "twosuperior" = "scratchpad show";
           "${modifier}+x"  = "move container to scratchpad";
-          "Print" = "exec grimshot copy area";
+          "Print" = "exec screenshot --notify copy area";
 
           "${modifier}+p" = "exec $menu";
           "${modifier}+q" = "reload";
@@ -125,8 +125,8 @@ in {
           "${modifier}+s" = "layout toggle split";
 
           "F1" = "exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > $XDG_RUNTIME_DIR/wob.sock ) || pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
-          "F2" = "exec pamixer --decrease 3 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
-          "F3" = "exec pamixer --increase 3 --allow-boost && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F2" = "exec pamixer --decrease 2 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F3" = "exec pamixer --increase 2 --allow-boost && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
           "F4" = "exec pactl set-source-mute @DEFAULT_SOURCE@ toggle";
 
           "Home" = "exec playerctl previous";
@@ -165,11 +165,11 @@ in {
         input = {
           "type:keyboard" = {
             xkb_layout = "fr";
-            xkb_options = "ctrl:nocaps";
+            xkb_options = "caps:swapescape";
           };
           "type:pointer" = {
-            accel_profile = "flat";
-            pointer_accel = "1";
+            accel_profile = "adaptive";
+            pointer_accel = "0.8";
           };
           "type:touchpad" = {
             dwt = "enabled";

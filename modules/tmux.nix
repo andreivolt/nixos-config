@@ -56,6 +56,9 @@ in {
 
       set -g @plugin 'tmux-plugins/tmux-copycat'
 
+      # fix missing DISPLAY env variable
+      set -g update-environment DISPLAY
+
       set -g @plugin 'tmux-plugins/tmux-yank'
       set -g @yank_selection 'primary'
 
@@ -98,6 +101,8 @@ in {
 
       unbind p
       bind p paste-buffer
+
+      set -g status-position top
     '';
   };
 }

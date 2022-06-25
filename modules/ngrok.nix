@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, config, ... }:
 
 let authtoken = builtins.getEnv "NGROK_TOKEN";
 in {

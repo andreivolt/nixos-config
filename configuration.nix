@@ -7,23 +7,26 @@
     ./modules/home-manager.nix
     ./cachix.nix
 
-    ./modules/adb.nix
-    ./modules/adblock.nix
-    ./modules/dict.nix
+    ./modules/adb.nix # linux
+    # ./modules/adblock.nix
+    ./modules/dict.nix # linux
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
+    ./modules/bat.nix
+    ./modules/npm.nix
     # ./modules/chrome
-    ./modules/flakes.nix
-    ./modules/fbterm.nix
-    ./modules/flatpak.nix
+    ./modules/nix.nix
+    ./modules/fbterm.nix # linux
+    ./modules/flatpak.nix # linux
     ./modules/vim-as-manpager.nix
-    ./modules/clipman.nix
+    ./modules/clipman.nix # linux
+    ./modules/disable-ipv6.nix # linux
     ./modules/clojure
     ./modules/clojure/boot
     ./modules/clojure/rebel-readline.nix
-    ./modules/cloudflare-dns.nix
+    ./modules/cloudflare-dns.nix # nixos
     ./modules/command-not-found.nix
-    ./modules/cuff.nix # torrent search cli
+    ./modules/cuff.nix # torrent search cli # nixos
     ./modules/curl.nix
     ./modules/direnv.nix
     ./modules/docker.nix
@@ -39,7 +42,7 @@
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
     ./modules/grep.nix
-    ./modules/gebaard.nix
+    # ./modules/gebaard.nix
     ./modules/gtk.nix
     ./modules/hardware-video-acceleration.nix
     ./modules/hardware-video-acceleration/mpv.nix
@@ -50,7 +53,7 @@
     ./modules/himalaya.nix # email client
     ./modules/insync.nix
     # ./modules/ipfs.nix
-    ./modules/kdeconnect.nix
+    # ./modules/kdeconnect.nix
     # ./modules/keybase-files.nix
     # ./modules/keybase-sync.nix
     ./modules/keybase.nix
@@ -58,7 +61,7 @@
     ./modules/libvirt.nix
     ./modules/locate.nix
     ./modules/lowbatt.nix
-    ./modules/mako.nix
+    # ./modules/mako.nix
     ./modules/map-test-tld-to-localhost.nix
     ./modules/matrix-cli.nix
     ./modules/mdns.nix
@@ -70,7 +73,7 @@
     ./modules/ngrok.nix
     ./modules/nix-ld.nix
     ./modules/pipewire.nix
-    ./modules/play-with-mpv.nix
+    # ./modules/play-with-mpv.nix
     # ./modules/plymouth.nix # boot animations
     ./modules/printing.nix
     ./modules/readline/inputrc.nix
@@ -93,7 +96,7 @@
     ./modules/wayvnc.nix
     # ./modules/weechat-matrix.nix
     ./modules/weechat.nix
-    ./modules/wireguard.nix
+    # ./modules/wireguard.nix
     ./modules/wob.nix
     ./modules/xdg-desktop-portal.nix
     ./modules/zsh/functions.nix
@@ -164,6 +167,10 @@
   home-manager.users.avo = { pkgs, ... }: rec {
     nixpkgs.overlays = config.nixpkgs.overlays;
 
+    dconf.settings."org/gnome/desktop/interface" = {
+      font-name = "Ubuntu 12";
+    };
+
     home.packages = import ./packages.nix pkgs;
 
     home.sessionVariables = {
@@ -175,7 +182,9 @@
     home.sessionPath = [
       "$HOME/gdrive/bin"
       "$HOME/.local/bin"
+      "$HOME/go/bin"
       (builtins.toString ./bin)
+      "$HOME/.local/share/gem/ruby/2.7.0/bin"
     ];
 
     xdg.enable = true;
@@ -244,6 +253,7 @@
         "ls" = "ls --human-readable --classify";
         ".." = "cd ..";
         "cdtmp" = "cd $(mktemp -d)";
+        "info" = "info --vi-keys"; # vim
       };
 
       plugins = with pkgs; [
@@ -307,4 +317,6 @@
   services.sysstat.enable = true;
 
   programs.steam.enable = true;
+
+  programs.mosh.enable = true;
 }

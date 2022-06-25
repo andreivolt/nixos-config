@@ -10,8 +10,8 @@
     };
   };
 
-  programs.chromium = {
-    enable = true;
-    extensions = [ "hahklcmnfgffdlchjigehabfbiigleji" ];
-  };
+  # programs.chromium = {
+  #   enable = true;
+  #   extensions = [ "hahklcmnfgffdlchjigehabfbiigleji" ];
+  # };
 }

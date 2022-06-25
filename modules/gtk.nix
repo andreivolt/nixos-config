@@ -8,6 +8,6 @@ in {
     #   name = "dark";
     #   package = pkgs.callPackage ../packages/gtk-theme-dark {  };
     # };
-    font.name = "${font} 8";
+    # font.name = "${font} 10";
   };
 }

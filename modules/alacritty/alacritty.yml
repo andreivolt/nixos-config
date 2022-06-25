@@ -83,10 +83,13 @@ scrolling:
 # Font configuration (changes require restart)
 font:
   normal:
-    family: Ubuntu Mono Nerd Font
-  size: 24
+    # family: Victor Mono Nerd Font
+    family: PragmataPro for Powerline
+    # family: Ubuntu Mono Nerd Font
+    # family: Roboto Mono
+  size: 16
   offset:
-    x: -1
+    x: -2
     y: -1
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the right,

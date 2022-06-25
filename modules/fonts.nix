@@ -5,10 +5,11 @@
     ./input-fonts.nix
   ];
 
-  fonts.fontconfig.defaultFonts = {
-    monospace = [ "Source Code Pro" ];
-    sansSerif = [ "Source Sans Pro" ];
-  };
+  # TODO
+  # fonts.fontconfig.defaultFonts = {
+  #   monospace = [ "Source Code Pro" ];
+  #   sansSerif = [ "Source Sans Pro" ];
+  # };
   fonts.fonts = with pkgs; [
     cascadia-code
     corefonts
@@ -20,7 +21,7 @@
     google-fonts
     hack-font
     ia-writer-duospace
-    jetbrains-mono
+    # jetbrains-mono
     # material-icons
     nerdfonts
     # overpass
@@ -34,19 +35,28 @@
     # emacs-all-the-icons-fonts
 
     # font-awesome-ttf
+
     # (iosevka.override {
     #   set = "custom";
-    #   weights = ["light"];
-    #   design = [
-    #     "termlig"
-    #     "v-asterisk-low"
-    #     "v-at-short"
-    #     "v-i-zshaped"
-    #     "v-tilde-low"
-    #     "v-underscore-low"
-    #     "v-zero-dotted"
-    #     "v-zshaped-l"
-    #   ];
+    #   privateBuildPlan = {
+    #     family = "Iosevka Custom";
+    #     spacing = "normal";
+    #     serifs = "sans";
+    #     variants = {
+    #       design.capital-j = "serifless";
+    #       italic.i = "tailed";
+    #     };
+    #   };
+    #   # design = [
+    #   #   "termlig"
+    #   #   "v-asterisk-low"
+    #   #   "v-at-short"
+    #   #   "v-i-zshaped"
+    #   #   "v-tilde-low"
+    #   #   "v-underscore-low"
+    #   #   "v-zero-dotted"
+    #   #   "v-zshaped-l"
+    #   # ];
     # })
   ];
 }
