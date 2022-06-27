@@ -1,5 +1,0 @@
-curl $1 \
-| html2 \
-| cut -d'/' -f 4- \
-| grep -E '(@class|=)' \
-| tree --fromfile

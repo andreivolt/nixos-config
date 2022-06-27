@@ -1,2 +1,0 @@
-http 'wttr.in/Paris?format=j1' \
-| jq -r '.current_condition[0].temp_C'

@@ -150,6 +150,9 @@
   in [
     nixpkgsUnstable
     (import ./packages)
+    (import (builtins.fetchTarball {
+      url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz;
+    }))
   ];
 
   i18n.defaultLocale = "en_US.UTF-8";
@@ -243,18 +246,7 @@
         X = "| xargs";
       };
 
-      shellAliases = {
-        "git" = "GPG_TTY=$(tty) git";
-        "rm" = "rm --verbose";
-        "grep" = "grep --color";
-        "l" = "ls -1";
-        "la" = "ls -a";
-        "ll" = "ls -l";
-        "ls" = "ls --human-readable --classify";
-        ".." = "cd ..";
-        "cdtmp" = "cd $(mktemp -d)";
-        "info" = "info --vi-keys"; # vim
-      };
+      shellAliases = import ./aliases.nix;
 
       plugins = with pkgs; [
         {

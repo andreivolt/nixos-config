@@ -1,3 +1,5 @@
+# vi keybindings
+
 bindkey -v
 
 export KEYTIMEOUT=1
@@ -42,3 +44,20 @@ function zle-keymap-select zle-line-init zle-line-finish {
   esac
 }
 zle -N zle-line-init; zle -N zle-line-finish; zle -N zle-keymap-select
+
+# completion menu
+zmodload zsh/complist
+bindkey -M menuselect 'h' vi-backward-char
+bindkey -M menuselect 'j' vi-down-line-or-history
+bindkey -M menuselect 'k' vi-up-line-or-history
+bindkey -M menuselect 'l' vi-forward-char
+bindkey -M menuselect 'i' accept-and-menu-complete
+bindkey -M menuselect 'u' undo
+# jump between categories of matches
+bindkey -M menuselect 'n' vi-forward-blank-word
+bindkey -M menuselect 'b' vi-backward-blank-word
+
+# prepend sudo
+run-with-sudo () { LBUFFER="sudo $LBUFFER" }
+zle -N run-with-sudo
+bindkey -M vicmd gs run-with-sudo
