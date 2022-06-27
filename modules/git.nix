@@ -5,7 +5,7 @@
 
   home-manager.users.avo.programs.git = {
     enable = true;
-    package = pkgs.gitFull;
+    package = lib.hiPrio pkgs.gitFull; # git-with-svn collision
     aliases = {
       am = "commit --all --amend --no-edit";
       ap = "add --patch";

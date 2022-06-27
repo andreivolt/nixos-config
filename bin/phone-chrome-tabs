@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-adb forward tcp:9222 localabstract:chrome_devtools_remote
-
-curl localhost:9222/json/list \
-| jq -r 'map([.title, .url]) | .[] | @tsv'

@@ -1,8 +1,0 @@
-id=0003:056A:5087.0001
-
-case $1 in
-  on) x=bind ;;
-  off) x=unbind ;;
-esac
-
-sudo sh -c "echo $id > /sys/bus/hid/drivers/wacom/$x"

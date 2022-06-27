@@ -6,5 +6,5 @@
 
   };
 
-  programs.qt5ct.enable = true;
+  qt5.platformTheme = "qt5ct";
 }

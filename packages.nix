@@ -6,7 +6,7 @@ in [
   # vieb # vim browser
   # trash-cli
   # archivemount # mount archives
-  # binutils # strings etc.
+  binutils # strings etc.
   # linuxPackages.cpupower # CPU governor
   # shrinkpdf # TODO
   # neochat # matrix client
@@ -27,7 +27,6 @@ in [
   # fswebcam # webcam image capture
   # zathura
   # acpi
-  # dtrx # unarchiver
   # bluetooth_battery
   # # vlc_qt5
   # wine
@@ -139,6 +138,7 @@ in [
   flac
   fpp # path picker
   fzf # fuzzy finder
+  fontforge
   gcolor2 # color chooser
   geoipWithDatabase
   gh # github
@@ -153,7 +153,7 @@ in [
   google-cloud-sdk # cloud
   googler # google search cli
   htop
-  gitfs
+  gitfs # git filesystem
   graphicsmagick # image, tools
   gron # flatten JSON
   haskellPackages.aeson-pretty # format json
@@ -210,7 +210,6 @@ in [
   nixpkgsUnstable.telegram-cli
   nixpkgsUnstable.yt-dlp # youtube
   nmap # network
-  nodejs
   nodePackages.json
   nodePackages.webtorrent-cli
   notmuch
@@ -222,6 +221,7 @@ in [
   cmake
   awscli2
   aspell
+  terminal-notifier
   asdf # version manager
   neovim-nightly
   rbenv # ruby version manager
@@ -278,7 +278,7 @@ in [
   xmlstarlet # xml
   xml2
   xurls
-  yarn # nodejs
+  # yarn # nodejs # TODO
   youtube-dl
   youtube-viewer
   ytfzf # youtube
@@ -305,7 +305,10 @@ in [
   yj
 
   chruby # ruby version manager TODO
+  solargraph
+
   eksctl
+
   browsh
 
   # lua53Packages.lua-lsp # TODO lua lsp
@@ -316,12 +319,48 @@ in [
   pwgen
   scrcpy # android
 
-  weechat # TODO
+  # weechat # TODO
   nss # TODO
   play-with-mpv # TODO
   rustc # rust
   weather
 
+  gcalcli # google calendar
+  mkchromecast # chromecast
+  go-chromecast # chromecast
+  castnow # chromecast
+  ncdu # disk usage
+  unrar
+  ansi2html
+  ipinfo
+  electrum
+
   tidyp
   selenium-server-standalone
+
+  graphviz
+
+  # difftastic # syntactic diff # TODO macos build fails
+  dasel
+
+  qemu
+  darkhttpd # http server
+  starship # shell prompt
+  vimpager # vim pager
+  vivid # ls colors
+  wireshark # network debugging
+  nix-prefetch
+  archiver
+  nodejs
+  pipe-viewer # youtube viewer
+
+  kubectx # kubernetes context switch
+
+  zip
+  sysz # systemd
+
+  chafa # terminal images
+  docker
+
+  tg # telegram
 ]
