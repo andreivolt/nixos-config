@@ -1,5 +1,12 @@
 {
   homebrew.casks = [
+    "knockknock" # security
+    "oversight" # security
+
+    "blackhole-2ch" # virtual audio device
+
+    "dash" # documentation
+
     # "deepl" # TODO
     # "launchbar" # launcher TODO
     "alacritty" # terminal
@@ -31,6 +38,7 @@
     "firefox"
     "polypane" # responsive browser
     "little-snitch" # firewall
+    "slack"
     "flux" # color temperature
     "font-iosevka"
     "font-hasklug-nerd-font"

@@ -3,38 +3,40 @@
 {
   imports =
     [<home-manager/nix-darwin>] ++ [
-      # /Users/avo/drive/nixos-config/modules/gnupg.nix # TODO
-      # /Users/avo/drive/nixos-config/modules/ngrok.nix # TODO
-      /Users/avo/drive/nixos-config/modules/alacritty/alacritty.nix
-      /Users/avo/drive/nixos-config/modules/aria2.nix
-      /Users/avo/drive/nixos-config/modules/bat.nix
-      /Users/avo/drive/nixos-config/modules/clojure # TODO
-      /Users/avo/drive/nixos-config/modules/clojure/boot
-      /Users/avo/drive/nixos-config/modules/clojure/rebel-readline.nix
-      /Users/avo/drive/nixos-config/modules/command-not-found.nix
-      /Users/avo/drive/nixos-config/modules/curl.nix
-      /Users/avo/drive/nixos-config/modules/direnv.nix
-      /Users/avo/drive/nixos-config/modules/fonts.nix
-      /Users/avo/drive/nixos-config/modules/grep.nix
-      /Users/avo/drive/nixos-config/modules/less.nix
-      /Users/avo/drive/nixos-config/modules/mac-apps-gui.nix
-      /Users/avo/drive/nixos-config/modules/mac-dock.nix
-      /Users/avo/drive/nixos-config/modules/mac-screenshots.nix
-      /Users/avo/drive/nixos-config/modules/moreutils-without-parallel.nix
-      /Users/avo/drive/nixos-config/modules/nix.nix
-      /Users/avo/drive/nixos-config/modules/readline/inputrc.nix
-      /Users/avo/drive/nixos-config/modules/ripgrep.nix
-      /Users/avo/drive/nixos-config/modules/vim-as-manpager.nix
-      /Users/avo/drive/nixos-config/modules/zsh-autosuggest.nix
+      # ./modules/gnupg.nix # TODO
+      # ./modules/ngrok.nix # TODO
+      ./modules/alacritty/alacritty.nix
+      ./modules/aria2.nix
+      ./modules/bat.nix
+      ./modules/clojure # TODO
+      ./modules/clojure/boot
+      ./modules/clojure/rebel-readline.nix
+      ./modules/command-not-found.nix
+      ./modules/curl.nix
+      ./modules/direnv.nix
+      # ./modules/fonts.nix
+      ./modules/grep.nix
+      ./modules/less.nix
+      ./modules/mac_apps-gui.nix
+      ./modules/mac_dock.nix
+      ./modules/mac_ipfs.nix
+      ./modules/mac_map-caps-to-esc.nix
+      ./modules/mac_map-test-tld-to-localhost.nix
+      ./modules/mac_nginx.nix
+      ./modules/mac_postgres.nix
+      ./modules/mac_screenshots.nix
+      ./modules/moreutils-without-parallel.nix
+      ./modules/nix.nix
+      ./modules/readline/inputrc.nix
+      ./modules/ripgrep.nix
+      ./modules/ruby.nix
+      ./modules/vim-as-manpager.nix
+      ./modules/zsh-autosuggest.nix
     ] ++ [./macos-defaults.nix];
 
   services.lorri.enable = true; # nix direnv
 
   services.redis.enable = true;
-  services.postgresql = {
-    enable = true;
-    package = pkgs.postgresql_14;
-  };
 
   users.users.avo = {
     name = "avo";
@@ -68,85 +70,14 @@
     Clicking = true;
   };
 
-  # resolve *.test to localhost
-  services.dnsmasq = {
-    enable = true;
-    addresses.test = "127.0.0.1";
-  };
-
-  system.keyboard = {
-    enableKeyMapping = true;
-    remapCapsLockToEscape = true;
-    # swapLeftCommandAndLeftAlt = true;
-  };
-
   system.defaults.finder = {
     AppleShowAllExtensions = true;
     FXEnableExtensionChangeWarning = false;
   };
 
-  launchd.daemons.nginx = with pkgs; {
-    command = "${nginx}/bin/nginx";
-    path = [nginx];
-    serviceConfig = {
-      KeepAlive = true;
-    };
-  };
+  # system.keyboard.swapLeftCommandAndLeftAlt = true; # TODO
 
-  home-manager.users.avo = { pkgs, config, ... }: {
-    home.sessionVariables.EDITOR = "nvim";
-
-    # home.activation = {
-    #   aliasApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    #   ln -sfn $genProfilePath/home-path/Applications "$HOME/Applications/Home Manager Applications"
-    #   '';
-    # };
-
-    programs.fzf.enable = true;
-    programs.fzf.enableZshIntegration = true;
-
-    programs.zsh.enableCompletion = false;
-
-    programs.zsh.enable = true; # TODO
-    # programs.zsh.enableSyntaxHighlighting = true;
-
-    # edit without rebuilding
-    programs.zsh.initExtra = ''
-      source ~/.zshrc.extra.zsh;
-    '';
-
-    programs.zsh.plugins = with pkgs; [
-      {
-        name = "autopair";
-        file = "autopair.zsh";
-        src = fetchFromGitHub {
-          owner = "hlissner";
-          repo = "zsh-autopair";
-          rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
-          sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
-        };
-      }
-      {
-        name = "zsh-nix-shell";
-        file = "nix-shell.plugin.zsh";
-        src = fetchFromGitHub {
-          owner = "chisui";
-          repo = "zsh-nix-shell";
-          rev = "v0.2.0";
-          sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
-        };
-      }
-    ];
-
-    programs.zsh.history = rec {
-      size = 99999;
-      save = size;
-    };
-
-    programs.zsh.shellAliases = import /Users/avo/drive/nixos-config/aliases.nix;
-
-    programs.zsh.shellGlobalAliases = import /Users/avo/drive/nixos-config/modules/zsh-global-aliases.nix;
-  };
+  home-manager.users.avo = import ./modules/zsh.nix;
 
   environment.systemPackages =
     with pkgs; let
@@ -157,8 +88,11 @@
         sha256 = "fZ/Rb//cVZBgQ99/vbs7BcFn+qO6D077lTrZAWR7b/Q=";
       })).default;
     in
+      [
+        Hyperbeam # cobrowsing
+      ] ++
       (import /Users/avo/drive/nixos-config/packages.nix pkgs) ++
-      (import /Users/avo/drive/nixos-config/modules/mac-packages.nix pkgs);
+      (import /Users/avo/drive/nixos-config/modules/mac_packages.nix pkgs);
 
   nixpkgs.config.allowUnfree = true;
 
@@ -193,25 +127,15 @@
   # $ darwin-rebuild changelog
   system.stateVersion = 4;
 
-  launchd.daemons.ipfs = {
-    script = "${pkgs.ipfs}/bin/ipfs daemon";
-
-    serviceConfig = {
-      Label = "ipfs";
-      RunAtLoad = true;
-      KeepAlive.NetworkState = true;
-    };
-  };
-
   homebrew = {
     enable = true;
-    cleanup = "zap";
-    autoUpdate = true;
+    onActivation.cleanup = "zap";
+    onActivation.autoUpdate = true;
+    onActivation.upgrade = true;
     # TODO alfred
     # TODO amphetamine
     # TODO contexts
     # TODO csv2xlsx
-    # TODO darksky-weather
     # TODO font-input
     # TODO font-iosevka{-aile,-curly,-etoile}
     # TODO git-delta
@@ -225,16 +149,16 @@
     # TODO taiko
 
     brews= [
+      "ffmpeg"
+      "jqp"
       "alerter" # notifications cli
       "brightness" # macos brigthness cli
       "browser" # pipe html to browser
-      "chruby" # ruby
       "darksky-weather" # weather cli
       "docker-completion"
       "federico-terzi/espanso/espanso" # TODO
       "felixkratz/formulae/svim" # macos vim everywhere
-      "fig" # terminal completion
-      "helm" # kubernetes
+      # "fig" # terminal completion TODO
       "imagemagick@6"
       "ipfs"
       "iproute2mac"
@@ -242,22 +166,20 @@
       "libyaml" # ruby
       "lua-language-server" # lua lsp
       "mupdf" # pdf viewer
-      "navi" # cheatsheet cli
       "nethogs"
       "nvm" # nodejs
+      "dmd" # d compiler
       "pidof"
-      "pngpaste"
       "postgresql"
       "difftastic"
-      "reattach-to-user-namespace" # tmate
       "robotsandpencils/made/xcodes"
-      "ruby-build"
-      "ruby-install"
       "switchaudio-osx"
       "trash-cli"
       "util-linux" # setsid
-      "v8@3.15" # therubyracer
-      "zsh-fast-syntax-highlighting"
+      "blueutil" # bluetooth cli
+
+      "pushtotalk" # mic mute
+      # "hgrep" # grep with syntax highlighting TODO
       # "askgitdev/treequery/treequery" # TODO
       # "withgraphite/tap/graphite"
     ];
@@ -277,6 +199,8 @@
       "mopidy/mopidy"
       "robotsandpencils/made"
       "withgraphite/tap"
+      "noahgorstein/tap" # jqp
+      "yulrizka/tap" # pushtotalk
     ];
     extraConfig = ''
       brew "tor", restart_service: true

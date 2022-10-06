@@ -149,7 +149,7 @@ let
     "  hi NERDTreeCWD ctermfg=8 guifg=${black_bg}
     "  hi NERDTreeClosable ctermfg=8 guifg=${black_bg} | hi NERDTreeOpenable ctermfg=8 guifg=${black_bg}
 
-    " LanguageClient-neovim
+    " LanguageClient-neovim TODO
     let g:LanguageClient_serverCommands = {
         \ 'clojure': ['clojure-lsp'],
         \ }

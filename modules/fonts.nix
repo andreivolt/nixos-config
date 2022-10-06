@@ -12,7 +12,7 @@
   # };
   fonts.fonts = with pkgs; [
     cascadia-code
-    corefonts
+    # corefonts # TODO error
 
     # joypixels # emoji
     # nixpkgs.config.joypixels.acceptLicense = true;
@@ -30,6 +30,8 @@
     ubuntu_font_family
     vistafonts
     sudo-font
+
+    atkinson-hyperlegible
 
     # hasklig
     # emacs-all-the-icons-fonts

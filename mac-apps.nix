@@ -16,6 +16,19 @@ installApplication =
     '' + postInstall;
   };
 
+  Hyperbeam = self.installApplication rec {
+    name = "Hyperbeam";
+    version = "0.21.0";
+    sourceRoot = "Hyperbeam.app";
+    src = super.fetchurl rec {
+      name = "Hyperbeam-${version}.dmg";
+      url = "https://cdn.hyperbeam.com/${name}";
+      sha256 = "sha256-nPGPwjPvnxNq2n9NCiyT+8rivXh/qAtp0X9ItHnxBBI=";
+    };
+    description = "";
+    homepage = https://example.com;
+  };
+
   Firefox = self.installApplication rec {
     name = "Firefox";
     version = "65.0.1";
