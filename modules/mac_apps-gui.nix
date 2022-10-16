@@ -6,6 +6,7 @@
     "blackhole-2ch" # virtual audio device
 
     "dash" # documentation
+    "mutify" # mic mute
 
     # "deepl" # TODO
     # "launchbar" # launcher TODO
