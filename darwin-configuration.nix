@@ -174,6 +174,7 @@
       "difftastic"
       "robotsandpencils/made/xcodes"
       "switchaudio-osx"
+      "m-cli" # macos cli
       "trash-cli"
       "util-linux" # setsid
       "blueutil" # bluetooth cli

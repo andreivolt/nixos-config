@@ -32,6 +32,7 @@ pkgs: with pkgs; let
 in ([
   act # GitHub actions simulator
   ansi2html
+  ansifilter
   apktool # decompile apks
   archiver
   aria # torrents
@@ -81,6 +82,7 @@ in ([
   exa # ls
   # expect # terminal automation # TODO: bin/weather conflict
   fd # find alternative
+  figlet
   file
   flac
   fnm # node version manager
@@ -113,6 +115,7 @@ in ([
   groff # nroff text formatting
   gron # flatten JSON
   haskellPackages.aeson-pretty # format json
+  helix
   heroku
   hr # horizontal rule
   html-tidy # html
@@ -129,6 +132,7 @@ in ([
   inkscape
   ipfs
   ipinfo
+  isync # email sync
   jc # json
   jdk
   jless # JSON viewer
@@ -147,6 +151,7 @@ in ([
   leiningen # clojure
   libarchive # bsdtar
   librsvg # rasterize svg
+  lolcat
   lsd # ls alternative
   lsof # system
   lua
@@ -162,15 +167,17 @@ in ([
   mkcert
   mkchromecast # chromecast
   monolith # web-archive
+  mopidy
   moreutils # via overlay; moreutils parallel conflicts with GNU parallel # for vipe & vidir
   mosh # ssh
+  mpc-cli
   mpc_cli # mpd
   mtr # traceroute alternative
   mupdf # for mutool
   mutt
-  navi # cheatsheet
   navi # cheatsheet cli
   ncdu # disk usage
+  neo-cowsay
   neovim
   # neovim-nightly TODO
   netcat # networking
@@ -216,7 +223,7 @@ in ([
   postgresql_14
   potrace # convert bitmap to vector
   prettyping # ping alternative
-  # pry # TODO: ruby conflict
+  # pry # TODO ruby conflict
   pup # extract content from HTML with CSS selectors
   pv # pipe viewer
   pwgen
@@ -247,7 +254,7 @@ in ([
   scrcpy # android
   sdcv
   selenium-server-standalone
-  # semgrep # TODO not on mac
+  semgrep # TODO fails on mac
   shfmt # shell script formatter
   siege
   socat
@@ -262,8 +269,10 @@ in ([
   t # twitter
   tcpdump
   terminal-notifier
+  termtosvg
   tesseract
   tesseract4 # ocr
+  testdisk
   (hiPrio texlive.combined.scheme-full)
   # tg # telegram TODO
   tidyp
@@ -293,6 +302,7 @@ in ([
   # weechat # TODO
   wget
   wireshark # network debugging
+  wkhtmltopdf
   wrk # http benchmarking
   xdg-utils
   xml2
@@ -301,7 +311,7 @@ in ([
   xurls
   yarn # nodejs
   yarn-bash-completion # TODO
-  yj
+  yj # convert between YAML, TOML, JSON, and HCL
   youtube-dl
   youtube-viewer
   yq # yaml parsing
@@ -309,6 +319,9 @@ in ([
   zip
   zsh-better-npm-completion # TODO
   zsh-fast-syntax-highlighting # TODO
+  crudini # edit ini files
+  lf # TUI file manager
+  sshpass # supply password to ssh
 ]
 ++
 pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
@@ -318,6 +331,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
 ]
 ++
 pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+  # (zathura.override { useMupdf = true; })
   acpi
   alot # email client
   alsamixer
@@ -345,7 +359,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   glib.bin # gsettings
   google-chrome-dev
   (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
-  grab-site
+  grab-site # web archive
   imv # image viewer
   inotify-tools # file watcher
   ioquake3
@@ -357,13 +371,9 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   linuxPackages.cpupower # CPU governor
   lm_sensors
   lshw
-  lt
   lxqt.pavucontrol-qt
   mailcheck
-  mbsync # email sync
   meli # email client
-  mopidy
-  mpc
   neochat # matrix client
   neovide # vim, gui
   nethogs
@@ -387,9 +397,10 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   rdrview # content extractor
   reptyr # reparent tty
   rofi-emoji # emoji
-  shrinkpdf # TODO
+  # shrinkpdf # TODO
   simple-scan # scanning
   skypeforlinux
+  sleuthkit
   strace
   sublime4 # text-editor
   swappy # image annotation
@@ -401,10 +412,8 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   waydroid # android
   wine
   wirelesstools
-  wkhtmltopdf
   wofi # menu
   xdragon # file drag-and-drop source/sink
   xsel
   zathura
-  # (zathura.override { useMupdf = true; })
 ])
