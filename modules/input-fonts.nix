@@ -6,5 +6,5 @@
     input-fonts.acceptLicense = true;
   };
 
-  fonts.fonts = with pkgs; [ input-fonts ];
+  fonts.packages = with pkgs; [ input-fonts ];
 }

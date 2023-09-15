@@ -18,18 +18,35 @@ in {
       # (import (dirOf <nixos-config> + /modules/wayland-overlay.nix))
     ];
 
-    wayland.windowManager.sway = rec {
+    wayland.windowManager.sway = let
+      mouseButtonBindings = ''
+        # Close window by middle clicking title bar:
+        bindsym button2 kill
+        # Toggle float by right clicking window title:
+        bindsym button3 floating toggle
+      '';
+
+      windowRules = ''
+        # Set the title bar for floating windows
+        for_window [floating] title_format "%title"
+      '';
+
+      autohideCursor = ''
+        seat * hide_cursor 5000
+        seat * hide_cursor when-typing enable
+      '';
+    in rec {
       enable = true;
       config = {
         modifier = "Mod4";
         menu = "find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu | xargs ${pkgs.gtk3-x11}/bin/gtk-launch";
         colors = {
           focused = {
-            border = "#${theme.dark.active.background}";
+            border = "#${theme.colors.normal.green}";
             background = "#${theme.dark.active.background}";
             text = "#${theme.dark.active.foreground}";
             indicator = "#${theme.dark.active.background}";
-            childBorder = "#${theme.dark.active.background}";
+            childBorder = "#${theme.colors.normal.green}";
           };
           focusedInactive = {
             border = "#${theme.dark.active.background}";
@@ -58,12 +75,13 @@ in {
           size = 16.0;
         };
         bars = [];
-        terminal = "foot -o colors.alpha=0.80";
+        terminal = "wezterm";
         startup = [
           { command = "${pkgs.autotiling}/bin/autotiling"; }
+          { command = "${pkgs.wezterm}/bin/wezterm start --class scratchpad"; }
         ];
         window = {
-          titlebar = true;
+          titlebar = false;
           commands =
             let
               display = { width = 2560; height = 1600; };
@@ -81,6 +99,12 @@ in {
             ++ [
               { criteria.app_id = "mpv"; command = "inhibit_idle visible"; }
             ]
+            # ++ (
+            #   let app_ids = [
+            #     "firefox-nightly" "scratchpad" "tidal-hifi"
+            #   ];
+            #   in map (app_id: { criteria.app_id = app_id; command = "border none"; })
+            # )
             ++ [
               { criteria.title = "Volume Control"; command = "resize set 1000 1000"; } # pavucontrol-qt
             ];
@@ -138,8 +162,8 @@ in {
           "${modifier}+quotedbl" = "workspace 3";
           "${modifier}+apostrophe" = "workspace 4";
           "${modifier}+parenleft" = "workspace 5";
-          "${modifier}+egrave" = "workspace 6";
-          "${modifier}+minus" = "workspace 7";
+          "${modifier}+minus" = "workspace 6";
+          "${modifier}+egrave" = "workspace 7";
           "${modifier}+underscore" = "workspace 8";
           "${modifier}+ccedilla" = "workspace 9";
           "${modifier}+agrave" = "workspace 10";
@@ -149,12 +173,17 @@ in {
           "${modifier}+Shift+quotedbl" = "move container to workspace 3";
           "${modifier}+Shift+apostrophe" = "move container to workspace 4";
           "${modifier}+Shift+parenleft" = "move container to workspace 5";
-          "${modifier}+Shift+egrave" = "move container to workspace 6";
-          "${modifier}+Shift+minus" = "move container to workspace 7";
+          "${modifier}+Shift+minus" = "move container to workspace 6";
+          "${modifier}+Shift+egrave" = "move container to workspace 7";
           "${modifier}+Shift+underscore" = "move container to workspace 8";
           "${modifier}+Shift+ccedilla" = "move container to workspace 9";
           "${modifier}+Shift+agrave" = "move container to workspace 10";
 
+          "${modifier}+Alt+Left" = "workspace prev";
+          "${modifier}+Alt+Right" = "workspace next";
+
+          "F12" = "exec randomtab";
+          "Pause" = "exec playerctl play-pause";
           # "${modifier}+l" = "lock";
 
           "${modifier}+Alt+${left}" = "resize shrink width ${resize_increment}";
@@ -186,20 +215,24 @@ in {
         };
       };
       extraConfig = ''
-        # hide titlebar on lone windows
-        default_border none
+        # default_border none
+        default_border pixel 1
 
         # smart_borders on
 
-        titlebar_padding 20 8
-      '';
+        default_floating_border normal 1
+        # hide_edge_borders --i3 smart
+        hide_edge_borders none
+        smart_borders on
+        smart_gaps on
+        titlebar_border_thickness 0
+      '' + mouseButtonBindings + windowRules + autohideCursor;
       systemdIntegration = true;
       wrapperFeatures.gtk = true;
       wrapperFeatures.base = true;
     };
 
     home.packages = with pkgs; [
-      autotiling
       bemenu # ui
       gammastep
       grim
@@ -218,7 +251,6 @@ in {
       wev
       wf-recorder # screen recorder
       wl-clipboard
-      wmfocus # window picker
       xwayland
     ];
   };

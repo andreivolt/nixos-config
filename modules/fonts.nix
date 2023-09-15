@@ -5,17 +5,21 @@
     ./input-fonts.nix
   ];
 
+  nixpkgs.config.joypixels.acceptLicense = true;
+
   # TODO
   # fonts.fontconfig.defaultFonts = {
   #   monospace = [ "Source Code Pro" ];
   #   sansSerif = [ "Source Sans Pro" ];
   # };
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     cascadia-code
     # corefonts # TODO error
 
-    # joypixels # emoji
-    # nixpkgs.config.joypixels.acceptLicense = true;
+    joypixels # emoji
+    whatsapp-emoji-font
+    noto-fonts-emoji
+    twitter-color-emoji
 
     d2coding
     google-fonts

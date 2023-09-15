@@ -4,13 +4,23 @@
   home-manager.users.avo = {
     programs.mako = with (import (dirOf <nixos-config> + /modules/theme.nix)); {
       enable = true;
-      width = 500;
-      backgroundColor = "#00000050";
-      font = "${font.family} 16";
+      width = 800;
+      height = 9999;
+      backgroundColor = "#000000CC";
+      font = "${font.family} 28";
       layer = "overlay";
-      borderSize = 0;
+      borderSize = 1;
+      borderColor = "#00ff00";
       margin = "20";
       padding = "20";
+
+      extraConfig = ''
+        [app-name=tidal-hifi]
+        default-timeout=5000
+
+        [app-name=Spotify]
+        default-timeout=5000
+      '';
     };
 
     systemd.user.services.mako = {

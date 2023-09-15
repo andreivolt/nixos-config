@@ -169,6 +169,9 @@
       "nethogs"
       "nvm" # nodejs
       "dmd" # d compiler
+
+      "csvtk" # csv
+
       "pidof"
       "postgresql"
       "difftastic"
@@ -178,6 +181,9 @@
       "trash-cli"
       "util-linux" # setsid
       "blueutil" # bluetooth cli
+      "hear" # speech-to-text
+
+      "swift-quit" # automatically quit apps when last window closed
 
       "pushtotalk" # mic mute
       # "hgrep" # grep with syntax highlighting TODO
@@ -186,7 +192,7 @@
     ];
     # masApps = { Xcode = 497799835; };
     taps = [
-      "federico-terzi/espanso"
+      # "federico-terzi/espanso"
       "felixkratz/formulae"
       "homebrew/autoupdate"
       "homebrew/bundle"

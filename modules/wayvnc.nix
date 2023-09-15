@@ -9,7 +9,8 @@
       RemainAfterExit = true;
       PrivateNetwork = true;
       ExecStart = (pkgs.writeScript "netns-up" ''
-        #! ${pkgs.bash}/bin/bash
+        #!${pkgs.bash}/bin/bash
+
         ${pkgs.iproute}/bin/ip netns add $1
         ${pkgs.utillinux}/bin/umount /var/run/netns/$1
         ${pkgs.utillinux}/bin/mount --bind /proc/self/ns/net /var/run/netns/$1

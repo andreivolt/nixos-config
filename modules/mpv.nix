@@ -4,7 +4,10 @@
   home-manager.users.avo = { pkgs, ... }: {
     programs.mpv = {
       enable = true;
-      scripts = with pkgs.mpvScripts; [ mpris ];
+      scripts = with pkgs.mpvScripts; [
+        mpris
+        webtorrent-mpv-hook
+      ];
       config = {
         input-ipc-server = "/tmp/mpvsocket";
         geometry = "30%";

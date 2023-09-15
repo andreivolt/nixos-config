@@ -9,7 +9,7 @@ let
   imports = lib.mapAttrsToList toImport (lib.filterAttrs filterCaches (builtins.readDir folder));
 in {
   inherit imports;
-  nix.binaryCaches = [
+  nix.settings.substituters = [
     "https://nixpkgs-wayland.cachix.org"
     "https://nix-community.cachix.org"
     "https://cache.nixos.org/"
