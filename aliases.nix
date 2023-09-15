@@ -1,17 +1,19 @@
 rec {
   ".." = "cd ..";
 
-  exa = "exa --icons";
-
   # ls = "ls -F --human-readable --group-directories-first";
   lsd = "lsd --classify";
+
+  open = "xdg-open";
+  yt-dlp = "yt-dlp --cookies-from-browser firefox";
 
   ls = "lsd";
 
   # la = "ls -A"; # show hidden files except "." and ".."
-  la = "lsd --all"; # use exa
+  la = "lsd --all";
 
   ll = "ls -l";
+  lla = "ll --all";
   l = "ls -1";
 
   diff = "colordiff";

@@ -3,6 +3,10 @@
     "knockknock" # security
     "oversight" # security
 
+    "roon" # music player
+    # "audirvana" # music player
+    "warp"
+
     "blackhole-2ch" # virtual audio device
 
     "dash" # documentation
@@ -11,14 +15,16 @@
     # "deepl" # TODO
     # "launchbar" # launcher TODO
     "alacritty" # terminal
-    "discord"
-    "alt-tab"
-    "bartender" # hide menubar items
-    "sublime-text"
+    "discord" # chat
+    # "alt-tab" # window management
+    # "bartender" # hide menubar items
+    # "sublime-text" # text editor
+
+    "shortcat" # launcher
 
     "fork" # git gui
     "ears" # switch audio source
-    "spotify"
+    "spotify" # music player
 
     "android-commandlinetools"
     "android-file-transfer"
@@ -38,7 +44,7 @@
     "figma"
     "firefox"
     "polypane" # responsive browser
-    "little-snitch" # firewall
+    # "little-snitch" # firewall
     "slack"
     "flux" # color temperature
     "font-iosevka"
@@ -51,7 +57,7 @@
     "font-monofur-nerd-font"
     "font-roboto-mono-nerd-font"
     "font-victor-mono-nerd-font"
-    "foobar2000" # audio player
+    # "foobar2000" # music player
     "textual" # irc
     "genymotion" # android emulator
     "github"
@@ -72,7 +78,6 @@
     "mailmate" # email client
     "mpv" # video player
     # "odrive" # file sync TODO
-    "protonvpn" # vpn
     "proxyman" # inspect network traffic
     "qobuz" # music
     "raycast" # launcher

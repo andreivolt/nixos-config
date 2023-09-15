@@ -18,7 +18,10 @@ pkgs: with pkgs; [
   gawk
   gnugrep # gnu grep
   gnused # gnu sed
-  procps
+  # (procps.overrideAttrs (attrs: {
+  #   postInstall = attrs.postInstall + "\n"
+  #     + "rm $out/bin/top $out/share/man/man1/top.1";
+  # }))
   pstree
   util-linux
   watch

@@ -1,4 +1,5 @@
 pkgs: with pkgs; let
+  # nix-autobahn = callPackage /home/avo/nix-autobahn { };
   # vim = callPackage ./modules/vim { };
   # TODO
   # impbcopy = stdenv.mkDerivation rec {
@@ -11,6 +12,14 @@ pkgs: with pkgs; let
   #     find
   #   '';
   # };
+  ffsclient = callPackage /home/avo/gdrive/nixos-config-inspiration/somasis_nixos/pkgs/ffsclient { };
+
+  whatsapp = pkgs.writeShellScriptBin "whatsapp" ''
+    ${pkgs.google-chrome}/bin/google-chrome-stable \
+      --app=https://web.whatsapp.com \
+      --user-data-dir=$HOME/.config/google-chrome/whatsapp \
+      --start-fullscreen
+  '';
 
   url-parser = buildGoPackage rec {
     pname = "url-parser";
@@ -30,6 +39,49 @@ pkgs: with pkgs; let
     };
   };
 in ([
+  hyperfine # benchmark
+  gping
+  docker-compose
+  gdrive
+  iotop
+  gphotos-sync
+  iperf
+  catdoc
+  dnscontrol
+  macchanger
+  fx
+  bundix
+  broot
+  linode-cli
+  nyx
+  grive2
+  # chromium
+  chrome-export
+  projectm
+  procs
+  powertop
+  portaudio
+  parinfer-rust
+  # mlterm
+  nix-tree
+  dive
+  spotdl
+  slack
+  whatsapp-for-linux
+  whatsapp
+  xh
+  xscreensaver
+  unixtools.xxd
+  tidal-hifi
+  tokei
+  wego
+  sd
+  oci-cli
+  ocamlPackages.google-drive-ocamlfuse
+  remmina
+  speedread
+  gnutls
+
   act # GitHub actions simulator
   ansi2html
   ansifilter
@@ -52,8 +104,8 @@ in ([
   bun # JavaScript runtime
   cachix # nixos
   cargo # rust
-  castnow # chromecast
-  catt # chromecast
+  # castnow # chromecast
+  # catt # chromecast
   cdrtools # cd tools
   chafa # terminal images
   chromedriver
@@ -79,7 +131,6 @@ in ([
   # electrum TODO error
   emacs
   entr # file watcher
-  exa # ls
   # expect # terminal automation # TODO: bin/weather conflict
   fd # find alternative
   figlet
@@ -105,7 +156,7 @@ in ([
   gnumake
   gnupg
   go
-  go-chromecast # chromecast
+  # go-chromecast # chromecast # TODO broken
   gojq # jq alternative
   google-cloud-sdk # cloud
   googler # google search cli
@@ -141,7 +192,7 @@ in ([
   jq # json
   # jwhois # TODO bin/whois conflict
   # keybase # TODO error
-  kitty
+  kitty # terminal
   kubectl
   kubectx # kubernetes context switch
   kubernetes-helm
@@ -165,21 +216,20 @@ in ([
   meteor
   miller
   mkcert
-  mkchromecast # chromecast
+  # mkchromecast # chromecast
   monolith # web-archive
   mopidy
   moreutils # via overlay; moreutils parallel conflicts with GNU parallel # for vipe & vidir
   mosh # ssh
-  mpc-cli
-  mpc_cli # mpd
+  mpc-cli # mpd
   mtr # traceroute alternative
   mupdf # for mutool
   mutt
   navi # cheatsheet cli
-  ncdu # disk usage
+  # ncdu # disk usage
   neo-cowsay
-  neovim
-  # neovim-nightly TODO
+  # neovim
+  # neovim-nightly # TODO
   netcat # networking
   ngrep # networking
   ngrok
@@ -193,7 +243,6 @@ in ([
   nixfmt # code formatter, nix
   # nixops # cloud, nixos # TODO crashing build
   nixos-shell
-  nixpkgsUnstable.telegram-cli
   nixpkgsUnstable.yt-dlp # youtube
   nmap # network
   nodePackages.json
@@ -217,7 +266,7 @@ in ([
   pdftk # pdf manipulation
   perceptualdiff # image diff
   perl
-  pipe-viewer # youtube viewer
+  # pipe-viewer # youtube viewer
   play-with-mpv # TODO
   poppler_utils # pdf tools
   postgresql_14
@@ -227,7 +276,7 @@ in ([
   pup # extract content from HTML with CSS selectors
   pv # pipe viewer
   pwgen
-  python
+  # python
   python3
   # python3Packages.pip
   python3Packages.pipx # install & run Python packages in isolated environments
@@ -239,7 +288,7 @@ in ([
   redis
   remarshal
   ripgrep
-  ripgrep-all # grep PDFs etc.
+  # ripgrep-all # grep PDFs etc.
   rlwrap
   rnix-lsp # nix language server
   rq # TOML, CSV, JSON, YAML, etc.
@@ -254,13 +303,15 @@ in ([
   scrcpy # android
   sdcv
   selenium-server-standalone
-  semgrep # TODO fails on mac
+  # semgrep # TODO fails on mac
   shfmt # shell script formatter
-  siege
+  siege # http load testing
   socat
   solargraph # ruby
   sox
-  speedtest-cli
+
+  # speedtest-cli
+
   sqlite
   starship # shell prompt
   stderred
@@ -268,12 +319,12 @@ in ([
   sysz # systemd
   t # twitter
   tcpdump
-  terminal-notifier
+  # terminal-notifier # macos
   termtosvg
-  tesseract
+  # tesseract
   tesseract4 # ocr
   testdisk
-  (hiPrio texlive.combined.scheme-full)
+  # (hiPrio texlive.combined.scheme-full)
   # tg # telegram TODO
   tidyp
   tig # git
@@ -291,7 +342,7 @@ in ([
   url-parser
   urlscan
   urlwatch # monitor urls for changes
-  # vim
+  neovim
   vimpager # vim pager
   viu # terminal images
   vivid # ls colors
@@ -301,8 +352,8 @@ in ([
   weather
   # weechat # TODO
   wget
-  wireshark # network debugging
-  wkhtmltopdf
+  # wireshark # network debugging
+  # wkhtmltopdf
   wrk # http benchmarking
   xdg-utils
   xml2
@@ -313,7 +364,7 @@ in ([
   yarn-bash-completion # TODO
   yj # convert between YAML, TOML, JSON, and HCL
   youtube-dl
-  youtube-viewer
+  youtube-viewer # TODO broken?
   yq # yaml parsing
   ytfzf # youtube
   zip
@@ -334,8 +385,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   # (zathura.override { useMupdf = true; })
   acpi
   alot # email client
-  alsamixer
-  alsautils
+  alsa-utils
   appimage-run
   archivemount # mount archives
   binutils # strings etc.
@@ -345,24 +395,33 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   cog # webkit browser
   deadbeef # music player GUI
   dhcpcd
-  dip
+  rubyPackages.dip
   efibootmgr # uefi
   emote # emoji
   ethtool
   fatrace # file access events
   fbterm # framebuffer terminal
-  ffmpeg
-  firefox
+  ffmpeg-full
+  # (firefox-devedition-bin.override {
+  #   cfg.enableFXCastBridge = true;
+  #   cfg.speechSynthesisSupport = true;
+  # })
+  (latest.firefox-nightly-bin.override {
+    cfg.enableFXCastBridge = true;
+    cfg.speechSynthesisSupport = true;
+    cfg.forceWayland = true;
+  })
   freerdp
   fswebcam # webcam image capture
   fuseiso # mount iso
   glib.bin # gsettings
+  gcc
   google-chrome-dev
   (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
-  grab-site # web archive
+  # grab-site # web archive
   imv # image viewer
   inotify-tools # file watcher
-  ioquake3
+  # ioquake3
   # kepka # telegram
   libguestfs # guestfsmount
   libnotify # notify-send
@@ -373,7 +432,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   lshw
   lxqt.pavucontrol-qt
   mailcheck
-  meli # email client
+  # meli # email client
   neochat # matrix client
   neovide # vim, gui
   nethogs
@@ -393,7 +452,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   proxychains # SOCKS5 proxy
   psmisc
   pulseaudio # for pactl
-  qutebrowser
+  qutebrowser # browser
   rdrview # content extractor
   reptyr # reparent tty
   rofi-emoji # emoji
@@ -416,4 +475,74 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   xdragon # file drag-and-drop source/sink
   xsel
   zathura
+
+  nodePackages.peerflix
+  songrec # shazam
+  ydotool # automation
+  ffsclient
+  fast-cli # speed test
+  git-lfs # git large files
+  aichat # chatgpt
+  ariang # aria2
+  btop # top
+  castnow # chromecast
+  catt # chromecast
+  spotify
+
+  nushell
+  speedtest-rs
+  wezterm # terminal
+  # nix-autobahn
+
+  audacity
+  bcompare
+  chatblade # chatgpt
+  chatgpt-cli # chatgpt
+  # clang # TODO binutils collision
+  commit-mono # font
+  deep-translator
+  duf # disk usage
+  evemu
+  ff2mpv # firefox mpv
+  firefox_decrypt # firefox passwords
+  git-lfs
+  go-chromecast # chromecast
+  headset # music player
+  jamesdsp
+  libinput
+  libsixel
+  mbidled # TODO
+  mkchromecast
+  monero-cli
+  monitor # task manager
+  ncpamixer
+  ookla-speedtest
+  orjail # tor
+  pasystray
+  piper-tts
+  popcorntime
+  pulseaudio-dlna
+  python3Packages.aria2p
+  python3Packages.pip
+  rm-improved
+  shell_gpt # chatgpt
+  speechd # speech-dispatcher
+  streamlink
+  sway-launcher-desktop
+  swayr
+  swaytools # swayinfo
+  uget
+  ulauncher
+  vlc # video player
+  vopono
+  wireplumber
+  wlprop
+  wlrctl
+  xdg-user-dirs
+  yai # chatgpt
+  youtube-tui
+  ytmdesktop # youtube music
+  session-desktop
+  caprine-bin # facebook messenger
+  # ungoogled-chromium # browser
 ])

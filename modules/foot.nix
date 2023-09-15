@@ -2,8 +2,9 @@
   home-manager.users.avo = { pkgs, ...}: {
     programs.foot = let
       font = {
-        family = "PragmataPro for Powerline";
-        size = "12";
+        # family = "PragmataPro for Powerline";
+        family = "Ubuntu Mono";
+        size = "24";
       };
     in {
       enable = true;

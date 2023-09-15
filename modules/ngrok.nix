@@ -5,6 +5,6 @@ in {
   home-manager.users.avo = { pkgs, ... }: {
     home.packages = with pkgs; [ ngrok ];
 
-    home.file.".ngrok2/ngrok.yml".text = lib.generators.toYAML {} { inherit authtoken; };
+    home.file.".ngrok2/ngrok.yml".text = lib.generators.toYAML {} { inherit authtoken; version = "2"; };
   };
 }

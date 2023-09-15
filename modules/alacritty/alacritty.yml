@@ -85,7 +85,8 @@ font:
   normal:
     # family: Victor Mono Nerd Font
     # family: PragmataPro for Powerline
-    family: Iosevka Term
+    # family: Iosevka Term
+    family: Berkeley Mono
     # family: Ubuntu Mono Nerd Font
     # family: Roboto Mono
   size: 13

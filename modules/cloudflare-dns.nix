@@ -1,4 +1,4 @@
 {
   services.dnsmasq.enable = true;
-  services.dnsmasq.servers = [ "1.1.1.1" ];
+  services.dnsmasq.settings.server = [ "1.1.1.1" ];
 }

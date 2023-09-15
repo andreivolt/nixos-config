@@ -11,7 +11,6 @@ in {
     Unit = {
       PartOf = [ "sway-session.target" ];
       After = [ "sway-session.target" ];
-      ConditionEnvironment = [ "WAYLAND_DISPLAY" ];
     };
 
     Service.ExecStart = ''
