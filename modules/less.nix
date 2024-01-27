@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.home.sessionVariables
+  home-manager.users.andrei.home.sessionVariables
     .LESS = ''
       --RAW-CONTROL-CHARS \
       --LONG-PROMPT \

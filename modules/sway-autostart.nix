@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo = { pkgs, ... }: {
+  home-manager.users.andrei = { pkgs, ... }: {
     home.file.".zlogin".text = ''
       # if not running interactively, don't do anything
       [[ $- != *i* ]] && return

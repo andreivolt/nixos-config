@@ -7,7 +7,7 @@ in {
     # driSupport = true; # fix crash on restart
   };
 
-  home-manager.users.avo = { config, ... }: let
+  home-manager.users.andrei = { config, ... }: let
     startsway = pkgs.writeShellScriptBin "startsway" ''
       exec systemd-cat --identifier sway \
         sway --debug

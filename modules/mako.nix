@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  home-manager.users.avo = {
+  home-manager.users.andrei = {
     programs.mako = with (import (dirOf <nixos-config> + /modules/theme.nix)); {
       enable = true;
       width = 800;
@@ -42,7 +42,7 @@
       # wantedBy = [ "sway-session.target" ];
       # after = [ "sway-session.target" ];
       # restartTriggers = [
-      #   config.home-manager.users.avo.xdg.configFile."mako/config".source
+      #   config.home-manager.users.andrei.xdg.configFile."mako/config".source
       # ];
     };
   };

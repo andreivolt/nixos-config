@@ -3,7 +3,7 @@
 {
   environment.variables.DELTA_PAGER = "less -R";
 
-  home-manager.users.avo.programs.git = {
+  home-manager.users.andrei.programs.git = {
     enable = true;
     package = lib.hiPrio pkgs.gitFull; # git-with-svn collision
     aliases = {
@@ -37,7 +37,7 @@
     ];
   };
 
-  # home-manager.users.avo = { pkgs, config, ... }: {
+  # home-manager.users.andrei = { pkgs, config, ... }: {
   #   home.file.".gitconfig".text = lib.generators.toINI { } {
   #     user.name = "Andrei Volt";
   #     user.email = "andrei@avolt.net";

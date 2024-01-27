@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.programs.mpv.config = {
+  home-manager.users.andrei.programs.mpv.config = {
     hwdec = "auto-safe";
     vo = "gpu";
     profile = "gpu-hq";

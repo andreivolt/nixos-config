@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.programs.starship = {
+  home-manager.users.andrei.programs.starship = {
     enable = true;
     enableZshIntegration = true;
     settings = {

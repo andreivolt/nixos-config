@@ -3,7 +3,7 @@
 let
   theme = import (dirOf <nixos-config> + /modules/theme.nix);
 in {
-  home-manager.users.avo.programs.tmux = {
+  home-manager.users.andrei.programs.tmux = {
     enable = true;
     escapeTime = 0;
     prefix = "C-a";

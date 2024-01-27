@@ -6,128 +6,110 @@
 
     ./cachix.nix
 
-    ./modules/fingerprint-unlock.nix
-
-    ./modules/adb.nix # linux
     # ./modules/adblock.nix
-    ./modules/dict.nix # linux
+    # ./modules/chrome
+    # ./modules/cloudflare-dns.nix # nixos
+    # ./modules/dropbox.nix
+    # ./modules/emacs.nix
+    # ./modules/foot.nix # terminal
+    # ./modules/gebaard.nix
+    # ./modules/insync.nix
+    # ./modules/ipfs.nix
+    # ./modules/kdeconnect.nix
+    # ./modules/keybase-sync.nix
+    # ./modules/map-test-tld-to-localhost.nix
+    # ./modules/networkmanager-iwd.nix
+    # ./modules/plymouth.nix # boot animations
+    # ./modules/tmux.nix
+    # ./modules/weechat-matrix.nix
+    # ./modules/wireguard.nix
+    # ./modules/wl-clipboard-x11.nix
+    ./modules/adb.nix # linux
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
     ./modules/bat.nix
-    ./modules/nextdns.nix
-    ./modules/npm.nix
-    # ./modules/chrome
-    ./modules/nix.nix
-    ./modules/fbterm.nix # linux
-    ./modules/flatpak.nix # linux
-    ./modules/vim-as-manpager.nix
     ./modules/clipman.nix # linux
-    ./modules/disable-ipv6.nix # linux
     ./modules/clojure
     ./modules/clojure/boot
     ./modules/clojure/rebel-readline.nix
-    # ./modules/cloudflare-dns.nix # nixos
     ./modules/command-not-found.nix
     ./modules/cuff.nix # torrent search cli # nixos
     ./modules/curl.nix
+    ./modules/cursor.nix
+    ./modules/dict.nix # linux
     ./modules/direnv.nix
+    ./modules/disable-ipv6.nix # linux
     ./modules/docker.nix
-    # ./modules/dropbox.nix
-    # ./modules/emacs.nix
+    ./modules/fbterm.nix # linux
+    ./modules/fingerprint-unlock.nix
     ./modules/firefox-wayland.nix
     ./modules/flashfocus.nix
+    ./modules/flatpak.nix # linux
     ./modules/fonts.nix
-    # ./modules/foot.nix # terminal
     ./modules/git.nix
     ./modules/github.nix
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
     ./modules/grep.nix
-    # ./modules/gebaard.nix
     ./modules/gtk.nix
     ./modules/hardware-video-acceleration.nix
     ./modules/hardware-video-acceleration/mpv.nix
     ./modules/hidpi/console.nix
     ./modules/hidpi/gnome.nix # TODO: dconf needed?
     ./modules/hidpi/qt.nix
-    ./modules/qt.nix
     ./modules/himalaya.nix # email client
-    # ./modules/insync.nix
-    # ./modules/ipfs.nix
-    # ./modules/kdeconnect.nix
     ./modules/keybase-files.nix
-    # ./modules/keybase-sync.nix
     ./modules/keybase.nix
     ./modules/less.nix
     ./modules/libvirt.nix
     ./modules/locate.nix
     ./modules/lowbatt.nix
     ./modules/mako.nix
-    # ./modules/map-test-tld-to-localhost.nix
     ./modules/matrix-cli.nix
     ./modules/mdns.nix
     ./modules/mopidy.nix
     ./modules/moreutils-without-parallel.nix
     ./modules/mpv.nix
-    # ./modules/networkmanager-iwd.nix
     ./modules/networkmanager.nix
+    ./modules/nextdns.nix
     ./modules/ngrok.nix
     ./modules/nix-ld.nix
+    ./modules/nix.nix
+    ./modules/npm.nix
     ./modules/pipewire.nix
     ./modules/play-with-mpv.nix
-    # ./modules/plymouth.nix # boot animations
     ./modules/printing.nix
+    ./modules/qt.nix
     ./modules/readline/inputrc.nix
     ./modules/ripgrep.nix
     ./modules/scanning.nix
+    ./modules/spotifyd.nix
     ./modules/sway-autorotate-screen.nix
     ./modules/sway-autostart.nix
     ./modules/sway.nix
     ./modules/swayidle.nix
     ./modules/swaylock.nix
     ./modules/tailscale.nix
-    # ./modules/tmux.nix
     ./modules/tor.nix
     ./modules/v4l2loopback.nix
+    ./modules/vim-as-manpager.nix
     ./modules/virtualbox-host.nix
-    ./modules/cursor.nix
-    ./modules/wayland.nix
     ./modules/wayland-qt.nix
-    # ./modules/wl-clipboard-x11.nix
+    ./modules/wayland.nix
     ./modules/wayvnc.nix
-    # ./modules/weechat-matrix.nix
     ./modules/weechat.nix
-    # ./modules/wireguard.nix
     ./modules/wob.nix
     ./modules/xdg-portals.nix
     ./modules/zsh/functions.nix
     ./modules/zsh/fzf.nix
-    ./modules/zsh/starship.nix
     ./modules/zsh/prompt.nix
+    ./modules/zsh/starship.nix
     ./modules/zsh/vi.nix
-    ./modules/spotifyd.nix
 
     <home-manager/nixos>
   ];
 
   networking.hostName = builtins.getEnv "HOSTNAME";
-
-  networking.nftables.enable = true;
-
-  networking.nftables.ruleset = ''
-    table inet mullvad-ts {
-      chain prerouting {
-        type filter hook prerouting priority -100; policy accept;
-        ip saddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-      }
-
-      chain outgoing {
-        type route hook output priority -100; policy accept;
-        meta mark 0x80000 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-        ip daddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-      }
-    }
-  '';
 
   services.sshd.enable = true;
 
@@ -173,9 +155,6 @@
     nixpkgsUnstable
     firefoxNightly
     (import ./packages)
-    # (import (builtins.fetchTarball {
-    #   url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz;
-    # }))
     (self: super: {
       fcitx-engines = pkgs.fcitx5;
     })
@@ -192,6 +171,8 @@
     shell = pkgs.zsh;
     extraGroups = [ "wheel" ];
   };
+
+  environment.localBinInPath = true;
 
   home-manager.users.avo = { pkgs, ... }: rec {
     nixpkgs.overlays = config.nixpkgs.overlays;
@@ -214,7 +195,7 @@
     };
 
     home.sessionPath = [
-      "$HOME/gdrive/bin"
+      "$HOME/drive/bin"
       "$HOME/.local/bin"
       "$HOME/go/bin"
       (builtins.toString ./bin)
@@ -273,32 +254,7 @@
     programs.zsh.enable = true; # TODO
     # programs.zsh.enableSyntaxHighlighting = true;
 
-    # edit without rebuilding
-    programs.zsh.initExtra = ''
-      # trigger completion on globbing
-      setopt glob_complete
-
-      # remove extraneous spaces from saved commands
-      setopt hist_reduce_blanks
-
-      # show menu when completing
-      zstyle ':completion:*' menu select
-
-      # automatically update PATH
-      zstyle ':completion:*' rehash true
-
-      # automatically add directories to the directory stack
-      setopt auto_pushd
-
-      # # set terminal title
-      # source ${./modules/zsh/terminal-title.zsh}
-
-      # case-insensitive completion
-      zstyle ':completion:*' matcher-list ''' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-      # autoload -Uz compinit && compinit
-
-      source ~/.zshrc.extra.zsh;
-    '';
+    programs.zsh.initExtra = "source ~/.zshrc.extra.zsh;";
 
     programs.zsh.plugins = with pkgs; [
       {
@@ -332,10 +288,6 @@
       extended = true;
       # path = ".cache/zsh_history";
     };
-
-    programs.zsh.shellAliases = import ./aliases.nix;
-
-    programs.zsh.shellGlobalAliases = import ./modules/zsh-global-aliases.nix;
   };
 
   services.lowbatt = {
@@ -353,12 +305,7 @@
 
   programs.mosh.enable = true;
 
-  services.mullvad-vpn.enable = true;
-  services.mullvad-vpn.package = pkgs.mullvad-vpn;
-
   services.gvfs.enable = true;
 
   # programs.noisetorch.enable = true; # mic noise suppression
-
-  networking.interfaces.enp60s0u2u1.wakeOnLan.enable = true;
 }

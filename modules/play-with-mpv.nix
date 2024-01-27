@@ -1,7 +1,7 @@
 { pkgs, ...}:
 
 {
-  home-manager.users.avo = { pkgs, ... }: {
+  home-manager.users.andrei = { pkgs, ... }: {
     systemd.user.services.play-with-mpv = {
       Unit = {
         PartOf = [ "sway-session.target" ];

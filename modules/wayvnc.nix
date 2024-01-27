@@ -19,7 +19,7 @@
     };
   };
 
-  home-manager.users.avo = { pkgs, ... }: {
+  home-manager.users.andrei = { pkgs, ... }: {
     home.packages = with pkgs; [ wayvnc ];
 
     systemd.user.services.wayvnc = {

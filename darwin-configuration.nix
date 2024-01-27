@@ -3,96 +3,83 @@
 {
   imports =
     [<home-manager/nix-darwin>] ++ [
-      # ./modules/gnupg.nix # TODO
+      # ./modules/mac_postgres.nix
       # ./modules/ngrok.nix # TODO
-      ./modules/alacritty/alacritty.nix
-      ./modules/aria2.nix
       ./modules/bat.nix
-      ./modules/clojure # TODO
+      ./modules/clojure
       ./modules/clojure/boot
       ./modules/clojure/rebel-readline.nix
       ./modules/command-not-found.nix
       ./modules/curl.nix
       ./modules/direnv.nix
-      # ./modules/fonts.nix
+      # ./modules/git.nix
+      ./modules/hub.nix
       ./modules/grep.nix
+      # ./modules/htu_autobackup.nix
       ./modules/less.nix
       ./modules/mac_apps-gui.nix
       ./modules/mac_dock.nix
+      ./modules/mac_finder.nix
+      ./modules/mac_fonts.nix
       ./modules/mac_ipfs.nix
+      ./modules/mac_keyboard.nix
       ./modules/mac_map-caps-to-esc.nix
       ./modules/mac_map-test-tld-to-localhost.nix
       ./modules/mac_nginx.nix
-      ./modules/mac_postgres.nix
       ./modules/mac_screenshots.nix
+      ./modules/mac_trackpad.nix
       ./modules/moreutils-without-parallel.nix
       ./modules/nix.nix
+      ./modules/playwright.nix
       ./modules/readline/inputrc.nix
       ./modules/ripgrep.nix
       ./modules/ruby.nix
       ./modules/vim-as-manpager.nix
       ./modules/zsh-autosuggest.nix
+      ./modules/zsh/fzf.nix
     ] ++ [./macos-defaults.nix];
 
-  services.lorri.enable = true; # nix direnv
+  networking.hostName = "mac";
 
-  services.redis.enable = true;
+  # programs.gnupg.agent.enable
+  # programs.gnupg.agent.enableSSHSupport
 
-  users.users.avo = {
-    name = "avo";
-    home = "/Users/avo";
+  # environment.shellInit = ''
+  #   export PATH="$HOME/.local/bin:$PATH"
+  # '';
+
+  users.users.andrei = {
+    name = "andrei";
+    home = "/Users/andrei";
   };
 
+  services.lorri.enable = true; # Nix direnv
+
   system.defaults.NSGlobalDomain = {
-    "com.apple.trackpad.enableSecondaryClick" = true;
-    "com.apple.trackpad.trackpadCornerClickBehavior" = 1;
-
+    "com.apple.sound.beep.feedback" = 0; # feedback sound when system volume changes
+    # "com.apple.sound.beep.volume" = 0.5;
+    # _HIHideMenuBar = true; # autohide menu bar
     AppleFontSmoothing = 0;
-
+    AppleInterfaceStyle = "Dark";
+    AppleKeyboardUIMode = 3; # enable full keyboard access for controls
+    AppleScrollerPagingBehavior = true; # jump to the spot that's clicked on the scroll bar
     AppleShowAllExtensions = true;
-
     AppleShowScrollBars = "Always";
-
     NSNavPanelExpandedStateForSaveMode = true;
-
-    # autohide menu bar
-    _HIHideMenuBar = true;
-
-    ApplePressAndHoldEnabled = false;
-    InitialKeyRepeat = 15;
-    KeyRepeat = 2;
   };
 
   # system.defaults.universalaccess.reduceTransparency = true; # TODO
 
-  system.defaults.trackpad = {
-    TrackpadRightClick = true;
-    Clicking = true;
-  };
+  # home-manager.users.avo = import ./modules/zsh.nix;
 
-  system.defaults.finder = {
-    AppleShowAllExtensions = true;
-    FXEnableExtensionChangeWarning = false;
-  };
-
-  # system.keyboard.swapLeftCommandAndLeftAlt = true; # TODO
-
-  home-manager.users.avo = import ./modules/zsh.nix;
+  home-manager.useGlobalPkgs = true; # Use the global pkgs that is configured via the system level nixpkgs options. This saves an extra Nixpkgs evaluation, adds consistency, and removes the dependency on NIX_PATH, which is otherwise used for importing Nixpkgs.
 
   environment.systemPackages =
-    with pkgs; let
-      comma = (import (fetchFromGitHub {
-        owner = "nix-community";
-        repo = "comma";
-        rev = "v1.2.0";
-        sha256 = "fZ/Rb//cVZBgQ99/vbs7BcFn+qO6D077lTrZAWR7b/Q=";
-      })).default;
-    in
-      [
-        Hyperbeam # cobrowsing
-      ] ++
-      (import /Users/avo/drive/nixos-config/packages.nix pkgs) ++
-      (import /Users/avo/drive/nixos-config/modules/mac_packages.nix pkgs);
+    with pkgs; [
+      PrettyClean
+      # WriteMage
+    ] ++
+    (import "/Users/andrei/drive/nixos-config/packages.nix" pkgs);
 
   nixpkgs.config.allowUnfree = true;
 
@@ -105,23 +92,20 @@
   in [
     (import ./mac-apps.nix)
     nixpkgsUnstable
-    (import (builtins.fetchTarball {
-      url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz;
-    }))
   ];
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
-  # programs.zsh.enableFzfHistory = true;
+  programs.zsh.enableFzfHistory = true;
   programs.zsh.enableFzfGit = true;
   # programs.zsh.enableFzfCompletion = true;
   # programs.zsh.enableBashCompletion = true;
 
   programs.zsh.enableCompletion = false;
   # home-manager.users.avo.programs.zsh.enableCompletion = false;
-  programs.zsh.interactiveShellInit = builtins.readFile ~/.zsh.d/compinit-speed-fix.zsh;
+  # programs.zsh.interactiveShellInit = builtins.readFile ~/.zsh.d/compinit-speed-fix.zsh;
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
@@ -129,9 +113,12 @@
 
   homebrew = {
     enable = true;
-    onActivation.cleanup = "zap";
-    onActivation.autoUpdate = true;
-    onActivation.upgrade = true;
+    # global.brewfile = true;
+    onActivation = {
+      cleanup = "zap";
+      autoUpdate = true;
+      upgrade = true;
+    };
     # TODO alfred
     # TODO amphetamine
     # TODO contexts
@@ -144,74 +131,128 @@
     # TODO oni2
     # TODO piknik
     # TODO pyenv
-    # TODO quicksilver
     # TODO statsd
     # TODO taiko
+    masApps = {
+      "FBReader: ePub and fb2 reader" = 1067172178;
+      "1Blocker" = 1365531024;
+      "AdGuard for Safari" = 1440147259;
+      "Archive Page Extension" = 6446372766;
+      "darker" = 1637413102; # Safari dark mode
+      "Hush" = 1544743900;
+      "Hyperduck" = 6444667067;
+      "Jiffy" = 1502527999; # GIF search in menu bar
+      "Nitefall" = 1575190591; # Safari dark mode
+      "Shareful" = 1522267256;
+      "Slack for Desktop" = 803453959;
+      "Super Agent" = 1568262835;
+      "Tailscale" = 1475387142;
+      "TestFlight" = 899247664;
+      "Vimari" = 1480933944; # Safari Vim
+      "Xcode" = 497799835;
+      # "Actions" = 1586435171; # additional actions for the Shortcuts app
+      # "Battery Indicator" = 1206020918;
+      # "Black Out" = 1319884285; # redact parts of an image
+      # "Camera Preview" = 1632827132;
+      # "Command X" = 6448461551;
+      # "Day Progress" = 6450280202;
+      # "Lungo" = 1263070803; # keep awake
+      # "MetaMask - Blockchain Wallet" = 1438144202;
+      # "Noir – Dark Mode for Safari" = 1592917505;
+      # "One Task" = 6465745322;
+      # "Recordia" = 1529006487; # quickly record audio
+      # "SingleFile for Safari" = 6444322545;
+      # "Speediness" = 1596706466; # internet speed test
+      # "System Color Picker" = 1545870783;
+      # "Velja" = 1607635845;# browser picker
+    };
 
     brews= [
-      "ffmpeg"
-      "jqp"
+      "aichat" # ChatGPT
       "alerter" # notifications cli
-      "brightness" # macos brigthness cli
-      "browser" # pipe html to browser
-      "darksky-weather" # weather cli
-      "docker-completion"
-      "federico-terzi/espanso/espanso" # TODO
-      "felixkratz/formulae/svim" # macos vim everywhere
-      # "fig" # terminal completion TODO
-      "imagemagick@6"
-      "ipfs"
-      "iproute2mac"
-      "jakehilborn/jakehilborn/displayplacer"
-      "libyaml" # ruby
-      "lua-language-server" # lua lsp
-      "mupdf" # pdf viewer
-      "nethogs"
-      "nvm" # nodejs
-      "dmd" # d compiler
-
-      "csvtk" # csv
-
-      "pidof"
-      "postgresql"
+      "amazon-ecs-cli"
+      "asitop" # performance monitoring for Apple silicon
+      "b2-tools" # Backblaze
+      "blueutil" # bluetooth CLI
+      "borkdude/brew/jet"
+      "brightness" # macOS brigthness CLI
+      "browser" # pipe HTML to browser
+      "csvtk" # CSV
+      "detox" # clean up filenames
       "difftastic"
-      "robotsandpencils/made/xcodes"
-      "switchaudio-osx"
-      "m-cli" # macos cli
-      "trash-cli"
-      "util-linux" # setsid
-      "blueutil" # bluetooth cli
-      "hear" # speech-to-text
-
-      "swift-quit" # automatically quit apps when last window closed
-
+      "docker-completion"
+      "ffmpeg"
+      "img2pdf"
+      "ipfs"
+      "jakehilborn/jakehilborn/displayplacer"
+      "jqp"
+      "launch" # CLI launcher
+      "libiconv"
+      "lua-language-server" # Lua LSP
+      "m-cli" # macOS system CLI
+      "nethogs"
+      "node"
+      "nvm"
+      "ocrmypdf"
+      "pidof"
+      "pkgxdev/made/pkgx" # Nix
+      "postgresql"
       "pushtotalk" # mic mute
-      # "hgrep" # grep with syntax highlighting TODO
+      "qsv" # ultra-fast csv toolkit
+      "schappim/ocr/ocr"
+      "switchaudio-osx"
+      "util-linux" # setsid
+      "viddy" # notifications CLI
       # "askgitdev/treequery/treequery" # TODO
+      # "espanso" # TODO
+      # "ext4fuse" # TODO
+      # "felixkratz/formulae/svim" # macos vim everywhere
+      # "fig" # terminal completion TODO
+      # "hgrep" # grep with syntax highlighting TODO
       # "withgraphite/tap/graphite"
     ];
-    # masApps = { Xcode = 497799835; };
     taps = [
-      # "federico-terzi/espanso"
-      "felixkratz/formulae"
-      "homebrew/autoupdate"
+      "schappim/ocr"
+      "borkdude/brew"
       "homebrew/bundle"
-      "homebrew/cask"
       "homebrew/cask-fonts"
       "homebrew/cask-versions"
       "homebrew/command-not-found"
-      "homebrew/core"
       "homebrew/services"
       "jakehilborn/jakehilborn"
-      "mopidy/mopidy"
-      "robotsandpencils/made"
-      "withgraphite/tap"
       "noahgorstein/tap" # jqp
+      "pkgxdev/made"
       "yulrizka/tap" # pushtotalk
+      # "federico-terzi/espanso"
+      # "felixkratz/formulae" # svim
+      # "mopidy/mopidy"
+      # "withgraphite/tap"
     ];
     extraConfig = ''
       brew "tor", restart_service: true
-      brew "mopidy/mopidy/mopidy", args: ["HEAD"]
+      # brew "mopidy/mopidy/mopidy", args: ["HEAD"]
     '';
   };
+
+  home-manager.users.andrei = { pkgs, ... }: rec {
+    home.stateVersion = "23.11";
+
+    home.file.".duti" = {
+      text = ''
+        com.colliderli.iina webm all
+        com.colliderli.iina aac all
+        com.colliderli.iina mp4 all
+        com.mimestream.Mimestream mailto
+      '';
+      onChange = "${pkgs.duti}/bin/duti ~/.duti";
+    };
+
+    programs.zsh.enableCompletion = false;
+    programs.zsh.enable = true; # TODO
+    programs.zsh.defaultKeymap = "viins";
+
+    programs.zsh.initExtra = "source ~/.zshrc.extra.zsh;";
+  };
+
+  environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
 }

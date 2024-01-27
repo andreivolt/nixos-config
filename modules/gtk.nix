@@ -1,7 +1,7 @@
 let
   font = "Ubuntu";
 in {
-  home-manager.users.avo.gtk = {
+  home-manager.users.andrei.gtk = {
     enable = true;
     theme.name = "Breeze-Dark";
     # theme = {

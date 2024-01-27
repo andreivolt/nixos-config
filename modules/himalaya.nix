@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  home-manager.users.avo.programs.himalaya = {
+  home-manager.users.andrei.programs.himalaya = {
     enable = true;
     # package = with pkgs; himalaya.overrideAttrs (oldAttrs: rec {
     #   src = fetchFromGitHub {

@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo = { pkgs, ...}: {
+  home-manager.users.andrei = { pkgs, ...}: {
     programs.foot = let
       font = {
         # family = "PragmataPro for Powerline";

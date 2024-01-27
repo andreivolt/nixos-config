@@ -1,111 +1,110 @@
 {
+  homebrew.caskArgs.no_quarantine = true;
+  # homebrew.caskArgs.require_sha = true;
+
   homebrew.casks = [
-    "knockknock" # security
-    "oversight" # security
-
-    "roon" # music player
-    # "audirvana" # music player
-    "warp"
-
-    "blackhole-2ch" # virtual audio device
-
-    "dash" # documentation
-    "mutify" # mic mute
-
-    # "deepl" # TODO
-    # "launchbar" # launcher TODO
-    "alacritty" # terminal
-    "discord" # chat
-    # "alt-tab" # window management
-    # "bartender" # hide menubar items
-    # "sublime-text" # text editor
-
-    "shortcat" # launcher
-
-    "fork" # git gui
-    "ears" # switch audio source
-    "spotify" # music player
-
     "android-commandlinetools"
-    "android-file-transfer"
-    "android-platform-tools" # adb
-    "audacity"
-    "basecamp"
+    "battery" # battery charge limiter
+    "beeper" # multi-service messenger
+    "blackhole-2ch" # virtual audio device
     "caffeine" # inhibit sleep
-    "cheatsheet" # show keybindings command key hold
     "choosy" # rules for opening url with different browsers
-    "chromedriver"
-    "cloudapp" # screenshots
-    "coscreen" # bidirectional screen sharing
-    # "wireshark" # TODO
     "cursorcerer" # autohide cursor
-    "dozer" # hide menubar items
-    "dropbox" # file sync
+    "discord"
     "figma"
     "firefox"
-    "polypane" # responsive browser
-    # "little-snitch" # firewall
-    "slack"
-    "flux" # color temperature
-    "font-iosevka"
-    "font-hasklug-nerd-font"
-    "font-iosevka-nerd-font"
-    "font-source-code-pro-for-powerline"
-    "font-fira-code-nerd-font"
-    "font-fira-mono-nerd-font"
-    "font-jetbrains-mono-nerd-font"
-    "font-monofur-nerd-font"
-    "font-roboto-mono-nerd-font"
-    "font-victor-mono-nerd-font"
-    # "foobar2000" # music player
-    "textual" # irc
-    "genymotion" # android emulator
-    "github"
-    "gitify" # github notifications
-    "google-drive" # file sync
+    "flux"
+    "google-chrome"
+    "google-drive"
+    "grandperspective" # disk usage visualizer
     "hammerspoon" # desktop automation
     "iina" # video player
-    "inkscape"
-    "ioquake3" # games
     "jumpcut" # clipboard manager
-    "karabiner-elements"
-    "keepingyouawake" # inhibit sleep
     "keycastr" # show keys
-    "kindavim" # macos vim everywhere
     "kitty" # terminal
-    "libreoffice"
-    "macfuse" # filesystems
-    "mailmate" # email client
-    "mpv" # video player
-    # "odrive" # file sync TODO
+    "macfuse" # FUSE filesystems
+    "mimestream" # email client
+    "muzzle" # silence notifications when screensharing
+    "orbstack" # Docker
     "proxyman" # inspect network traffic
-    "qobuz" # music
-    "raycast" # launcher
-    "seaglass" # matrix client
-    "neovide" # vim
-    "signal" # messaging
-    "sizzy" # responsive browser
-    "steam" # games
-    "tableplus" # db GUI
+    "rectangle" # window snap tile
+    "sloth" # lsof GUI
+    "spotify"
+    "steam"
+    "sublime-text"
     "telegram" # messaging
     "tidal" # music
-    "ukelele" # keyboard layout
-    "unified-remote" # remote control
-    "virtualbox" # virtualization
-    "visual-studio-code"
-    "vlc" # video player
-    "vysor" # remote ios/android
-    "webtorrent"
     "tor-browser"
-    "yo"
+    "visual-studio-code"
+    "whatsapp"
+    # "alfred" # launcher
+    # "alt-tab" # window management
+    # "android-file-transfer"
+    # "audacity" # audio editor
+    # "audirvana" # music player
+    # "bettertouchtool"
+    # "blender"
+    # "brave-browser"
+    # "cheatsheet" # show keybindings command key hold
+    # "cleanmymac"
+    # "cloudapp" # screenshots
+    # "contexts" # window switcher
+    # "cord" # Windows remote desktop
+    # "coscreen" # bidirectional screen sharing
+    # "daisydisk" # disk usage visualizer
+    # "dash" # documentation
+    # "deepl" # TODO
+    # "dropbox" # file sync
+    # "ears" # switch audio input/output with keyboard
+    # "foobar2000" # music player
+    # "fork" # Git GUI
+    # "genymotion" # Android emulator
+    # "github"
+    # "gitify" # GitHub notifications
+    # "gitkraken" "gitkraken-cli"
+    # "hiddenbar" # hide menubar items
+    # "hot" # CPU temperature
+    # "inkscape"
+    # "ioquake3"
+    # "karabiner-elements" # keyboard shortcuts
+    # "keepingyouawake" # inhibit sleep
+    # "kindavim" # Vim keybinds everywhere
+    # "knockknock" # anti-malware
+    # "lapce"
+    # "launchbar" # launcher TODO
+    # "libreoffice"
+    # "little-snitch" # firewall
+    # "mailmate" # email client
+    # "miniconda" # python environments
+    # "mpv" # video player
+    # "mupdf" # pdf viewer # TODO crash
+    # "mutify" # mic mute
+    # "neovide" # Neovim GUI
+    # "odrive" # file sync TODO
+    # "parsec" # remote desktop
+    # "polypane" # responsive browser
+    # "qobuz" # music
+    # "raycast" # launcher
+    # "rocket" # emoji picker
+    # "roon" # music player
+    # "shortcat" # launcher
+    # "signal"
+    # "sizzy" # responsive browser
+    # "soundsource" # per application audio control
+    # "stats"
+    # "sublime-text" # text editor
+    # "swift-quit" # automatically quit apps when last window closed
+    # "tableplus" # db GUI
+    # "tailscale" # TODO services.tailscale
+    # "textual" # IRC
     # "tuple" # bidirectional screen sharing # TODO
-    # "google-chrome" # TODO
-    # "tailscale" # TODO
-    "arctype" # db GUI # TODO
-    "mimestream" # email
-    "grandperspective" # disk usage
-    "muzzle" # silence notifications when screensharing
-    "rectangle" # window snap tile
-    "wickrme"
+    # "ukelele" # keyboard layout
+    # "unified-remote" # remote control
+    # "utm" # virtual machines
+    # "vlc" # video player
+    # "vysor" # remote ios/android
+    # "warp" # terminal
+    # "webtorrent"
+    # "wireshark" # TODO
   ];
 }

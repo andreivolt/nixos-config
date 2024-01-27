@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo = { pkgs, config, ... }: {
+  home-manager.users.andrei = { pkgs, config, ... }: {
     services.kdeconnect.enable = true;
 
     home.packages = with pkgs; [ kdeconnect ];

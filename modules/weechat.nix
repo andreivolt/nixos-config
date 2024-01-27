@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  home-manager.users.avo.home.packages = with pkgs; [
+  home-manager.users.andrei.home.packages = with pkgs; [
     (weechat.override {
       configure = { availablePlugins, ... }: {
         init = ''
