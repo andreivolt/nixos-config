@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.xdg.configFile."matrixcli/config.py".text = ''
+  home-manager.users.andrei.xdg.configFile."matrixcli/config.py".text = ''
     def password_eval():
         return "${builtins.getEnv "MATRIX_PASSWORD"}"
 

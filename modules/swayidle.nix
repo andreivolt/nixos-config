@@ -7,7 +7,7 @@ let
     suspend = "7200";
   };
 in {
-  home-manager.users.avo.systemd.user.services.swayidle = {
+  home-manager.users.andrei.systemd.user.services.swayidle = {
     Unit = {
       PartOf = [ "sway-session.target" ];
       After = [ "sway-session.target" ];

@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.home.file.".curlrc".text = ''
+  home-manager.users.andrei.home.file.".curlrc".text = ''
     silent
   '';
 }

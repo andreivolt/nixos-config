@@ -1,4 +1,4 @@
 {
-  home-manager.users.avo.home.sessionVariables
+  home-manager.users.andrei.home.sessionVariables
     .GREP_COLORS = "1"; # color matches yellow
 }

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  home-manager.users.avo.systemd.user = {
+  home-manager.users.andrei.systemd.user = {
     sockets.wob = {
       Socket = {
         ListenFIFO = "%t/wob.sock";

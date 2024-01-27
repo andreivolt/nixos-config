@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.programs.zsh.initExtra = ''
+  home-manager.users.andrei.programs.zsh.initExtra = ''
     source ${./vi.zsh}
   '';
 }

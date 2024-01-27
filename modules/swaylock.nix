@@ -34,7 +34,7 @@
   };
 
     # playerctl -a pause
-    # home-manager.users.avo.systemd.user.services.swaylock = {
+    # home-manager.users.andrei.systemd.user.services.swaylock = {
     #   Service = {
     #     ExecStart = "${pkgs.swaylock}/bin/swaylock -f -c 000000";
     #     ExecStartPost = "${pkgs.coreutils}/bin/sleep 1";

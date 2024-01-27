@@ -10,6 +10,6 @@
 
   users.users.avo.extraGroups = [ "ipfs" ];
 
-  # home-manager.users.avo
+  # home-manager.users.andrei
   #   .home.sessionVariables.IPFS_PATH = "/var/lib/ipfs/.ipfs";
 }

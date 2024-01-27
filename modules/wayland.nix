@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo = { pkgs, ... }: {
+  home-manager.users.andrei = { pkgs, ... }: {
     home.packages = with pkgs; [
       wtype # typing automation
     ];

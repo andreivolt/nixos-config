@@ -15,6 +15,6 @@
     after = [ "sway-session.target" ];
   };
 
-  home-manager.users.avo.home.packages = with pkgs; [ clipman ];
+  home-manager.users.andrei.home.packages = with pkgs; [ clipman ];
 }
 

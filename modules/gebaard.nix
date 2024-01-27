@@ -3,7 +3,7 @@
 {
   users.users.avo.extraGroups = [ "input" ];
 
-  home-manager.users.avo = { pkgs, ... }: {
+  home-manager.users.andrei = { pkgs, ... }: {
     systemd.user.services.gebaard = {
       Unit = {
         After = [ "sway-session-pre.target" ];
@@ -12,7 +12,7 @@
       Install.WantedBy = [ "sway-session.target" ];
       Service.ExecStart = "${pkgs.gebaar-libinput}/bin/gebaard";
       # restartTriggers = [
-      #   config.home-manager.users.avo.xdg.configFile."gebaar/gebaard.toml".source
+      #   config.home-manager.users.andrei.xdg.configFile."gebaar/gebaard.toml".source
       # ];
     };
 

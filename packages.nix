@@ -12,7 +12,7 @@ pkgs: with pkgs; let
   #     find
   #   '';
   # };
-  ffsclient = callPackage /home/avo/gdrive/nixos-config-inspiration/somasis_nixos/pkgs/ffsclient { };
+  ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nixos-config-inspiration/somasis_nixos/pkgs/ffsclient" { };
 
   whatsapp = pkgs.writeShellScriptBin "whatsapp" ''
     ${pkgs.google-chrome}/bin/google-chrome-stable \
@@ -39,111 +39,157 @@ pkgs: with pkgs; let
     };
   };
 in ([
-  hyperfine # benchmark
-  gping
-  docker-compose
-  gdrive
-  iotop
-  gphotos-sync
-  iperf
-  catdoc
-  dnscontrol
-  macchanger
-  fx
-  bundix
-  broot
-  linode-cli
-  nyx
-  grive2
+  # aichat # ChatGPT # TODO error
+  # audd-cli # music recognition cli
+  # avo.pushover
+  # backblaze-b2 # TODO error
+  # broot
   # chromium
-  chrome-export
-  projectm
-  procs
-  powertop
-  portaudio
-  parinfer-rust
+  # clang # TODO binutils collision
+  # crow-translate # translate
+  # difftastic # syntactic diff # TODO macos build fails
+  # electrum TODO error
+  # emacs
+  # expect # terminal automation # TODO: bin/weather conflict
+  # grive2
+  # heygpt # ChatGPT # TODO broken
+  # jwhois # TODO bin/whois conflict
+  # lua53Packages.lua-lsp # TODO lua lsp
+  # macchanger
+  # meteor # macos error
   # mlterm
-  nix-tree
-  dive
-  spotdl
-  slack
-  whatsapp-for-linux
-  whatsapp
-  xh
-  xscreensaver
-  unixtools.xxd
-  tidal-hifi
-  tokei
-  wego
-  sd
-  oci-cli
-  ocamlPackages.google-drive-ocamlfuse
-  remmina
-  speedread
-  gnutls
-
-  act # GitHub actions simulator
+  # mongodb
+  # nix-doc # extract nix documentation from source TODO
+  # nixops # cloud, nixos # TODO crashing build
+  # ntfy # send notifications, on demand and when commands finish
+  # nvimpager # TODO broken
+  # ocamlPackages.google-drive-ocamlfuse
+  # oci-cli
+  # open-interpreter # TODO broken on macos
+  # pipe-viewer # youtube viewer
+  # python
+  # pythonPackages.pip
+  # remmina # Windows remote desktop
+  # siege # http load testing
+  # tesseract
+  # tg # telegram TODO
+  # unixtools TODO error
+  # unixtools.xxd
+  # url-parser
+  # weechat # TODO
+  # whatsapp
+  # wireshark # network debugging
+  # wkhtmltopdf
+  # xscreensaver
+  (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
+  (ruby_3_3.withPackages (ps: with ps; [ pry pry-byebug pry-doc]))
+  act # run GitHub actions locally
+  antiword
+  (hiPrio texlive.combined.scheme-full)
+  android-tools
+  imagemagick
   ansi2html
   ansifilter
   apktool # decompile apks
+  archivemount # mount archives
   archiver
   aria # torrents
+  ariang # aria2
   asciinema
   asdf-vm # version manager
   aspell
   atool # archive
-  # audd-cli # music recognition cli
   autossh
-  # avo.pushover
   awscli2
+  awslogs
+  awsls
   babashka # clojure
   bat # cat with syntax highlighting
   bc # calculator
+  beautysh # beautify bash scripts
+  black # Python code formatter
   brotab # control browser tabs
   browsh
+  btop # top
   bun # JavaScript runtime
-  cachix # nixos
+  bundix
+  cachix # NixOS
+  diffoscopeMinimal # in-depth comparison of files, archives, and directories
   cargo # rust
-  # castnow # chromecast
-  # catt # chromecast
+  cfonts
+  fastlane
+  fq # jq for binary formats
+  lesspipe
+  cariddi # crawler for URLs and endpoints
+  castnow # Chromecast
+  catdoc
+  catt # Chromecast
   cdrtools # cd tools
   chafa # terminal images
-  chromedriver
+  chatblade # ChatGPT
+  choose # human-friendly and fast alternative to cut and awk
+  chrome-export
+  chromedriver # Chrome
   chruby # ruby version manager TODO
   cht-sh
   cloc # source code language statistics
   cmake
   colordiff # diff
   comma # nix
-  # crow-translate # translate
-  csvkit # csv
+  crudini # edit ini files
+  csvkit # CSV
   ctags
   curl
+  curlie # Curl HTTPie
   darkhttpd # http server
   dasel
+  datamash
   dateutils # dategrep
+  deep-translator
   delta # diff
-  # difftastic # syntactic diff # TODO macos build fails
+  dive # Docker image explorer
+  dnscontrol
   dnsutils # dig
   docker-client
-  dogdns
-  eksctl
-  # electrum TODO error
-  emacs
+  docker-compose
+  docopts # shell argument parser
+  dogdns # dig alternative
+  duf # disk usage
+  easyocr
+  eksctl # AWS
+  enscript
   entr # file watcher
-  # expect # terminal automation # TODO: bin/weather conflict
+  espeak-ng # speech synthesis
+  eternal-terminal # remote shell that automatically reconnects without interrupting the session
+  eza
+  fastgron # flatten JSON
   fd # find alternative
+  fetchmail
+  ffmpeg-full
+  ffmpegthumbnailer
+  ffsclient
   figlet
   file
+  (firefox_decrypt.overrideAttrs (oldAttrs: {
+    makeWrapperArgs = oldAttrs.makeWrapperArgs ++ [
+      "--prefix" "DYLD_LIBRARY_PATH" ":" (lib.makeLibraryPath [ nss ])
+    ];
+  }))
   flac
+  flyctl
   fnm # node version manager
   fontforge
   foreman
   fpp # path picker
+  freerdp
+  fswatch
+  fx
   fzf # fuzzy finder
-  fzy # fuzzy finder
   gcalcli # google calendar
-  gcolor2 # color chooser
+  gcc
+  gcsfuse
+  gdrive
+  geckodriver # Firefox
   geoipWithDatabase
   gh # github
   ghostscript # enscript
@@ -151,20 +197,23 @@ in ([
   git
   git-extras
   git-hub # github
+  git-lfs # git large files
   git-open
   gitfs # git filesystem
   gnumake
   gnupg
+  gnutls
   go
-  # go-chromecast # chromecast # TODO broken
+  go-chromecast # chromecast
   gojq # jq alternative
   google-cloud-sdk # cloud
   googler # google search cli
+  gphotos-sync
+  gping
   graphicsmagick # image, tools
   graphviz
   grc # log colorizer
   groff # nroff text formatting
-  gron # flatten JSON
   haskellPackages.aeson-pretty # format json
   helix
   heroku
@@ -174,13 +223,15 @@ in ([
   htmlq # extract content from HTML with CSS selectors
   htop
   httpie # http client
+  httrack
+  nodePackages.typescript-language-server
+  hexyl
   hub # github
-  (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
+  hyperfine # benchmark
   iftop
-  imagemagick # some things don't work with graphicsmagick
   imgurbash2 # file-sharing
   inetutils # telnet
-  inkscape
+  iperf
   ipfs
   ipinfo
   isync # email sync
@@ -190,359 +241,394 @@ in ([
   jo # create JSON
   jp # json manipulation
   jq # json
-  # jwhois # TODO bin/whois conflict
-  # keybase # TODO error
-  kitty # terminal
+  python3Packages.grip # preview markdown
+  keybase # TODO error
+  vimv-rs
   kubectl
   kubectx # kubernetes context switch
   kubernetes-helm
+  pipreqs
   lastpass-cli
   lazydocker # Docker TUI
   lazygit # git
-  leiningen # clojure
+  lf # TUI file manager
   libarchive # bsdtar
-  librsvg # rasterize svg
+  librsvg # rasterize svg #  lolcat
+  libsixel
+  linode-cli
   lolcat
-  lsd # ls alternative
   lsof # system
   lua
-  # lua53Packages.lua-lsp # TODO lua lsp
+  lua-language-server
   luajitPackages.lua-lsp
   luajitPackages.luarocks # lua package manager
   mailutils # email
   mblaze # email
   mdcat # tui markdown viewer
   mediainfo # metadata
-  meteor
   miller
   mkcert
-  # mkchromecast # chromecast
-  monolith # web-archive
+  mkchromecast # Chromecast
+  monero-cli
+  monolith # save web pages
   mopidy
   moreutils # via overlay; moreutils parallel conflicts with GNU parallel # for vipe & vidir
   mosh # ssh
   mpc-cli # mpd
+  mpg123
   mtr # traceroute alternative
-  mupdf # for mutool
   mutt
   navi # cheatsheet cli
-  # ncdu # disk usage
+  ncdu # disk usage
   neo-cowsay
-  # neovim
-  # neovim-nightly # TODO
+  neovim
   netcat # networking
   ngrep # networking
   ngrok
-  nix-doc # extract nix documentation from source
   nix-index
   nix-info
   nix-prefetch
   nix-prefetch-github # nix
   nix-prefetch-scripts # nix
   nix-top
+  nix-tree
   nixfmt # code formatter, nix
-  # nixops # cloud, nixos # TODO crashing build
   nixos-shell
-  nixpkgsUnstable.yt-dlp # youtube
+  nload # network traffic monitor
   nmap # network
+  nodejs
   nodePackages.json
+  nodePackages.jsonlint
   nodePackages.pnpm # NodeJS package manager
   nodePackages.vercel
   nodePackages.webtorrent-cli
-  nodejs
   notmuch
   nox # search Nix packages
-  nss # TODO
-  # ntfy # send notifications, on demand and when commands finish
+  nss # certutil
   num-utils # random, range, etc.
+  nushell
+  nyx
+  ollama # run language models locally
+  openai-whisper-cpp
   openjdk # java
   openssl
   p7zip # 7z
   pandoc
   parallel
+  parinfer-rust
   patchelf
   patchutils
   pdfgrep # grep PDFs
   pdftk # pdf manipulation
   perceptualdiff # image diff
   perl
-  # pipe-viewer # youtube viewer
+  pipenv
+  piper-tts
   play-with-mpv # TODO
-  poppler_utils # pdf tools
-  postgresql_14
+  poetry
+  poppler_utils # PDF tools
+  postgresql
   potrace # convert bitmap to vector
   prettyping # ping alternative
-  # pry # TODO ruby conflict
+  procs
+  projectm
   pup # extract content from HTML with CSS selectors
   pv # pipe viewer
   pwgen
-  # python
+  pyenv
   python3
-  # python3Packages.pip
+  python3Packages.aria2p
+  python3Packages.pip
   python3Packages.pipx # install & run Python packages in isolated environments
-  # pythonPackages.pip
   qemu
+  racket
   rbenv # ruby version manager
   rclone
+  readability-cli
   recode # encoding
   redis
   remarshal
   ripgrep
-  # ripgrep-all # grep PDFs etc.
+  ripgrep-all # grep PDFs etc.
   rlwrap
+  rm-improved
   rnix-lsp # nix language server
   rq # TOML, CSV, JSON, YAML, etc.
   rsync
-  ruby
+  rubyfmt # Ruby formatter
+  rubyPackages.dip
   rubyPackages.kramdown
   rubyPackages.prettier
-  rubyPackages.pry
-  rubyPackages.pry-byebug
-  rubyPackages.pry-doc
-  rustc # rust
-  scrcpy # android
+  rustc # Rust
+  scrcpy # Android
+  sd
   sdcv
   selenium-server-standalone
-  # semgrep # TODO fails on mac
+  semgrep # TODO fails on mac
+  shell_gpt # ChatGPT
+  shellclear # secure shell history commands by finding sensitive data
   shfmt # shell script formatter
-  siege # http load testing
+  shot-scraper # website screenshots
   socat
   solargraph # ruby
   sox
-
-  # speedtest-cli
-
+  speedread
+  speedtest-cli
+  speedtest-rs
+  spotdl
+  sptlrx # Spotify lyrics
   sqlite
+  sshpass # supply password to ssh
   starship # shell prompt
   stderred
+  streamlink
   surfraw
-  sysz # systemd
   t # twitter
   tcpdump
-  # terminal-notifier # macos
+  termdbms # TUI for viewing and editing database files
   termtosvg
-  # tesseract
   tesseract4 # ocr
   testdisk
-  # (hiPrio texlive.combined.scheme-full)
-  # tg # telegram TODO
   tidyp
   tig # git
   tldr # documentation
   tmate # tmux remote sharing
   tmpmail # disposable email
   tmux
+  tokei # source code language statistics
   translate-shell
   tree
   tree-sitter
+  trurl # URL parser
+  ttyd
   units
-  # unixtools TODO error
   unrar
+  unrtf # convert from RTF
   unzip
-  url-parser
   urlscan
   urlwatch # monitor urls for changes
-  neovim
+  vhs # generate GIFs
   vimpager # vim pager
+  visidata # data exploration TUI
   viu # terminal images
   vivid # ls colors
-  vscode
+  vultr-cli
   w3m
   wdiff # word diff
   weather
-  # weechat # TODO
+  wego # weather
   wget
-  # wireshark # network debugging
-  # wkhtmltopdf
+  wget2
+  woof # single-file web server
   wrk # http benchmarking
   xdg-utils
+  xh
   xml2
   xmlstarlet # xml
   xmlto
+  xsv # CSV
   xurls
+  yai # ChatGPT
   yarn # nodejs
   yarn-bash-completion # TODO
   yj # convert between YAML, TOML, JSON, and HCL
   youtube-dl
+  youtube-tui
   youtube-viewer # TODO broken?
-  yq # yaml parsing
+  yq-go # yaml parsing
+  yt-dlp # youtube
   ytfzf # youtube
   zip
   zsh-better-npm-completion # TODO
   zsh-fast-syntax-highlighting # TODO
-  crudini # edit ini files
-  lf # TUI file manager
-  sshpass # supply password to ssh
 ]
 ++
 pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-  reattach-to-user-namespace # mac tmate
-  pngpaste
+  # darwin.ios-deploy
+  # darwin.iproute2mac # TODO build error
+  # darwin.xcbuild # TODO
+  # darwin.xcode-install # TODO
+  # darwin.xcode_14
+  # fast-cli # TODO npm
+  # localtunnel # TODO npm
   # m-cli # TODO errors
+  # pagekite # TODO
+  # webtorrent_desktop # linux
+  # wrk2 # http benchmarking # linux
+  # wsc
+  # xcbuild
+  # xcode TODO
+  # xcode-install
+  # xcodes
+  # xcpretty
+  # (procps.overrideAttrs (attrs: {
+  #   postInstall = attrs.postInstall + "\n"
+  #     + "rm $out/bin/top $out/share/man/man1/top.1";
+  # }))
+  asitop
+  coreutils
+  darwin.ios-deploy
+  darwin.iproute2mac
+  darwin.openwith
+  darwin.trash
+  darwin.apple_sdk.frameworks.Security
+  duti # macos file associations
+  findutils # gnu find
+  gawk
+  gnugrep # gnu grep
+  gnused # gnu sed
+  mas # Mac App Store
+  pngpaste
+  pstree
+  reattach-to-user-namespace # Mac tmate
+  terminal-notifier # macos
+  util-linux
+  watch
+  watchexec
+  psutils
 ]
 ++
 pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+  # (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
   # (zathura.override { useMupdf = true; })
+  # conda # Python environments
+  # fast-cli # speed test
+  # google-chrome-dev
+  # grab-site # web archive # TODO broken
+  # ioquake3
+  # kepka # telegram
+  # meli # email client
+  # nix-autobahn
+  # powertop
+  # rdrview # content extractor
+  # shrinkpdf # TODO
+  # slack
+  # thunar thumbnails
+  # ungoogled-chromium # browser
+  # vlc_qt5
+  (firefox-devedition-bin.override { cfg.enableFXCastBridge = true; cfg.speechSynthesisSupport = true; })
+  (latest.firefox-nightly-bin.override { cfg.enableFXCastBridge = true; cfg.speechSynthesisSupport = true; cfg.forceWayland = true; })
   acpi
   alot # email client
   alsa-utils
+  amazon-ecs-cli
   appimage-run
-  archivemount # mount archives
-  binutils # strings etc.
+  audacity
+  bcompare
+  binutils # TODO collision
   bluetooth_battery
-  breeze-gtk # gtk qt
-  breeze-qt5 # gtk qt
-  cog # webkit browser
+  breeze-gtk # GTK QT
+  breeze-qt5 # GTK QT
+  caprine-bin # Facebook Messenger
+  cog # minimal WebKit browser
+  commit-mono # font
   deadbeef # music player GUI
+  detox # clean up filenames
   dhcpcd
-  rubyPackages.dip
-  efibootmgr # uefi
+  dtrx
+  efibootmgr # UEFI
   emote # emoji
   ethtool
+  evemu
+  evince
   fatrace # file access events
   fbterm # framebuffer terminal
-  ffmpeg-full
-  # (firefox-devedition-bin.override {
-  #   cfg.enableFXCastBridge = true;
-  #   cfg.speechSynthesisSupport = true;
-  # })
-  (latest.firefox-nightly-bin.override {
-    cfg.enableFXCastBridge = true;
-    cfg.speechSynthesisSupport = true;
-    cfg.forceWayland = true;
-  })
-  freerdp
+  ff2mpv # Firefox MPV
   fswebcam # webcam image capture
-  fuseiso # mount iso
+  fuseiso # mount ISO
+  gcolor2 # color chooser
   glib.bin # gsettings
-  gcc
-  google-chrome-dev
-  (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
-  # grab-site # web archive
+  gnome-epub-thumbnailer
+  headset # music player
   imv # image viewer
+  inkscape
   inotify-tools # file watcher
-  # ioquake3
-  # kepka # telegram
+  iotop
+  jamesdsp
+  kitty # terminal
   libguestfs # guestfsmount
+  libinput
   libnotify # notify-send
   libreoffice-fresh
-  libsForQt5.breeze-gtk # gtk
+  libsForQt5.breeze-gtk # GTK
+  libsForQt5.kdegraphics-thumbnailers
   linuxPackages.cpupower # CPU governor
   lm_sensors
   lshw
   lxqt.pavucontrol-qt
   mailcheck
-  # meli # email client
-  neochat # matrix client
-  neovide # vim, gui
+  mbidled # TODO
+  monitor # task manager
+  mupdf
+  ncpamixer # ncurses PulseAudio Mixer
+  neochat # Matrix client
+  neovide # Vim, GUI
   nethogs
   nheko # Matrix client
-  nload # network traffic monitor
-  nvimpager
+  nodePackages.peerflix
+  ookla-speedtest
+  orjail # TOR
   pamixer # audio
   paps # text to PostScript using Pango with UTF-8 support
+  pasystray
   pavucontrol # audio
   pciutils # lspci
-  pdfsandwich # pdf, ocr
-  playerctl # mpris, cli
+  pdfsandwich # PDF, OCR
+  percollate
+  perf-tools
+  playerctl # MPRIS
   ponymix # audio
+  popcorntime
   pqiv # image viewer
   progress # progress viewer for running coreutils
-  protonvpn-cli # vpn
+  protonvpn-cli # VPN
   proxychains # SOCKS5 proxy
   psmisc
   pulseaudio # for pactl
+  pulseaudio-dlna
   qutebrowser # browser
-  rdrview # content extractor
   reptyr # reparent tty
   rofi-emoji # emoji
-  # shrinkpdf # TODO
+  rustup
+  session-desktop
   simple-scan # scanning
   skypeforlinux
   sleuthkit
-  strace
-  sublime4 # text-editor
-  swappy # image annotation
-  tdesktop # Telegram
-  trash-cli
-  usbutils # lsusb
-  vieb # vim browser
-  # vlc_qt5
-  waydroid # android
-  wine
-  wirelesstools
-  wofi # menu
-  xdragon # file drag-and-drop source/sink
-  xsel
-  zathura
-
-  nodePackages.peerflix
-  songrec # shazam
-  ydotool # automation
-  ffsclient
-  fast-cli # speed test
-  git-lfs # git large files
-  aichat # chatgpt
-  ariang # aria2
-  btop # top
-  castnow # chromecast
-  catt # chromecast
-  spotify
-
-  nushell
-  speedtest-rs
-  wezterm # terminal
-  # nix-autobahn
-
-  audacity
-  bcompare
-  chatblade # chatgpt
-  chatgpt-cli # chatgpt
-  # clang # TODO binutils collision
-  commit-mono # font
-  deep-translator
-  duf # disk usage
-  evemu
-  ff2mpv # firefox mpv
-  firefox_decrypt # firefox passwords
-  git-lfs
-  go-chromecast # chromecast
-  headset # music player
-  jamesdsp
-  libinput
-  libsixel
-  mbidled # TODO
-  mkchromecast
-  monero-cli
-  monitor # task manager
-  ncpamixer
-  ookla-speedtest
-  orjail # tor
-  pasystray
-  piper-tts
-  popcorntime
-  pulseaudio-dlna
-  python3Packages.aria2p
-  python3Packages.pip
-  rm-improved
-  shell_gpt # chatgpt
+  songrec # Shazam
   speechd # speech-dispatcher
-  streamlink
+  spotify
+  strace
+  sublime4 # text editor
+  swappy # image annotation
   sway-launcher-desktop
   swayr
   swaytools # swayinfo
+  sysz # systemd
+  tdesktop # Telegram
+  tidal-hifi
+  trash-cli
   uget
   ulauncher
+  unoconv
+  usbutils # lsusb
+  vieb # Vim browser
   vlc # video player
   vopono
+  vscode
+  waydroid # Android
+  wezterm # terminal
+  whatsapp-for-linux
+  wine
+  wirelesstools
   wireplumber
   wlprop
   wlrctl
+  wofi # menu
   xdg-user-dirs
-  yai # chatgpt
-  youtube-tui
-  ytmdesktop # youtube music
-  session-desktop
-  caprine-bin # facebook messenger
-  # ungoogled-chromium # browser
+  xdragon # file drag-and-drop source/sink
+  xsel
+  ydotool # automation
+  ytcast # YouTube
+  ytmdesktop # YouTube Music
+  zathura
 ])

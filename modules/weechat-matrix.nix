@@ -1,5 +1,5 @@
 {
-  home-manager.users.avo.home.file.".weechat/matrix.conf" = ''
+  home-manager.users.andrei.home.file.".weechat/matrix.conf" = ''
     [network]
     autoreconnect_delay_growing = 2
     autoreconnect_delay_max = 600
