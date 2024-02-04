@@ -4,15 +4,20 @@ bindkey -v
 
 export KEYTIMEOUT=1
 
-autoload -U edit-command-line; zle -N edit-command-line
 autoload -U select-bracketed; zle -N select-bracketed
 autoload -U select-quoted; zle -N select-quoted
-autoload -U surround; zle -N delete-surround surround; zle -N change-surround surround; zle -N add-surround surround
 
-bindkey -M vicmd '^x^e' edit-command-line; bindkey -M viins '^x^e' edit-command-line
-bindkey -M vicmd 'H' run-help
+autoload -U surround; zle -N delete-surround surround
+zle -N change-surround surround
+zle -N add-surround surround
 
+# edit command line in $EDITOR
+autoload -U edit-command-line; zle -N edit-command-line
+bindkey -M vicmd '^x^e' edit-command-line
+bindkey -M viins '^x^e' edit-command-line
 bindkey -M vicmd v edit-command-line
+
+bindkey -M vicmd 'H' run-help
 
 bindkey ''${terminfo[kcbt]:-^\[\[Z} reverse-menu-complete
 
@@ -61,3 +66,9 @@ bindkey -M menuselect 'b' vi-backward-blank-word
 run-with-sudo () { LBUFFER="sudo $LBUFFER" }
 zle -N run-with-sudo
 bindkey -M vicmd gs run-with-sudo
+
+# dismiss current input to run another command, then restore
+bindkey '^G' push-line-or-edit
+bindkey -M vicmd '^G' push-line-or-edit
+bindkey -M viins '^G' push-line-or-edit
+bindkey -M vicmd "q" push-line-or-edit

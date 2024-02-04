@@ -13,7 +13,6 @@
       ./modules/curl.nix
       ./modules/direnv.nix
       # ./modules/git.nix
-      ./modules/hub.nix
       ./modules/grep.nix
       # ./modules/htu_autobackup.nix
       ./modules/less.nix
@@ -167,7 +166,7 @@
       # "Velja" = 1607635845;# browser picker
     };
 
-    brews= [
+    brews = [
       "aichat" # ChatGPT
       "alerter" # notifications cli
       "amazon-ecs-cli"
@@ -199,8 +198,10 @@
       "postgresql"
       "pushtotalk" # mic mute
       "qsv" # ultra-fast csv toolkit
+      "neovide"
       "schappim/ocr/ocr"
       "switchaudio-osx"
+      "torsocks"
       "util-linux" # setsid
       "viddy" # notifications CLI
       # "askgitdev/treequery/treequery" # TODO
@@ -236,6 +237,13 @@
 
   home-manager.users.andrei = { pkgs, ... }: rec {
     home.stateVersion = "23.11";
+
+    home.file.".pydistutils.cfg".text = ''
+      [build_ext]
+      include_dirs=${pkgs.portaudio}/include/
+      library_dirs=${pkgs.portaudio}/lib/
+    '';
+
 
     home.file.".duti" = {
       text = ''
