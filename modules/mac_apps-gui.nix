@@ -14,6 +14,7 @@
     "figma"
     "firefox"
     "flux"
+    # "electrum"
     "google-chrome"
     "google-drive"
     "grandperspective" # disk usage visualizer
@@ -79,7 +80,7 @@
     # "mpv" # video player
     # "mupdf" # pdf viewer # TODO crash
     # "mutify" # mic mute
-    # "neovide" # Neovim GUI
+    "neovide" # Neovim GUI
     # "odrive" # file sync TODO
     # "parsec" # remote desktop
     # "polypane" # responsive browser

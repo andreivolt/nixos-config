@@ -1,61 +1,18 @@
 pkgs: with pkgs; let
-  # nix-autobahn = callPackage /home/avo/nix-autobahn { };
-  # vim = callPackage ./modules/vim { };
-  # TODO
-  # impbcopy = stdenv.mkDerivation rec {
-  #   pname = "impbcopy";
-  #   buildInputs = with darwin.apple_sdk.frameworks; [ Foundation AppKit ];
-  #   NIX_LDFLAGS = "-framework Foundation -framework AppKit";
-  #   src = /Users/avo/Documents/impbcopy;
-  #   buildPhase = ''
-  #     gcc -Wall -g -O3 -ObjC -framework Foundation -framework AppKit -o impbcopy impbcopy.m
-  #     find
-  #   '';
-  # };
-  ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nixos-config-inspiration/somasis_nixos/pkgs/ffsclient" { };
-
-  whatsapp = pkgs.writeShellScriptBin "whatsapp" ''
-    ${pkgs.google-chrome}/bin/google-chrome-stable \
-      --app=https://web.whatsapp.com \
-      --user-data-dir=$HOME/.config/google-chrome/whatsapp \
-      --start-fullscreen
-  '';
-
-  url-parser = buildGoPackage rec {
-    pname = "url-parser";
-    version = "2017-07-17";
-    rev = "823ca65eb0bd1c80c3499645cd04250ce5997092";
-
-    goPackagePath = "github.com/herloct/${pname}";
-
-    src = fetchgit {
-      inherit rev;
-      url = "https://${goPackagePath}";
-      sha256 = "1w4664j4yycxrp237g9909clazaj2bys3x9q71ffpwxk91zjkmyw";
-    };
-
-    # TODO: add metadata https://nixos.org/nixpkgs/manual/#sec-standard-meta-attributes
-    meta = {
-    };
-  };
+  ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ffs_client" { };
+  impbcopy = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/impbcopy" { };
+  audd-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/audd-cli" { };
 in ([
   # aichat # ChatGPT # TODO error
-  # audd-cli # music recognition cli
-  # avo.pushover
   # backblaze-b2 # TODO error
   # broot
   # chromium
   # clang # TODO binutils collision
-  # crow-translate # translate
+  # curl-impersonate # TODO broken
   # difftastic # syntactic diff # TODO macos build fails
-  # electrum TODO error
-  # emacs
-  # expect # terminal automation # TODO: bin/weather conflict
-  # grive2
   # heygpt # ChatGPT # TODO broken
   # jwhois # TODO bin/whois conflict
   # lua53Packages.lua-lsp # TODO lua lsp
-  # macchanger
   # meteor # macos error
   # mlterm
   # mongodb
@@ -67,29 +24,26 @@ in ([
   # oci-cli
   # open-interpreter # TODO broken on macos
   # pipe-viewer # youtube viewer
-  # python
-  # pythonPackages.pip
   # remmina # Windows remote desktop
-  # siege # http load testing
+  # siege # TODO http load testing
   # tesseract
   # tg # telegram TODO
   # unixtools TODO error
   # unixtools.xxd
-  # url-parser
   # weechat # TODO
   # whatsapp
   # wireshark # network debugging
   # wkhtmltopdf
-  # xscreensaver
+  (firefox_decrypt.overrideAttrs (oldAttrs: { makeWrapperArgs = oldAttrs.makeWrapperArgs ++ [ "--prefix" "DYLD_LIBRARY_PATH" ":" (lib.makeLibraryPath [ nss ]) ]; }))
+  (hiPrio expect) # terminal automation
+  (hiPrio texlive.combined.scheme-full)
   (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
   (ruby_3_3.withPackages (ps: with ps; [ pry pry-byebug pry-doc]))
   act # run GitHub actions locally
-  antiword
-  (hiPrio texlive.combined.scheme-full)
   android-tools
-  imagemagick
   ansi2html
   ansifilter
+  antiword
   apktool # decompile apks
   archivemount # mount archives
   archiver
@@ -114,17 +68,13 @@ in ([
   bun # JavaScript runtime
   bundix
   cachix # NixOS
-  diffoscopeMinimal # in-depth comparison of files, archives, and directories
   cargo # rust
-  cfonts
-  fastlane
-  fq # jq for binary formats
-  lesspipe
   cariddi # crawler for URLs and endpoints
   castnow # Chromecast
   catdoc
   catt # Chromecast
   cdrtools # cd tools
+  cfonts
   chafa # terminal images
   chatblade # ChatGPT
   choose # human-friendly and fast alternative to cut and awk
@@ -136,6 +86,7 @@ in ([
   cmake
   colordiff # diff
   comma # nix
+  crate2nix # Rust
   crudini # edit ini files
   csvkit # CSV
   ctags
@@ -147,6 +98,7 @@ in ([
   dateutils # dategrep
   deep-translator
   delta # diff
+  diffoscopeMinimal # in-depth comparison of files, archives, and directories
   dive # Docker image explorer
   dnscontrol
   dnsutils # dig
@@ -163,6 +115,7 @@ in ([
   eternal-terminal # remote shell that automatically reconnects without interrupting the session
   eza
   fastgron # flatten JSON
+  fastlane
   fd # find alternative
   fetchmail
   ffmpeg-full
@@ -170,17 +123,13 @@ in ([
   ffsclient
   figlet
   file
-  (firefox_decrypt.overrideAttrs (oldAttrs: {
-    makeWrapperArgs = oldAttrs.makeWrapperArgs ++ [
-      "--prefix" "DYLD_LIBRARY_PATH" ":" (lib.makeLibraryPath [ nss ])
-    ];
-  }))
   flac
   flyctl
   fnm # node version manager
   fontforge
   foreman
   fpp # path picker
+  fq # jq for binary formats
   freerdp
   fswatch
   fx
@@ -188,15 +137,15 @@ in ([
   gcalcli # google calendar
   gcc
   gcsfuse
-  gdrive
+  gdrive3
   geckodriver # Firefox
   geoipWithDatabase
   gh # github
+  ghorg # GitHub backup
   ghostscript # enscript
   gist # github
   git
   git-extras
-  git-hub # github
   git-lfs # git large files
   git-open
   gitfs # git filesystem
@@ -208,6 +157,7 @@ in ([
   gojq # jq alternative
   google-cloud-sdk # cloud
   googler # google search cli
+  gotty
   gphotos-sync
   gping
   graphicsmagick # image, tools
@@ -217,6 +167,7 @@ in ([
   haskellPackages.aeson-pretty # format json
   helix
   heroku
+  hexyl
   hr # horizontal rule
   html-tidy # html
   html2text
@@ -224,11 +175,10 @@ in ([
   htop
   httpie # http client
   httrack
-  nodePackages.typescript-language-server
-  hexyl
   hub # github
   hyperfine # benchmark
   iftop
+  imagemagick
   imgurbash2 # file-sharing
   inetutils # telnet
   iperf
@@ -241,16 +191,14 @@ in ([
   jo # create JSON
   jp # json manipulation
   jq # json
-  python3Packages.grip # preview markdown
   keybase # TODO error
-  vimv-rs
   kubectl
   kubectx # kubernetes context switch
   kubernetes-helm
-  pipreqs
   lastpass-cli
   lazydocker # Docker TUI
   lazygit # git
+  lesspipe
   lf # TUI file manager
   libarchive # bsdtar
   librsvg # rasterize svg #  lolcat
@@ -266,6 +214,7 @@ in ([
   mblaze # email
   mdcat # tui markdown viewer
   mediainfo # metadata
+  mermaid-cli
   miller
   mkcert
   mkchromecast # Chromecast
@@ -285,6 +234,7 @@ in ([
   netcat # networking
   ngrep # networking
   ngrok
+  niv # Nix dependency management
   nix-index
   nix-info
   nix-prefetch
@@ -300,6 +250,7 @@ in ([
   nodePackages.json
   nodePackages.jsonlint
   nodePackages.pnpm # NodeJS package manager
+  nodePackages.typescript-language-server
   nodePackages.vercel
   nodePackages.webtorrent-cli
   notmuch
@@ -312,6 +263,7 @@ in ([
   openai-whisper-cpp
   openjdk # java
   openssl
+  ouch # archive
   p7zip # 7z
   pandoc
   parallel
@@ -324,9 +276,11 @@ in ([
   perl
   pipenv
   piper-tts
+  pipreqs
   play-with-mpv # TODO
   poetry
   poppler_utils # PDF tools
+  portaudio
   postgresql
   potrace # convert bitmap to vector
   prettyping # ping alternative
@@ -338,8 +292,10 @@ in ([
   pyenv
   python3
   python3Packages.aria2p
+  python3Packages.grip # preview markdown
   python3Packages.pip
   python3Packages.pipx # install & run Python packages in isolated environments
+  python3Packages.xmljson
   qemu
   racket
   rbenv # ruby version manager
@@ -405,10 +361,12 @@ in ([
   unrar
   unrtf # convert from RTF
   unzip
+  url-parser
   urlscan
   urlwatch # monitor urls for changes
   vhs # generate GIFs
   vimpager # vim pager
+  vimv-rs
   visidata # data exploration TUI
   viu # terminal images
   vivid # ls colors
@@ -439,11 +397,7 @@ in ([
   yt-dlp # youtube
   ytfzf # youtube
   zip
-  zsh-better-npm-completion # TODO
-  zsh-fast-syntax-highlighting # TODO
-]
-++
-pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+] ++ (pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
   # darwin.ios-deploy
   # darwin.iproute2mac # TODO build error
   # darwin.xcbuild # TODO
@@ -461,17 +415,14 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
   # xcode-install
   # xcodes
   # xcpretty
-  # (procps.overrideAttrs (attrs: {
-  #   postInstall = attrs.postInstall + "\n"
-  #     + "rm $out/bin/top $out/share/man/man1/top.1";
-  # }))
+  # (procps.overrideAttrs (attrs: { postInstall = attrs.postInstall + "\n" + "rm $out/bin/top $out/share/man/man1/top.1"; }))
   asitop
   coreutils
+  darwin.apple_sdk.frameworks.Security
   darwin.ios-deploy
   darwin.iproute2mac
   darwin.openwith
   darwin.trash
-  darwin.apple_sdk.frameworks.Security
   duti # macos file associations
   findutils # gnu find
   gawk
@@ -480,15 +431,13 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
   mas # Mac App Store
   pngpaste
   pstree
+  psutils
   reattach-to-user-namespace # Mac tmate
   terminal-notifier # macos
   util-linux
   watch
   watchexec
-  psutils
-]
-++
-pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+]) ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   # (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
   # (zathura.override { useMupdf = true; })
   # conda # Python environments
@@ -498,7 +447,6 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   # ioquake3
   # kepka # telegram
   # meli # email client
-  # nix-autobahn
   # powertop
   # rdrview # content extractor
   # shrinkpdf # TODO
@@ -514,6 +462,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   amazon-ecs-cli
   appimage-run
   audacity
+  audd-cli # music recognition cli
   bcompare
   binutils # TODO collision
   bluetooth_battery
@@ -522,11 +471,14 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   caprine-bin # Facebook Messenger
   cog # minimal WebKit browser
   commit-mono # font
+  crow-translate # translate
   deadbeef # music player GUI
   detox # clean up filenames
   dhcpcd
   dtrx
   efibootmgr # UEFI
+  electrum
+  emacs
   emote # emoji
   ethtool
   evemu
@@ -556,6 +508,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   lm_sensors
   lshw
   lxqt.pavucontrol-qt
+  macchanger
   mailcheck
   mbidled # TODO
   monitor # task manager
@@ -590,6 +543,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   reptyr # reparent tty
   rofi-emoji # emoji
   rustup
+  screenkey
   session-desktop
   simple-scan # scanning
   skypeforlinux
@@ -606,6 +560,7 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   sysz # systemd
   tdesktop # Telegram
   tidal-hifi
+  torsocks
   trash-cli
   uget
   ulauncher
@@ -621,11 +576,13 @@ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
   wine
   wirelesstools
   wireplumber
+  wl-clipboard-x11
   wlprop
   wlrctl
   wofi # menu
   xdg-user-dirs
   xdragon # file drag-and-drop source/sink
+  xscreensaver
   xsel
   ydotool # automation
   ytcast # YouTube

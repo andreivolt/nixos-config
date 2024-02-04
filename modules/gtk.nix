@@ -6,7 +6,7 @@ in {
     theme.name = "Breeze-Dark";
     # theme = {
     #   name = "dark";
-    #   package = pkgs.callPackage ../packages/gtk-theme-dark {  };
+    #   package = "${builtins.getEnv "HOME"}/drive/nix-packages/gtk-theme-dark" { };
     # };
     # font.name = "${font} 10";
   };

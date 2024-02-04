@@ -23,7 +23,6 @@
     # ./modules/tmux.nix
     # ./modules/weechat-matrix.nix
     # ./modules/wireguard.nix
-    # ./modules/wl-clipboard-x11.nix
     ./modules/adb.nix # linux
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
@@ -47,7 +46,6 @@
     ./modules/flatpak.nix # linux
     ./modules/fonts.nix
     ./modules/git.nix
-    ./modules/github.nix
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
     ./modules/grep.nix
