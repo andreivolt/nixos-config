@@ -1,16 +1,36 @@
 pkgs: with pkgs; let
-  ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ffs_client" { };
-  impbcopy = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/impbcopy" { };
+  athena-jot = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/athena-jot" { };
   audd-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/audd-cli" { };
+  chart-stream = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/chart-stream" { };
+  cuff = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/cuff" { };
+  ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ffs_client" { };
+  googler = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/googler" { };
+  impbcopy = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/impbcopy" { };
+  jtbl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/jtbl" { };
+  kefctl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/kefctl" { };
+  mkalias = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/mkalias" { };
+  nix-beautify = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/nix-beautify" { };
+  pbpaste-html = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pbpaste-html" { };
+  pushover = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pushover" { };
+  spark = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/spark" { };
+  tidal-dl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/tidal-dl" { };
+  we-get = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/we-get" { };
+  x_x = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/x_x" { };
 in ([
+  # nix-beautify TODO
+  we-get
+  oauth2l # CLI for interacting with Google API authentication
+  highlight # source code highlighting tool
   # aichat # ChatGPT # TODO error
-  # backblaze-b2 # TODO error
+  # athena-jot
+  # backblaze-b2
   # broot
   # chromium
   # clang # TODO binutils collision
   # curl-impersonate # TODO broken
   # difftastic # syntactic diff # TODO macos build fails
   # heygpt # ChatGPT # TODO broken
+  # impbcopy
   # jwhois # TODO bin/whois conflict
   # lua53Packages.lua-lsp # TODO lua lsp
   # meteor # macos error
@@ -23,17 +43,19 @@ in ([
   # ocamlPackages.google-drive-ocamlfuse
   # oci-cli
   # open-interpreter # TODO broken on macos
-  # pipe-viewer # youtube viewer
   # remmina # Windows remote desktop
   # siege # TODO http load testing
+  # spark
   # tesseract
   # tg # telegram TODO
+  # tidal-dl
   # unixtools TODO error
   # unixtools.xxd
   # weechat # TODO
   # whatsapp
   # wireshark # network debugging
   # wkhtmltopdf
+  # x_x
   (firefox_decrypt.overrideAttrs (oldAttrs: { makeWrapperArgs = oldAttrs.makeWrapperArgs ++ [ "--prefix" "DYLD_LIBRARY_PATH" ":" (lib.makeLibraryPath [ nss ]) ]; }))
   (hiPrio expect) # terminal automation
   (hiPrio texlive.combined.scheme-full)
@@ -66,8 +88,8 @@ in ([
   browsh
   btop # top
   bun # JavaScript runtime
-  bundix
-  cachix # NixOS
+  bundix # Ruby Nix
+  cachix # Nix
   cargo # rust
   cariddi # crawler for URLs and endpoints
   castnow # Chromecast
@@ -76,6 +98,7 @@ in ([
   cdrtools # cd tools
   cfonts
   chafa # terminal images
+  chart-stream
   chatblade # ChatGPT
   choose # human-friendly and fast alternative to cut and awk
   chrome-export
@@ -191,6 +214,7 @@ in ([
   jo # create JSON
   jp # json manipulation
   jq # json
+  jtbl
   keybase # TODO error
   kubectl
   kubectx # kubernetes context switch
@@ -292,13 +316,13 @@ in ([
   pyenv
   python3
   python3Packages.aria2p
-  python3Packages.grip # preview markdown
+  python3Packages.grip # preview GitHub markdown
   python3Packages.pip
   python3Packages.pipx # install & run Python packages in isolated environments
   python3Packages.xmljson
   qemu
   racket
-  rbenv # ruby version manager
+  rbenv # Ruby version manager
   rclone
   readability-cli
   recode # encoding
@@ -384,6 +408,7 @@ in ([
   xml2
   xmlstarlet # xml
   xmlto
+  xq-xml
   xsv # CSV
   xurls
   yai # ChatGPT
@@ -418,11 +443,13 @@ in ([
   # (procps.overrideAttrs (attrs: { postInstall = attrs.postInstall + "\n" + "rm $out/bin/top $out/share/man/man1/top.1"; }))
   asitop
   coreutils
+  pbpaste-html
   darwin.apple_sdk.frameworks.Security
   darwin.ios-deploy
   darwin.iproute2mac
   darwin.openwith
   darwin.trash
+  mkalias
   duti # macos file associations
   findutils # gnu find
   gawk
@@ -470,7 +497,6 @@ in ([
   breeze-qt5 # GTK QT
   caprine-bin # Facebook Messenger
   cog # minimal WebKit browser
-  commit-mono # font
   crow-translate # translate
   deadbeef # music player GUI
   detox # clean up filenames
@@ -577,6 +603,7 @@ in ([
   wirelesstools
   wireplumber
   wl-clipboard-x11
+  cuff
   wlprop
   wlrctl
   wofi # menu

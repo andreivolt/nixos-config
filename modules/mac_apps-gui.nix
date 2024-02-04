@@ -14,7 +14,6 @@
     "figma"
     "firefox"
     "flux"
-    # "electrum"
     "google-chrome"
     "google-drive"
     "grandperspective" # disk usage visualizer
@@ -26,6 +25,7 @@
     "macfuse" # FUSE filesystems
     "mimestream" # email client
     "muzzle" # silence notifications when screensharing
+    "neovide" # Neovim GUI
     "orbstack" # Docker
     "proxyman" # inspect network traffic
     "rectangle" # window snap tile
@@ -57,6 +57,7 @@
     # "deepl" # TODO
     # "dropbox" # file sync
     # "ears" # switch audio input/output with keyboard
+    # "electrum"
     # "foobar2000" # music player
     # "fork" # Git GUI
     # "genymotion" # Android emulator
@@ -80,7 +81,6 @@
     # "mpv" # video player
     # "mupdf" # pdf viewer # TODO crash
     # "mutify" # mic mute
-    "neovide" # Neovim GUI
     # "odrive" # file sync TODO
     # "parsec" # remote desktop
     # "polypane" # responsive browser

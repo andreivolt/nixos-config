@@ -253,39 +253,6 @@
     # programs.zsh.enableSyntaxHighlighting = true;
 
     programs.zsh.initExtra = "source ~/.zshrc.extra.zsh;";
-
-    programs.zsh.plugins = with pkgs; [
-      {
-        name = "autopair";
-        file = "autopair.zsh";
-        src = fetchFromGitHub {
-          owner = "hlissner";
-          repo = "zsh-autopair";
-          rev = "8c1b2b85ba40b9afecc87990c884fe5cf9ac56d1";
-          sha256 = "0aa87r82w431445n4n6brfyzh3bnrcf5s3lhih1493yc5mzjnjh3";
-        };
-      }
-      {
-        name = "zsh-nix-shell";
-        file = "nix-shell.plugin.zsh";
-        src = fetchFromGitHub {
-          owner = "chisui";
-          repo = "zsh-nix-shell";
-          rev = "v0.2.0";
-          sha256 = "1gfyrgn23zpwv1vj37gf28hf5z0ka0w5qm6286a7qixwv7ijnrx9";
-        };
-      }
-    ];
-
-    programs.zsh.history = rec {
-      size = 99999;
-      save = size;
-      share = true;
-      ignoreSpace = true;
-      ignoreDups = true;
-      extended = true;
-      # path = ".cache/zsh_history";
-    };
   };
 
   services.lowbatt = {

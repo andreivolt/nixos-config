@@ -34,7 +34,6 @@
       ./modules/ripgrep.nix
       ./modules/ruby.nix
       ./modules/vim-as-manpager.nix
-      ./modules/zsh-autosuggest.nix
       ./modules/zsh/fzf.nix
     ] ++ [./macos-defaults.nix];
 

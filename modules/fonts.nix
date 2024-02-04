@@ -23,6 +23,7 @@
     # overpass
     # powerline-fonts
     atkinson-hyperlegible
+    commit-mono
     cascadia-code
     d2coding
     google-fonts
