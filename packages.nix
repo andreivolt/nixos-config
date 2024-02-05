@@ -12,6 +12,7 @@ pkgs: with pkgs; let
   nix-beautify = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/nix-beautify" { };
   pbpaste-html = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pbpaste-html" { };
   pushover = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pushover" { };
+  screenshot_tweet = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/screenshot_tweet" { };
   spark = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/spark" { };
   tidal-dl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/tidal-dl" { };
   we-get = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/we-get" { };
@@ -19,6 +20,7 @@ pkgs: with pkgs; let
 in ([
   # nix-beautify TODO
   we-get
+  screenshot_tweet
   oauth2l # CLI for interacting with Google API authentication
   highlight # source code highlighting tool
   # aichat # ChatGPT # TODO error
@@ -236,7 +238,8 @@ in ([
   luajitPackages.luarocks # lua package manager
   mailutils # email
   mblaze # email
-  mdcat # tui markdown viewer
+  mdcat # TUI markdown viewer
+  glow # TUI markdown viewer
   mediainfo # metadata
   mermaid-cli
   miller
@@ -408,7 +411,7 @@ in ([
   xml2
   xmlstarlet # xml
   xmlto
-  xq-xml
+  yq-go
   xsv # CSV
   xurls
   yai # ChatGPT
@@ -613,6 +616,7 @@ in ([
   xsel
   ydotool # automation
   ytcast # YouTube
+  downonspot # Spotify downloader
   ytmdesktop # YouTube Music
   zathura
 ])
