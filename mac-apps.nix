@@ -121,7 +121,7 @@ self: super: {
 
     Orion = self.installApplication rec {
       name = "Orion";
-      version = "14.0"; # Update version if known
+      version = "14.0";
       sourceRoot = "Orion.app";
       src = super.fetchurl rec {
         name = "Orion.dmg";
@@ -134,7 +134,7 @@ self: super: {
 
     PathFinder = self.installApplication rec {
       name = "PathFinder";
-      version = "latest";  # Update version if known
+      version = "latest";
       sourceRoot = "PathFinder.app";
       src = super.fetchurl rec {
         name = "PathFinder.dmg";
@@ -155,12 +155,12 @@ self: super: {
         sha256 = "1832d6ffdbe0fcbffe35c3b2f6ac4031e7e8ce93a7c564124914888ebfb43885";
       };
       description = "System cleaning tool";
-      homepage = "PrettyClean Homepage URL";  # Update URL
+      homepage = "PrettyClean Homepage URL";
     };
 
     Telegram = self.installApplication rec {
       name = "Telegram";
-      version = "latest";  # Update version if known
+      version = "latest";
       sourceRoot = "Telegram.app";
       src = super.fetchurl rec {
         name = "Telegram.dmg";
@@ -173,7 +173,7 @@ self: super: {
 
     WriteMage = self.installApplication rec {
       name = "WriteMage";
-      version = "latest";  # Update version if known
+      version = "latest";
       sourceRoot = "WriteMage.app";
       src = super.fetchurl rec {
         name = "WriteMage.dmg";
@@ -181,12 +181,12 @@ self: super: {
         sha256 = "d60eeaafa6a64c91d5b61d449151481c9ced5611ff2db0d28f9552b49330ff39";
       };
       description = "Writing tool";
-      homepage = "WriteMage Homepage URL";  # Update URL
+      homepage = "WriteMage Homepage URL";
     };
 
     macpilot = self.installApplication rec {
       name = "macpilot";
-      version = "latest";  # Update version if known
+      version = "latest";
       sourceRoot = "macpilot.app";
       src = super.fetchurl rec {
         name = "macpilot.dmg";
@@ -199,14 +199,14 @@ self: super: {
 
     superwhisper = self.installApplication rec {
       name = "superwhisper";
-      version = "latest";  # Update version if known
+      version = "latest";
       sourceRoot = "superwhisper.app";
       src = super.fetchurl rec {
         name = "superwhisper.dmg";
         url = "https://builds.superwhisper.com/latest/superwhisper.dmg";
         sha256 = "400d7fee468e84a7ea29a288cce8567c82969f288edebd2c19039d6e0ac24027";
       };
-      description = "Superwhisper Description";  # Update description
-      homepage = "Superwhisper Homepage URL";  # Update URL
+      description = "Superwhisper Description";
+      homepage = "Superwhisper Homepage URL";
     };
   }

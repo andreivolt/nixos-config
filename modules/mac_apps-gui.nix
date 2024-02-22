@@ -4,6 +4,7 @@
 
   homebrew.casks = [
     "android-commandlinetools"
+    "appcleaner"
     "battery" # battery charge limiter
     "beeper" # multi-service messenger
     "blackhole-2ch" # virtual audio device
@@ -11,7 +12,6 @@
     "choosy" # rules for opening url with different browsers
     "cursorcerer" # autohide cursor
     "discord"
-    "figma"
     "firefox"
     "flux"
     "google-chrome"
@@ -29,7 +29,6 @@
     "orbstack" # Docker
     "proxyman" # inspect network traffic
     "rectangle" # window snap tile
-    "sloth" # lsof GUI
     "spotify"
     "steam"
     "sublime-text"
@@ -58,6 +57,7 @@
     # "dropbox" # file sync
     # "ears" # switch audio input/output with keyboard
     # "electrum"
+    # "figma"
     # "foobar2000" # music player
     # "fork" # Git GUI
     # "genymotion" # Android emulator
@@ -91,6 +91,7 @@
     # "shortcat" # launcher
     # "signal"
     # "sizzy" # responsive browser
+    # "sloth" # lsof GUI
     # "soundsource" # per application audio control
     # "stats"
     # "sublime-text" # text editor
