@@ -1,28 +1,59 @@
 pkgs: with pkgs; let
   athena-jot = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/athena-jot" { };
   audd-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/audd-cli" { };
+  autoraise = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/autoraise" { experimental_focus_first = true; };
   chart-stream = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/chart-stream" { };
   cuff = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/cuff" { };
   ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ffs_client" { };
   googler = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/googler" { };
   impbcopy = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/impbcopy" { };
+  ipfs-deploy = (callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ipfs-deploy" { }).package;
   jtbl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/jtbl" { };
   kefctl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/kefctl" { };
   mkalias = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/mkalias" { };
   nix-beautify = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/nix-beautify" { };
   pbpaste-html = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pbpaste-html" { };
   pushover = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pushover" { };
+  scihub = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/scihub.py" { };
   screenshot_tweet = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/screenshot_tweet" { };
   spark = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/spark" { };
   tidal-dl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/tidal-dl" { };
   we-get = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/we-get" { };
   x_x = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/x_x" { };
+  anypaste = pkgs.stdenv.mkDerivation rec {
+    name = "anypaste";
+    src = pkgs.fetchurl {
+      url = "https://anypaste.xyz/sh";
+      sha256 = "sha256-w0My8b0scQ3/hgGqeBK1X0qKcgjwWgMqwPLgohGUCRI=";
+    };
+    unpackPhase = "true";
+    installPhase = ''
+      mkdir -p $out/bin
+      cp $src $out/bin/${name}
+      chmod +x $out/bin/${name}
+    '';
+  };
+  cached-nix-shell = pkgs.callPackage (pkgs.fetchFromGitHub {
+    owner = "xzfc";
+    repo = "cached-nix-shell";
+    rev = "master";
+    sha256 = "sha256-sHsUsqGeAZW1OMbeqQdLqb7LgEvhzWM7jq17EU16K0A=";
+  }) {};
 in ([
   # nix-beautify TODO
+  cached-nix-shell
+  anypaste
+  autoraise
+  ipfs-deploy
   we-get
+  scihub
+  mpv # video player
   screenshot_tweet
+  nixpkgs-fmt # Nix formatter
+  gum # TUI widgets
   oauth2l # CLI for interacting with Google API authentication
   highlight # source code highlighting tool
+  scriptisto
   # aichat # ChatGPT # TODO error
   # athena-jot
   # backblaze-b2
@@ -65,8 +96,13 @@ in ([
   (ruby_3_3.withPackages (ps: with ps; [ pry pry-byebug pry-doc]))
   act # run GitHub actions locally
   android-tools
+  elixir
+  erlang
+  zig
+  nixpkgsUnstable.deno
   ansi2html
   ansifilter
+  glab # GitLab CLI
   antiword
   apktool # decompile apks
   archivemount # mount archives
@@ -92,7 +128,7 @@ in ([
   bun # JavaScript runtime
   bundix # Ruby Nix
   cachix # Nix
-  cargo # rust
+  cargo # Rust
   cariddi # crawler for URLs and endpoints
   castnow # Chromecast
   catdoc
@@ -125,10 +161,9 @@ in ([
   delta # diff
   diffoscopeMinimal # in-depth comparison of files, archives, and directories
   dive # Docker image explorer
+  pigz # parallel gzip
   dnscontrol
   dnsutils # dig
-  docker-client
-  docker-compose
   docopts # shell argument parser
   dogdns # dig alternative
   duf # disk usage
@@ -168,8 +203,8 @@ in ([
   gh # github
   ghorg # GitHub backup
   ghostscript # enscript
-  gist # github
   git
+  python-launcher
   git-extras
   git-lfs # git large files
   git-open
@@ -225,9 +260,11 @@ in ([
   lazydocker # Docker TUI
   lazygit # git
   lesspipe
+  edir # better vidir
   lf # TUI file manager
   libarchive # bsdtar
-  librsvg # rasterize svg #  lolcat
+  librsvg # rasterize SVG
+  rust-script
   libsixel
   linode-cli
   lolcat
@@ -255,7 +292,7 @@ in ([
   mtr # traceroute alternative
   mutt
   navi # cheatsheet cli
-  ncdu # disk usage
+  # ncdu # disk usage # TODO build crash
   neo-cowsay
   neovim
   netcat # networking
@@ -273,7 +310,6 @@ in ([
   nixos-shell
   nload # network traffic monitor
   nmap # network
-  nodejs
   nodePackages.json
   nodePackages.jsonlint
   nodePackages.pnpm # NodeJS package manager
@@ -281,6 +317,7 @@ in ([
   nodePackages.vercel
   nodePackages.webtorrent-cli
   notmuch
+  manix
   nox # search Nix packages
   nss # certutil
   num-utils # random, range, etc.
@@ -321,13 +358,15 @@ in ([
   python3Packages.aria2p
   python3Packages.grip # preview GitHub markdown
   python3Packages.pip
-  python3Packages.pipx # install & run Python packages in isolated environments
+  python3Packages.pip-tools
+  nixpkgsUnstable.python3Packages.pipx # install & run Python packages in isolated environments
   python3Packages.xmljson
   qemu
   racket
   rbenv # Ruby version manager
   rclone
-  readability-cli
+  readability-cli # content extractor
+  nixpkgsUnstable.python3Packages.trafilatura # content extractor
   recode # encoding
   redis
   remarshal
@@ -335,7 +374,7 @@ in ([
   ripgrep-all # grep PDFs etc.
   rlwrap
   rm-improved
-  rnix-lsp # nix language server
+  rnix-lsp # Nix language server
   rq # TOML, CSV, JSON, YAML, etc.
   rsync
   rubyfmt # Ruby formatter
@@ -356,12 +395,12 @@ in ([
   solargraph # ruby
   sox
   speedread
-  speedtest-cli
-  speedtest-rs
+  speedtest-go
   spotdl
   sptlrx # Spotify lyrics
   sqlite
   sshpass # supply password to ssh
+  nodePackages.eslint
   starship # shell prompt
   stderred
   streamlink
@@ -373,8 +412,8 @@ in ([
   tesseract4 # ocr
   testdisk
   tidyp
-  tig # git
-  tldr # documentation
+  tig # Git TUI
+  tealdeer # tldr client
   tmate # tmux remote sharing
   tmpmail # disposable email
   tmux
@@ -411,7 +450,6 @@ in ([
   xml2
   xmlstarlet # xml
   xmlto
-  yq-go
   xsv # CSV
   xurls
   yai # ChatGPT
@@ -421,7 +459,7 @@ in ([
   youtube-dl
   youtube-tui
   youtube-viewer # TODO broken?
-  yq-go # yaml parsing
+  yq-go # command-line YAML, JSON, XML, CSV, TOML and properties processor
   yt-dlp # youtube
   ytfzf # youtube
   zip
@@ -577,9 +615,9 @@ in ([
   simple-scan # scanning
   skypeforlinux
   sleuthkit
-  songrec # Shazam
-  speechd # speech-dispatcher
+  songrec # Shazam CLI
   spotify
+  speechd # speech-dispatcher
   strace
   sublime4 # text editor
   swappy # image annotation
@@ -616,7 +654,13 @@ in ([
   xsel
   ydotool # automation
   ytcast # YouTube
+  nodejs # use Homebrew Node on macOS
   downonspot # Spotify downloader
+  sleuthkit # data forensics tool
   ytmdesktop # YouTube Music
+  watchlog # easy monitoring of live logs
   zathura
+  cached-nix-shell # TODO: Darwin compatibility
+  docker-client
+  docker-compose
 ])

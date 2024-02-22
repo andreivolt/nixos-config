@@ -90,7 +90,6 @@
     ./modules/tailscale.nix
     ./modules/tor.nix
     ./modules/v4l2loopback.nix
-    ./modules/vim-as-manpager.nix
     ./modules/virtualbox-host.nix
     ./modules/wayland-qt.nix
     ./modules/wayland.nix
@@ -171,6 +170,7 @@
   };
 
   environment.localBinInPath = true;
+  environment.homeBinInPath = true;
 
   home-manager.users.avo = { pkgs, ... }: rec {
     nixpkgs.overlays = config.nixpkgs.overlays;

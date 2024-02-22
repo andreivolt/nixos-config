@@ -33,7 +33,6 @@
       ./modules/readline/inputrc.nix
       ./modules/ripgrep.nix
       ./modules/ruby.nix
-      ./modules/vim-as-manpager.nix
       ./modules/zsh/fzf.nix
     ] ++ [./macos-defaults.nix];
 
@@ -83,10 +82,8 @@
 
   nixpkgs.overlays = let
     nixpkgsUnstable = self: super: {
-      nixpkgsUnstable =
-        let nixpkgs-unstable-src = fetchTarball "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
-        in import nixpkgs-unstable-src { };
-      };
+      nixpkgsUnstable = import <nixpkgs-unstable> {};
+    };
   in [
     (import ./mac-apps.nix)
     nixpkgsUnstable
@@ -175,11 +172,12 @@
       "borkdude/brew/jet"
       "brightness" # macOS brigthness CLI
       "browser" # pipe HTML to browser
-      "csvtk" # CSV
+      # "csvtk" # CSV
       "detox" # clean up filenames
       "difftastic"
       "docker-completion"
       "ffmpeg"
+      "sleuthkit" # data forensics tool
       "img2pdf"
       "ipfs"
       "jakehilborn/jakehilborn/displayplacer"
@@ -243,7 +241,6 @@
       library_dirs=${pkgs.portaudio}/lib/
     '';
 
-
     home.file.".duti" = {
       text = ''
         com.colliderli.iina webm all
@@ -262,4 +259,6 @@
   };
 
   environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
+
+  # services.nix-daemon.enable = true;
 }
