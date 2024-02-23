@@ -20,6 +20,19 @@ pkgs: with pkgs; let
   tidal-dl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/tidal-dl" { };
   we-get = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/we-get" { };
   x_x = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/x_x" { };
+  edn = pkgs.stdenv.mkDerivation rec {
+    name = "edn";
+    src = pkgs.fetchurl {
+      url = "https://gist.githubusercontent.com/andreivolt/6cbd58c9163ad5ac47e032b335898435/raw/convert.clj";
+      sha256 = "sha256-3gZ38ICDWDKQamPvYuCL3yLR/l0+DrWe5iJYdu6TLYc=";
+    };
+    unpackPhase = "true";
+    installPhase = ''
+      mkdir -p $out/bin
+      cp $src $out/bin/${name}
+      chmod +x $out/bin/${name}
+    '';
+  };
   anypaste = pkgs.stdenv.mkDerivation rec {
     name = "anypaste";
     src = pkgs.fetchurl {
@@ -41,6 +54,7 @@ pkgs: with pkgs; let
   }) {};
 in ([
   # nix-beautify TODO
+  edn
   cached-nix-shell
   anypaste
   autoraise
@@ -54,6 +68,7 @@ in ([
   oauth2l # CLI for interacting with Google API authentication
   highlight # source code highlighting tool
   scriptisto
+  python3Packages.youtube-transcript-api
   # aichat # ChatGPT # TODO error
   # athena-jot
   # backblaze-b2
@@ -464,6 +479,7 @@ in ([
   ytfzf # youtube
   zip
 ] ++ (pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+  # (procps.overrideAttrs (attrs: { postInstall = attrs.postInstall + "\n" + "rm $out/bin/top $out/share/man/man1/top.1"; }))
   # darwin.ios-deploy
   # darwin.iproute2mac # TODO build error
   # darwin.xcbuild # TODO
@@ -471,7 +487,6 @@ in ([
   # darwin.xcode_14
   # fast-cli # TODO npm
   # localtunnel # TODO npm
-  # m-cli # TODO errors
   # pagekite # TODO
   # webtorrent_desktop # linux
   # wrk2 # http benchmarking # linux
@@ -481,22 +496,23 @@ in ([
   # xcode-install
   # xcodes
   # xcpretty
-  # (procps.overrideAttrs (attrs: { postInstall = attrs.postInstall + "\n" + "rm $out/bin/top $out/share/man/man1/top.1"; }))
   asitop
   coreutils
-  pbpaste-html
   darwin.apple_sdk.frameworks.Security
+  darwin.apple_sdk.frameworks.SystemConfiguration
   darwin.ios-deploy
   darwin.iproute2mac
   darwin.openwith
   darwin.trash
-  mkalias
   duti # macos file associations
   findutils # gnu find
   gawk
   gnugrep # gnu grep
   gnused # gnu sed
+  m-cli # TODO errors
   mas # Mac App Store
+  mkalias
+  pbpaste-html
   pngpaste
   pstree
   psutils
@@ -660,7 +676,6 @@ in ([
   ytmdesktop # YouTube Music
   watchlog # easy monitoring of live logs
   zathura
-  cached-nix-shell # TODO: Darwin compatibility
   docker-client
   docker-compose
 ])
