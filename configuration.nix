@@ -79,7 +79,6 @@
     ./modules/printing.nix
     ./modules/qt.nix
     ./modules/readline/inputrc.nix
-    ./modules/ripgrep.nix
     ./modules/scanning.nix
     ./modules/spotifyd.nix
     ./modules/sway-autorotate-screen.nix
@@ -99,8 +98,6 @@
     ./modules/xdg-portals.nix
     ./modules/zsh/functions.nix
     ./modules/zsh/fzf.nix
-    ./modules/zsh/prompt.nix
-    ./modules/zsh/starship.nix
     ./modules/zsh/vi.nix
 
     <home-manager/nixos>

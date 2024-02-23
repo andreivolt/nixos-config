@@ -555,9 +555,13 @@ in ([
   caprine-bin # Facebook Messenger
   cog # minimal WebKit browser
   crow-translate # translate
+  cuff
   deadbeef # music player GUI
   detox # clean up filenames
   dhcpcd
+  docker-client
+  docker-compose
+  downonspot # Spotify downloader
   dtrx
   efibootmgr # UEFI
   electrum
@@ -601,6 +605,7 @@ in ([
   neovide # Vim, GUI
   nethogs
   nheko # Matrix client
+  nodejs
   nodePackages.peerflix
   ookla-speedtest
   orjail # TOR
@@ -631,9 +636,10 @@ in ([
   simple-scan # scanning
   skypeforlinux
   sleuthkit
+  sleuthkit # data forensics tool
   songrec # Shazam CLI
-  spotify
   speechd # speech-dispatcher
+  spotify
   strace
   sublime4 # text editor
   swappy # image annotation
@@ -653,6 +659,7 @@ in ([
   vlc # video player
   vopono
   vscode
+  watchlog # easy monitoring of live logs
   waydroid # Android
   wezterm # terminal
   whatsapp-for-linux
@@ -660,7 +667,6 @@ in ([
   wirelesstools
   wireplumber
   wl-clipboard-x11
-  cuff
   wlprop
   wlrctl
   wofi # menu
@@ -670,12 +676,6 @@ in ([
   xsel
   ydotool # automation
   ytcast # YouTube
-  nodejs # use Homebrew Node on macOS
-  downonspot # Spotify downloader
-  sleuthkit # data forensics tool
   ytmdesktop # YouTube Music
-  watchlog # easy monitoring of live logs
   zathura
-  docker-client
-  docker-compose
 ])
