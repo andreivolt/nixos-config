@@ -3,6 +3,7 @@
 {
   imports =
     [<home-manager/nix-darwin>] ++ [
+      # ./modules/git.nix
       # ./modules/mac_postgres.nix
       # ./modules/ngrok.nix # TODO
       ./modules/bat.nix
@@ -12,9 +13,8 @@
       ./modules/command-not-found.nix
       ./modules/curl.nix
       ./modules/direnv.nix
-      # ./modules/git.nix
       ./modules/grep.nix
-      # ./modules/htu_autobackup.nix
+      ./modules/htu_autobackup.nix
       ./modules/less.nix
       ./modules/mac_apps-gui.nix
       ./modules/mac_dock.nix
@@ -185,7 +185,6 @@
       "launch" # CLI launcher
       "libiconv"
       "lua-language-server" # Lua LSP
-      "m-cli" # macOS system CLI
       "nethogs"
       "node"
       "nvm"
@@ -259,6 +258,7 @@
   };
 
   environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
+  services.ipfs.enable = true;
 
   # services.nix-daemon.enable = true;
 }
