@@ -1,49 +1,41 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports =
-    [<home-manager/nix-darwin>] ++ [
-      # ./modules/git.nix
-      # ./modules/mac_postgres.nix
-      # ./modules/ngrok.nix # TODO
-      ./modules/bat.nix
-      ./modules/clojure
-      ./modules/clojure/boot
-      ./modules/clojure/rebel-readline.nix
-      ./modules/command-not-found.nix
-      ./modules/curl.nix
-      ./modules/direnv.nix
-      ./modules/grep.nix
-      ./modules/htu_autobackup.nix
-      ./modules/less.nix
-      ./modules/mac_apps-gui.nix
-      ./modules/mac_dock.nix
-      ./modules/mac_finder.nix
-      ./modules/mac_fonts.nix
-      ./modules/mac_ipfs.nix
-      ./modules/mac_keyboard.nix
-      ./modules/mac_map-caps-to-esc.nix
-      ./modules/mac_map-test-tld-to-localhost.nix
-      ./modules/mac_nginx.nix
-      ./modules/mac_screenshots.nix
-      ./modules/mac_trackpad.nix
-      ./modules/moreutils-without-parallel.nix
-      ./modules/nix.nix
-      ./modules/playwright.nix
-      ./modules/readline/inputrc.nix
-      ./modules/ripgrep.nix
-      ./modules/ruby.nix
-      ./modules/zsh/fzf.nix
-    ] ++ [./macos-defaults.nix];
+  imports = [
+    # ./modules/git.nix
+    # ./modules/mac_postgres.nix
+    # ./modules/ngrok.nix # TODO
+    ./modules/bat.nix
+    ./modules/clojure
+    ./modules/clojure/boot
+    ./modules/clojure/rebel-readline.nix
+    ./modules/command-not-found.nix
+    ./modules/curl.nix
+    ./modules/direnv.nix
+    ./modules/grep.nix
+    ./modules/htu_autobackup.nix
+    ./modules/less.nix
+    ./modules/mac_apps-gui.nix
+    ./modules/mac_dock.nix
+    ./modules/mac_finder.nix
+    ./modules/mac_fonts.nix
+    ./modules/mac_keyboard.nix
+    ./modules/mac_map-caps-to-esc.nix
+    ./modules/mac_map-test-tld-to-localhost.nix
+    ./modules/mac_nginx.nix
+    ./modules/mac_screenshots.nix
+    ./modules/mac_trackpad.nix
+    ./modules/moreutils-without-parallel.nix
+    ./modules/nix.nix
+    ./modules/playwright.nix
+    ./modules/readline/inputrc.nix
+    ./modules/ruby.nix
+    ./modules/zsh/fzf.nix
+  ]
+  ++ [./macos-defaults.nix]
+  ++ [<home-manager/nix-darwin>];
 
   networking.hostName = "mac";
-
-  # programs.gnupg.agent.enable
-  # programs.gnupg.agent.enableSSHSupport
-
-  # environment.shellInit = ''
-  #   export PATH="$HOME/.local/bin:$PATH"
-  # '';
 
   users.users.andrei = {
     name = "andrei";
@@ -114,26 +106,22 @@
       autoUpdate = true;
       upgrade = true;
     };
-    # TODO alfred
     # TODO amphetamine
-    # TODO contexts
     # TODO csv2xlsx
     # TODO font-input
     # TODO font-iosevka{-aile,-curly,-etoile}
     # TODO git-delta
     # TODO lifxstyle
     # TODO macos-pasteboard
-    # TODO oni2
     # TODO piknik
-    # TODO pyenv
     # TODO statsd
     # TODO taiko
     masApps = {
-      "FBReader: ePub and fb2 reader" = 1067172178;
       "1Blocker" = 1365531024;
       "AdGuard for Safari" = 1440147259;
       "Archive Page Extension" = 6446372766;
       "darker" = 1637413102; # Safari dark mode
+      "FBReader: ePub and fb2 reader" = 1067172178;
       "Hush" = 1544743900;
       "Hyperduck" = 6444667067;
       "Jiffy" = 1502527999; # GIF search in menu bar
@@ -172,12 +160,10 @@
       "borkdude/brew/jet"
       "brightness" # macOS brigthness CLI
       "browser" # pipe HTML to browser
-      # "csvtk" # CSV
       "detox" # clean up filenames
       "difftastic"
       "docker-completion"
       "ffmpeg"
-      "sleuthkit" # data forensics tool
       "img2pdf"
       "ipfs"
       "jakehilborn/jakehilborn/displayplacer"
@@ -185,6 +171,7 @@
       "launch" # CLI launcher
       "libiconv"
       "lua-language-server" # Lua LSP
+      "neovide"
       "nethogs"
       "node"
       "nvm"
@@ -194,13 +181,14 @@
       "postgresql"
       "pushtotalk" # mic mute
       "qsv" # ultra-fast csv toolkit
-      "neovide"
       "schappim/ocr/ocr"
+      "sleuthkit" # data forensics tool
       "switchaudio-osx"
       "torsocks"
       "util-linux" # setsid
       "viddy" # notifications CLI
       # "askgitdev/treequery/treequery" # TODO
+      # "csvtk" # CSV
       # "espanso" # TODO
       # "ext4fuse" # TODO
       # "felixkratz/formulae/svim" # macos vim everywhere
@@ -258,7 +246,11 @@
   };
 
   environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
-  services.ipfs.enable = true;
+
+  # services.ipfs.enable = true;
 
   # services.nix-daemon.enable = true;
+
+  # programs.gnupg.agent.enable
+  # programs.gnupg.agent.enableSSHSupport
 }
