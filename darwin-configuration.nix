@@ -12,8 +12,12 @@
     ./modules/command-not-found.nix
     ./modules/curl.nix
     ./modules/direnv.nix
+    ./modules/google-drive.nix
     ./modules/grep.nix
+    ./modules/hammerspoon.nix
     ./modules/htu_autobackup.nix
+    ./modules/iina.nix
+    ./modules/jumpcut.nix
     ./modules/less.nix
     ./modules/mac_apps-gui.nix
     ./modules/mac_dock.nix
@@ -66,7 +70,9 @@
   environment.systemPackages =
     with pkgs; [
       PrettyClean
-      # WriteMage
+      PrefEdit
+      ChatTab
+      Telegram
     ] ++
     (import "/Users/andrei/drive/nixos-config/packages.nix" pkgs);
 
@@ -121,7 +127,6 @@
       "AdGuard for Safari" = 1440147259;
       "Archive Page Extension" = 6446372766;
       "darker" = 1637413102; # Safari dark mode
-      "FBReader: ePub and fb2 reader" = 1067172178;
       "Hush" = 1544743900;
       "Hyperduck" = 6444667067;
       "Jiffy" = 1502527999; # GIF search in menu bar
@@ -222,6 +227,8 @@
   home-manager.users.andrei = { pkgs, ... }: rec {
     home.stateVersion = "23.11";
 
+    programs.man.generateCaches = true;
+
     home.file.".pydistutils.cfg".text = ''
       [build_ext]
       include_dirs=${pkgs.portaudio}/include/
@@ -234,6 +241,8 @@
         com.colliderli.iina aac all
         com.colliderli.iina mp4 all
         com.mimestream.Mimestream mailto
+        com.sublimetext.4 md all
+        com.sublimetext.4 txt all
       '';
       onChange = "${pkgs.duti}/bin/duti ~/.duti";
     };

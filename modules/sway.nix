@@ -232,25 +232,27 @@ in {
       wrapperFeatures.base = true;
     };
 
-    home.packages = with pkgs; [
-      bemenu # ui
-      gammastep
-      grim
+    home.packages = with pkgs; with sway-contrib; [
       # kanshi  # display configuration # TODO: needed?
       # oguri # animated background # TODO: needed?
+      bemenu
+      gammastep
+      grim
+      grimshot # screenshots
+      inactive-windows-transparency
       slurp
       startsway # start sway with logs going to systemd
-      sway-contrib.grimshot # screenshots
-      sway-contrib.inactive-windows-transparency
+      sway-audio-idle-inhibit
+      swaybg # set background
       swayidle
       swaylock
-      swaybg # set background
       swaywsr # automatically rename workspaces with contents
       waybar
       wdisplays  # display configuration
       wev
       wf-recorder # screen recorder
       wl-clipboard
+      wmfocus
       xwayland
     ];
   };

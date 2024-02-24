@@ -113,8 +113,6 @@
 
   # services.udisks2.enable = true;
 
-  documentation.man.generateCaches = true;
-
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
   # 24-hour time format

@@ -9,6 +9,22 @@ self: super: {
       buildInputs = [ undmg unzip ];
       sourceRoot = sourceRoot;
       phases = [ "unpackPhase" "installPhase" ];
+      unpackPhase = ''
+        if [[ "${src}" == *.dmg ]]; then
+          if ! undmg $src; then
+            # fallback to hdiutil if undmg fails
+            TMPDIR=$(mktemp -d)
+            /usr/bin/hdiutil attach $src -nobrowse -mountpoint $TMPDIR
+            echo "Mounted at $TMPDIR"
+            # Assuming the .app is directly in the mounted volume
+            cp -r $TMPDIR/*.app .
+            /usr/bin/hdiutil detach $TMPDIR
+          fi
+        else
+          # Fallback to default unpack for non-DMG sources
+          unpackCmds
+        fi
+      '';
       installPhase = ''
         mkdir -p "$out/Applications/${appname}.app"
         cp -pR * "$out/Applications/${appname}.app"
@@ -26,19 +42,6 @@ self: super: {
       };
       description = "";
       homepage = https://example.com;
-    };
-
-    AirServer = self.installApplication rec {
-      name = "AirServer";
-      version = "7.2.7";
-      sourceRoot = "AirServer.app";
-      src = super.fetchurl rec {
-        name = "AirServer-${version}.dmg";
-        url = "https://dl.airserver.com/mac/AirServer-${version}.dmg";
-        sha256 = "e092aa4803418483dac749f71c644d63972b4ffe61f235364b92a5b72e08ae0d";
-      };
-      description = "AirPlay receiver for Mac and PC";
-      homepage = "https://www.airserver.com";
     };
 
     BetterDisplay = self.installApplication rec {
@@ -61,7 +64,7 @@ self: super: {
       src = super.fetchurl rec {
         name = "ChatTab.dmg";
         url = "https://lessstorage.blob.core.windows.net/chattab/ChatTab.dmg";
-        sha256 = "31d306b95922e83c73f9a907d67ee4f7519a7ea7290a065286a6ce6184cbf651";
+        sha256 = "sha256-yPja76aPG2bNSpbYlsxnLC/0CtVbVetAxZkF4Ve75I4=";
       };
       description = "Chat application";
       homepage = "ChatTab Homepage";
@@ -165,7 +168,7 @@ self: super: {
       src = super.fetchurl rec {
         name = "Telegram.dmg";
         url = "https://osx.telegram.org/updates/Telegram.dmg";
-        sha256 = "04a9d3a57976594d0d21c6bec71d48af7a7113baccd001f4b72078f69f28b27a";
+        sha256 = "sha256-hy7hnLP4fwhS46E9+tXgFRi9wO/GWlAFLi56S15Pcug=";
       };
       description = "Messaging application";
       homepage = "https://telegram.org";
@@ -208,5 +211,14 @@ self: super: {
       };
       description = "Superwhisper Description";
       homepage = "Superwhisper Homepage URL";
+    };
+
+    PrefEdit = self.installApplication rec {
+      name = "PrefEdit";
+      version = "latest";
+      sourceRoot = "PrefEdit.app";
+      src = ./mac-dmgs/PrefEdit.dmg;
+      description = "";
+      homepage = "";
     };
   }
