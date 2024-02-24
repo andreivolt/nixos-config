@@ -1,7 +1,8 @@
 {
   system.defaults.trackpad = {
     TrackpadRightClick = true;
-    Clicking = true; # not working
+    Clicking = true; # TODO not working
+    TrackpadThreeFingerDrag = true;
   };
 
   system.defaults.NSGlobalDomain = {

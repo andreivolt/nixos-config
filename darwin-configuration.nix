@@ -2,9 +2,9 @@
 
 {
   imports = [
+    # ./modules/firewall.nix
     # ./modules/git.nix
     # ./modules/mac_postgres.nix
-    # ./modules/ngrok.nix # TODO
     ./modules/bat.nix
     ./modules/clojure
     ./modules/clojure/boot
@@ -12,6 +12,7 @@
     ./modules/command-not-found.nix
     ./modules/curl.nix
     ./modules/direnv.nix
+    ./modules/flux.nix
     ./modules/google-drive.nix
     ./modules/grep.nix
     ./modules/hammerspoon.nix
@@ -30,6 +31,7 @@
     ./modules/mac_screenshots.nix
     ./modules/mac_trackpad.nix
     ./modules/moreutils-without-parallel.nix
+    ./modules/ngrok.nix # TODO
     ./modules/nix.nix
     ./modules/playwright.nix
     ./modules/readline/inputrc.nix
@@ -62,8 +64,6 @@
   };
 
   # system.defaults.universalaccess.reduceTransparency = true; # TODO
-
-  # home-manager.users.avo = import ./modules/zsh.nix;
 
   home-manager.useGlobalPkgs = true; # Use the global pkgs that is configured via the system level nixpkgs options. This saves an extra Nixpkgs evaluation, adds consistency, and removes the dependency on NIX_PATH, which is otherwise used for importing Nixpkgs.
 
@@ -148,6 +148,7 @@
       # "MetaMask - Blockchain Wallet" = 1438144202;
       # "Noir – Dark Mode for Safari" = 1592917505;
       # "One Task" = 6465745322;
+      # "Penguin - Plist Editor" = 1634084815;
       # "Recordia" = 1529006487; # quickly record audio
       # "SingleFile for Safari" = 6444322545;
       # "Speediness" = 1596706466; # internet speed test

@@ -55,21 +55,23 @@ pkgs: with pkgs; let
   json2nix = pkgs.stdenv.mkDerivation rec {
     name = "json2nix";
     src = pkgs.fetchurl {
-      url = "https://gist.githubusercontent.com/andreivolt/c0ccee3868def8778fb8fb6436489630/raw/728d48aa0e2e6bc03527d02a401c9c29e1fd4742/json2nix.py";
-      sha256 = "sha256-0uFfi4Of4mnBjFPIRgsP4jUC+uuA7xtmCoV8Cxye/5E=";
+      url = "https://gist.githubusercontent.com/andreivolt/c0ccee3868def8778fb8fb6436489630/raw/1d47fde8d2f9b3029ed8535518bb32af497edcba/json2nix";
+      sha256 = "sha256-IacRsDQTX60H5SoXIcAVAfGdJ41YBATXbMJGD61xb7Y";
     };
+    buildInputs = with pkgs; [ python3 ];
     unpackPhase = "true";
     installPhase = ''
       mkdir -p $out/bin
-      echo "#!${pkgs.python3}/bin/python" > $out/bin/${name}
-      cat $src >> $out/bin/${name}
+      cp $src $out/bin/${name}
       chmod +x $out/bin/${name}
+      patchShebangs $out/bin/${name}
     '';
   };
 in ([
   # nix-beautify TODO
   json2nix
   edn
+  spark
   cached-nix-shell
   anypaste
   autoraise
@@ -109,7 +111,6 @@ in ([
   # open-interpreter # TODO broken on macos
   # remmina # Windows remote desktop
   # siege # TODO http load testing
-  # spark
   # tesseract
   # tg # telegram TODO
   # tidal-dl
