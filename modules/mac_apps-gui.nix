@@ -29,6 +29,7 @@
     "orbstack" # Docker
     "proxyman" # inspect network traffic
     "rectangle" # window snap tile
+    "rocket" # emoji picker
     "spotify"
     "steam"
     "sublime-text"
@@ -41,7 +42,6 @@
     # "alt-tab" # window management
     # "android-file-transfer"
     # "audacity" # audio editor
-    # "audirvana" # music player
     # "bettertouchtool"
     # "blender"
     # "brave-browser"
@@ -86,7 +86,6 @@
     # "polypane" # responsive browser
     # "qobuz" # music
     # "raycast" # launcher
-    # "rocket" # emoji picker
     # "roon" # music player
     # "shortcat" # launcher
     # "signal"

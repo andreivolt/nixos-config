@@ -52,8 +52,23 @@ pkgs: with pkgs; let
     rev = "master";
     sha256 = "sha256-sHsUsqGeAZW1OMbeqQdLqb7LgEvhzWM7jq17EU16K0A=";
   }) {};
+  json2nix = pkgs.stdenv.mkDerivation rec {
+    name = "json2nix";
+    src = pkgs.fetchurl {
+      url = "https://gist.githubusercontent.com/andreivolt/c0ccee3868def8778fb8fb6436489630/raw/728d48aa0e2e6bc03527d02a401c9c29e1fd4742/json2nix.py";
+      sha256 = "sha256-0uFfi4Of4mnBjFPIRgsP4jUC+uuA7xtmCoV8Cxye/5E=";
+    };
+    unpackPhase = "true";
+    installPhase = ''
+      mkdir -p $out/bin
+      echo "#!${pkgs.python3}/bin/python" > $out/bin/${name}
+      cat $src >> $out/bin/${name}
+      chmod +x $out/bin/${name}
+    '';
+  };
 in ([
   # nix-beautify TODO
+  json2nix
   edn
   cached-nix-shell
   anypaste
@@ -69,6 +84,7 @@ in ([
   highlight # source code highlighting tool
   scriptisto
   python3Packages.youtube-transcript-api
+  firebase-tools
   # aichat # ChatGPT # TODO error
   # athena-jot
   # backblaze-b2
@@ -108,9 +124,11 @@ in ([
   (hiPrio expect) # terminal automation
   (hiPrio texlive.combined.scheme-full)
   (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
-  (ruby_3_3.withPackages (ps: with ps; [ pry pry-byebug pry-doc]))
+  (ruby_3_2.withPackages (ps: with ps; [ pry pry-byebug pry-doc]))
   act # run GitHub actions locally
   android-tools
+  shellcheck
+  du-dust # disk usage
   elixir
   erlang
   zig
@@ -165,7 +183,7 @@ in ([
   crate2nix # Rust
   crudini # edit ini files
   csvkit # CSV
-  ctags
+  universal-ctags
   curl
   curlie # Curl HTTPie
   darkhttpd # http server
@@ -181,7 +199,7 @@ in ([
   dnsutils # dig
   docopts # shell argument parser
   dogdns # dig alternative
-  duf # disk usage
+  duf # disk usage visualizer
   easyocr
   eksctl # AWS
   enscript
@@ -250,7 +268,6 @@ in ([
   htop
   httpie # http client
   httrack
-  hub # github
   hyperfine # benchmark
   iftop
   imagemagick
@@ -504,6 +521,7 @@ in ([
   darwin.iproute2mac
   darwin.openwith
   darwin.trash
+  dockutil
   duti # macos file associations
   findutils # gnu find
   gawk
@@ -517,6 +535,7 @@ in ([
   pstree
   psutils
   reattach-to-user-namespace # Mac tmate
+  skhd
   terminal-notifier # macos
   util-linux
   watch
