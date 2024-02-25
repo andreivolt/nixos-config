@@ -69,6 +69,10 @@ pkgs: with pkgs; let
   };
 in ([
   # nix-beautify TODO
+
+  tigervnc
+  realvnc-vnc-viewer
+
   json2nix
   edn
   spark
