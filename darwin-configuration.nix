@@ -4,6 +4,7 @@
   imports = [
     # ./modules/firewall.nix
     # ./modules/git.nix
+    # ./modules/ipfs.nix
     # ./modules/mac_postgres.nix
     ./modules/bat.nix
     ./modules/clojure
@@ -31,17 +32,18 @@
     ./modules/mac_screenshots.nix
     ./modules/mac_trackpad.nix
     ./modules/moreutils-without-parallel.nix
-    ./modules/ngrok.nix # TODO
+    ./modules/ngrok.nix
     ./modules/nix.nix
     ./modules/playwright.nix
     ./modules/readline/inputrc.nix
     ./modules/ruby.nix
     ./modules/zsh/fzf.nix
   ]
-  ++ [./macos-defaults.nix]
   ++ [<home-manager/nix-darwin>];
 
   networking.hostName = "mac";
+
+  environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
 
   users.users.andrei = {
     name = "andrei";
@@ -55,6 +57,9 @@
     askForPassword = 1;
     askForPasswordDelay = 0;
   };
+
+  # turn off keyboard backlight after timeout
+  system.defaults.CustomUserPreferences."com.apple.BezelServices".kDimTime = 5;
 
   # TextEdit default to plain text
   system.defaults.CustomUserPreferences."com.apple.TextEdit".RichText = 0;
@@ -83,7 +88,7 @@
       superwhisper
       telegram
     ] ++
-    (import "/Users/andrei/drive/nixos-config/packages.nix" pkgs);
+    (import "${builtins.getEnv "HOME"}/drive/nixos-config/packages.nix" pkgs);
 
   nixpkgs.config.allowUnfree = true;
 
@@ -100,7 +105,7 @@
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
-  programs.zsh.enableFzfHistory = true;
+  # programs.zsh.enableFzfHistory = true;
   programs.zsh.enableFzfGit = true;
   # programs.zsh.enableFzfCompletion = true;
   # programs.zsh.enableBashCompletion = true;
@@ -263,12 +268,6 @@
 
     programs.zsh.initExtra = "source ~/.zshrc.extra.zsh;";
   };
-
-  environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
-
-  # services.ipfs.enable = true;
-
-  # services.nix-daemon.enable = true;
 
   # programs.gnupg.agent.enable
   # programs.gnupg.agent.enableSSHSupport
