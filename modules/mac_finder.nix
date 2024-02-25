@@ -8,6 +8,10 @@
     FXPreferredViewStyle = "Nlsv"; # list view
     ShowPathbar = true;
     ShowStatusBar = true;
+  };
+
+  system.defaults.CustomUserPreferences."com.apple.finder" = {
     WarnOnEmptyTrash = false;
+    NewWindowTarget = "PfHm"; # new windows open in home dir
   };
 }

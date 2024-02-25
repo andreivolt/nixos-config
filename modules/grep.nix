@@ -1,4 +1,3 @@
 {
-  home-manager.users.andrei.home.sessionVariables
-    .GREP_COLORS = "1"; # color matches yellow
+  home-manager.users.andrei.home.sessionVariables.GREP_COLORS = "ms=30;43";
 }

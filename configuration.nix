@@ -2,10 +2,6 @@
 
 {
   imports = [
-    ./hardware-configuration.nix
-
-    ./cachix.nix
-
     # ./modules/adblock.nix
     # ./modules/chrome
     # ./modules/cloudflare-dns.nix # nixos
@@ -23,6 +19,8 @@
     # ./modules/tmux.nix
     # ./modules/weechat-matrix.nix
     # ./modules/wireguard.nix
+    ./cachix.nix
+    ./hardware-configuration.nix
     ./modules/adb.nix # linux
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
@@ -96,10 +94,7 @@
     ./modules/weechat.nix
     ./modules/wob.nix
     ./modules/xdg-portals.nix
-    ./modules/zsh/functions.nix
     ./modules/zsh/fzf.nix
-    ./modules/zsh/vi.nix
-
     <home-manager/nixos>
   ];
 
@@ -139,7 +134,6 @@
         in import nixpkgs-unstable-src { };
     };
     firefoxNightly = let
-      # Change this to a rev sha to pin
       src = fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz";};
     in (import "${src}/firefox-overlay.nix");
 
@@ -208,18 +202,18 @@
     xdg.mimeApps.defaultApplications = let
       browser = "firefox";
     in {
-      # x-scheme-handler/ytmd=youtube-music-desktop-app.desktop
-      # x-scheme-handler/tg=userapp-Telegram Desktop-O8HQU1.desktop;
       "application/pdf" = "org.pwmt.zathura.desktop";
-      "image/png" = "imv.desktop";
       "image/jpeg" = "imv.desktop";
+      "image/png" = "imv.desktop";
+      "inode/directory"= "thunar.desktop";
       "text/html" = "${browser}.desktop";
+      "text/plain" = "sublime_text.desktop";
       "video/mp4" = "mpv.desktop";
       "x-scheme-handler/http" = "${browser}.desktop";
       "x-scheme-handler/https" = "${browser}.desktop";
-      "inode/directory"= "thunar.desktop";
       # "text/plain" = "neovide.desktop";
-      "text/plain" = "sublime_text.desktop";
+      # x-scheme-handler/tg=userapp-Telegram Desktop-O8HQU1.desktop;
+      # x-scheme-handler/ytmd=youtube-music-desktop-app.desktop
     };
     xdg.configFile."mimeapps.list".force = true;
 
