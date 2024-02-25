@@ -15,6 +15,7 @@
     ./modules/curl.nix
     ./modules/direnv.nix
     ./modules/flux.nix
+    ./modules/gnupg.nix
     ./modules/google-drive.nix
     ./modules/hammerspoon.nix
     ./modules/htu_autobackup.nix
@@ -34,6 +35,7 @@
     ./modules/ngrok.nix
     ./modules/nix.nix
     ./modules/playwright.nix
+    ./modules/python-portaudio.nix
     ./modules/readline/inputrc.nix
     ./modules/ruby.nix
     ./modules/zsh/fzf.nix
@@ -121,7 +123,6 @@
 
   programs.zsh.enableCompletion = false;
   # home-manager.users.avo.programs.zsh.enableCompletion = false;
-  # programs.zsh.interactiveShellInit = builtins.readFile ~/.zsh.d/compinit-speed-fix.zsh;
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
@@ -366,12 +367,6 @@
 
     programs.man.generateCaches = true;
 
-    home.file.".pydistutils.cfg".text = ''
-      [build_ext]
-      include_dirs=${pkgs.portaudio}/include/
-      library_dirs=${pkgs.portaudio}/lib/
-    '';
-
     home.file.".duti" = {
       text = ''
         com.colliderli.iina webm all
@@ -390,7 +385,4 @@
 
     programs.zsh.initExtra = "source ~/.zshrc.extra.zsh;";
   };
-
-  # programs.gnupg.agent.enable
-  # programs.gnupg.agent.enableSSHSupport
 }
