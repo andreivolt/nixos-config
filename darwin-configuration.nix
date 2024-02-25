@@ -25,10 +25,13 @@
     ./modules/mac_dock.nix
     ./modules/mac_finder.nix
     ./modules/mac_fonts.nix
+    ./modules/mac_activity-monitor.nix
     ./modules/mac_keyboard.nix
     ./modules/mac_map-caps-to-esc.nix
     ./modules/mac_nginx.nix
     ./modules/mac_screenshots.nix
+    ./modules/mac_terminal.nix
+    ./modules/mac_tor.nix
     ./modules/mac_trackpad.nix
     ./modules/map-test-tld-to-localhost.nix
     ./modules/moreutils-without-parallel.nix
@@ -65,20 +68,8 @@
     DSDontWriteUSBStores = true;
   };
 
-  system.defaults.CustomUserPreferences."com.apple.Terminal" = {
-    "Default Window Settings" = "Pro";
-    "Startup Window Settings" = "Pro";
-    SecureKeyboardEntry = true;
-  };
-
   # don't offer new disks for Time Machine backup
   system.defaults.CustomUserPreferences."com.apple.TimeMachine".DoNotOfferNewDisksForBackup = true;
-
-  system.defaults.ActivityMonitor = {
-    IconType = 6; # CPU history
-    SortColumn = "CPUUsage";
-    SortDirection = 0; # descending
-  };
 
   # TODO
   system.defaults.CustomSystemPreferences.NSGlobalDomain.NSTextInsertionPointBlinkPeriodOn = 200;
@@ -134,9 +125,7 @@
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
-  # programs.zsh.enableFzfHistory = true;
   programs.zsh.enableFzfGit = true;
-  # programs.zsh.enableFzfCompletion = true;
   # programs.zsh.enableBashCompletion = true;
 
   programs.zsh.enableCompletion = false;
@@ -375,7 +364,6 @@
       # "withgraphite/tap"
     ];
     extraConfig = ''
-      brew "tor", restart_service: true
       # brew "mopidy/mopidy/mopidy", args: ["HEAD"]
     '';
   };
