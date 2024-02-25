@@ -53,11 +53,26 @@
 
   services.lorri.enable = true; # Nix direnv
 
+  # require password immediately after sleep or screen saver begins
   system.defaults.CustomUserPreferences."com.apple.screensaver" = {
-    # require password immediately after sleep or screen saver begins
     askForPassword = 1;
     askForPasswordDelay = 0;
   };
+
+  # don't create .DS_Store on network and removable media
+  system.defaults.CustomUserPreferences."com.apple.desktopservices" = {
+    DSDontWriteNetworkStores = true;
+    DSDontWriteUSBStores = true;
+  };
+
+  system.defaults.CustomUserPreferences."com.apple.Terminal" = {
+    "Default Window Settings" = "Pro";
+    "Startup Window Settings" = "Pro";
+    SecureKeyboardEntry = true;
+  };
+
+  # don't offer new disks for Time Machine backup
+  system.defaults.CustomUserPreferences."com.apple.TimeMachine".DoNotOfferNewDisksForBackup = true;
 
   system.defaults.ActivityMonitor = {
     IconType = 6; # CPU history
@@ -71,6 +86,9 @@
 
   # turn off keyboard backlight after timeout
   system.defaults.CustomUserPreferences."com.apple.BezelServices".kDimTime = 5;
+
+  # disable sound when connecting charger
+  system.defaults.CustomUserPreferences."com.apple.PowerChime".ChimeOnNoHardware = false;
 
   # TextEdit default to plain text
   system.defaults.CustomUserPreferences."com.apple.TextEdit".RichText = 0;
