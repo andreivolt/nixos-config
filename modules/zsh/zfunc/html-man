@@ -1,3 +1,0 @@
-man $@ \
-| rman -f html \
-| bcat

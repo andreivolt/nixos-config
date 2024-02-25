@@ -1,3 +1,0 @@
-local tmp=$(mktemp -d)
-archivemount "$*" $tmp
-cd $tmp
