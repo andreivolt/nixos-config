@@ -95,8 +95,8 @@
     ./modules/wob.nix
     ./modules/xdg-portals.nix
     ./modules/zsh/fzf.nix
-    <home-manager/nixos>
-  ];
+  ]
+  ++ [<home-manager/nixos>];
 
   networking.hostName = builtins.getEnv "HOSTNAME";
 
