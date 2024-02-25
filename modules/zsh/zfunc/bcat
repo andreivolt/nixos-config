@@ -1,3 +1,0 @@
-local f=$(mktemp).html
-cat > $f
-$BROWSER $f
