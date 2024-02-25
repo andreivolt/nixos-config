@@ -50,10 +50,15 @@
 
   services.lorri.enable = true; # Nix direnv
 
+  system.defaults.CustomUserPreferences."com.apple.screensaver" = {
+    # require password immediately after sleep or screen saver begins
+    askForPassword = 1;
+    askForPasswordDelay = 0;
+  };
+
   system.defaults.NSGlobalDomain = {
     "com.apple.sound.beep.feedback" = 0; # feedback sound when system volume changes
     # "com.apple.sound.beep.volume" = 0.5;
-    # _HIHideMenuBar = true; # autohide menu bar
     AppleFontSmoothing = 0;
     AppleInterfaceStyle = "Dark";
     AppleKeyboardUIMode = 3; # enable full keyboard access for controls
@@ -68,11 +73,12 @@
   home-manager.useGlobalPkgs = true; # Use the global pkgs that is configured via the system level nixpkgs options. This saves an extra Nixpkgs evaluation, adds consistency, and removes the dependency on NIX_PATH, which is otherwise used for importing Nixpkgs.
 
   environment.systemPackages =
-    with pkgs; [
-      PrettyClean
-      PrefEdit
-      ChatTab
-      Telegram
+    with pkgs.macApps; [
+      chat-tab
+      pref-edit
+      pretty-clean
+      superwhisper
+      telegram
     ] ++
     (import "/Users/andrei/drive/nixos-config/packages.nix" pkgs);
 
@@ -83,7 +89,7 @@
       nixpkgsUnstable = import <nixpkgs-unstable> {};
     };
   in [
-    (import ./mac-apps.nix)
+    (import ./mac-apps)
     nixpkgsUnstable
   ];
 
