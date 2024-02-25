@@ -56,6 +56,9 @@
     askForPasswordDelay = 0;
   };
 
+  # TextEdit default to plain text
+  system.defaults.CustomUserPreferences."com.apple.TextEdit".RichText = 0;
+
   system.defaults.NSGlobalDomain = {
     "com.apple.sound.beep.feedback" = 0; # feedback sound when system volume changes
     # "com.apple.sound.beep.volume" = 0.5;
