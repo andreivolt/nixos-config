@@ -6,4 +6,3 @@
 
   services.tor.torsocks.enable = true;
 }
-
