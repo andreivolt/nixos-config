@@ -2,6 +2,7 @@ pkgs: with pkgs; let
   athena-jot = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/athena-jot" { };
   audd-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/audd-cli" { };
   autoraise = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/autoraise" { experimental_focus_first = true; };
+  carbonyl = (callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/carbonyl" { }).package;
   chart-stream = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/chart-stream" { };
   cuff = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/cuff" { };
   ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ffs_client" { };
@@ -81,6 +82,7 @@ in ([
   autoraise
   ipfs-deploy
   we-get
+  nix-zsh-completions
   scihub
   mpv # video player
   screenshot_tweet
@@ -580,7 +582,6 @@ in ([
   cog # minimal WebKit browser
   crow-translate # translate
   cuff
-  deadbeef # music player GUI
   detox # clean up filenames
   dhcpcd
   docker-client

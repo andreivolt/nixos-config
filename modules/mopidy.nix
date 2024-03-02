@@ -21,4 +21,10 @@
       media_dir = /home/avo/gdrive/music
     '';
   };
+
+  # TODO
+  # homebrew.taps = [ "mopidy/mopidy" ];
+  # homebrew.extraConfig = ''
+  #   # brew "mopidy/mopidy/mopidy", args: ["HEAD"]
+  # '';
 }

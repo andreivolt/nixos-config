@@ -1,3 +1,10 @@
+{ pkgs, ...}:
+
 {
-  homebrew.extraConfig = "brew 'tor', restart_service: true";
+  homebrew.brews = [
+    {
+      name = "tor";
+      restart_service = true;
+    }
+  ];
 }
