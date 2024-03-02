@@ -71,6 +71,7 @@
     ./modules/ngrok.nix
     ./modules/nix-ld.nix
     ./modules/nix.nix
+    ./modules/nixos-rebuild-summary.nix
     ./modules/npm.nix
     ./modules/pipewire.nix
     ./modules/play-with-mpv.nix
@@ -97,6 +98,9 @@
     ./modules/zsh/fzf.nix
   ]
   ++ [<home-manager/nixos>];
+
+  # boot.kernelPackage = pkgs.linuxKernel.kernels.linux_lqx;
+  # boot.kernelPackage = pkgs.linuxKernel.kernels.linuxKernel.kernels.linux_zen;
 
   networking.hostName = builtins.getEnv "HOSTNAME";
 

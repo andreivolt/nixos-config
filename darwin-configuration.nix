@@ -14,6 +14,8 @@
     ./modules/command-not-found.nix
     ./modules/curl.nix
     ./modules/direnv.nix
+    ./modules/file-associations.nix
+    ./modules/nix-zsh-completions.nix
     ./modules/flux.nix
     ./modules/gnupg.nix
     ./modules/google-drive.nix
@@ -22,10 +24,10 @@
     ./modules/iina.nix
     ./modules/jumpcut.nix
     ./modules/less.nix
+    ./modules/mac_activity-monitor.nix
     ./modules/mac_dock.nix
     ./modules/mac_finder.nix
     ./modules/mac_fonts.nix
-    ./modules/mac_activity-monitor.nix
     ./modules/mac_keyboard.nix
     ./modules/mac_map-caps-to-esc.nix
     ./modules/mac_nginx.nix
@@ -49,9 +51,9 @@
 
   environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
 
-  users.users.andrei = {
-    name = "andrei";
-    home = "/Users/andrei";
+  users.users."${builtins.getEnv "USER"}" = {
+    name = builtins.getEnv "USER";
+    home = builtins.getEnv "HOME";
   };
 
   services.lorri.enable = true; # Nix direnv
@@ -84,6 +86,9 @@
   # TextEdit default to plain text
   system.defaults.CustomUserPreferences."com.apple.TextEdit".RichText = 0;
 
+  # # Automatically quit printer app once the print jobs complete
+  # system.defaults.CustomUserPreferences."com.apple.print.PrintingPrefs"."Quit When Finished" = true;
+
   system.defaults.NSGlobalDomain = {
     "com.apple.sound.beep.feedback" = 0; # feedback sound when system volume changes
     # "com.apple.sound.beep.volume" = 0.5;
@@ -108,9 +113,11 @@
       superwhisper
       telegram
     ] ++
-    (import "${builtins.getEnv "HOME"}/drive/nixos-config/packages.nix" pkgs);
+    (import ./packages.nix pkgs);
 
   nixpkgs.config.allowUnfree = true;
+
+  environment.pathsToLink = [ "/share/zsh" ];
 
   nixpkgs.overlays = let
     nixpkgsUnstable = self: super: {
@@ -118,18 +125,18 @@
     };
   in [
     (import ./mac-apps)
+    (import (builtins.fetchTarball { url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz; }))
     nixpkgsUnstable
   ];
+
+  # services.emacs.package = pkgs.emacs-unstable;
+  # services.emacs.enable = true;
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
-  programs.zsh.enableFzfGit = true;
-  # programs.zsh.enableBashCompletion = true;
-
   programs.zsh.enableCompletion = false;
-  # home-manager.users.avo.programs.zsh.enableCompletion = false;
 
   # Used for backwards compatibility, please read the changelog before changing.
   # $ darwin-rebuild changelog
@@ -137,7 +144,6 @@
 
   homebrew = {
     enable = true;
-    # global.brewfile = true;
     onActivation = {
       cleanup = "zap";
       autoUpdate = true;
@@ -171,12 +177,12 @@
       "kitty" # terminal
       "macfuse" # FUSE filesystems
       "mimestream" # email client
-      "muzzle" # silence notifications when screensharing
       "neovide" # Neovim GUI
       "orbstack" # Docker
       "proxyman" # inspect network traffic
       "rectangle" # window snap tile
       "rocket" # emoji picker
+      "roon"
       "spotify"
       "steam"
       "sublime-text"
@@ -225,22 +231,19 @@
       # "little-snitch" # firewall
       # "mailmate" # email client
       # "miniconda" # python environments
-      # "mpv" # video player
       # "mupdf" # pdf viewer # TODO crash
       # "mutify" # mic mute
+      # "muzzle" # silence notifications when screensharing
       # "odrive" # file sync TODO
       # "parsec" # remote desktop
       # "polypane" # responsive browser
-      # "qobuz" # music
       # "raycast" # launcher
-      # "roon" # music player
       # "shortcat" # launcher
       # "signal"
       # "sizzy" # responsive browser
       # "sloth" # lsof GUI
       # "soundsource" # per application audio control
       # "stats"
-      # "sublime-text" # text editor
       # "swift-quit" # automatically quit apps when last window closed
       # "tableplus" # db GUI
       # "tailscale" # TODO services.tailscale
@@ -256,12 +259,9 @@
       # "wireshark" # TODO
     ];
 
-    # TODO amphetamine
-    # TODO csv2xlsx
     # TODO font-input
     # TODO font-iosevka{-aile,-curly,-etoile}
     # TODO git-delta
-    # TODO lifxstyle
     # TODO macos-pasteboard
     # TODO piknik
     # TODO statsd
@@ -288,6 +288,7 @@
       # "Camera Preview" = 1632827132;
       # "Command X" = 6448461551;
       # "Day Progress" = 6450280202;
+      # "Element X - Secure messenger" = 1631335820;
       # "Lungo" = 1263070803; # keep awake
       # "MetaMask - Blockchain Wallet" = 1438144202;
       # "Noir – Dark Mode for Safari" = 1592917505;
@@ -320,8 +321,6 @@
       "jqp"
       "launch" # CLI launcher
       "libiconv"
-      "lua-language-server" # Lua LSP
-      "neovide"
       "nethogs"
       "node"
       "nvm"
@@ -330,13 +329,13 @@
       "pkgxdev/made/pkgx" # Nix
       "postgresql"
       "pushtotalk" # mic mute
-      "qsv" # ultra-fast csv toolkit
+      "qsv" # CSV toolkit
       "schappim/ocr/ocr"
       "sleuthkit" # data forensics tool
       "switchaudio-osx"
       "torsocks"
       "util-linux" # setsid
-      "viddy" # notifications CLI
+      "viddy" # watch alternative
       # "askgitdev/treequery/treequery" # TODO
       # "csvtk" # CSV
       # "espanso" # TODO
@@ -360,12 +359,8 @@
       "yulrizka/tap" # pushtotalk
       # "federico-terzi/espanso"
       # "felixkratz/formulae" # svim
-      # "mopidy/mopidy"
       # "withgraphite/tap"
     ];
-    extraConfig = ''
-      # brew "mopidy/mopidy/mopidy", args: ["HEAD"]
-    '';
   };
 
   home-manager.users.andrei = { pkgs, ... }: rec {
@@ -373,22 +368,26 @@
 
     programs.man.generateCaches = true;
 
-    home.file.".duti" = {
-      text = ''
-        com.colliderli.iina webm all
-        com.colliderli.iina aac all
-        com.colliderli.iina mp4 all
-        com.mimestream.Mimestream mailto
-        com.sublimetext.4 md all
-        com.sublimetext.4 txt all
-      '';
-      onChange = "${pkgs.duti}/bin/duti ~/.duti";
-    };
-
     programs.zsh.enableCompletion = false;
-    programs.zsh.enable = true; # TODO
+    programs.zsh.enable = true;
     programs.zsh.defaultKeymap = "viins";
 
-    programs.zsh.initExtra = "source ~/.zshrc.extra.zsh;";
+    programs.zsh.initExtra = ''
+      autoload -Uz "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer"
+
+      source ~/.zshrc.extra.zsh
+    '';
   };
+
+  system.activationScripts.postUserActivation.text = ''
+    echo "disable boot sound"
+    sudo /usr/sbin/nvram SystemAudioVolume=%80
+
+    echo "show the ~/Library folder"
+    chflags nohidden ~/Library
+
+    echo "reduce menu bar whitespace"
+    defaults write -g NSStatusItemSelectionPadding -int 12
+    defaults write -g NSStatusItemSpacing -int 12
+  '';
 }
