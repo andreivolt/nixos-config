@@ -15,7 +15,6 @@
     ./modules/curl.nix
     ./modules/direnv.nix
     ./modules/file-associations.nix
-    ./modules/nix-zsh-completions.nix
     ./modules/flux.nix
     ./modules/gnupg.nix
     ./modules/google-drive.nix
@@ -117,6 +116,7 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  # enable Zsh completion for system packages
   environment.pathsToLink = [ "/share/zsh" ];
 
   nixpkgs.overlays = let
@@ -372,9 +372,11 @@
     programs.zsh.enable = true;
     programs.zsh.defaultKeymap = "viins";
 
-    programs.zsh.initExtra = ''
+    programs.zsh.initExtraFirst = ''
       autoload -Uz "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer"
+    '';
 
+    programs.zsh.initExtra = ''
       source ~/.zshrc.extra.zsh
     '';
   };
