@@ -242,6 +242,7 @@
 
     programs.zsh.defaultKeymap = "viins";
 
+    # TODO
     programs.zsh.enable = true; # TODO
     # programs.zsh.enableSyntaxHighlighting = true;
 
