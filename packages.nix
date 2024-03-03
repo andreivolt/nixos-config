@@ -83,6 +83,10 @@ in ([
   ipfs-deploy
   we-get
   nix-zsh-completions
+
+  audible
+  aaxtomp3
+
   scihub
   mpv # video player
   screenshot_tweet

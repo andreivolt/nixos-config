@@ -69,6 +69,11 @@
     DSDontWriteUSBStores = true;
   };
 
+  system.defaults.CustomUserPreferences."com:apple:AdLib" = {
+    allowApplePersonalizedAdvertising = false;
+    allowIdentifierForAdvertising = false;
+  };
+
   # don't offer new disks for Time Machine backup
   system.defaults.CustomUserPreferences."com.apple.TimeMachine".DoNotOfferNewDisksForBackup = true;
 

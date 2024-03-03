@@ -13,5 +13,6 @@
   system.defaults.CustomUserPreferences."com.apple.finder" = {
     WarnOnEmptyTrash = false;
     NewWindowTarget = "PfHm"; # new windows open in home dir
+    _FXSortFoldersFirst = true; # TODO
   };
 }
