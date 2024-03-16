@@ -5,6 +5,6 @@
   home-manager.users.andrei.programs.command-not-found.enable = false;
 
   home-manager.users.andrei.programs.zsh.initExtra = ''
-    zsh-defer source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
+    source ${pkgs.nix-index}/etc/profile.d/command-not-found.sh
   '';
 }

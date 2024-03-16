@@ -26,15 +26,11 @@
     ./modules/aria2.nix
     ./modules/bat.nix
     ./modules/clipman.nix # linux
-    ./modules/clojure
-    ./modules/clojure/boot
-    ./modules/clojure/rebel-readline.nix
     ./modules/command-not-found.nix
     ./modules/cuff.nix # torrent search cli # nixos
     ./modules/curl.nix
     ./modules/cursor.nix
     ./modules/dict.nix # linux
-    ./modules/direnv.nix
     ./modules/disable-ipv6.nix # linux
     ./modules/docker.nix
     ./modules/fbterm.nix # linux
