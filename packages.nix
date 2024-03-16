@@ -73,6 +73,7 @@ in ([
 
   tigervnc
   realvnc-vnc-viewer
+  nodePackages.node2nix
 
   json2nix
   edn
@@ -84,7 +85,7 @@ in ([
   we-get
   nix-zsh-completions
 
-  audible
+  audible-cli
   aaxtomp3
 
   scihub
@@ -94,19 +95,23 @@ in ([
   gum # TUI widgets
   oauth2l # CLI for interacting with Google API authentication
   highlight # source code highlighting tool
+  direnv
   scriptisto
   python3Packages.youtube-transcript-api
   firebase-tools
   # aichat # ChatGPT # TODO error
   # athena-jot
-  # backblaze-b2
+  backblaze-b2
+  clojure
+  boot
+  zprint
   # broot
   # chromium
   # clang # TODO binutils collision
   # curl-impersonate # TODO broken
   # difftastic # syntactic diff # TODO macos build fails
   # heygpt # ChatGPT # TODO broken
-  # impbcopy
+  impbcopy
   # jwhois # TODO bin/whois conflict
   # lua53Packages.lua-lsp # TODO lua lsp
   # meteor # macos error
@@ -178,7 +183,7 @@ in ([
   catdoc
   catt # Chromecast
   cdrtools # cd tools
-  cfonts
+  cfonts # console banner generator
   chafa # terminal images
   chart-stream
   chatblade # ChatGPT
@@ -225,7 +230,6 @@ in ([
   ffmpeg-full
   ffmpegthumbnailer
   ffsclient
-  figlet
   file
   flac
   flyctl
@@ -310,11 +314,10 @@ in ([
   rust-script
   libsixel
   linode-cli
-  lolcat
+  lolcat # console text colorizer animate
   lsof # system
   lua
   lua-language-server
-  luajitPackages.lua-lsp
   luajitPackages.luarocks # lua package manager
   mailutils # email
   mblaze # email
@@ -359,6 +362,7 @@ in ([
   nodePackages.typescript-language-server
   nodePackages.vercel
   nodePackages.webtorrent-cli
+  pastel # color converter, color picker
   notmuch
   manix
   nox # search Nix packages
@@ -444,7 +448,6 @@ in ([
   sqlite
   sshpass # supply password to ssh
   nodePackages.eslint
-  starship # shell prompt
   stderred
   streamlink
   surfraw
@@ -498,10 +501,8 @@ in ([
   yai # ChatGPT
   yarn # nodejs
   yarn-bash-completion # TODO
+  youtube-viewer
   yj # convert between YAML, TOML, JSON, and HCL
-  youtube-dl
-  youtube-tui
-  youtube-viewer # TODO broken?
   yq-go # command-line YAML, JSON, XML, CSV, TOML and properties processor
   yt-dlp # youtube
   ytfzf # youtube
@@ -604,7 +605,7 @@ in ([
   ff2mpv # Firefox MPV
   fswebcam # webcam image capture
   fuseiso # mount ISO
-  gcolor2 # color chooser
+  gcolor2 # color picker
   glib.bin # gsettings
   gnome-epub-thumbnailer
   headset # music player

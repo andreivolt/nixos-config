@@ -8,12 +8,8 @@
     # ./modules/mac_postgres.nix
     ./cachix.nix
     ./modules/bat.nix
-    ./modules/clojure
-    ./modules/clojure/boot
-    ./modules/clojure/rebel-readline.nix
     ./modules/command-not-found.nix
     ./modules/curl.nix
-    ./modules/direnv.nix
     ./modules/file-associations.nix
     ./modules/flux.nix
     ./modules/gnupg.nix
@@ -37,6 +33,7 @@
     ./modules/map-test-tld-to-localhost.nix
     ./modules/moreutils-without-parallel.nix
     ./modules/ngrok.nix
+    ./modules/autoraise.nix
     ./modules/nix.nix
     ./modules/playwright.nix
     ./modules/python-portaudio.nix
@@ -196,6 +193,7 @@
       "tor-browser"
       "visual-studio-code"
       "whatsapp"
+      "zoom"
       # "alfred" # launcher
       # "alt-tab" # window management
       # "android-file-transfer"
@@ -311,7 +309,6 @@
       "alerter" # notifications cli
       "amazon-ecs-cli"
       "asitop" # performance monitoring for Apple silicon
-      "b2-tools" # Backblaze
       "blueutil" # bluetooth CLI
       "borkdude/brew/jet"
       "brightness" # macOS brigthness CLI
@@ -322,6 +319,7 @@
       "ffmpeg"
       "img2pdf"
       "ipfs"
+      "imagesnap"
       "jakehilborn/jakehilborn/displayplacer"
       "jqp"
       "launch" # CLI launcher
@@ -375,11 +373,6 @@
 
     programs.zsh.enableCompletion = false;
     programs.zsh.enable = true;
-    programs.zsh.defaultKeymap = "viins";
-
-    programs.zsh.initExtraFirst = ''
-      autoload -Uz "${pkgs.zsh-defer}/share/zsh-defer/zsh-defer"
-    '';
 
     programs.zsh.initExtra = ''
       source ~/.zshrc.extra.zsh
@@ -387,6 +380,9 @@
   };
 
   system.activationScripts.postUserActivation.text = ''
+    # # TODO: apply settings immediately
+    # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+
     echo "disable boot sound"
     sudo /usr/sbin/nvram SystemAudioVolume=%80
 
@@ -397,4 +393,5 @@
     defaults write -g NSStatusItemSelectionPadding -int 12
     defaults write -g NSStatusItemSpacing -int 12
   '';
+
 }
