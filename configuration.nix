@@ -24,7 +24,6 @@
     ./modules/adb.nix # linux
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
-    ./modules/bat.nix
     ./modules/clipman.nix # linux
     ./modules/command-not-found.nix
     ./modules/cuff.nix # torrent search cli # nixos
@@ -93,7 +92,7 @@
     ./modules/xdg-portals.nix
     ./modules/zsh/fzf.nix
   ]
-  ++ [<home-manager/nixos>];
+  ++ [ <home-manager/nixos> ];
 
   # boot.kernelPackage = pkgs.linuxKernel.kernels.linux_lqx;
   # boot.kernelPackage = pkgs.linuxKernel.kernels.linuxKernel.kernels.linux_zen;
@@ -132,11 +131,10 @@
       nixpkgsUnstable =
         let nixpkgs-unstable-src = fetchTarball "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
         in import nixpkgs-unstable-src { };
-    };
-    firefoxNightly = let
-      src = fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz";};
-    in (import "${src}/firefox-overlay.nix");
-
+      };
+      firefoxNightly =
+        let src = fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz"; };
+        in import "${src}/firefox-overlay.nix";
   in [
     nixpkgsUnstable
     firefoxNightly
@@ -146,37 +144,37 @@
     })
   ];
 
-  i18n.defaultLocale = "en_US.UTF-8";
+    i18n.defaultLocale = "en_US.UTF-8";
 
-  time.timeZone = "Europe/Paris";
+    time.timeZone = "Europe/Paris";
 
-  console.keyMap = "fr";
+    console.keyMap = "fr";
 
-  users.users.avo = {
-    isNormalUser = true;
-    shell = pkgs.zsh;
-    extraGroups = [ "wheel" ];
-  };
-
-  environment.localBinInPath = true;
-  environment.homeBinInPath = true;
-
-  home-manager.users.avo = { pkgs, ... }: rec {
-    nixpkgs.overlays = config.nixpkgs.overlays;
-
-    services.playerctld.enable = true;
-
-    home.stateVersion = "22.05";
-
-    dconf.settings."org/gnome/desktop/interface" = {
-      font-name = "Ubuntu 12";
+    users.users.avo = {
+      isNormalUser = true;
+      shell = pkgs.zsh;
+      extraGroups = [ "wheel" ];
     };
 
-    home.packages = import ./packages.nix pkgs;
+    environment.localBinInPath = true;
+    environment.homeBinInPath = true;
 
-    home.sessionVariables = {
-      EDITOR = "vim";
-      PAGER = "nvimpager";
+    home-manager.users.avo = { pkgs, ... }: rec {
+      nixpkgs.overlays = config.nixpkgs.overlays;
+
+      services.playerctld.enable = true;
+
+      home.stateVersion = "22.05";
+
+      dconf.settings."org/gnome/desktop/interface" = {
+        font-name = "Ubuntu 12";
+      };
+
+      home.packages = import ./packages.nix pkgs;
+
+      home.sessionVariables = {
+        EDITOR = "vim";
+        PAGER = "nvimpager";
       # BROWSER = "google-chrome-stable";
       BROWSER = "firefox";
     };
@@ -199,22 +197,24 @@
     };
 
     xdg.mimeApps.enable = true;
-    xdg.mimeApps.defaultApplications = let
-      browser = "firefox";
-    in {
-      "application/pdf" = "org.pwmt.zathura.desktop";
-      "image/jpeg" = "imv.desktop";
-      "image/png" = "imv.desktop";
-      "inode/directory"= "thunar.desktop";
-      "text/html" = "${browser}.desktop";
-      "text/plain" = "sublime_text.desktop";
-      "video/mp4" = "mpv.desktop";
-      "x-scheme-handler/http" = "${browser}.desktop";
-      "x-scheme-handler/https" = "${browser}.desktop";
-      # "text/plain" = "neovide.desktop";
-      # x-scheme-handler/tg=userapp-Telegram Desktop-O8HQU1.desktop;
-      # x-scheme-handler/ytmd=youtube-music-desktop-app.desktop
-    };
+    xdg.mimeApps.defaultApplications =
+      let
+        browser = "firefox";
+      in
+      {
+        "application/pdf" = "org.pwmt.zathura.desktop";
+        "image/jpeg" = "imv.desktop";
+        "image/png" = "imv.desktop";
+        "inode/directory" = "thunar.desktop";
+        "text/html" = "${browser}.desktop";
+        "text/plain" = "sublime_text.desktop";
+        "video/mp4" = "mpv.desktop";
+        "x-scheme-handler/http" = "${browser}.desktop";
+        "x-scheme-handler/https" = "${browser}.desktop";
+        # "text/plain" = "neovide.desktop";
+        # x-scheme-handler/tg=userapp-Telegram Desktop-O8HQU1.desktop;
+        # x-scheme-handler/ytmd=youtube-music-desktop-app.desktop
+      };
     xdg.configFile."mimeapps.list".force = true;
 
     programs.lesspipe.enable = true;

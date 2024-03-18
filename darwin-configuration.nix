@@ -7,7 +7,6 @@
     # ./modules/ipfs.nix
     # ./modules/mac_postgres.nix
     ./cachix.nix
-    ./modules/bat.nix
     ./modules/command-not-found.nix
     ./modules/curl.nix
     ./modules/file-associations.nix
@@ -307,6 +306,7 @@
     brews = [
       "aichat" # ChatGPT
       "alerter" # notifications cli
+      "mplayer"
       "amazon-ecs-cli"
       "asitop" # performance monitoring for Apple silicon
       "blueutil" # bluetooth CLI
@@ -379,6 +379,8 @@
     '';
   };
 
+  # system.defaults.universalaccess.reduceTransparency = true;
+
   system.activationScripts.postUserActivation.text = ''
     # # TODO: apply settings immediately
     # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
@@ -390,7 +392,7 @@
     chflags nohidden ~/Library
 
     echo "reduce menu bar whitespace"
-    defaults write -g NSStatusItemSelectionPadding -int 12
-    defaults write -g NSStatusItemSpacing -int 12
+    defaults write -g NSStatusItemSelectionPadding -int 16
+    defaults write -g NSStatusItemSpacing -int 16
   '';
 }
