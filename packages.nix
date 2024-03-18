@@ -1,4 +1,14 @@
 pkgs: with pkgs; let
+  nixos-repl = pkgs.writeScriptBin "nixos-repl" ''
+    #!/usr/bin/env ${pkgs.expect}/bin/expect
+    set timeout 120
+    spawn -noecho nix --extra-experimental-features repl-flake repl nixpkgs
+    expect "nix-repl> " {
+      send ":a builtins\n"
+      send "pkgs = legacyPackages.${system}\n"
+      interact
+    }
+  '';
   athena-jot = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/athena-jot" { };
   audd-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/audd-cli" { };
   autoraise = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/autoraise" { experimental_focus_first = true; };
@@ -96,6 +106,8 @@ in ([
   oauth2l # CLI for interacting with Google API authentication
   highlight # source code highlighting tool
   direnv
+  janet jpm
+  urlencode
   scriptisto
   python3Packages.youtube-transcript-api
   firebase-tools
@@ -193,6 +205,7 @@ in ([
   chruby # ruby version manager TODO
   cht-sh
   cloc # source code language statistics
+  scc # source code language statistics
   cmake
   colordiff # diff
   comma # nix
@@ -401,10 +414,8 @@ in ([
   pv # pipe viewer
   pwgen
   pyenv
-  python3
   python3Packages.aria2p
   python3Packages.grip # preview GitHub markdown
-  python3Packages.pip
   python3Packages.pip-tools
   nixpkgsUnstable.python3Packages.pipx # install & run Python packages in isolated environments
   python3Packages.xmljson
@@ -635,6 +646,7 @@ in ([
   neovide # Vim, GUI
   nethogs
   nheko # Matrix client
+  nixos-repl
   nodejs
   nodePackages.peerflix
   ookla-speedtest
