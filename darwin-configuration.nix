@@ -393,5 +393,4 @@
     defaults write -g NSStatusItemSelectionPadding -int 12
     defaults write -g NSStatusItemSpacing -int 12
   '';
-
 }
