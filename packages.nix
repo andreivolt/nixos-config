@@ -14,7 +14,30 @@ pkgs: with pkgs; let
   autoraise = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/autoraise" { experimental_focus_first = true; };
   carbonyl = (callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/carbonyl" { }).package;
   chart-stream = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/chart-stream" { };
+  ttok = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ttok" { inherit (python3Packages) click tiktoken buildPythonPackage; };
+  yt-fts = import "${builtins.getEnv "HOME"}/drive/nix-packages/yt-fts" { };
   cuff = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/cuff" { };
+
+  gpt-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/gpt-cli" {
+    inherit (python3Packages)
+      anthropic
+      attrs
+      black
+      google-generativeai
+      openai
+      pydantic
+      prompt-toolkit
+      poetry-core
+      orjson
+      pytest
+      pyyaml
+      rich
+      tiktoken
+      tokenizers
+      typing-extensions;
+  };
+
+  twscrape = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/twscrape" { };
   ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ffs_client" { };
   googler = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/googler" { };
   impbcopy = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/impbcopy" { };
@@ -29,8 +52,56 @@ pkgs: with pkgs; let
   screenshot_tweet = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/screenshot_tweet" { };
   spark = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/spark" { };
   tidal-dl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/tidal-dl" { };
+  pushover-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pushover-cli" { };
   we-get = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/we-get" { };
   x_x = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/x_x" { };
+
+  textract = with nixpkgsUnstable.python3Packages; buildPythonPackage rec {
+    pname = "textract";
+    version = "1.5.0";
+    name = "${pname}-${version}";
+
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "1mspqi2s2jcib8l11v6n2sqmnw9lgs5rx3nhbncby5zqg4bdswqf";
+    };
+
+    propagatedBuildInputs = [
+      argcomplete
+      beautifulsoup4
+      chardet
+      docx2txt
+      (extract-msg.override {
+        rtfde = (rtfde.overrideAttrs (oldAttrs: rec {
+          doCheck = false;
+        })).override {
+          lark = lark.overrideAttrs (oldAttrs: rec {
+            version = "1.1.8";
+            src = fetchFromGitHub {
+              owner = "lark-parser";
+              repo = "lark";
+              rev = "refs/tags/${version}";
+              hash = "sha256-bGNoQeiAC2JIFOhgYUnc+nApa2ovFzXnpl9JQAE11hM=";
+            };
+          });
+        };
+      })
+      pdfminer-six
+      python-pptx
+      six
+      speechrecognition
+      xlrd
+    ];
+
+    doCheck = false;
+
+    meta = with lib; {
+      description = "extract text from any document. no muss. no fuss.";
+      homepage = "https://pypi.python.org/pypi/textract";
+      license = licenses.mit;
+    };
+  };
+
   edn = pkgs.stdenv.mkDerivation rec {
     name = "edn";
     src = pkgs.fetchurl {
@@ -78,14 +149,41 @@ pkgs: with pkgs; let
       patchShebangs $out/bin/${name}
     '';
   };
+
+  strip-tags = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/strip-tags" {
+    inherit (python3Packages)
+      buildPythonApplication
+      pytestCheckHook
+      setuptools
+      pythonOlder;
+    inherit
+      fetchFromGitHub
+      lib
+      python3;
+  };
+
 in ([
   # nix-beautify TODO
 
+  strip-tags
   tigervnc
+  yt-fts
+  ttok
+  nodePackages.serve # static file HTTP server
   realvnc-vnc-viewer
   nodePackages.node2nix
+  elixir
+  nodePackages.diff2html-cli
+  python3Packages.openai
+  llm
+  gpt-cli
+  trufflehog
+  twscrape
 
   json2nix
+  textract
+  pushover-cli
+  duckdb
   edn
   spark
   cached-nix-shell
@@ -94,6 +192,7 @@ in ([
   ipfs-deploy
   we-get
   nix-zsh-completions
+  terminal-colors
 
   audible-cli
   aaxtomp3
@@ -115,6 +214,7 @@ in ([
   # athena-jot
   backblaze-b2
   clojure
+  leiningen
   boot
   zprint
   # broot
@@ -152,7 +252,8 @@ in ([
   (hiPrio expect) # terminal automation
   (hiPrio texlive.combined.scheme-full)
   (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
-  (ruby_3_2.withPackages (ps: with ps; [ pry pry-byebug pry-doc]))
+  (ruby_3_2.withPackages (ps: with ps; [ pry pry-byebug pry-doc ]))
+  rubocop
   act # run GitHub actions locally
   android-tools
   shellcheck
@@ -191,9 +292,7 @@ in ([
   cachix # Nix
   cargo # Rust
   cariddi # crawler for URLs and endpoints
-  castnow # Chromecast
   catdoc
-  catt # Chromecast
   cdrtools # cd tools
   cfonts # console banner generator
   chafa # terminal images
@@ -222,6 +321,7 @@ in ([
   deep-translator
   delta # diff
   diffoscopeMinimal # in-depth comparison of files, archives, and directories
+  # diffoscope # in-depth comparison of files, archives, and directories
   dive # Docker image explorer
   pigz # parallel gzip
   dnscontrol
@@ -274,7 +374,12 @@ in ([
   gnupg
   gnutls
   go
+
   go-chromecast # chromecast
+  castnow # Chromecast
+  catt # Chromecast
+  mkchromecast # Chromecast
+
   gojq # jq alternative
   google-cloud-sdk # cloud
   googler # google search cli
@@ -340,7 +445,6 @@ in ([
   mermaid-cli
   miller
   mkcert
-  mkchromecast # Chromecast
   monero-cli
   monolith # save web pages
   mopidy
@@ -410,7 +514,6 @@ in ([
   prettyping # ping alternative
   procs
   projectm
-  pup # extract content from HTML with CSS selectors
   pv # pipe viewer
   pwgen
   pyenv
@@ -718,6 +821,9 @@ in ([
   xsel
   ydotool # automation
   ytcast # YouTube
+  mplayer
   ytmdesktop # YouTube Music
   zathura
+  openai-whisper
+  whisper-ctranslate2
 ])
