@@ -1,644 +1,504 @@
 pkgs: with pkgs; let
-  nixos-repl = pkgs.writeScriptBin "nixos-repl" ''
-    #!/usr/bin/env ${pkgs.expect}/bin/expect
-    set timeout 120
-    spawn -noecho nix --extra-experimental-features repl-flake repl nixpkgs
-    expect "nix-repl> " {
-      send ":a builtins\n"
-      send "pkgs = legacyPackages.${system}\n"
-      interact
-    }
-  '';
-  athena-jot = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/athena-jot" { };
-  audd-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/audd-cli" { };
-  autoraise = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/autoraise" { experimental_focus_first = true; };
-  carbonyl = (callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/carbonyl" { }).package;
-  chart-stream = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/chart-stream" { };
-  ttok = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ttok" { inherit (python3Packages) click tiktoken buildPythonPackage; };
-  yt-fts = import "${builtins.getEnv "HOME"}/drive/nix-packages/yt-fts" { };
-  cuff = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/cuff" { };
-
-  gpt-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/gpt-cli" {
-    inherit (python3Packages)
-      anthropic
-      attrs
-      black
-      google-generativeai
-      openai
-      pydantic
-      prompt-toolkit
-      poetry-core
-      orjson
-      pytest
-      pyyaml
-      rich
-      tiktoken
-      tokenizers
-      typing-extensions;
-  };
-
-  twscrape = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/twscrape" { };
-  ffsclient = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ffs_client" { };
-  googler = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/googler" { };
-  impbcopy = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/impbcopy" { };
-  ipfs-deploy = (callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/ipfs-deploy" { }).package;
-  jtbl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/jtbl" { };
-  kefctl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/kefctl" { };
-  mkalias = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/mkalias" { };
-  nix-beautify = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/nix-beautify" { };
-  pbpaste-html = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pbpaste-html" { };
-  pushover = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pushover" { };
-  scihub = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/scihub.py" { };
-  screenshot_tweet = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/screenshot_tweet" { };
-  spark = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/spark" { };
-  tidal-dl = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/tidal-dl" { };
-  pushover-cli = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/pushover-cli" { };
-  we-get = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/we-get" { };
-  x_x = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/x_x" { };
-
-  textract = with nixpkgsUnstable.python3Packages; buildPythonPackage rec {
-    pname = "textract";
-    version = "1.5.0";
-    name = "${pname}-${version}";
-
-    src = fetchPypi {
-      inherit pname version;
-      sha256 = "1mspqi2s2jcib8l11v6n2sqmnw9lgs5rx3nhbncby5zqg4bdswqf";
-    };
-
-    propagatedBuildInputs = [
-      argcomplete
-      beautifulsoup4
-      chardet
-      docx2txt
-      (extract-msg.override {
-        rtfde = (rtfde.overrideAttrs (oldAttrs: rec {
-          doCheck = false;
-        })).override {
-          lark = lark.overrideAttrs (oldAttrs: rec {
-            version = "1.1.8";
-            src = fetchFromGitHub {
-              owner = "lark-parser";
-              repo = "lark";
-              rev = "refs/tags/${version}";
-              hash = "sha256-bGNoQeiAC2JIFOhgYUnc+nApa2ovFzXnpl9JQAE11hM=";
-            };
-          });
-        };
-      })
-      pdfminer-six
-      python-pptx
-      six
-      speechrecognition
-      xlrd
-    ];
-
-    doCheck = false;
-
-    meta = with lib; {
-      description = "extract text from any document. no muss. no fuss.";
-      homepage = "https://pypi.python.org/pypi/textract";
-      license = licenses.mit;
-    };
-  };
-
-  edn = pkgs.stdenv.mkDerivation rec {
-    name = "edn";
-    src = pkgs.fetchurl {
-      url = "https://gist.githubusercontent.com/andreivolt/6cbd58c9163ad5ac47e032b335898435/raw/convert.clj";
-      sha256 = "sha256-3gZ38ICDWDKQamPvYuCL3yLR/l0+DrWe5iJYdu6TLYc=";
-    };
-    unpackPhase = "true";
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/${name}
-      chmod +x $out/bin/${name}
-    '';
-  };
-  anypaste = pkgs.stdenv.mkDerivation rec {
-    name = "anypaste";
-    src = pkgs.fetchurl {
-      url = "https://anypaste.xyz/sh";
-      sha256 = "sha256-w0My8b0scQ3/hgGqeBK1X0qKcgjwWgMqwPLgohGUCRI=";
-    };
-    unpackPhase = "true";
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/${name}
-      chmod +x $out/bin/${name}
-    '';
-  };
-  cached-nix-shell = pkgs.callPackage (pkgs.fetchFromGitHub {
-    owner = "xzfc";
-    repo = "cached-nix-shell";
-    rev = "master";
-    sha256 = "sha256-sHsUsqGeAZW1OMbeqQdLqb7LgEvhzWM7jq17EU16K0A=";
-  }) {};
-  json2nix = pkgs.stdenv.mkDerivation rec {
-    name = "json2nix";
-    src = pkgs.fetchurl {
-      url = "https://gist.githubusercontent.com/andreivolt/c0ccee3868def8778fb8fb6436489630/raw/1d47fde8d2f9b3029ed8535518bb32af497edcba/json2nix";
-      sha256 = "sha256-IacRsDQTX60H5SoXIcAVAfGdJ41YBATXbMJGD61xb7Y";
-    };
-    buildInputs = with pkgs; [ python3 ];
-    unpackPhase = "true";
-    installPhase = ''
-      mkdir -p $out/bin
-      cp $src $out/bin/${name}
-      chmod +x $out/bin/${name}
-      patchShebangs $out/bin/${name}
-    '';
-  };
-
-  strip-tags = callPackage "${builtins.getEnv "HOME"}/drive/nix-packages/strip-tags" {
-    inherit (python3Packages)
-      buildPythonApplication
-      pytestCheckHook
-      setuptools
-      pythonOlder;
-    inherit
-      fetchFromGitHub
-      lib
-      python3;
-  };
-
-in ([
-  # nix-beautify TODO
-
-  strip-tags
-  tigervnc
-  yt-fts
-  ttok
-  nodePackages.serve # static file HTTP server
-  realvnc-vnc-viewer
-  nodePackages.node2nix
-  elixir
-  nodePackages.diff2html-cli
-  python3Packages.openai
-  llm
-  gpt-cli
-  trufflehog
-  twscrape
-
-  json2nix
-  textract
-  pushover-cli
-  duckdb
-  edn
-  spark
-  cached-nix-shell
-  anypaste
-  autoraise
-  ipfs-deploy
-  we-get
-  nix-zsh-completions
-  terminal-colors
-
-  audible-cli
-  aaxtomp3
-
-  scihub
-  mpv # video player
-  screenshot_tweet
-  nixpkgs-fmt # Nix formatter
-  gum # TUI widgets
-  oauth2l # CLI for interacting with Google API authentication
-  highlight # source code highlighting tool
-  direnv
-  janet jpm
-  urlencode
-  scriptisto
-  python3Packages.youtube-transcript-api
-  firebase-tools
-  # aichat # ChatGPT # TODO error
-  # athena-jot
-  backblaze-b2
-  clojure
-  leiningen
-  boot
-  zprint
-  # broot
-  # chromium
-  # clang # TODO binutils collision
-  # curl-impersonate # TODO broken
-  # difftastic # syntactic diff # TODO macos build fails
-  # heygpt # ChatGPT # TODO broken
-  impbcopy
-  # jwhois # TODO bin/whois conflict
-  # lua53Packages.lua-lsp # TODO lua lsp
-  # meteor # macos error
-  # mlterm
-  # mongodb
-  # nix-doc # extract nix documentation from source TODO
-  # nixops # cloud, nixos # TODO crashing build
-  # ntfy # send notifications, on demand and when commands finish
-  # nvimpager # TODO broken
-  # ocamlPackages.google-drive-ocamlfuse
-  # oci-cli
-  # open-interpreter # TODO broken on macos
-  # remmina # Windows remote desktop
-  # siege # TODO http load testing
-  # tesseract
-  # tg # telegram TODO
-  # tidal-dl
-  # unixtools TODO error
-  # unixtools.xxd
-  # weechat # TODO
-  # whatsapp
-  # wireshark # network debugging
-  # wkhtmltopdf
-  # x_x
+  anypaste = callPackage ./pkgs/anypaste { };
+  athena-jot = callPackage ./pkgs/athena-jot { };
+  audd-cli = callPackage ./pkgs/audd-cli { };
+  autoraise = callPackage ./pkgs/autoraise { experimental_focus_first = true; };
+  cached-nix-shell = callPackage ./pkgs/cached-nix-shell { };
+  carbonyl = (callPackage ./pkgs/carbonyl { }).package;
+  chart-stream = callPackage ./pkgs/chart-stream { };
+  cuff = callPackage ./pkgs/cuff { };
+  edn = callPackage ./pkgs/edn { };
+  ffsclient = callPackage ./pkgs/ffs_client { };
+  googler = callPackage ./pkgs/googler { };
+  gpt-cli = callPackage ./pkgs/gpt-cli { inherit (python3Packages) anthropic attrs black google-generativeai openai pydantic prompt-toolkit poetry-core orjson pytest pyyaml rich tiktoken tokenizers typing-extensions; };
+  impbcopy = callPackage ./pkgs/impbcopy { };
+  ipfs-deploy = (callPackage ./pkgs/ipfs-deploy { }).package;
+  json2nix = callPackage ./pkgs/json2nix { };
+  jtab = callPackage ./pkgs/jtab { };
+  jtbl = callPackage ./pkgs/jtbl { inherit (python3Packages) buildPythonApplication tabulate; };
+  kefctl = callPackage ./pkgs/kefctl { inherit perl; };
+  mkalias = callPackage ./pkgs/mkalias { };
+  nix-beautify = callPackage ./pkgs/nix-beautify { };
+  nixos-repl = callPackage ./pkgs/nixos-repl { };
+  pbpaste-html = callPackage ./pkgs/pbpaste-html { };
+  pushover-cli = callPackage ./pkgs/pushover-cli { };
+  scihub = callPackage ./pkgs/scihub.py { inherit (python3Packages) beautifulsoup4 buildPythonPackage pysocks requests retrying; };
+  screenshot_tweet = callPackage ./pkgs/screenshot_tweet { inherit (python3Packages) buildPythonApplication playwright; };
+  spark = callPackage ./pkgs/spark { };
+  strip-tags = callPackage ./pkgs/strip-tags { inherit (python3Packages) buildPythonApplication pytestCheckHook setuptools pythonOlder; };
+  textract = callPackage ./pkgs/textract { inherit (nixpkgsUnstable.python3Packages) argcomplete beautifulsoup4 buildPythonPackage chardet docx2txt extract-msg fetchPypi lark pdfminer-six python-pptx rtfde six speechrecognition xlrd; };
+  tidal-dl = callPackage ./pkgs/tidal-dl { inherit (python3Packages) buildPythonApplication buildPythonPackage colorama fetchPypi lib mutagen prettytable pycrypto pydub requests; };
+  ttok = callPackage ./pkgs/ttok { inherit (python3Packages) click tiktoken buildPythonPackage; };
+  twscrape = callPackage ./pkgs/twscrape { inherit (python3Packages) aiosqlite buildPythonPackage fake-useragent hatchling httpx loguru; };
+  we-get = callPackage ./pkgs/we-get { inherit (python3Packages) beautifulsoup4 buildPythonPackage colorama docopt poetry-core prompt_toolkit pygments; };
+  x_x = callPackage ./pkgs/x_x { inherit (python3Packages) buildPythonPackage click six xlrd; };
+  yt-fts = callPackage ./pkgs/yt-fts { inherit (nixpkgsUnstable.python3Packages) beautifulsoup4 buildPythonPackage chromadb click openai pip requests rich; };
+in
+[
+  # heygpt # TODO
+  # mongodb # TODO
+  # ntfy # TODO
   (firefox_decrypt.overrideAttrs (oldAttrs: { makeWrapperArgs = oldAttrs.makeWrapperArgs ++ [ "--prefix" "DYLD_LIBRARY_PATH" ":" (lib.makeLibraryPath [ nss ]) ]; }))
-  (hiPrio expect) # terminal automation
+  (hiPrio expect)
   (hiPrio texlive.combined.scheme-full)
   (hunspellWithDicts (with hunspellDicts; [ en-us fr-moderne ]))
+  (nvimpager.overrideAttrs (oldAttrs: { doCheck = false; meta = oldAttrs.meta // { broken = false; }; }))
+  (python3Packages.litellm.overrideAttrs (oldAttrs: { propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ (with python3Packages; [ appdirs backoff fastapi jinja2 setuptools tokenizers tomli tomli-w uvicorn ]); }))
+  (python3Packages.pdfplumber.override { pandas-stubs = python3Packages.pandas-stubs.overrideAttrs (oldAttrs: { doCheck = false; doInstallCheck = false; }); })
   (ruby_3_2.withPackages (ps: with ps; [ pry pry-byebug pry-doc ]))
-  rubocop
-  act # run GitHub actions locally
+  aaxtomp3
+  act
   android-tools
-  shellcheck
-  du-dust # disk usage
-  elixir
-  erlang
-  zig
-  nixpkgsUnstable.deno
   ansi2html
   ansifilter
-  glab # GitLab CLI
   antiword
-  apktool # decompile apks
-  archivemount # mount archives
+  anypaste
+  apktool
+  archivemount
   archiver
-  aria # torrents
-  ariang # aria2
+  aria
+  ariang
   asciinema
-  asdf-vm # version manager
+  asdf-vm
   aspell
-  atool # archive
+  ast-grep
+  athena-jot
+  atool
+  audible-cli
+  autoraise
   autossh
   awscli2
   awslogs
   awsls
-  babashka # clojure
-  bat # cat with syntax highlighting
-  bc # calculator
-  beautysh # beautify bash scripts
-  black # Python code formatter
-  brotab # control browser tabs
+  babashka
+  backblaze-b2
+  bat
+  bc
+  beautysh
+  black
+  boot
+  broot
+  brotab
   browsh
-  btop # top
-  bun # JavaScript runtime
-  bundix # Ruby Nix
-  cachix # Nix
-  cargo # Rust
-  cariddi # crawler for URLs and endpoints
+  btop
+  bun
+  bundix
+  cached-nix-shell
+  cachix
+  cargo
+  cariddi
+  castnow
   catdoc
-  cdrtools # cd tools
-  cfonts # console banner generator
-  chafa # terminal images
+  catt
+  cdrtools
+  cfonts
+  chafa
   chart-stream
-  chatblade # ChatGPT
-  choose # human-friendly and fast alternative to cut and awk
+  chatblade
+  choose
   chrome-export
-  chromedriver # Chrome
-  chruby # ruby version manager TODO
+  chromedriver
+  chruby
   cht-sh
-  cloc # source code language statistics
-  scc # source code language statistics
+  clang
+  cloc
+  clojure
   cmake
-  colordiff # diff
-  comma # nix
-  crate2nix # Rust
-  crudini # edit ini files
-  csvkit # CSV
-  universal-ctags
+  colordiff
+  comma
+  crate2nix
+  crudini
+  csvkit
   curl
-  curlie # Curl HTTPie
-  darkhttpd # http server
+  curlie
+  darkhttpd
   dasel
   datamash
-  dateutils # dategrep
+  dateutils
   deep-translator
-  delta # diff
-  diffoscopeMinimal # in-depth comparison of files, archives, and directories
-  # diffoscope # in-depth comparison of files, archives, and directories
-  dive # Docker image explorer
-  pigz # parallel gzip
+  delta
+  diffoscopeMinimal
+  difftastic
+  direnv
+  dive
   dnscontrol
-  dnsutils # dig
-  docopts # shell argument parser
-  dogdns # dig alternative
-  duf # disk usage visualizer
+  dnsutils
+  docopts
+  dogdns
+  du-dust
+  duckdb
+  duf
   easyocr
-  eksctl # AWS
+  edir
+  edn
+  eksctl
+  elixir
   enscript
-  entr # file watcher
-  espeak-ng # speech synthesis
-  eternal-terminal # remote shell that automatically reconnects without interrupting the session
+  entr
+  erlang
+  espeak-ng
+  eternal-terminal
   eza
-  fastgron # flatten JSON
+  fastgron
   fastlane
-  fd # find alternative
+  fd
   fetchmail
   ffmpeg-full
   ffmpegthumbnailer
   ffsclient
   file
+  firebase-tools
   flac
   flyctl
-  fnm # node version manager
+  fnm
   fontforge
   foreman
-  fpp # path picker
-  fq # jq for binary formats
+  fpp
+  fq
   freerdp
   fswatch
   fx
-  fzf # fuzzy finder
-  gcalcli # google calendar
-  gcc
+  fzf
+  gcalcli
   gcsfuse
   gdrive3
-  geckodriver # Firefox
+  geckodriver
   geoipWithDatabase
-  gh # github
-  ghorg # GitHub backup
-  ghostscript # enscript
+  gh
+  ghorg
+  ghostscript
   git
-  python-launcher
   git-extras
-  git-lfs # git large files
+  git-lfs
   git-open
-  gitfs # git filesystem
+  gitfs
+  glab
+  glow
   gnumake
   gnupg
   gnutls
   go
-
-  go-chromecast # chromecast
-  castnow # Chromecast
-  catt # Chromecast
-  mkchromecast # Chromecast
-
-  gojq # jq alternative
-  google-cloud-sdk # cloud
-  googler # google search cli
+  go-chromecast
+  gojq
+  google-cloud-sdk
+  googler
   gotty
   gphotos-sync
   gping
-  graphicsmagick # image, tools
+  gpt-cli
+  graphicsmagick
   graphviz
-  grc # log colorizer
-  groff # nroff text formatting
-  haskellPackages.aeson-pretty # format json
+  grc
+  groff
+  gum
+  haskellPackages.aeson-pretty
   helix
   heroku
   hexyl
-  hr # horizontal rule
-  html-tidy # html
+  highlight
+  hr
+  html-tidy
   html2text
-  htmlq # extract content from HTML with CSS selectors
+  htmlq
   htop
-  httpie # http client
+  httpie
   httrack
-  hyperfine # benchmark
+  humanfriendly
+  hyperfine
   iftop
   imagemagick
-  imgurbash2 # file-sharing
-  inetutils # telnet
+  img2pdf
+  imgurbash2
+  impbcopy
+  inetutils
   iperf
   ipfs
+  ipfs-deploy
   ipinfo
-  isync # email sync
-  jc # json
+  isync
+  janet jpm
+  jc
   jdk
-  jless # JSON viewer
-  jo # create JSON
-  jp # json manipulation
-  jq # json
+  jless
+  jo
+  jp
+  jq
+  json2nix
+  jtab
   jtbl
-  keybase # TODO error
+  keybase
   kubectl
-  kubectx # kubernetes context switch
+  kubectx
   kubernetes-helm
   lastpass-cli
-  lazydocker # Docker TUI
-  lazygit # git
+  lazydocker
+  lazygit
+  leiningen
   lesspipe
-  edir # better vidir
-  lf # TUI file manager
-  libarchive # bsdtar
-  librsvg # rasterize SVG
-  rust-script
+  lf
+  libarchive
+  librsvg
   libsixel
   linode-cli
-  lolcat # console text colorizer animate
-  lsof # system
+  llm
+  lolcat
+  lsof
   lua
   lua-language-server
-  luajitPackages.luarocks # lua package manager
-  mailutils # email
-  mblaze # email
-  mdcat # TUI markdown viewer
-  glow # TUI markdown viewer
-  mediainfo # metadata
+  luajitPackages.luarocks
+  mailutils
+  manix
+  mblaze
+  mdcat
+  mediainfo
   mermaid-cli
   miller
   mkcert
+  mkchromecast
+  moar
   monero-cli
-  monolith # save web pages
+  monolith
   mopidy
-  moreutils # via overlay; moreutils parallel conflicts with GNU parallel # for vipe & vidir
-  mosh # ssh
-  mpc-cli # mpd
+  moreutils
+  mosh
+  mpc-cli
   mpg123
-  mtr # traceroute alternative
+  mpv
+  mtr
   mutt
-  navi # cheatsheet cli
-  # ncdu # disk usage # TODO build crash
+  navi
   neo-cowsay
   neovim
-  netcat # networking
-  ngrep # networking
+  netcat
+  ngrep
   ngrok
-  niv # Nix dependency management
+  niv
+  nix-beautify
   nix-index
   nix-info
+  nix-init
   nix-prefetch
-  nix-prefetch-github # nix
-  nix-prefetch-scripts # nix
+  nix-prefetch-github
+  nix-prefetch-scripts
   nix-top
   nix-tree
-  nixfmt # code formatter, nix
+  nix-zsh-completions
+  nixfmt
+  nixops_unstable
   nixos-shell
-  nload # network traffic monitor
-  nmap # network
+  nixpkgs-fmt
+  nixpkgsUnstable.aichat
+  nixpkgsUnstable.deno
+  nixpkgsUnstable.mplayer
+  nixpkgsUnstable.ncdu
+  nixpkgsUnstable.nix-doc
+  nixpkgsUnstable.python3Packages.html2image
+  nixpkgsUnstable.python3Packages.htmldate
+  nixpkgsUnstable.python3Packages.pipx
+  nixpkgsUnstable.python3Packages.trafilatura
+  nixpkgsUnstable.tg
+  nload
+  nmap
+  nodePackages.diff2html-cli
+  nodePackages.eslint
   nodePackages.json
   nodePackages.jsonlint
-  nodePackages.pnpm # NodeJS package manager
+  nodePackages.localtunnel
+  nodePackages.node2nix
+  nodePackages.pnpm
+  nodePackages.serve
   nodePackages.typescript-language-server
   nodePackages.vercel
   nodePackages.webtorrent-cli
-  pastel # color converter, color picker
   notmuch
-  manix
-  nox # search Nix packages
-  nss # certutil
-  num-utils # random, range, etc.
+  nox
+  nss
+  num-utils
   nushell
   nyx
-  ollama # run language models locally
+  oauth2l
+  oci-cli
+  ollama
+  open-interpreter
   openai-whisper-cpp
-  openjdk # java
+  openjdk
   openssl
-  ouch # archive
-  p7zip # 7z
+  ouch
+  p7zip
   pandoc
   parallel
   parinfer-rust
+  pastel
   patchelf
   patchutils
-  pdfgrep # grep PDFs
-  pdftk # pdf manipulation
-  perceptualdiff # image diff
+  pdfgrep
+  pdftk
+  perceptualdiff
   perl
+  pigz
   pipenv
   piper-tts
   pipreqs
   play-with-mpv # TODO
   poetry
-  poppler_utils # PDF tools
+  poppler_utils
   portaudio
   postgresql
-  potrace # convert bitmap to vector
-  prettyping # ping alternative
+  potrace
+  prettyping
   procs
   projectm
-  pv # pipe viewer
+  pushover-cli
+  pv
   pwgen
   pyenv
+  python-launcher
+  python3Packages.argcomplete # TODO
   python3Packages.aria2p
-  python3Packages.grip # preview GitHub markdown
+  python3Packages.distro
+  python3Packages.docx2txt
+  python3Packages.grip
+  python3Packages.markdown-it-py
+  python3Packages.num2words
+  python3Packages.openai
   python3Packages.pip-tools
-  nixpkgsUnstable.python3Packages.pipx # install & run Python packages in isolated environments
+  python3Packages.pygments
+  python3Packages.tabulate
   python3Packages.xmljson
+  python3Packages.youtube-transcript-api
   qemu
   racket
-  rbenv # Ruby version manager
+  rbenv
   rclone
-  readability-cli # content extractor
-  nixpkgsUnstable.python3Packages.trafilatura # content extractor
-  recode # encoding
+  readability-cli
+  realvnc-vnc-viewer
+  recode
   redis
   remarshal
+  remmina
   ripgrep
-  ripgrep-all # grep PDFs etc.
+  ripgrep-all
   rlwrap
   rm-improved
-  rnix-lsp # Nix language server
-  rq # TOML, CSV, JSON, YAML, etc.
+  rnix-lsp
+  rq
   rsync
-  rubyfmt # Ruby formatter
+  rubocop
+  rubyfmt
   rubyPackages.dip
   rubyPackages.kramdown
   rubyPackages.prettier
-  rustc # Rust
-  scrcpy # Android
+  rust-script
+  rustc
+  scc
+  scihub
+  scrcpy
+  screenshot_tweet
+  scriptisto
   sd
   sdcv
   selenium-server-standalone
-  semgrep # TODO fails on mac
-  shell_gpt # ChatGPT
-  shellclear # secure shell history commands by finding sensitive data
-  shfmt # shell script formatter
-  shot-scraper # website screenshots
+  semgrep
+  shell_gpt
+  shellcheck
+  shellclear
+  shfmt
+  shot-scraper
   socat
-  solargraph # ruby
+  solargraph
   sox
+  spark
   speedread
   speedtest-go
   spotdl
-  sptlrx # Spotify lyrics
+  sptlrx
   sqlite
-  sshpass # supply password to ssh
-  nodePackages.eslint
+  sqlite-utils
+  sshpass
   stderred
   streamlink
+  strip-tags
   surfraw
-  t # twitter
+  t
   tcpdump
-  termdbms # TUI for viewing and editing database files
+  tealdeer
+  termdbms
+  terminal-colors
   termtosvg
-  tesseract4 # ocr
+  tesseract4
   testdisk
+  textract
+  tidal-dl
   tidyp
-  tig # Git TUI
-  tealdeer # tldr client
-  tmate # tmux remote sharing
-  tmpmail # disposable email
+  tig
+  tigervnc
+  tmate
+  tmpmail
   tmux
-  tokei # source code language statistics
+  tokei
   translate-shell
   tree
   tree-sitter
-  trurl # URL parser
+  trufflehog
+  trurl
+  ttok
   ttyd
+  twscrape
   units
+  universal-ctags
+  unixtools.xxd
   unrar
-  unrtf # convert from RTF
+  unrtf
   unzip
   url-parser
+  urlencode
   urlscan
-  urlwatch # monitor urls for changes
-  vhs # generate GIFs
-  vimpager # vim pager
+  urlwatch
+  vhs
+  viddy
+  vimpager
   vimv-rs
-  visidata # data exploration TUI
-  viu # terminal images
-  vivid # ls colors
+  visidata
+  viu
+  vivid
   vultr-cli
   w3m
-  wdiff # word diff
+  wdiff
+  we-get
   weather
-  wego # weather
+  webtorrent_desktop
+  weechat
+  wego
   wget
   wget2
-  woof # single-file web server
-  wrk # http benchmarking
+  wireshark
+  woof
+  wrk
+  x_x
+  xcbuild
   xdg-utils
   xh
   xml2
-  xmlstarlet # xml
+  xmlstarlet
   xmlto
-  xsv # CSV
+  xsv
   xurls
-  yai # ChatGPT
-  yarn # nodejs
+  yai
+  yarn
   yarn-bash-completion # TODO
+  yj
   youtube-viewer
-  yj # convert between YAML, TOML, JSON, and HCL
-  yq-go # command-line YAML, JSON, XML, CSV, TOML and properties processor
-  yt-dlp # youtube
-  ytfzf # youtube
+  yq-go
+  yt-dlp
+  yt-fts
+  ytfzf
+  zig
   zip
-] ++ (pkgs.lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-  # (procps.overrideAttrs (attrs: { postInstall = attrs.postInstall + "\n" + "rm $out/bin/top $out/share/man/man1/top.1"; }))
-  # darwin.ios-deploy
-  # darwin.iproute2mac # TODO build error
-  # darwin.xcbuild # TODO
-  # darwin.xcode-install # TODO
-  # darwin.xcode_14
-  # fast-cli # TODO npm
-  # localtunnel # TODO npm
+  zprint
+] ++ (lib.optionals stdenv.hostPlatform.isDarwin [
   # pagekite # TODO
-  # webtorrent_desktop # linux
-  # wrk2 # http benchmarking # linux
   # wsc
-  # xcbuild
   # xcode TODO
-  # xcode-install
-  # xcodes
-  # xcpretty
   asitop
   coreutils
   darwin.apple_sdk.frameworks.Security
@@ -648,182 +508,190 @@ in ([
   darwin.openwith
   darwin.trash
   dockutil
-  duti # macos file associations
-  findutils # gnu find
+  duti
+  findutils
   gawk
-  gnugrep # gnu grep
-  gnused # gnu sed
-  m-cli # TODO errors
-  mas # Mac App Store
+  gnugrep
+  gnused
+  m-cli # TODO
+  mas
   mkalias
   pbpaste-html
   pngpaste
   pstree
   psutils
-  reattach-to-user-namespace # Mac tmate
+  reattach-to-user-namespace
   skhd
-  terminal-notifier # macos
+  terminal-notifier
   util-linux
   watch
   watchexec
-]) ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-  # (google-chrome.override { commandLineArgs = "--force-device-scale-factor=2"; })
+  xcode-install
+  xcodes
+  xcpretty
+]) ++ lib.optionals stdenv.hostPlatform.isLinux [
   # (zathura.override { useMupdf = true; })
-  # conda # Python environments
-  # fast-cli # speed test
-  # google-chrome-dev
-  # grab-site # web archive # TODO broken
+  # conda
   # ioquake3
-  # kepka # telegram
-  # meli # email client
+  # kepka
+  # meli
   # powertop
-  # rdrview # content extractor
-  # shrinkpdf # TODO
+  # rdrview
+  # shrinkpdf
   # slack
   # thunar thumbnails
-  # ungoogled-chromium # browser
   # vlc_qt5
   (firefox-devedition-bin.override { cfg.enableFXCastBridge = true; cfg.speechSynthesisSupport = true; })
   (latest.firefox-nightly-bin.override { cfg.enableFXCastBridge = true; cfg.speechSynthesisSupport = true; cfg.forceWayland = true; })
   acpi
-  alot # email client
+  alot
   alsa-utils
   amazon-ecs-cli
   appimage-run
   audacity
-  audd-cli # music recognition cli
+  audd-cli
   bcompare
-  binutils # TODO collision
+  binutils
   bluetooth_battery
-  breeze-gtk # GTK QT
-  breeze-qt5 # GTK QT
-  caprine-bin # Facebook Messenger
-  cog # minimal WebKit browser
-  crow-translate # translate
+  breeze-gtk
+  breeze-qt5
+  caprine-bin
+  chromium
+  cog
+  crow-translate
   cuff
-  detox # clean up filenames
+  detox
   dhcpcd
   docker-client
   docker-compose
-  downonspot # Spotify downloader
+  downonspot
   dtrx
-  efibootmgr # UEFI
+  efibootmgr
   electrum
   emacs
-  emote # emoji
+  emote
   ethtool
   evemu
   evince
-  fatrace # file access events
-  fbterm # framebuffer terminal
-  ff2mpv # Firefox MPV
-  fswebcam # webcam image capture
-  fuseiso # mount ISO
-  gcolor2 # color picker
-  glib.bin # gsettings
+  fast-cli
+  fatrace
+  fbterm
+  ff2mpv
+  fswebcam
+  fuseiso
+  gcolor2
+  glib.bin
   gnome-epub-thumbnailer
-  headset # music player
-  imv # image viewer
+  google-chrome
+  google-chrome-dev
+  google-drive-ocamlfuse
+  headset
+  imv
   inkscape
-  inotify-tools # file watcher
+  inotify-tools
   iotop
   jamesdsp
-  kitty # terminal
-  libguestfs # guestfsmount
+  kitty
+  libguestfs
   libinput
-  libnotify # notify-send
+  libnotify
   libreoffice-fresh
-  libsForQt5.breeze-gtk # GTK
+  libsForQt5.breeze-gtk
   libsForQt5.kdegraphics-thumbnailers
-  linuxPackages.cpupower # CPU governor
+  linuxPackages.cpupower
   lm_sensors
   lshw
   lxqt.pavucontrol-qt
   macchanger
   mailcheck
-  mbidled # TODO
-  monitor # task manager
+  mbidled
+  meteor
+  mlterm
+  monitor
+  mplayer
   mupdf
-  ncpamixer # ncurses PulseAudio Mixer
-  neochat # Matrix client
-  neovide # Vim, GUI
+  ncpamixer
+  neochat
+  neovide
   nethogs
-  nheko # Matrix client
+  nheko
   nixos-repl
   nodejs
   nodePackages.peerflix
+  ocrmypdf
   ookla-speedtest
-  orjail # TOR
-  pamixer # audio
-  paps # text to PostScript using Pango with UTF-8 support
+  openai-whisper
+  orjail
+  pamixer
+  paps
   pasystray
-  pavucontrol # audio
-  pciutils # lspci
-  pdfsandwich # PDF, OCR
+  pavucontrol
+  pciutils
+  pdfsandwich
   percollate
   perf-tools
-  playerctl # MPRIS
-  ponymix # audio
+  playerctl
+  ponymix
   popcorntime
-  pqiv # image viewer
-  progress # progress viewer for running coreutils
-  protonvpn-cli # VPN
-  proxychains # SOCKS5 proxy
+  pqiv
+  progress
+  protonvpn-cli
+  proxychains
   psmisc
-  pulseaudio # for pactl
+  pulseaudio
   pulseaudio-dlna
-  qutebrowser # browser
-  reptyr # reparent tty
-  rofi-emoji # emoji
+  qutebrowser
+  reptyr
+  rofi-emoji
   rustup
   screenkey
   session-desktop
-  simple-scan # scanning
+  siege
+  simple-scan
   skypeforlinux
   sleuthkit
-  sleuthkit # data forensics tool
-  songrec # Shazam CLI
-  speechd # speech-dispatcher
+  songrec
+  speechd
   spotify
   strace
-  sublime4 # text editor
-  swappy # image annotation
+  sublime4
+  swappy
   sway-launcher-desktop
   swayr
-  swaytools # swayinfo
-  sysz # systemd
-  tdesktop # Telegram
+  swaytools
+  sysz
+  tdesktop
   tidal-hifi
   torsocks
   trash-cli
   uget
   ulauncher
+  ungoogled-chromium
   unoconv
-  usbutils # lsusb
-  vieb # Vim browser
-  vlc # video player
+  usbutils
+  vieb
+  vlc
   vopono
   vscode
-  watchlog # easy monitoring of live logs
-  waydroid # Android
-  wezterm # terminal
+  watchlog
+  waydroid
+  wezterm
   whatsapp-for-linux
+  whisper-ctranslate2
   wine
   wirelesstools
   wireplumber
   wl-clipboard-x11
   wlprop
   wlrctl
-  wofi # menu
+  wofi
+  wrk2
   xdg-user-dirs
-  xdragon # file drag-and-drop source/sink
+  xdragon
   xscreensaver
   xsel
-  ydotool # automation
-  ytcast # YouTube
-  mplayer
-  ytmdesktop # YouTube Music
+  ydotool
+  ytcast
+  ytmdesktop
   zathura
-  openai-whisper
-  whisper-ctranslate2
-])
+]

@@ -27,7 +27,6 @@
     ./modules/clipman.nix # linux
     ./modules/command-not-found.nix
     ./modules/cuff.nix # torrent search cli # nixos
-    ./modules/curl.nix
     ./modules/cursor.nix
     ./modules/dict.nix # linux
     ./modules/disable-ipv6.nix # linux
@@ -72,7 +71,6 @@
     ./modules/play-with-mpv.nix
     ./modules/printing.nix
     ./modules/qt.nix
-    ./modules/readline/inputrc.nix
     ./modules/scanning.nix
     ./modules/spotifyd.nix
     ./modules/sway-autorotate-screen.nix
@@ -126,55 +124,56 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  nixpkgs.overlays = let
-    nixpkgsUnstable = self: super: {
-      nixpkgsUnstable =
-        let nixpkgs-unstable-src = fetchTarball "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
-        in import nixpkgs-unstable-src { };
+  nixpkgs.overlays =
+    let
+      nixpkgsUnstable = self: super: {
+        nixpkgsUnstable =
+          let nixpkgs-unstable-src = fetchTarball "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
+          in import nixpkgs-unstable-src { };
       };
       firefoxNightly =
         let src = fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz"; };
         in import "${src}/firefox-overlay.nix";
-  in [
-    nixpkgsUnstable
-    firefoxNightly
-    (import ./packages)
-    (self: super: {
-      fcitx-engines = pkgs.fcitx5;
-    })
-  ];
+    in
+    [
+      nixpkgsUnstable
+      firefoxNightly
+      (import ./packages)
+      (self: super: {
+        fcitx-engines = pkgs.fcitx5;
+      })
+    ];
 
-    i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_US.UTF-8";
 
-    time.timeZone = "Europe/Paris";
+  time.timeZone = "Europe/Paris";
 
-    console.keyMap = "fr";
+  console.keyMap = "fr";
 
-    users.users.avo = {
-      isNormalUser = true;
-      shell = pkgs.zsh;
-      extraGroups = [ "wheel" ];
+  users.users.avo = {
+    isNormalUser = true;
+    shell = pkgs.zsh;
+    extraGroups = [ "wheel" ];
+  };
+
+  environment.localBinInPath = true;
+  environment.homeBinInPath = true;
+
+  home-manager.users.avo = { pkgs, ... }: rec {
+    nixpkgs.overlays = config.nixpkgs.overlays;
+
+    services.playerctld.enable = true;
+
+    home.stateVersion = "22.05";
+
+    dconf.settings."org/gnome/desktop/interface" = {
+      font-name = "Ubuntu 12";
     };
 
-    environment.localBinInPath = true;
-    environment.homeBinInPath = true;
+    home.packages = import ./packages.nix pkgs;
 
-    home-manager.users.avo = { pkgs, ... }: rec {
-      nixpkgs.overlays = config.nixpkgs.overlays;
-
-      services.playerctld.enable = true;
-
-      home.stateVersion = "22.05";
-
-      dconf.settings."org/gnome/desktop/interface" = {
-        font-name = "Ubuntu 12";
-      };
-
-      home.packages = import ./packages.nix pkgs;
-
-      home.sessionVariables = {
-        EDITOR = "vim";
-        PAGER = "nvimpager";
+    home.sessionVariables = {
+      EDITOR = "vim";
       # BROWSER = "google-chrome-stable";
       BROWSER = "firefox";
     };
@@ -218,12 +217,6 @@
     xdg.configFile."mimeapps.list".force = true;
 
     programs.lesspipe.enable = true;
-
-    # home.activation = {
-    #   aliasApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    #   ln -sfn $genProfilePath/home-path/Applications "$HOME/Applications/Home Manager Applications"
-    #   '';
-    # };
 
     programs.fzf.enable = true;
     programs.fzf.enableZshIntegration = true;

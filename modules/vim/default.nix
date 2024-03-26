@@ -172,7 +172,9 @@ let
       \ 'nvim_lsp': v:true,
       \ 'conjure': v:true,
       \ }
-''; in pkgs.nixpkgsUnstable.neovim.override {
+  '';
+in
+pkgs.nixpkgsUnstable.neovim.override {
   vimAlias = true;
   viAlias = true;
   configure.vam = {

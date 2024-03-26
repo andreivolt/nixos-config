@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  home-manager.users.andrei = { pkgs, ...}: {
+  home-manager.users.andrei = { pkgs, ... }: {
     home.packages = with pkgs; [ flashfocus ];
   };
 

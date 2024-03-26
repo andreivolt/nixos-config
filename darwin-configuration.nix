@@ -8,7 +8,6 @@
     # ./modules/mac_postgres.nix
     ./cachix.nix
     ./modules/command-not-found.nix
-    ./modules/curl.nix
     ./modules/file-associations.nix
     ./modules/flux.nix
     ./modules/gnupg.nix
@@ -36,11 +35,10 @@
     ./modules/nix.nix
     ./modules/playwright.nix
     ./modules/python-portaudio.nix
-    ./modules/readline/inputrc.nix
     ./modules/ruby.nix
     ./modules/zsh/fzf.nix
   ]
-  ++ [<home-manager/nix-darwin>];
+  ++ [ <home-manager/nix-darwin> ];
 
   networking.hostName = "mac";
 
@@ -111,7 +109,6 @@
       pref-edit
       pretty-clean
       superwhisper
-      telegram
     ] ++
     (import ./packages.nix pkgs);
 
@@ -120,15 +117,17 @@
   # enable Zsh completion for system packages
   environment.pathsToLink = [ "/share/zsh" ];
 
-  nixpkgs.overlays = let
-    nixpkgsUnstable = self: super: {
-      nixpkgsUnstable = import <nixpkgs-unstable> {};
-    };
-  in [
-    (import ./mac-apps)
-    (import (builtins.fetchTarball { url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz; }))
-    nixpkgsUnstable
-  ];
+  nixpkgs.overlays =
+    let
+      nixpkgsUnstable = self: super: {
+        nixpkgsUnstable = import <nixpkgs-unstable> { };
+      };
+    in
+    [
+      (import ./mac-apps)
+      (import (builtins.fetchTarball { url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz; }))
+      nixpkgsUnstable
+    ];
 
   # services.emacs.package = pkgs.emacs-unstable;
   # services.emacs.enable = true;
@@ -159,106 +158,107 @@
     casks = [
       "android-commandlinetools"
       "appcleaner"
-      "battery" # battery charge limiter
-      "beeper" # multi-service messenger
-      "blackhole-2ch" # virtual audio device
-      "caffeine" # inhibit sleep
-      "choosy" # rules for opening url with different browsers
-      "cursorcerer" # autohide cursor
+      "battery"
+      "beeper"
+      "blackhole-2ch"
+      "caffeine"
+      "choosy"
+      "cursorcerer"
       "discord"
       "firefox"
       "flux"
+      "forkgram-telegram"
       "google-chrome"
       "google-drive"
-      "grandperspective" # disk usage visualizer
-      "hammerspoon" # desktop automation
-      "iina" # video player
-      "jumpcut" # clipboard manager
-      "keycastr" # show keys
-      "kitty" # terminal
-      "macfuse" # FUSE filesystems
-      "mimestream" # email client
-      "neovide" # Neovim GUI
-      "orbstack" # Docker
-      "proxyman" # inspect network traffic
-      "rectangle" # window snap tile
-      "rocket" # emoji picker
+      "grandperspective"
+      "hammerspoon"
+      "iina"
+      "jumpcut"
+      "keycastr"
+      "kitty"
+      "macfuse"
+      "mimestream"
+      "neovide"
+      "orbstack"
+      "proxyman"
+      "rectangle"
+      "rocket"
       "roon"
       "spotify"
       "steam"
       "sublime-text"
-      "telegram" # messaging
-      "tidal" # music
+      "tidal"
       "tor-browser"
       "visual-studio-code"
       "whatsapp"
       "zoom"
-      # "alfred" # launcher
-      # "alt-tab" # window management
+
+      # "alfred"
+      # "alt-tab"
       # "android-file-transfer"
-      # "audacity" # audio editor
+      # "audacity"
       # "bettertouchtool"
       # "blender"
       # "brave-browser"
-      # "cheatsheet" # show keybindings command key hold
+      # "cheatsheet"
       # "cleanmymac"
-      # "cloudapp" # screenshots
-      # "contexts" # window switcher
-      # "cord" # Windows remote desktop
-      # "coscreen" # bidirectional screen sharing
-      # "daisydisk" # disk usage visualizer
-      # "dash" # documentation
-      # "deepl" # TODO
-      # "dropbox" # file sync
-      # "ears" # switch audio input/output with keyboard
+      # "cloudapp"
+      # "contexts"
+      # "cord"
+      # "coscreen"
+      # "daisydisk"
+      # "dash"
+      # "deepl"
+      # "dropbox"
+      # "ears"
       # "electrum"
       # "figma"
-      # "foobar2000" # music player
-      # "fork" # Git GUI
-      # "genymotion" # Android emulator
+      # "foobar2000"
+      # "fork"
+      # "genymotion"
       # "github"
-      # "gitify" # GitHub notifications
+      # "gitify"
       # "gitkraken" "gitkraken-cli"
-      # "hiddenbar" # hide menubar items
-      # "hot" # CPU temperature
+      # "hiddenbar"
+      # "hot"
       # "inkscape"
       # "ioquake3"
-      # "karabiner-elements" # keyboard shortcuts
-      # "keepingyouawake" # inhibit sleep
-      # "kindavim" # Vim keybinds everywhere
-      # "knockknock" # anti-malware
+      # "karabiner-elements"
+      # "keepingyouawake"
+      # "kindavim"
+      # "knockknock"
       # "lapce"
-      # "launchbar" # launcher TODO
+      # "launchbar"
       # "libreoffice"
-      # "little-snitch" # firewall
-      # "mailmate" # email client
-      # "miniconda" # python environments
-      # "mupdf" # pdf viewer # TODO crash
-      # "mutify" # mic mute
-      # "muzzle" # silence notifications when screensharing
-      # "odrive" # file sync TODO
-      # "parsec" # remote desktop
-      # "polypane" # responsive browser
-      # "raycast" # launcher
-      # "shortcat" # launcher
+      # "little-snitch"
+      # "mailmate"
+      # "miniconda"
+      # "mupdf"
+      # "mutify"
+      # "muzzle"
+      # "odrive"
+      # "parsec"
+      # "polypane"
+      # "raycast"
+      # "shortcat"
       # "signal"
-      # "sizzy" # responsive browser
-      # "sloth" # lsof GUI
-      # "soundsource" # per application audio control
+      # "sizzy"
+      # "sloth"
+      # "soundsource"
       # "stats"
-      # "swift-quit" # automatically quit apps when last window closed
-      # "tableplus" # db GUI
-      # "tailscale" # TODO services.tailscale
-      # "textual" # IRC
-      # "tuple" # bidirectional screen sharing # TODO
-      # "ukelele" # keyboard layout
-      # "unified-remote" # remote control
-      # "utm" # virtual machines
-      # "vlc" # video player
-      # "vysor" # remote ios/android
-      # "warp" # terminal
+      # "swift-quit"
+      # "tableplus"
+      # "tailscale"
+      # "textual"
+      # "tuple"
+      # "ukelele"
+      # "unified-remote"
+      # "utm"
+      # "vlc"
+      # "vysor"
+      # "warp"
       # "webtorrent"
-      # "wireshark" # TODO
+      # "wireshark"
     ];
 
     # TODO font-input
@@ -272,80 +272,73 @@
       "1Blocker" = 1365531024;
       "AdGuard for Safari" = 1440147259;
       "Archive Page Extension" = 6446372766;
-      "darker" = 1637413102; # Safari dark mode
+      "darker" = 1637413102;
       "Hush" = 1544743900;
       "Hyperduck" = 6444667067;
-      "Jiffy" = 1502527999; # GIF search in menu bar
-      "Nitefall" = 1575190591; # Safari dark mode
+      "Jiffy" = 1502527999;
+      "Nitefall" = 1575190591;
       "Shareful" = 1522267256;
       "Slack for Desktop" = 803453959;
       "Super Agent" = 1568262835;
       "Tailscale" = 1475387142;
       "TestFlight" = 899247664;
-      "Vimari" = 1480933944; # Safari Vim
+      "Vimari" = 1480933944;
       "Xcode" = 497799835;
-      # "Actions" = 1586435171; # additional actions for the Shortcuts app
+      # "Actions" = 1586435171;
       # "Battery Indicator" = 1206020918;
-      # "Black Out" = 1319884285; # redact parts of an image
+      # "Black Out" = 1319884285;
       # "Camera Preview" = 1632827132;
       # "Command X" = 6448461551;
       # "Day Progress" = 6450280202;
       # "Element X - Secure messenger" = 1631335820;
-      # "Lungo" = 1263070803; # keep awake
+      # "Lungo" = 1263070803;
       # "MetaMask - Blockchain Wallet" = 1438144202;
       # "Noir – Dark Mode for Safari" = 1592917505;
       # "One Task" = 6465745322;
       # "Penguin - Plist Editor" = 1634084815;
-      # "Recordia" = 1529006487; # quickly record audio
+      # "Recordia" = 1529006487;
       # "SingleFile for Safari" = 6444322545;
-      # "Speediness" = 1596706466; # internet speed test
+      # "Speediness" = 1596706466;
       # "System Color Picker" = 1545870783;
-      # "Velja" = 1607635845;# browser picker
+      # "Velja" = 1607635845;
     };
 
     brews = [
-      "aichat" # ChatGPT
-      "alerter" # notifications cli
-      "mplayer"
+      "alerter"
       "amazon-ecs-cli"
-      "asitop" # performance monitoring for Apple silicon
-      "blueutil" # bluetooth CLI
+      "blueutil"
       "borkdude/brew/jet"
-      "brightness" # macOS brigthness CLI
-      "browser" # pipe HTML to browser
-      "detox" # clean up filenames
-      "difftastic"
+      "brightness"
+      "browser"
+      "detox"
       "docker-completion"
       "ffmpeg"
-      "img2pdf"
-      "ipfs"
       "imagesnap"
       "jakehilborn/jakehilborn/displayplacer"
       "jqp"
-      "launch" # CLI launcher
+      "launch"
       "libiconv"
       "nethogs"
       "node"
       "nvm"
-      "ocrmypdf"
       "pidof"
-      "pkgxdev/made/pkgx" # Nix
-      "postgresql"
-      "pushtotalk" # mic mute
-      "qsv" # CSV toolkit
+      "pipx"
+      "pkgxdev/made/pkgx"
+      "pushtotalk"
+      "python3"
+      "qsv"
       "schappim/ocr/ocr"
-      "sleuthkit" # data forensics tool
+      "sleuthkit"
+      "swiftformat"
       "switchaudio-osx"
       "torsocks"
-      "util-linux" # setsid
-      "viddy" # watch alternative
       # "askgitdev/treequery/treequery" # TODO
-      # "csvtk" # CSV
+      # "csvtk"
       # "espanso" # TODO
       # "ext4fuse" # TODO
-      # "felixkratz/formulae/svim" # macos vim everywhere
-      # "fig" # terminal completion TODO
-      # "hgrep" # grep with syntax highlighting TODO
+      # "felixkratz/formulae/svim"
+      # "fig" # TODO
+      # "hgrep" # TODO
       # "withgraphite/tap/graphite"
     ];
     taps = [
@@ -395,4 +388,10 @@
     defaults write -g NSStatusItemSelectionPadding -int 16
     defaults write -g NSStatusItemSpacing -int 16
   '';
+
+  # home.activation = {
+  #   aliasApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  #   ln -sfn $genProfilePath/home-path/Applications "$HOME/Applications/Home Manager Applications"
+  #   '';
+  # };
 }

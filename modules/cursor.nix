@@ -3,7 +3,8 @@
 let
   cursor-theme = "Adwaita";
   cursor-size = 48;
-in {
+in
+{
   home-manager.users.andrei = {
     home.packages = with pkgs; [ gnome.adwaita-icon-theme ];
     home.sessionVariables = {
