@@ -1,12 +1,12 @@
 {
   home-manager.users.andrei.home.sessionVariables
-    .LESS = ''
-      --RAW-CONTROL-CHARS \
-      --LONG-PROMPT \
-      --ignore-case \
-      --no-init \
-      --quit-if-one-screen\
-    '';
+  .LESS = ''
+    --RAW-CONTROL-CHARS \
+    --LONG-PROMPT \
+    --ignore-case \
+    --no-init \
+    --quit-if-one-screen\
+  '';
 
   environment.variables.LESS = "XFRiM";
   # X: disable setting termcap

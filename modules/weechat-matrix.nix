@@ -58,4 +58,4 @@
     matrix_org.autoreconnect_delay = 10
     matrix_org.sso_helper_listening_port = 0
   ''
-}
+    }

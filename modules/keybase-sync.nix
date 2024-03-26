@@ -1,5 +1,5 @@
 {
-  systemd.services.keybase-sync-src  = {
+  systemd.services.keybase-sync-src = {
     startAt = "*-*-* 05:20:00";
     path = [ pkgs.coreutils ];
     environment.HOME = "/home/avo";

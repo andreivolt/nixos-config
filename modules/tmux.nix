@@ -2,7 +2,8 @@
 
 let
   theme = import (dirOf <nixos-config> + /modules/theme.nix);
-in {
+in
+{
   home-manager.users.andrei.programs.tmux = {
     enable = true;
     escapeTime = 0;

@@ -7,5 +7,5 @@
     # extraOptions = ''
     #   auto-optimize-store = true;
     # '';
-   };
+  };
 }

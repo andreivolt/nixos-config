@@ -14,14 +14,15 @@ let
       swaylock -f -c 000000
     fi
   '';
-in {
+in
+{
   environment.systemPackages = [ pkgs.fprintd ];
 
   services.udev.packages = [ pkgs.fprintd ];
 
   services.dbus.packages = [ pkgs.fprintd ];
 
-  services.fprintd.enable  = true;
+  services.fprintd.enable = true;
 
   services.fprintd.tod.enable = true;
   services.fprintd.tod.driver = pkgs.libfprint-2-tod1-vfs0090;
