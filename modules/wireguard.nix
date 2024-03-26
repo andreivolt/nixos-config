@@ -26,12 +26,13 @@
         ${pkgs.iptables}/bin/ip6tables -t nat -D POSTROUTING -s fdc9:281f:04d7:9ee9::1/64 -o eth0 -j MASQUERADE
       '';
 
-      peers = [{ # peer0
+      peers = [{
+        # peer0
         publicKey = builtins.readFile /home/avo/gdrive/wireguard-keys/phone.public;
         allowedIPs = [ "10.0.0.2/32" "fdc9:281f:04d7:9ee9::2/128" ];
       }
-      # More peers can be added here.
-        ];
+        # More peers can be added here.
+      ];
     };
   };
 }

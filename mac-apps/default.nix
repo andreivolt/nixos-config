@@ -1,15 +1,16 @@
-self: super: let
-  installApplication = {
-    name,
-    appname ? name,
-    version,
-    src,
-    description ? "",
-    homepage ? "",
-    postInstall ? "",
-    sourceRoot ? ".",
-    ...
-  }@args:
+self: super:
+let
+  installApplication =
+    { name
+    , appname ? name
+    , version
+    , src
+    , description ? ""
+    , homepage ? ""
+    , postInstall ? ""
+    , sourceRoot ? "."
+    , ...
+    }@args:
     super.stdenv.mkDerivation ({
       inherit name version src sourceRoot;
       buildInputs = with super; [ undmg unzip ];
@@ -36,12 +37,15 @@ self: super: let
         cp -R * "$out/Applications/${appname}.app"
       '' + postInstall;
     } // super.lib.optionalAttrs (args ? description) { meta = { inherit description homepage; }; });
-in {
-  macApps = super.lib.attrsets.mapAttrs' (appName: _: {
+in
+{
+  macApps = super.lib.attrsets.mapAttrs'
+    (appName: _: {
       name = super.lib.strings.removeSuffix ".nix" appName;
       value = import ./apps/${appName} {
         inherit installApplication;
         inherit (super) fetchurl;
       };
-  }) (builtins.readDir ./apps);
+    })
+    (builtins.readDir ./apps);
 }

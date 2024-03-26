@@ -6,7 +6,8 @@ let
     display = "180";
     suspend = "7200";
   };
-in {
+in
+{
   home-manager.users.andrei.systemd.user.services.swayidle = {
     Unit = {
       PartOf = [ "sway-session.target" ];

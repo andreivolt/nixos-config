@@ -4,10 +4,9 @@
   home-manager.users.andrei = { pkgs, config, ... }: {
     home.packages = with pkgs; [
       clojure
-      # clojure-lsp TODO
+      clojure-lsp
       leiningen
-      # zprint
+      zprint
     ];
-    xdg.configFile."clojure/deps.edn".source = config.lib.file.mkOutOfStoreSymlink ./deps.edn;
   };
 }

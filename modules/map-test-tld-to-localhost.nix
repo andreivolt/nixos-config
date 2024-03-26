@@ -3,7 +3,8 @@
 let
   domain = "test";
   ip = "127.0.0.1";
-in {
+in
+{
   services.dnsmasq = {
     enable = true;
   } // lib.optionalAttrs (pkgs.stdenv.hostPlatform.isLinux) {
