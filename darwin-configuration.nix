@@ -35,7 +35,6 @@
     ./modules/nix.nix
     ./modules/playwright.nix
     ./modules/python-portaudio.nix
-    ./modules/ruby.nix
     ./modules/zsh/fzf.nix
   ]
   ++ [ <home-manager/nix-darwin> ];
@@ -90,6 +89,7 @@
   system.defaults.NSGlobalDomain = {
     "com.apple.sound.beep.feedback" = 0; # feedback sound when system volume changes
     # "com.apple.sound.beep.volume" = 0.5;
+
     AppleFontSmoothing = 0;
     AppleInterfaceStyle = "Dark";
     AppleKeyboardUIMode = 3; # enable full keyboard access for controls
@@ -97,6 +97,7 @@
     AppleShowAllExtensions = true;
     AppleShowScrollBars = "Always";
     NSNavPanelExpandedStateForSaveMode = true;
+    # AppleActionOnDoubleClick = "Maximize"; # TODO
   };
 
   # system.defaults.universalaccess.reduceTransparency = true; # TODO
@@ -107,7 +108,6 @@
     with pkgs.macApps; [
       chat-tab
       pref-edit
-      pretty-clean
       superwhisper
     ] ++
     (import ./packages.nix pkgs);
@@ -125,21 +125,16 @@
     in
     [
       (import ./mac-apps)
+      # (import (builtins.fetchTarball { url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz; }))
       (import (builtins.fetchTarball { url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz; }))
       nixpkgsUnstable
     ];
 
-  # services.emacs.package = pkgs.emacs-unstable;
-  # services.emacs.enable = true;
-
-  # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
 
   programs.zsh.enable = true;
   programs.zsh.enableCompletion = false;
 
-  # Used for backwards compatibility, please read the changelog before changing.
-  # $ darwin-rebuild changelog
   system.stateVersion = 4;
 
   homebrew = {
@@ -155,9 +150,45 @@
       require_sha = true;
     };
 
+    brews = [
+      "amazon-ecs-cli"
+      "blueutil"
+      "borkdude/brew/jet"
+      "browser"
+      "detox"
+      "ffmpeg"
+      "imagesnap"
+      "jakehilborn/jakehilborn/displayplacer"
+      "jqp"
+      "launch"
+      "libiconv"
+      "nethogs"
+      "node"
+      "nvm"
+      "pidof"
+      "pipx"
+      "pkgxdev/made/pkgx"
+      "pushtotalk"
+      "python"
+      "python-setuptools"
+      "qsv"
+      "schappim/ocr/ocr"
+      "sleuthkit"
+      "swiftformat"
+      "switchaudio-osx"
+      "torsocks"
+      # "askgitdev/treequery/treequery" # TODO
+      # "csvtk"
+      # "espanso" # TODO
+      # "ext4fuse" # TODO
+      # "felixkratz/formulae/svim"
+      # "fig" # TODO
+      # "hgrep" # TODO
+      # "withgraphite/tap/graphite"
+    ];
+
     casks = [
       "android-commandlinetools"
-      "appcleaner"
       "battery"
       "beeper"
       "blackhole-2ch"
@@ -176,11 +207,9 @@
       "jumpcut"
       "keycastr"
       "kitty"
-      "macfuse"
       "mimestream"
-      "neovide"
       "orbstack"
-      "proxyman"
+      "prettyclean"
       "rectangle"
       "rocket"
       "roon"
@@ -189,10 +218,8 @@
       "sublime-text"
       "tidal"
       "tor-browser"
-      "visual-studio-code"
       "whatsapp"
       "zoom"
-
       # "alfred"
       # "alt-tab"
       # "android-file-transfer"
@@ -231,6 +258,7 @@
       # "launchbar"
       # "libreoffice"
       # "little-snitch"
+      # "macfuse"
       # "mailmate"
       # "miniconda"
       # "mupdf"
@@ -239,6 +267,7 @@
       # "odrive"
       # "parsec"
       # "polypane"
+      # "proxyman"
       # "raycast"
       # "shortcat"
       # "signal"
@@ -272,7 +301,7 @@
       "1Blocker" = 1365531024;
       "AdGuard for Safari" = 1440147259;
       "Archive Page Extension" = 6446372766;
-      "darker" = 1637413102;
+      "Command X" = 6448461551;
       "Hush" = 1544743900;
       "Hyperduck" = 6444667067;
       "Jiffy" = 1502527999;
@@ -284,6 +313,7 @@
       "TestFlight" = 899247664;
       "Vimari" = 1480933944;
       "Xcode" = 497799835;
+      "darker" = 1637413102;
       # "Actions" = 1586435171;
       # "Battery Indicator" = 1206020918;
       # "Black Out" = 1319884285;
@@ -303,45 +333,6 @@
       # "Velja" = 1607635845;
     };
 
-    brews = [
-      "alerter"
-      "amazon-ecs-cli"
-      "blueutil"
-      "borkdude/brew/jet"
-      "brightness"
-      "browser"
-      "detox"
-      "docker-completion"
-      "ffmpeg"
-      "imagesnap"
-      "jakehilborn/jakehilborn/displayplacer"
-      "jqp"
-      "launch"
-      "libiconv"
-      "nethogs"
-      "node"
-      "nvm"
-      "pidof"
-      "pipx"
-      "pkgxdev/made/pkgx"
-      "pushtotalk"
-      "python"
-      "python-setuptools"
-      "qsv"
-      "schappim/ocr/ocr"
-      "sleuthkit"
-      "swiftformat"
-      "switchaudio-osx"
-      "torsocks"
-      # "askgitdev/treequery/treequery" # TODO
-      # "csvtk"
-      # "espanso" # TODO
-      # "ext4fuse" # TODO
-      # "felixkratz/formulae/svim"
-      # "fig" # TODO
-      # "hgrep" # TODO
-      # "withgraphite/tap/graphite"
-    ];
     taps = [
       "schappim/ocr"
       "borkdude/brew"
@@ -389,10 +380,4 @@
     defaults write -g NSStatusItemSelectionPadding -int 16
     defaults write -g NSStatusItemSpacing -int 16
   '';
-
-  # home.activation = {
-  #   aliasApplications = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-  #   ln -sfn $genProfilePath/home-path/Applications "$HOME/Applications/Home Manager Applications"
-  #   '';
-  # };
 }

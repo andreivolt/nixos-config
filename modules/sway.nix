@@ -266,3 +266,172 @@ in {
       ];
     };
 }
+
+# font pango:Ubuntu 16.000000
+# floating_modifier Mod4
+# default_border normal 0
+# default_floating_border normal 2
+# hide_edge_borders both
+# focus_wrapping no
+# focus_follows_mouse yes
+# focus_on_window_activation smart
+# mouse_warping output
+# workspace_layout default
+# workspace_auto_back_and_forth no
+
+# client.focused #3c3c3c #3c3c3c #ffffff #3c3c3c #3c3c3c
+# client.focused_inactive #3c3c3c #3c3c3c #ffffff #3c3c3c #3c3c3c
+# client.unfocused #181818 #181818 #aaaaaa #181818 #181818
+# client.urgent #f0c674 #f0c674 #000000 #f0c674 #f0c674
+# client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
+# client.background #ffffff
+
+
+# bindsym End exec playerctl next
+# bindsym F1 exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > $XDG_RUNTIME_DIR/wob.sock ) || pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock
+# bindsym F2 exec pamixer --decrease 3 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock
+# bindsym F3 exec pamixer --increase 3 --allow-boost && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock
+# bindsym F4 exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+# bindsym F5 mode "default"
+# bindsym Home exec playerctl previous
+# bindsym Mod4+1 workspace number 1
+# bindsym Mod4+2 workspace number 2
+# bindsym Mod4+3 workspace number 3
+# bindsym Mod4+4 workspace number 4
+# bindsym Mod4+5 workspace number 5
+# bindsym Mod4+6 workspace number 6
+# bindsym Mod4+7 workspace number 7
+# bindsym Mod4+8 workspace number 8
+# bindsym Mod4+9 workspace number 9
+# bindsym Mod4+Alt+h resize shrink width 40px
+# bindsym Mod4+Alt+j resize grow height 40px
+# bindsym Mod4+Alt+k resize shrink height 40px
+# bindsym Mod4+Alt+l resize grow width 40px
+# bindsym Mod4+Down focus down
+# bindsym Mod4+Left focus left
+# bindsym Mod4+Return exec foot -o colors.alpha=0.80
+# bindsym Mod4+Right focus right
+# bindsym Mod4+Shift+1 move container to workspace number 1
+# bindsym Mod4+Shift+2 move container to workspace number 2
+# bindsym Mod4+Shift+3 move container to workspace number 3
+# bindsym Mod4+Shift+4 move container to workspace number 4
+# bindsym Mod4+Shift+5 move container to workspace number 5
+# bindsym Mod4+Shift+6 move container to workspace number 6
+# bindsym Mod4+Shift+7 move container to workspace number 7
+# bindsym Mod4+Shift+8 move container to workspace number 8
+# bindsym Mod4+Shift+9 move container to workspace number 9
+# bindsym Mod4+Shift+Down move down
+# bindsym Mod4+Shift+Left move left
+# bindsym Mod4+Shift+Right move right
+# bindsym Mod4+Shift+Tab focus left
+# bindsym Mod4+Shift+Up move up
+# bindsym Mod4+Shift+agrave move container to workspace 10
+# bindsym Mod4+Shift+ampersand move container to workspace 1
+# bindsym Mod4+Shift+apostrophe move container to workspace 4
+# bindsym Mod4+Shift+c kill
+# bindsym Mod4+Shift+ccedilla move container to workspace 9
+# bindsym Mod4+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -b 'Yes, exit sway' 'swaymsg exit'
+# bindsym Mod4+Shift+eacute move container to workspace 2
+# bindsym Mod4+Shift+egrave move container to workspace 6
+# bindsym Mod4+Shift+h move left
+# bindsym Mod4+Shift+j move down
+# bindsym Mod4+Shift+k move up
+# bindsym Mod4+Shift+l move right
+# bindsym Mod4+Shift+minus move container to workspace 7
+# bindsym Mod4+Shift+parenleft move container to workspace 5
+# bindsym Mod4+Shift+q kill
+# bindsym Mod4+Shift+quotedbl move container to workspace 3
+# bindsym Mod4+Shift+space floating toggle
+# bindsym Mod4+Shift+underscore move container to workspace 8
+# bindsym Mod4+Tab focus right
+# bindsym Mod4+Up focus up
+# bindsym Mod4+a focus parent
+# bindsym Mod4+agrave workspace 10
+# bindsym Mod4+ampersand workspace 1
+# bindsym Mod4+apostrophe workspace 4
+# bindsym Mod4+b splith
+# bindsym Mod4+ccedilla workspace 9
+# bindsym Mod4+d exec find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu | xargs /nix/store/7qp9y0jshnyjr2aswnc3fi9db1crjy68-gtk+3-3.24.30/bin/gtk-launch
+# bindsym Mod4+e layout toggle split
+# bindsym Mod4+eacute workspace 2
+# bindsym Mod4+egrave workspace 6
+# bindsym Mod4+f fullscreen toggle
+# bindsym Mod4+h focus left
+# bindsym Mod4+i exec colortemp up
+# bindsym Mod4+j focus down
+# bindsym Mod4+k focus up
+# bindsym Mod4+l focus right
+# bindsym Mod4+minus workspace 7
+# bindsym Mod4+o exec colortemp down
+# bindsym Mod4+p exec $menu
+# bindsym Mod4+parenleft workspace 5
+# bindsym Mod4+q reload
+# bindsym Mod4+quotedbl workspace 3
+# bindsym Mod4+r mode resize
+# bindsym Mod4+s layout toggle split
+# bindsym Mod4+space focus mode_toggle
+# bindsym Mod4+t layout tabbed
+# bindsym Mod4+underscore workspace 8
+# bindsym Mod4+v splitv
+# bindsym Mod4+w layout tabbed
+# bindsym Mod4+x move container to scratchpad
+# bindsym Print exec grim -g $(slurp) - | wl-copy -t image/png
+# bindsym twosuperior scratchpad show
+
+# input "type:keyboard" {
+# xkb_layout fr
+# xkb_options ctrl:nocaps
+# }
+
+# input "type:pointer" {
+# accel_profile flat
+# pointer_accel 1
+# }
+
+# input "type:touchpad" {
+# dwt enabled
+# middle_emulation enabled
+# natural_scroll enabled
+# tap enabled
+# }
+
+# output "*" {
+# background #000000 solid_color
+# scale 1
+# }
+
+# mode "resize" {
+# bindsym Down resize grow height 10 px
+# bindsym Escape mode default
+# bindsym Left resize shrink width 10 px
+# bindsym Return mode default
+# bindsym Right resize grow width 10 px
+# bindsym Up resize shrink height 10 px
+# bindsym h resize shrink width 10 px
+# bindsym j resize grow height 10 px
+# bindsym k resize shrink height 10 px
+# bindsym l resize grow width 10 px
+# }
+
+# for_window [window_role="pop-up"] floating enable
+# for_window [title="Volume Control"] floating enable
+# for_window [app_id="imv"] floating enable
+# for_window [app_id="pavucontrol"] floating enable
+# for_window [app_id="mpv"] floating enable
+# for_window [title="Picture in picture"] floating enable
+# for_window [title="LastPass: Free Password Manager"] floating enable
+# for_window [app_id="scratchpad"] floating enable
+# for_window [app_id="scratchpad"] move scratchpad
+# for_window [app_id="scratchpad"] scratchpad show
+# for_window [app_id="scratchpad"] resize set 2560 1600
+# for_window [app_id="scratchpad"] move position 0.000000 0.000000
+# for_window [app_id="mpv"] inhibit_idle visible
+# for_window [title="Volume Control"] resize set 1000 1000
+
+# exec "systemctl --user import-environment; systemctl --user start sway-session.target"
+# # hide titlebar on lone windows
+# default_border none
+
+# # smart_borders on
+
+# titlebar_padding 20 8
