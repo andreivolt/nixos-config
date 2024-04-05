@@ -1,4 +1,4 @@
-{ lib, pkgs, config, ... }:
+{ pkgs, config, ... }:
 
 {
   imports = [
@@ -37,7 +37,6 @@
     ./modules/flashfocus.nix
     ./modules/flatpak.nix # linux
     ./modules/fonts.nix
-    ./modules/git.nix
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
     ./modules/grep.nix
@@ -159,7 +158,7 @@
   environment.localBinInPath = true;
   environment.homeBinInPath = true;
 
-  home-manager.users.avo = { pkgs, ... }: rec {
+  home-manager.users.avo = { pkgs, ... }: {
     nixpkgs.overlays = config.nixpkgs.overlays;
 
     services.playerctld.enable = true;

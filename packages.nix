@@ -3,6 +3,7 @@ pkgs: with pkgs; let
   athena-jot = callPackage ./pkgs/athena-jot { };
   audd-cli = callPackage ./pkgs/audd-cli { };
   autoraise = callPackage ./pkgs/autoraise { experimental_focus_first = true; };
+  brightness = callPackage ./pkgs/brightness { };
   cached-nix-shell = callPackage ./pkgs/cached-nix-shell { };
   carbonyl = (callPackage ./pkgs/carbonyl { }).package;
   chart-stream = callPackage ./pkgs/chart-stream { };
@@ -35,9 +36,32 @@ pkgs: with pkgs; let
   yt-fts = callPackage ./pkgs/yt-fts { inherit (nixpkgsUnstable.python3Packages) beautifulsoup4 buildPythonPackage chromadb click openai pip requests rich; };
 in
 [
+  # apktool
+  # archivemount
+  # asdf-vm
+  # aspell
+  # chruby
+  # cht-sh
+  # datamash
+  # eksctl
+  # freerdp
+  # gcsfuse
   # heygpt # TODO
+  # lazydocker
   # mongodb # TODO
+  # navi
   # ntfy # TODO
+  # oauth2l
+  # perceptualdiff
+  # potrace
+  # prettyping
+  # python3Packages.distro
+  # remarshal
+  # remmina
+  # ripgrep-all
+  # tealdeer
+  # testdisk
+  (callPackage cached-nix-shell {})
   (firefox_decrypt.overrideAttrs (oldAttrs: { makeWrapperArgs = oldAttrs.makeWrapperArgs ++ [ "--prefix" "DYLD_LIBRARY_PATH" ":" (lib.makeLibraryPath [ nss ]) ]; }))
   (hiPrio expect)
   (hiPrio texlive.combined.scheme-full)
@@ -53,14 +77,10 @@ in
   ansifilter
   antiword
   anypaste
-  apktool
-  archivemount
   archiver
   aria
   ariang
   asciinema
-  asdf-vm
-  aspell
   ast-grep
   athena-jot
   atool
@@ -77,13 +97,13 @@ in
   beautysh
   black
   boot
+  brightness
   broot
   brotab
   browsh
   btop
   bun
   bundix
-  cached-nix-shell
   cachix
   cargo
   cariddi
@@ -98,8 +118,6 @@ in
   choose
   chrome-export
   chromedriver
-  chruby
-  cht-sh
   clang
   cloc
   clojure
@@ -113,7 +131,6 @@ in
   curlie
   darkhttpd
   dasel
-  datamash
   dateutils
   deep-translator
   delta
@@ -131,11 +148,11 @@ in
   easyocr
   edir
   edn
-  eksctl
   elixir
   enscript
   entr
   erlang
+  eslint_d
   espeak-ng
   eternal-terminal
   eza
@@ -155,12 +172,10 @@ in
   foreman
   fpp
   fq
-  freerdp
   fswatch
   fx
   fzf
   gcalcli
-  gcsfuse
   gdrive3
   geckodriver
   geoipWithDatabase
@@ -191,7 +206,6 @@ in
   grc
   groff
   gum
-  haskellPackages.aeson-pretty
   helix
   heroku
   hexyl
@@ -231,7 +245,6 @@ in
   kubectx
   kubernetes-helm
   lastpass-cli
-  lazydocker
   lazygit
   leiningen
   lesspipe
@@ -267,7 +280,6 @@ in
   mpv
   mtr
   mutt
-  navi
   neo-cowsay
   neovim
   netcat
@@ -290,14 +302,18 @@ in
   nixpkgs-fmt
   nixpkgsUnstable.aichat
   nixpkgsUnstable.deno
+  nixpkgsUnstable.kitty
   nixpkgsUnstable.mplayer
   nixpkgsUnstable.ncdu
+  nixpkgsUnstable.neovide
   nixpkgsUnstable.nix-doc
   nixpkgsUnstable.python3Packages.html2image
   nixpkgsUnstable.python3Packages.htmldate
   nixpkgsUnstable.python3Packages.pipx
   nixpkgsUnstable.python3Packages.trafilatura
+  nixpkgsUnstable.qutebrowser
   nixpkgsUnstable.tg
+  nixpkgsUnstable.wordnet
   nload
   nmap
   nodePackages.diff2html-cli
@@ -318,7 +334,6 @@ in
   num-utils
   nushell
   nyx
-  oauth2l
   oci-cli
   ollama
   open-interpreter
@@ -335,7 +350,6 @@ in
   patchutils
   pdfgrep
   pdftk
-  perceptualdiff
   perl
   pigz
   pipenv
@@ -346,11 +360,8 @@ in
   poppler_utils
   portaudio
   postgresql
-  potrace
   prettierd
-  prettyping
   procs
-  projectm
   pushover-cli
   pv
   pwgen
@@ -358,10 +369,9 @@ in
   python-launcher
   python3Packages.argcomplete # TODO
   python3Packages.aria2p
-  python3Packages.isort
-  python3Packages.distro
   python3Packages.docx2txt
   python3Packages.grip
+  python3Packages.isort
   python3Packages.markdown-it-py
   python3Packages.num2words
   python3Packages.openai
@@ -378,10 +388,7 @@ in
   realvnc-vnc-viewer
   recode
   redis
-  remarshal
-  remmina
   ripgrep
-  ripgrep-all
   rlwrap
   rm-improved
   rnix-lsp
@@ -424,14 +431,11 @@ in
   strip-tags
   stylua
   surfraw
-  t
   tcpdump
-  tealdeer
   termdbms
   terminal-colors
   termtosvg
   tesseract4
-  testdisk
   textract
   tidal-dl
   tidyp
@@ -466,16 +470,15 @@ in
   visidata
   viu
   vivid
+  vscode
   vultr-cli
   w3m
   wdiff
   we-get
-  weather
   webtorrent_desktop
   weechat
   wego
   wget
-  wget2
   wgetpaste
   wireshark
   woof
@@ -492,6 +495,7 @@ in
   yai
   yarn
   yarn-bash-completion # TODO
+  yazi
   yj
   youtube-viewer
   yq-go
@@ -501,7 +505,8 @@ in
   zig
   zip
   zprint
-] ++ (lib.optionals stdenv.hostPlatform.isDarwin [
+] ++
+(lib.optionals stdenv.hostPlatform.isDarwin [
   # pagekite # TODO
   # wsc
   # xcode TODO
@@ -535,7 +540,8 @@ in
   xcode-install
   xcodes
   xcpretty
-]) ++ lib.optionals stdenv.hostPlatform.isLinux [
+]) ++
+lib.optionals stdenv.hostPlatform.isLinux [
   # (zathura.override { useMupdf = true; })
   # conda
   # ioquake3
@@ -597,7 +603,6 @@ in
   inotify-tools
   iotop
   jamesdsp
-  kitty
   libguestfs
   libinput
   libnotify
@@ -646,7 +651,6 @@ in
   psmisc
   pulseaudio
   pulseaudio-dlna
-  qutebrowser
   reptyr
   rofi-emoji
   rustup
@@ -675,10 +679,8 @@ in
   ungoogled-chromium
   unoconv
   usbutils
-  vieb
   vlc
   vopono
-  vscode
   watchlog
   waydroid
   wezterm

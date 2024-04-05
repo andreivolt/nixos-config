@@ -4,10 +4,14 @@
   services.mopidy = {
     enable = true;
     extensionPackages = with pkgs; [
+      mopidy-iris
       mopidy-local
+      mopidy-moped
+      mopidy-mopify
       mopidy-mpd
       mopidy-mpris
       mopidy-scrobbler
+      mopidy-spotify
     ];
     configuration = ''
       [audio]
@@ -19,6 +23,16 @@
 
       [local]
       media_dir = /home/avo/gdrive/music
+
+      [mpd]
+      hostname = ::
+
+      [spotify]
+      enabled = true
+      username = ${getEnv "SPOTIFY_USERNAME"}
+      password = ${getEnv "SPOTIFY_PASSWORD"}
+      client_id = ${getEnv "SPOTIFY_CLIENT_ID"}
+      client_secret = ${getEnv "SPOTIFY_CLIENT_SECRET"}
     '';
   };
 
