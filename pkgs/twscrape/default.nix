@@ -1,17 +1,11 @@
-{ aiosqlite
-, buildPythonPackage
-, fake-useragent
-, fetchFromGitHub
-, hatchling
-, httpx
-, lib
-, loguru
+{ lib ? (import <nixpkgs> {}).lib
+, python3Packages ? (import <nixpkgs> {}).python3Packages
+, fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub
 }:
 
-buildPythonPackage rec {
+python3Packages.buildPythonPackage rec {
   pname = "twscrape";
   version = "0.11.1";
-
   format = "pyproject";
 
   src = fetchFromGitHub {
@@ -21,14 +15,14 @@ buildPythonPackage rec {
     sha256 = "sha256-ZnjLBS3r/LEWfBizLzvlyaxQeU7C7UhlnEXMKhjYjM4=";
   };
 
-  propagatedBuildInputs = [
+  propagatedBuildInputs = with python3Packages; [
     aiosqlite
     fake-useragent
     httpx
     loguru
   ];
 
-  nativeBuildInputs = [
+  nativeBuildInputs = with python3Packages; [
     hatchling
   ];
 

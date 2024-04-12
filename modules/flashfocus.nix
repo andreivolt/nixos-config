@@ -1,18 +1,22 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
-  home-manager.users.andrei = { pkgs, ... }: {
-    home.packages = with pkgs; [ flashfocus ];
-  };
+  home-manager.users.andrei = {
+    home.packages = [ pkgs.flashfocus ];
 
-  systemd.user.services.flashfocus = {
-    serviceConfig.ExecStart = "${pkgs.flashfocus}/bin/flashfocus --time 250";
-    path = with pkgs; [ procps ];
+    systemd.user.services.flashfocus = {
+      Unit = {
+        BindsTo = [ "sway-session.target" ];
+        Wants = [ "sway-session.target" ];
+        After = [ "sway-session.target" ];
+      };
 
-    bindsTo = [ "sway-session.target" ];
-    wants = [ "sway-session.target" ];
-    wantedBy = [ "sway-session.target" ];
-    after = [ "sway-session.target" ];
+      Service = {
+        ExecStart = "${pkgs.flashfocus}/bin/flashfocus --time 250";
+        Path = [ pkgs.procps ];
+      };
+
+      Install.WantedBy = [ "sway-session.target" ];
+    };
   };
 }
-

@@ -1,22 +1,32 @@
-{ argcomplete
-, beautifulsoup4
-, buildPythonPackage
-, chardet
-, docx2txt
-, extract-msg
-, fetchFromGitHub
-, fetchPypi
-, lark
-, lib
-, pdfminer-six
-, python-pptx
-, rtfde
-, six
-, speechrecognition
-, xlrd
+{ lib ? (import <nixpkgs-unstable> {}).lib
+, python3Packages ? (import <nixpkgs-unstable> {}).python3Packages
+, fetchPypi ? (import <nixpkgs-unstable> {}).fetchPypi
+, fetchFromGitHub ? (import <nixpkgs-unstable> {}).fetchFromGitHub
 }:
 
-buildPythonPackage rec {
+let
+  customLark = python3Packages.lark.overrideAttrs (oldAttrs: rec {
+    version = "1.1.8";
+    src = fetchFromGitHub {
+      owner = "lark-parser";
+      repo = "lark";
+      rev = "refs/tags/${version}";
+      hash = "sha256-bGNoQeiAC2JIFOhgYUnc+nApa2ovFzXnpl9JQAE11hM=";
+    };
+  });
+
+  customRtfde = python3Packages.rtfde.override {
+    lark = customLark;
+  };
+  customRtfde' = customRtfde.overrideAttrs (oldAttrs: rec {
+    doCheck = false;
+  });
+
+  customExtractMsg = python3Packages.extract-msg.override {
+    rtfde = customRtfde';
+  };
+
+in python3Packages.buildPythonPackage rec {
   pname = "textract";
   version = "1.5.0";
   name = "${pname}-${version}";
@@ -26,26 +36,12 @@ buildPythonPackage rec {
     sha256 = "1mspqi2s2jcib8l11v6n2sqmnw9lgs5rx3nhbncby5zqg4bdswqf";
   };
 
-  propagatedBuildInputs = [
+  propagatedBuildInputs = with python3Packages; [
     argcomplete
     beautifulsoup4
     chardet
     docx2txt
-    (extract-msg.override {
-      rtfde = (rtfde.overrideAttrs (oldAttrs: rec {
-        doCheck = false;
-      })).override {
-        lark = lark.overrideAttrs (oldAttrs: rec {
-          version = "1.1.8";
-          src = fetchFromGitHub {
-            owner = "lark-parser";
-            repo = "lark";
-            rev = "refs/tags/${version}";
-            hash = "sha256-bGNoQeiAC2JIFOhgYUnc+nApa2ovFzXnpl9JQAE11hM=";
-          };
-        });
-      };
-    })
+    customExtractMsg
     pdfminer-six
     python-pptx
     six

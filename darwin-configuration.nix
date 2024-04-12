@@ -1,144 +1,266 @@
-{ config, lib, pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
-  imports = [
-    # ./modules/firewall.nix
-    # ./modules/git.nix
-    # ./modules/ipfs.nix
-    # ./modules/mac_postgres.nix
-    ./cachix.nix
-    ./modules/command-not-found.nix
-    ./modules/file-associations.nix
-    ./modules/flux.nix
-    ./modules/gnupg.nix
-    ./modules/google-drive.nix
-    ./modules/hammerspoon.nix
-    ./modules/htu_autobackup.nix
-    ./modules/iina.nix
-    ./modules/jumpcut.nix
-    ./modules/less.nix
-    ./modules/mac_activity-monitor.nix
-    ./modules/mac_dock.nix
-    ./modules/mac_finder.nix
-    ./modules/mac_fonts.nix
-    ./modules/mac_keyboard.nix
-    ./modules/mac_map-caps-to-esc.nix
-    ./modules/mac_nginx.nix
-    ./modules/mac_screenshots.nix
-    ./modules/mac_terminal.nix
-    ./modules/mac_tor.nix
-    ./modules/mac_trackpad.nix
-    ./modules/map-test-tld-to-localhost.nix
-    ./modules/moreutils-without-parallel.nix
-    ./modules/ngrok.nix
-    ./modules/autoraise.nix
-    ./modules/nix.nix
-    ./modules/playwright.nix
-    ./modules/python-portaudio.nix
-    ./modules/zsh/fzf.nix
-  ]
-  ++ [ <home-manager/nix-darwin> ];
+  users.users."${builtins.getEnv "USER"}" = {
+    home = builtins.getEnv "HOME";
+    description = "_";
+  };
 
   networking.hostName = "mac";
 
+  system.stateVersion = 4;
+
   environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
 
-  users.users."${builtins.getEnv "USER"}" = {
-    name = builtins.getEnv "USER";
-    home = builtins.getEnv "HOME";
+  imports = [
+    ./modules/clojure.nix
+    ./modules/fonts.nix
+    ./modules/gnupg.nix
+    ./modules/local-test-domain.nix
+    ./modules/mac_autoraise.nix
+    ./modules/mac_chatgpt.nix
+    ./modules/mac_file-associations.nix
+    ./modules/mac_google-drive.nix
+    ./modules/mac_hammerspoon.nix
+    ./modules/mac_htu.nix
+    ./modules/mac_iina.nix
+    ./modules/mac_jumpcut.nix
+    ./modules/mac_socks-proxy.nix
+    ./modules/mac_tor.nix
+    ./modules/moreutils-without-parallel.nix
+    ./modules/nix.nix
+    ./modules/zsh-nix-completion.nix
+    ./overlays/mozilla.nix
+    ./overlays/unstable.nix
+  ] ++ [ <home-manager/nix-darwin> ];
+
+  nixpkgs.config.allowUnfree = true;
+
+  services.lorri.enable = true;
+
+  services.nix-daemon.enable = true;
+
+  programs.zsh.enable = true; # needed for setting path
+  programs.zsh.enableCompletion = false; # slow
+
+  home-manager.useGlobalPkgs = true;
+
+  home-manager.users.andrei = { pkgs, ... }: {
+    home.stateVersion = "23.11";
+
+    programs.man.generateCaches = true;
+
+    programs.fzf = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+
+    programs.zsh = {
+      enable = true; # TODO
+      enableCompletion = false;
+      initExtra = "source ~/.zshrc.extra.zsh;";
+    };
   };
 
-  services.lorri.enable = true; # Nix direnv
+  environment.systemPackages = import ./packages.nix pkgs;
 
-  # require password immediately after sleep or screen saver begins
+  security.pam.enableSudoTouchIdAuth = true;
+
+  system.defaults.NSGlobalDomain = {
+    # Repeat character while key held instead of showing character accents menu
+    ApplePressAndHoldEnabled = false;
+    InitialKeyRepeat = 15;
+    KeyRepeat = 2;
+    "com.apple.sound.beep.feedback" = 0;
+    # "com.apple.sound.beep.volume" = 0.5;
+    AppleFontSmoothing = 0;
+    AppleInterfaceStyle = "Dark";
+    AppleKeyboardUIMode = 3;
+    AppleScrollerPagingBehavior = true;
+    AppleShowAllExtensions = true;
+    AppleShowScrollBars = "WhenScrolling";
+    NSNavPanelExpandedStateForSaveMode = true;
+    # AppleActionOnDoubleClick = "Maximize"; # TODO
+    "com.apple.trackpad.enableSecondaryClick" = true;
+    NSTableViewDefaultSizeMode = 3; # large finder sidebar icons
+    NSWindowResizeTime = 0.001; # faster window resizing
+  };
+
+  system.defaults.ActivityMonitor = {
+    IconType = 6; # CPU history in dock icon
+    SortColumn = "CPUUsage";
+    SortDirection = 0; # descending
+  };
+
+  system.defaults.dock = {
+    autohide = true;
+    autohide-delay = 0.1;
+    autohide-time-modifier = 0.1;
+    enable-spring-load-actions-on-all-items = false;
+    expose-animation-duration = 0.1;
+    mineffect = "scale";
+    minimize-to-application = true;
+    orientation = "bottom";
+    # scroll-to-open = true; # TODO
+    show-recents = false;
+    showhidden = true;
+    tilesize = 48;
+    wvous-br-corner = 5; # bottom-right corner starts screensaver
+    wvous-tr-corner = 2; # top-right corner show windows
+  };
+
+  system.defaults.finder = {
+    _FXShowPosixPathInTitle = true;
+    AppleShowAllExtensions = true;
+    FXDefaultSearchScope = "SCcf"; # scope search to current folder
+    FXEnableExtensionChangeWarning = false;
+    FXPreferredViewStyle = "Nlsv"; # list view
+    ShowPathbar = true;
+    ShowStatusBar = true;
+  };
+
+  system.defaults.CustomUserPreferences."com.apple.finder" = {
+    WarnOnEmptyTrash = false;
+    NewWindowTarget = "PfHm"; # new windows open in home dir
+    _FXSortFoldersFirst = true; # TODO
+  };
+
+  system.keyboard = {
+    enableKeyMapping = true;
+    remapCapsLockToEscape = true;
+    # swapLeftCommandAndLeftAlt = true; # TODO
+  };
+
+  system.defaults.screencapture = {
+    location = "Clipboard";
+    disable-shadow = true;
+  };
+
+  system.defaults.trackpad = {
+    TrackpadRightClick = true;
+    Clicking = true;
+    TrackpadThreeFingerDrag = true;
+  };
+
+  system.defaults.CustomSystemPreferences.NSGlobalDomain = {
+    "com.apple.trackpad".scaling = 1.5;
+    NSTextInsertionPointBlinkPeriodOn = 200;
+    NSTextInsertionPointBlinkPeriodOff = 200;
+    NSToolbarTitleViewRolloverDelay = 0;
+  };
+
+  # screen lock settings
   system.defaults.CustomUserPreferences."com.apple.screensaver" = {
     askForPassword = 1;
     askForPasswordDelay = 0;
   };
 
-  # don't create .DS_Store on network and removable media
+  # prevent creation of .DS_Store files
   system.defaults.CustomUserPreferences."com.apple.desktopservices" = {
     DSDontWriteNetworkStores = true;
     DSDontWriteUSBStores = true;
   };
 
-  system.defaults.CustomUserPreferences."com:apple:AdLib" = {
+  # ads
+  system.defaults.CustomUserPreferences."com.apple.AdLib" = {
     allowApplePersonalizedAdvertising = false;
     allowIdentifierForAdvertising = false;
   };
 
-  # don't offer new disks for Time Machine backup
+  # disable Time Machine new disk prompts
   system.defaults.CustomUserPreferences."com.apple.TimeMachine".DoNotOfferNewDisksForBackup = true;
 
-  # TODO
-  system.defaults.CustomSystemPreferences.NSGlobalDomain.NSTextInsertionPointBlinkPeriodOn = 200;
-  system.defaults.CustomSystemPreferences.NSGlobalDomain.NSTextInsertionPointBlinkPeriodOff = 200;
+  # disable window tiling margins
+  system.defaults.CustomUserPreferences."com.apple.WindowManager".EnableTiledWindowMargins = 0;
 
-  # turn off keyboard backlight after timeout
+  # system.defaults.controlcenter = {
+  #   Bluetooth = true;
+  #   Display = false;
+  # };
+  system.defaults.CustomUserPreferences."com.apple.controlcenter" = {
+    "NSStatusItem Visible Bluetooth" = 1;
+    "NSStatusItem Visible Display" = 0;
+  };
+
+  # screen dimming delay in seconds
   system.defaults.CustomUserPreferences."com.apple.BezelServices".kDimTime = 5;
 
-  # disable sound when connecting charger
+  # disable power chime sound
   system.defaults.CustomUserPreferences."com.apple.PowerChime".ChimeOnNoHardware = false;
 
-  # TextEdit default to plain text
-  system.defaults.CustomUserPreferences."com.apple.TextEdit".RichText = 0;
+  # auto-quit printer app after jobs complete
+  system.defaults.CustomUserPreferences."com.apple.print.PrintingPrefs"."Quit When Finished" = true;
 
-  # # Automatically quit printer app once the print jobs complete
-  # system.defaults.CustomUserPreferences."com.apple.print.PrintingPrefs"."Quit When Finished" = true;
+  # disable Siri data sharing
+  system.defaults.CustomUserPreferences."com.apple.assistant.support"."Search Queries Data Sharing Status" = 2;
 
-  system.defaults.NSGlobalDomain = {
-    "com.apple.sound.beep.feedback" = 0; # feedback sound when system volume changes
-    # "com.apple.sound.beep.volume" = 0.5;
+  system.defaults.CustomUserPreferences."com.apple.Safari".ShowFullURLInSmartSearchField = true;
 
-    AppleFontSmoothing = 0;
-    AppleInterfaceStyle = "Dark";
-    AppleKeyboardUIMode = 3; # enable full keyboard access for controls
-    AppleScrollerPagingBehavior = true; # jump to the spot that's clicked on the scroll bar
-    AppleShowAllExtensions = true;
-    AppleShowScrollBars = "Always";
-    NSNavPanelExpandedStateForSaveMode = true;
-    # AppleActionOnDoubleClick = "Maximize"; # TODO
-  };
+  system.defaults.CustomUserPreferences."com.apple.AppleMultitouchTrackpad".DragLock = true;
+
+  system.defaults.CustomUserPreferences."com.apple.Spotlight"."orderedItems" = [
+    { enabled = 1; name = "APPLICATIONS"; }
+    { enabled = 1; name = "MENU_EXPRESSION"; }
+    { enabled = 0; name = "CONTACT"; }
+    { enabled = 1; name = "MENU_CONVERSION"; }
+    { enabled = 0; name = "MENU_DEFINITION"; }
+    { enabled = 0; name = "SOURCE"; }
+    { enabled = 1; name = "DOCUMENTS"; }
+    { enabled = 0; name = "EVENT_TODO"; }
+    { enabled = 0; name = "DIRECTORIES"; }
+    { enabled = 0; name = "FONTS"; }
+    { enabled = 0; name = "IMAGES"; }
+    { enabled = 0; name = "MESSAGES"; }
+    { enabled = 0; name = "MOVIES"; }
+    { enabled = 0; name = "MUSIC"; }
+    { enabled = 0; name = "MENU_OTHER"; }
+    { enabled = 0; name = "PDF"; }
+    { enabled = 0; name = "PRESENTATIONS"; }
+    { enabled = 0; name = "MENU_SPOTLIGHT_SUGGESTIONS"; }
+    { enabled = 0; name = "SPREADSHEETS"; }
+    { enabled = 1; name = "SYSTEM_PREFS"; }
+    { enabled = 0; name = "TIPS"; }
+    { enabled = 0; name = "BOOKMARKS"; }
+  ];
 
   # system.defaults.universalaccess.reduceTransparency = true; # TODO
 
-  home-manager.useGlobalPkgs = true; # Use the global pkgs that is configured via the system level nixpkgs options. This saves an extra Nixpkgs evaluation, adds consistency, and removes the dependency on NIX_PATH, which is otherwise used for importing Nixpkgs.
+  system.defaults.smb = {
+    NetBIOSName = config.networking.hostName;
+    ServerDescription = config.networking.hostName;
+  };
 
-  environment.systemPackages =
-    with pkgs.macApps; [
-      chat-tab
-      pref-edit
-      superwhisper
-    ] ++
-    (import ./packages.nix pkgs);
+  # firewall
+  system.defaults.alf = {
+    globalstate = 2;
+    stealthenabled = 1;
+  };
 
-  nixpkgs.config.allowUnfree = true;
+  system.activationScripts.postUserActivation.text = ''
+    echo 'disable boot sound'
+    sudo /usr/sbin/nvram SystemAudioVolume=%80
 
-  # enable Zsh completion for system packages
-  environment.pathsToLink = [ "/share/zsh" ];
+    echo 'reduce menu bar whitespace'
+    defaults write -g NSStatusItemSelectionPadding -int 16
+    defaults write -g NSStatusItemSpacing -int 16
 
-  nixpkgs.overlays =
-    let
-      nixpkgsUnstable = self: super: {
-        nixpkgsUnstable = import <nixpkgs-unstable> { };
-      };
-    in
-    [
-      (import ./mac-apps)
-      # (import (builtins.fetchTarball { url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz; }))
-      (import (builtins.fetchTarball { url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz; }))
-      nixpkgsUnstable
-    ];
+    echo 'disable auto brightness'
+    sudo defaults write /Library/Preferences/com.apple.iokit.AmbientLightSensor "Automatic Display Enabled" -bool false
 
-  services.nix-daemon.enable = true;
+    # ln -fs ~/Google\ Drive/My\ Drive drive
+    # ln -fs ~/drive/bin ~/bin
 
-  programs.zsh.enable = true;
-  programs.zsh.enableCompletion = false;
+    /opt/homebrew/bin/defaultbrowser nightly
 
-  system.stateVersion = 4;
+    osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/System/Library/Desktop Pictures/Solid Colors/Black.png"'
+
+    # # TODO: apply settings immediately
+    # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+  '';
 
   homebrew = {
     enable = true;
+
     onActivation = {
       cleanup = "zap";
       autoUpdate = true;
@@ -147,237 +269,60 @@
 
     caskArgs = {
       no_quarantine = true;
-      require_sha = true;
+      # require_sha = true;
     };
 
     brews = [
-      "amazon-ecs-cli"
       "blueutil"
-      "borkdude/brew/jet"
       "browser"
+      "defaultbrowser"
       "detox"
       "ffmpeg"
       "imagesnap"
       "jakehilborn/jakehilborn/displayplacer"
-      "jqp"
-      "launch"
-      "libiconv"
+      "mpv"
       "nethogs"
-      "node"
-      "nvm"
       "pidof"
       "pipx"
-      "pkgxdev/made/pkgx"
-      "pushtotalk"
-      "python"
-      "python-setuptools"
-      "qsv"
-      "schappim/ocr/ocr"
-      "sleuthkit"
-      "swiftformat"
+      "redshift"
       "switchaudio-osx"
-      "torsocks"
-      # "askgitdev/treequery/treequery" # TODO
-      # "csvtk"
-      # "espanso" # TODO
-      # "ext4fuse" # TODO
-      # "felixkratz/formulae/svim"
-      # "fig" # TODO
-      # "hgrep" # TODO
-      # "withgraphite/tap/graphite"
     ];
 
     casks = [
-      "android-commandlinetools"
       "battery"
       "beeper"
-      "blackhole-2ch"
-      "caffeine"
-      "choosy"
+      "command-x"
       "cursorcerer"
-      "discord"
-      "firefox"
-      "flux"
-      "forkgram-telegram"
-      "google-chrome"
-      "google-drive"
-      "grandperspective"
+      "firefox@nightly"
       "hammerspoon"
       "iina"
       "jumpcut"
       "keycastr"
       "kitty"
       "mimestream"
+      "monitorcontrol"
+      "nomachine"
+      "obs"
       "orbstack"
-      "prettyclean"
-      "rectangle"
-      "rocket"
-      "roon"
-      "spotify"
-      "steam"
       "sublime-text"
       "tidal"
-      "tor-browser"
       "whatsapp"
-      "zoom"
-      # "alfred"
-      # "alt-tab"
-      # "android-file-transfer"
-      # "audacity"
-      # "bettertouchtool"
-      # "blender"
-      # "brave-browser"
-      # "cheatsheet"
-      # "cleanmymac"
-      # "cloudapp"
-      # "contexts"
-      # "cord"
-      # "coscreen"
-      # "daisydisk"
-      # "dash"
-      # "deepl"
-      # "dropbox"
-      # "ears"
-      # "electrum"
-      # "figma"
-      # "foobar2000"
-      # "fork"
-      # "genymotion"
-      # "github"
-      # "gitify"
-      # "gitkraken" "gitkraken-cli"
-      # "hiddenbar"
-      # "hot"
-      # "inkscape"
-      # "ioquake3"
-      # "karabiner-elements"
-      # "keepingyouawake"
-      # "kindavim"
-      # "knockknock"
-      # "lapce"
-      # "launchbar"
-      # "libreoffice"
-      # "little-snitch"
-      # "macfuse"
-      # "mailmate"
-      # "miniconda"
-      # "mupdf"
-      # "mutify"
-      # "muzzle"
-      # "odrive"
-      # "parsec"
-      # "polypane"
-      # "proxyman"
-      # "raycast"
-      # "shortcat"
-      # "signal"
-      # "sizzy"
-      # "sloth"
-      # "soundsource"
-      # "stats"
-      # "swift-quit"
-      # "tableplus"
-      # "tailscale"
-      # "textual"
-      # "tuple"
-      # "ukelele"
-      # "unified-remote"
-      # "utm"
-      # "vlc"
-      # "vysor"
-      # "warp"
-      # "webtorrent"
-      # "wireshark"
     ];
 
-    # TODO font-input
-    # TODO font-iosevka{-aile,-curly,-etoile}
-    # TODO git-delta
-    # TODO macos-pasteboard
-    # TODO piknik
-    # TODO statsd
-    # TODO taiko
     masApps = {
-      "1Blocker" = 1365531024;
-      "AdGuard for Safari" = 1440147259;
-      "Archive Page Extension" = 6446372766;
-      "Command X" = 6448461551;
-      "Hush" = 1544743900;
-      "Hyperduck" = 6444667067;
-      "Jiffy" = 1502527999;
-      "Nitefall" = 1575190591;
-      "Shareful" = 1522267256;
       "Slack for Desktop" = 803453959;
-      "Super Agent" = 1568262835;
       "Tailscale" = 1475387142;
       "TestFlight" = 899247664;
-      "Vimari" = 1480933944;
       "Xcode" = 497799835;
-      "darker" = 1637413102;
-      # "Actions" = 1586435171;
-      # "Battery Indicator" = 1206020918;
-      # "Black Out" = 1319884285;
-      # "Camera Preview" = 1632827132;
-      # "Command X" = 6448461551;
-      # "Day Progress" = 6450280202;
-      # "Element X - Secure messenger" = 1631335820;
-      # "Lungo" = 1263070803;
-      # "MetaMask - Blockchain Wallet" = 1438144202;
-      # "Noir – Dark Mode for Safari" = 1592917505;
-      # "One Task" = 6465745322;
-      # "Penguin - Plist Editor" = 1634084815;
-      # "Recordia" = 1529006487;
-      # "SingleFile for Safari" = 6444322545;
-      # "Speediness" = 1596706466;
-      # "System Color Picker" = 1545870783;
-      # "Velja" = 1607635845;
     };
 
     taps = [
-      "schappim/ocr"
-      "borkdude/brew"
       "homebrew/bundle"
       "homebrew/cask-fonts"
       "homebrew/cask-versions"
       "homebrew/command-not-found"
       "homebrew/services"
       "jakehilborn/jakehilborn"
-      "noahgorstein/tap" # jqp
-      "pkgxdev/made"
-      "yulrizka/tap" # pushtotalk
-      # "federico-terzi/espanso"
-      # "felixkratz/formulae" # svim
-      # "withgraphite/tap"
     ];
   };
-
-  home-manager.users.andrei = { pkgs, ... }: rec {
-    home.stateVersion = "23.11";
-
-    programs.man.generateCaches = true;
-
-    programs.zsh.enableCompletion = false;
-    programs.zsh.enable = true;
-
-    programs.zsh.initExtra = ''
-      source ~/.zshrc.extra.zsh
-    '';
-  };
-
-  # system.defaults.universalaccess.reduceTransparency = true;
-
-  system.activationScripts.postUserActivation.text = ''
-    # # TODO: apply settings immediately
-    # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-
-    echo "disable boot sound"
-    sudo /usr/sbin/nvram SystemAudioVolume=%80
-
-    echo "show the ~/Library folder"
-    chflags nohidden ~/Library
-
-    echo "reduce menu bar whitespace"
-    defaults write -g NSStatusItemSelectionPadding -int 16
-    defaults write -g NSStatusItemSpacing -int 16
-  '';
 }

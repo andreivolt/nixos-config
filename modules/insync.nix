@@ -1,9 +1,7 @@
 { pkgs, ... }:
 
 {
-  home-manager.users.andrei = { pkgs, ... }: {
-    home.packages = with pkgs; [ insync ];
-  };
+  home-manager.users.andrei.home.packages = [ pkgs.insync ];
 
   systemd.user.services.insync = {
     after = [ "network.target" ];

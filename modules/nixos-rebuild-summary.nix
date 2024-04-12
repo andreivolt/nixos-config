@@ -1,4 +1,5 @@
-# display a summary of changes after nixos-rebuild
+{ pkgs, ... }:
+
 {
   system.activationScripts.diff = {
     supportsDryActivation = true;

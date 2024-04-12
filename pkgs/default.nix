@@ -10,5 +10,5 @@ let
   imports = map (name: import (./. + "/${name}")) nixFiles;
 in
 {
-  avo = foldl' (flip extends) (_: super) imports self;
+  andrei = foldl' (flip extends) (_: super) imports self;
 }

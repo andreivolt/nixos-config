@@ -13,7 +13,7 @@ in stdenv.mkDerivation rec {
     owner = "nriley";
     repo = pname;
     rev = "1.2";
-    hash = "sha256-FCkCHs0h1uf/h5rUr6FBftnoEFLMWnEUCG6NWuzUTso=";
+    hash = "sha256-UU/bxg7uiaycQK+iAhhE8wqMbFOQ0tayACxaw8X7BBc=";
   };
 
   buildInputs = with darwin.apple_sdk.frameworks; [

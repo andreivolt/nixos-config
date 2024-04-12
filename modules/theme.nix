@@ -6,7 +6,7 @@ rec {
     family = "Ubuntu";
   };
 
-  dark = rec {
+  dark = {
     urgent = {
       background = "f0c674";
       foreground = background;

@@ -1,12 +1,14 @@
 {
-  networking.networkmanager.enable = true;
+  networking.networkmanager = {
+    enable = true;
 
-  # randomize-mac-addresses
-  networking.networkmanager.wifi.macAddress = "random";
-  networking.networkmanager.ethernet.macAddress = "random";
+    wifi.macAddress = "random";
+    ethernet.macAddress = "random";
 
-  # TODO: doesn't come back after powersave
-  # networking.networkmanager.wifi.powersave = true;
+    wifi.backend = "iwd";
 
-  users.users.avo.extraGroups = [ "networkmanager" ];
+    wifi.powersave = true; # TODO: doesn't come back after powersave
+  };
+
+  users.users.andrei.extraGroups = [ "networkmanager" ];
 }

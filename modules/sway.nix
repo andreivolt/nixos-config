@@ -2,10 +2,7 @@
 
 let theme = import (dirOf <nixos-config> + /modules/theme.nix);
 in {
-  hardware.opengl = {
-    enable = true;
-    # driSupport = true; # fix crash on restart
-  };
+  hardware.opengl.enable = true;
 
   home-manager.users.andrei = { config, ... }:
     let
@@ -286,7 +283,6 @@ in {
 # client.placeholder #000000 #0c0c0c #ffffff #000000 #0c0c0c
 # client.background #ffffff
 
-
 # bindsym End exec playerctl next
 # bindsym F1 exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > $XDG_RUNTIME_DIR/wob.sock ) || pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock
 # bindsym F2 exec pamixer --decrease 3 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock
@@ -429,9 +425,325 @@ in {
 # for_window [title="Volume Control"] resize set 1000 1000
 
 # exec "systemctl --user import-environment; systemctl --user start sway-session.target"
-# # hide titlebar on lone windows
-# default_border none
-
-# # smart_borders on
 
 # titlebar_padding 20 8
+
+{ lib, pkgs, ... }:
+
+let theme = import (dirOf <nixos-config> + /modules/theme.nix);
+in {
+  home-manager.users.andrei = { config, ... }: {
+    wayland.windowManager.sway = {
+      enable = true;
+      systemd.enable = true;
+      wrapperFeatures = {
+        gtk = true;
+        base = true;
+      };
+
+      config = let
+        modifier = config.modifier;
+        resize_increment = "40px";
+        left = "h";
+        down = "j";
+        up = "k";
+        right = "l";
+      in {
+        modifier = "Mod4";
+        menu = "find ~/.nix-profile/share -name '*.desktop' | xargs basename -s .desktop | menu | xargs ${pkgs.gtk3-x11}/bin/gtk-launch";
+
+        focus = {
+          followMouse = "yes";
+          wrapping = "no";
+          newWindow = "smart";
+          mouseWarping = "output";
+        };
+
+        workspaceLayout = "default";
+        workspaceAutoBackAndForth = false;
+
+        colors = {
+          focused = {
+            border = "#${theme.colors.normal.green}";
+            background = "#${theme.dark.active.background}";
+            text = "#${theme.dark.active.foreground}";
+            indicator = "#${theme.dark.active.background}";
+            childBorder = "#${theme.colors.normal.green}";
+          };
+          focusedInactive = {
+            border = "#${theme.dark.active.background}";
+            background = "#${theme.dark.active.background}";
+            text = "#${theme.dark.active.foreground}";
+            indicator = "#${theme.dark.active.background}";
+            childBorder = "#${theme.dark.active.background}";
+          };
+          unfocused = {
+            border = "#${theme.dark.inactive.background}";
+            background = "#${theme.dark.inactive.background}";
+            text = "#${theme.dark.inactive.foreground}";
+            indicator = "#${theme.dark.inactive.background}";
+            childBorder = "#${theme.dark.inactive.background}";
+          };
+          urgent = {
+            border = "#${theme.dark.urgent.background}";
+            background = "#${theme.dark.urgent.background}";
+            text = "#${theme.dark.urgent.foreground}";
+            indicator = "#${theme.dark.urgent.background}";
+            childBorder = "#${theme.dark.urgent.background}";
+          };
+        };
+
+        fonts = {
+          names = [ "Ubuntu" ];
+          size = 16.0;
+        };
+
+        input = {
+          "type:keyboard" = {
+            xkb_layout = "fr";
+            xkb_options = "caps:swapescape";
+          };
+          "type:pointer" = {
+            accel_profile = "adaptive";
+            pointer_accel = "1";
+          };
+          "type:touchpad" = {
+            dwt = "enabled";
+            tap = "enabled";
+            natural_scroll = "enabled";
+            middle_emulation = "enabled";
+          };
+        };
+
+        output = {
+          "*" = {
+            scale = "1";
+            background = "#000000 solid_color";
+          };
+        };
+
+        gaps = {
+          smartBorders = "on";
+          smartGaps = true;
+        };
+
+        window = {
+          border = 0;
+          titlebar = false;
+          hideEdgeBorders = "both";
+          commands = let
+            display = { width = 2560; height = 1600; };
+            scratchpad = rec {
+              width = display.width * 0.83;
+              height = width / 1.5;
+              pos_x = 0.0;
+              pos_y = 0.0;
+            };
+          in [
+            { criteria.app_id = "scratchpad"; command = "floating enable"; }
+            { criteria.app_id = "scratchpad"; command = "move scratchpad"; }
+            { criteria.app_id = "scratchpad"; command = "scratchpad show"; }
+            { criteria.app_id = "scratchpad"; command = "resize set ${toString display.width} ${toString display.height}"; }
+            { criteria.app_id = "scratchpad"; command = "move position ${toString scratchpad.pos_x} ${toString scratchpad.pos_y}"; }
+          ]
+          ++ [
+            { criteria.app_id = "mpv"; command = "inhibit_idle visible"; }
+          ]
+          # ++ (
+          #   let app_ids = [
+          #     "firefox-nightly" "scratchpad" "tidal-hifi"
+          #   ];
+          #   in map (app_id: { criteria.app_id = app_id; command = "border none"; })
+          # )
+          ++ [
+            { criteria.title = "Volume Control"; command = "resize set 1000 1000"; }
+          ];
+        };
+
+        floating = {
+          titlebar = true;
+          border = 2;
+          criteria = [
+            { window_role = "pop-up"; }
+            { title = "Volume Control"; }
+            { app_id = "imv"; }
+            { app_id = "pavucontrol"; }
+            { app_id = "mpv"; }
+            { title = "Picture in picture"; }
+            { title = "LastPass: Free Password Manager"; }
+          ];
+        };
+
+        modes = {
+          resize = {
+            Down = "resize grow height ${resize_increment}";
+            Escape = "mode default";
+            Left = "resize shrink width ${resize_increment}";
+            Return = "mode default";
+            Right = "resize grow width ${resize_increment}";
+            Up = "resize shrink height ${resize_increment}";
+            h = "resize shrink width ${resize_increment}";
+            j = "resize grow height ${resize_increment}";
+            k = "resize shrink height ${resize_increment}";
+            l = "resize grow width ${resize_increment}";
+          };
+        };
+
+        keybindings = lib.mkOptionDefault {
+          "${modifier}+Return" = "exec ${pkgs.kitty}/bin/kitty";
+          "${modifier}+Shift+c" = "kill";
+          "twosuperior" = "scratchpad show";
+          "${modifier}+x" = "move container to scratchpad";
+          "Print" = "exec screenshot --notify copy area";
+          "${modifier}+p" = "exec $menu";
+          "${modifier}+q" = "reload";
+          "${modifier}+i" = "exec colortemp up";
+          "${modifier}+o" = "exec colortemp down";
+          "${modifier}+Tab" = "focus right";
+          "${modifier}+Shift+Tab" = "focus left";
+          "${modifier}+t" = "layout tabbed";
+          "${modifier}+s" = "layout toggle split";
+          "${modifier}+b" = "splith";
+          "${modifier}+v" = "splitv";
+          "${modifier}+f" = "fullscreen toggle";
+          "${modifier}+a" = "focus parent";
+          "${modifier}+space" = "focus mode_toggle";
+          "${modifier}+Shift+space" = "floating toggle";
+          "${modifier}+r" = "mode resize";
+
+          # Media keys
+          "F1" = "exec pamixer --toggle-mute && ( pamixer --get-mute && echo 0 > $XDG_RUNTIME_DIR/wob.sock ) || pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F2" = "exec pamixer --decrease 2 && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F3" = "exec pamixer --increase 2 --allow-boost && pamixer --get-volume > $XDG_RUNTIME_DIR/wob.sock";
+          "F4" = "exec pactl set-source-mute @DEFAULT_SOURCE@ toggle";
+          "F5" = ''mode "default"'';
+          "F12" = "exec randomtab";
+          "Home" = "exec playerctl previous";
+          "End" = "exec playerctl next";
+          "Pause" = "exec playerctl play-pause";
+
+          # Workspace navigation
+          "${modifier}+Alt+Left" = "workspace prev";
+          "${modifier}+Alt+Right" = "workspace next";
+
+          # Workspace bindings (fr layout)
+          "${modifier}+ampersand" = "workspace 1";
+          "${modifier}+eacute" = "workspace 2";
+          "${modifier}+quotedbl" = "workspace 3";
+          "${modifier}+apostrophe" = "workspace 4";
+          "${modifier}+parenleft" = "workspace 5";
+          "${modifier}+minus" = "workspace 6";
+          "${modifier}+egrave" = "workspace 7";
+          "${modifier}+underscore" = "workspace 8";
+          "${modifier}+ccedilla" = "workspace 9";
+          "${modifier}+agrave" = "workspace 10";
+
+          "${modifier}+Shift+ampersand" = "move container to workspace 1";
+          "${modifier}+Shift+eacute" = "move container to workspace 2";
+          "${modifier}+Shift+quotedbl" = "move container to workspace 3";
+          "${modifier}+Shift+apostrophe" = "move container to workspace 4";
+          "${modifier}+Shift+parenleft" = "move container to workspace 5";
+          "${modifier}+Shift+minus" = "move container to workspace 6";
+          "${modifier}+Shift+egrave" = "move container to workspace 7";
+          "${modifier}+Shift+underscore" = "move container to workspace 8";
+          "${modifier}+Shift+ccedilla" = "move container to workspace 9";
+          "${modifier}+Shift+agrave" = "move container to workspace 10";
+
+          # Navigation
+          "${modifier}+Left" = "focus left";
+          "${modifier}+Down" = "focus down";
+          "${modifier}+Up" = "focus up";
+          "${modifier}+Right" = "focus right";
+          "${modifier}+${left}" = "focus left";
+          "${modifier}+${down}" = "focus down";
+          "${modifier}+${up}" = "focus up";
+          "${modifier}+${right}" = "focus right";
+
+          "${modifier}+Shift+Left" = "move left";
+          "${modifier}+Shift+Down" = "move down";
+          "${modifier}+Shift+Up" = "move up";
+          "${modifier}+Shift+Right" = "move right";
+          "${modifier}+Shift+${left}" = "move left";
+          "${modifier}+Shift+${down}" = "move down";
+          "${modifier}+Shift+${up}" = "move up";
+          "${modifier}+Shift+${right}" = "move right";
+
+          # Resize bindings
+          "${modifier}+Alt+${left}" = "resize shrink width ${resize_increment}";
+          "${modifier}+Alt+${down}" = "resize grow height ${resize_increment}";
+          "${modifier}+Alt+${up}" = "resize shrink height ${resize_increment}";
+          "${modifier}+Alt+${right}" = "resize grow width ${resize_increment}";
+        };
+
+        bars = [];
+
+        terminal = "${pkgs.kitty}/bin/kitty";
+
+        startup = [
+          { command = "${pkgs.autotiling}/bin/autotiling"; }
+          { command = "${pkgs.kitty}/bin/kitty --class scratchpad"; }
+        ];
+      };
+
+      extraConfig = let
+        mouseButtonBindings = ''
+          # Close window by middle clicking title bar:
+          bindsym button2 kill
+          # Toggle float by right clicking window title:
+          bindsym button3 floating toggle
+        '';
+
+        windowRules = ''
+          # Set the title bar for floating windows
+          for_window [floating] title_format "%title"
+        '';
+
+        autohideCursor = ''
+          seat * hide_cursor 5000
+          seat * hide_cursor when-typing enable
+        '';
+      in ''
+        default_border pixel 1
+        default_floating_border normal 1
+        hide_edge_borders none
+        smart_borders on
+        smart_gaps on
+        titlebar_border_thickness 0
+      '' + mouseButtonBindings + windowRules + autohideCursor;
+    };
+
+    home.packages = with pkgs; with sway-contrib; [
+      bemenu
+      gammastep
+      grim
+      grimshot
+      inactive-windows-transparency
+      slurp
+      sway-audio-idle-inhibit
+      swaybg
+      swayidle
+      swaylock
+      swaywsr
+      waybar
+      wdisplays
+      wev
+      wf-recorder
+      wl-clipboard
+      wmfocus
+      xwayland
+    ];
+  };
+}
+
+# {
+#   home-manager.users.andrei = { pkgs, ... }: {
+#     home.file.".zlogin".text = ''
+#       # if not running interactively, don't do anything
+#       [[ $- != *i* ]] && return
+#
+#       if [[ "$(tty)" == "/dev/tty1" ]]; then
+#         ${pkgs.startsway}/bin/startsway;
+#       fi
+#     '';
+#   };
+# }

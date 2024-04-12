@@ -1,10 +1,7 @@
-{
-  home-manager.users.andrei = { pkgs, ... }: {
-    home.packages = with pkgs; [
-      libsForQt5.qtstyleplugin-kvantum # Qt theme engine
-    ];
+{ pkgs, ... }:
 
-  };
+{
+  home-manager.users.andrei.home.packages = [ pkgs.libsForQt5.qtstyleplugin-kvantum ];
 
   qt.platformTheme = "qt5ct";
 }

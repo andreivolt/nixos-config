@@ -1,197 +1,141 @@
 { pkgs, config, ... }:
 
 {
-  imports = [
-    # ./modules/adblock.nix
-    # ./modules/chrome
-    # ./modules/cloudflare-dns.nix # nixos
-    # ./modules/dropbox.nix
-    # ./modules/emacs.nix
-    # ./modules/foot.nix # terminal
-    # ./modules/gebaard.nix
-    # ./modules/insync.nix
-    # ./modules/ipfs.nix
-    # ./modules/kdeconnect.nix
-    # ./modules/keybase-sync.nix
-    # ./modules/map-test-tld-to-localhost.nix
-    # ./modules/networkmanager-iwd.nix
-    # ./modules/plymouth.nix # boot animations
-    # ./modules/tmux.nix
-    # ./modules/weechat-matrix.nix
-    # ./modules/wireguard.nix
-    ./cachix.nix
-    ./hardware-configuration.nix
-    ./modules/adb.nix # linux
-    ./modules/alacritty/alacritty.nix
-    ./modules/aria2.nix
-    ./modules/clipman.nix # linux
-    ./modules/command-not-found.nix
-    ./modules/cuff.nix # torrent search cli # nixos
-    ./modules/cursor.nix
-    ./modules/dict.nix # linux
-    ./modules/disable-ipv6.nix # linux
-    ./modules/docker.nix
-    ./modules/fbterm.nix # linux
-    ./modules/fingerprint-unlock.nix
-    ./modules/firefox-wayland.nix
-    ./modules/flashfocus.nix
-    ./modules/flatpak.nix # linux
-    ./modules/fonts.nix
-    ./modules/gnome-keyring.nix
-    ./modules/gnupg.nix
-    ./modules/grep.nix
-    ./modules/gtk.nix
-    ./modules/hardware-video-acceleration.nix
-    ./modules/hardware-video-acceleration/mpv.nix
-    ./modules/hidpi/console.nix
-    ./modules/hidpi/gnome.nix # TODO: dconf needed?
-    ./modules/hidpi/qt.nix
-    ./modules/himalaya.nix # email client
-    ./modules/keybase-files.nix
-    ./modules/keybase.nix
-    ./modules/less.nix
-    ./modules/libvirt.nix
-    ./modules/locate.nix
-    ./modules/lowbatt.nix
-    ./modules/mako.nix
-    ./modules/matrix-cli.nix
-    ./modules/mdns.nix
-    ./modules/mopidy.nix
-    ./modules/moreutils-without-parallel.nix
-    ./modules/mpv.nix
-    ./modules/networkmanager.nix
-    ./modules/nextdns.nix
-    ./modules/ngrok.nix
-    ./modules/nix-ld.nix
-    ./modules/nix.nix
-    ./modules/nixos-rebuild-summary.nix
-    ./modules/npm.nix
-    ./modules/pipewire.nix
-    ./modules/play-with-mpv.nix
-    ./modules/printing.nix
-    ./modules/qt.nix
-    ./modules/scanning.nix
-    ./modules/spotifyd.nix
-    ./modules/sway-autorotate-screen.nix
-    ./modules/sway-autostart.nix
-    ./modules/sway.nix
-    ./modules/swayidle.nix
-    ./modules/swaylock.nix
-    ./modules/tailscale.nix
-    ./modules/tor.nix
-    ./modules/v4l2loopback.nix
-    ./modules/virtualbox-host.nix
-    ./modules/wayland-qt.nix
-    ./modules/wayland.nix
-    ./modules/wayvnc.nix
-    ./modules/weechat.nix
-    ./modules/wob.nix
-    ./modules/xdg-portals.nix
-    ./modules/zsh/fzf.nix
-  ]
-  ++ [ <home-manager/nixos> ];
-
-  # boot.kernelPackage = pkgs.linuxKernel.kernels.linux_lqx;
-  # boot.kernelPackage = pkgs.linuxKernel.kernels.linuxKernel.kernels.linux_zen;
+  users.users.andrei = {
+    isNormalUser = true;
+    shell = pkgs.zsh;
+    extraGroups = [ "wheel" ];
+  };
 
   networking.hostName = builtins.getEnv "HOSTNAME";
 
-  services.sshd.enable = true;
+  imports = [
+    ./hardware-configuration.nix
+    ./modules/adb.nix
+    ./modules/brother-printer.nix
+    ./modules/brother-scanner.nix
+    ./modules/clojure.nix
+    ./modules/cursor.nix
+    ./modules/docker.nix
+    ./modules/fingerprint.nix
+    ./modules/flashfocus.nix
+    ./modules/fonts.nix
+    ./modules/gnome-keyring.nix
+    ./modules/gnupg.nix
+    ./modules/gtk.nix
+    ./modules/ipv6-disable.nix
+    ./modules/libvirt.nix
+    ./modules/local-test-domain.nix
+    ./modules/lowbatt.nix
+    ./modules/mako.nix
+    ./modules/moreutils-without-parallel.nix
+    ./modules/mpv.nix
+    ./modules/networkmanager.nix
+    ./modules/nix.nix
+    ./modules/nixos-rebuild-summary.nix
+    ./modules/pipewire.nix
+    ./modules/play-with-mpv.nix
+    ./modules/qt.nix
+    ./modules/sway.nix
+    ./modules/swayidle.nix
+    ./modules/swaylock.nix
+    ./modules/tor.nix
+    ./modules/v4l2loopback.nix
+    ./modules/wayvnc.nix
+    ./modules/xdg-portals.nix
+    ./modules/zsh-nix-completion.nix
+    ./overlays/mozilla.nix
+    ./overlays/unstable.nix
+  ] ++ [ <home-manager/nixos> ];
 
-  hardware.bluetooth.enable = true;
+  nixpkgs.config.allowUnfree = true;
 
-  hardware.opengl.enable = true;
+  # don't show boot options
+  boot.loader.timeout = 0;
 
-  # services.udisks2.enable = true;
+  # # use maximum resolution in systemd-boot
+  # boot.loader.systemd-boot.consoleMode = lib.mkDefault "max";
+
+  console.keyMap = "fr";
+
+  console.earlySetup = true;
+  console.font = "ter-132n";
+  console.packages = [ pkgs.terminus_font ];
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
   # 24-hour time format
   environment.variables.LC_TIME = "C.UTF-8";
 
-  # don't show boot options
-  boot.loader.timeout = 0;
+  hardware.bluetooth.enable = true;
+  hardware.opengl.enable = true;
+
+  i18n.consoleKeyMap = "fr";
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  programs.mosh.enable = true;
+
+  programs.nix-ld.enable = true;
+
+  programs.zsh.enable = true;
 
   security.sudo.wheelNeedsPassword = false;
+
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+  };
 
   # automount removable devices
   services.devmon.enable = true;
 
-  system.stateVersion = "19.09";
+  services.flatpak.enable = true;
 
-  # nix.nixPath = [ "nixos-config=/home/avo/gdrive/nixos-config/configuration.nix" ];
+  services.gvfs.enable = true;
 
-  nixpkgs.config.allowUnfree = true;
+  services.lowbatt = {
+    enable = true;
+    notifyCapacity = 40;
+    suspendCapacity = 10;
+  };
 
-  nixpkgs.overlays =
-    let
-      nixpkgsUnstable = self: super: {
-        nixpkgsUnstable =
-          let nixpkgs-unstable-src = fetchTarball "https://nixos.org/channels/nixpkgs-unstable/nixexprs.tar.xz";
-          in import nixpkgs-unstable-src { };
-      };
-      firefoxNightly =
-        let src = fetchTarball { url = "https://github.com/mozilla/nixpkgs-mozilla/archive/master.tar.gz"; };
-        in import "${src}/firefox-overlay.nix";
-    in
-    [
-      nixpkgsUnstable
-      firefoxNightly
-      (import ./packages)
-      (self: super: {
-        fcitx-engines = pkgs.fcitx5;
-      })
-    ];
+  services.sshd.enable = true;
 
-  i18n.defaultLocale = "en_US.UTF-8";
+  services.tailscale.enable = true;
+
+  services.upower.enable = true;
 
   time.timeZone = "Europe/Paris";
 
-  console.keyMap = "fr";
-
-  users.users.avo = {
-    isNormalUser = true;
-    shell = pkgs.zsh;
-    extraGroups = [ "wheel" ];
-  };
-
-  environment.localBinInPath = true;
-  environment.homeBinInPath = true;
-
-  home-manager.users.avo = { pkgs, ... }: {
+  home-manager.users.andrei = { pkgs, ... }: {
     nixpkgs.overlays = config.nixpkgs.overlays;
-
-    services.playerctld.enable = true;
-
-    home.stateVersion = "22.05";
-
-    dconf.settings."org/gnome/desktop/interface" = {
-      font-name = "Ubuntu 12";
-    };
 
     home.packages = import ./packages.nix pkgs;
 
-    home.sessionVariables = {
-      EDITOR = "vim";
-      # BROWSER = "google-chrome-stable";
-      BROWSER = "firefox";
+    programs.fzf = {
+      enable = true;
+      enableZshIntegration = true;
     };
 
-    home.sessionPath = [
-      "$HOME/drive/bin"
-      "$HOME/.local/bin"
-      "$HOME/go/bin"
-      (builtins.toString ./bin)
-    ];
+    programs.zsh = {
+      enable = true; # TODO
+      enableCompletion = false;
+      initExtra = "source ~/.zshrc.extra.zsh;";
+    };
+
+    services.clipman.enable = true;
+
+    services.playerctld.enable = true;
+
+    services.wob.enable = true;
 
     xdg.enable = true;
 
     xdg.userDirs = {
       enable = true;
-      createDirectories = false;
-      desktop = "$HOME/gdrive";
-      documents = "$HOME/gdrive";
-      download = "$HOME/gdrive";
+      createDirectories = true;
+      documents = "$HOME/documents";
+      download = "$HOME/downloads";
     };
 
     xdg.mimeApps.enable = true;
@@ -209,50 +153,7 @@
         "video/mp4" = "mpv.desktop";
         "x-scheme-handler/http" = "${browser}.desktop";
         "x-scheme-handler/https" = "${browser}.desktop";
-        # "text/plain" = "neovide.desktop";
-        # x-scheme-handler/tg=userapp-Telegram Desktop-O8HQU1.desktop;
-        # x-scheme-handler/ytmd=youtube-music-desktop-app.desktop
       };
     xdg.configFile."mimeapps.list".force = true;
-
-    programs.lesspipe.enable = true;
-
-    programs.fzf.enable = true;
-    programs.fzf.enableZshIntegration = true;
-
-    # programs.zsh.enableCompletion = false;
-
-    # programs.zsh.enableInteractiveComments = true; # TODO not on home-manager
-
-    programs.zsh.enableSyntaxHighlighting = true;
-
-    programs.zsh.historySubstringSearch.enable = true;
-
-    programs.zsh.defaultKeymap = "viins";
-
-    # TODO
-    programs.zsh.enable = true; # TODO
-    # programs.zsh.enableSyntaxHighlighting = true;
-
-    programs.zsh.initExtra = "source ~/.zshrc.extra.zsh;";
   };
-
-  services.lowbatt = {
-    enable = true;
-    notifyCapacity = 40;
-    suspendCapacity = 10;
-  };
-  services.upower.enable = true;
-  services.vnstat.enable = true;
-  services.sysstat.enable = true;
-
-  programs.steam.enable = true;
-
-  programs.zsh.enable = true;
-
-  programs.mosh.enable = true;
-
-  services.gvfs.enable = true;
-
-  # programs.noisetorch.enable = true; # mic noise suppression
 }
