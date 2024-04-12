@@ -5,10 +5,8 @@ in {
   launchd.user.agents.autoRaise.serviceConfig = {
     ProgramArguments = [
       "${autoraise}/bin/AutoRaise"
-      "-delay"
-      "0"
-      "-altTaskSwitcher"
-      "true"
+      "-delay" "3"  # 100ms delay
+      "-altTaskSwitcher" "true"
     ];
     RunAtLoad = true;
     KeepAlive = true;

@@ -6,8 +6,6 @@ let
   plugins = with pkgs; {
     challenger-deep-theme = import ./plugins/challenger-deep-theme.nix;
     parinfer-rust = import ./plugins/parinfer-rust.nix;
-    spell-fr = import ./plugins/spell-fr.nix;
-    spell-ro = import ./plugins/spell-ro.nix;
     vim-autoclose = import ./plugins/vim-autoclose.nix;
     vim-avanced-sorters = import ./plugins/vim-advanced-sorters.nix;
     vim-bracketed-paste = import ./plugins/vim-bracketed-paste.nix;
@@ -196,33 +194,6 @@ pkgs.nixpkgsUnstable.neovim.override {
       # { name = "vim-sort-motion"; }
       # { name = "nvim-treesitter-context"; }
       # { name = "nvim-treesitter-refactor"; }
-      { name = "challenger-deep-theme"; }
-
-      { name = "neovim-fuzzy"; }
-      # { name = "command-t"; }
-
-      { name = "commentary"; }
-
-      { name = "nvim-compe"; }
-      { name = "compe-conjure"; }
-
-      { name = "conjure"; } # clojure
-      { name = "LanguageClient-neovim"; }
-      { name = "open-browser-vim"; }
-      { name = "parinfer-rust"; }
-      # { name = "rainbow_parentheses-vim"; } # TODO
-      { name = "spell-fr"; }
-      { name = "spell-ro"; }
-      { name = "surround"; }
-      { name = "vim-autoclose"; }
-      { name = "vim-better-whitespace"; }
-      { name = "vim-clojure-highlight"; }
-      { name = "vim-clojure-static"; }
-      { name = "vim-eunuch"; }
-      { name = "vim-indent-object"; }
-      { name = "vim-nix"; }
-      { name = "vim-ripgrep"; }
-      { name = "vim-javascript"; }
     ];
   };
   configure.customRC = conf;

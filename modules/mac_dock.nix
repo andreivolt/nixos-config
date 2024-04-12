@@ -1,16 +1,17 @@
 {
   system.defaults.dock = {
     autohide = true;
-    autohide-time-modifier = 0.2;
-    orientation = "bottom";
+    autohide-delay = 0.1;
+    autohide-time-modifier = 0.1;
+    expose-animation-duration = 0.1;
     mineffect = "scale";
+    minimize-to-application = true;
+    orientation = "bottom";
     show-recents = false;
     showhidden = true;
-    wvous-tr-corner = 2; # top-right corner show windows
-    wvous-br-corner = 5; # bottom-right corner starts screensaver
-    expose-animation-duration = 0.2;
     tilesize = 48;
-    autohide-delay = 0.1;
+    wvous-br-corner = 5; # bottom-right corner starts screensaver
+    wvous-tr-corner = 2; # top-right corner show windows
   };
 
   system.activationScripts.postUserActivation.text = ''

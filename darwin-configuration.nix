@@ -2,18 +2,18 @@
 
 {
   imports = [
-    # ./modules/firewall.nix
-    # ./modules/git.nix
-    # ./modules/ipfs.nix
-    # ./modules/mac_postgres.nix
     ./cachix.nix
+    ./modules/autoraise.nix
+    ./modules/clojure.nix
     ./modules/command-not-found.nix
     ./modules/file-associations.nix
+    ./modules/firewall.nix
     ./modules/flux.nix
     ./modules/gnupg.nix
-    ./modules/google-drive.nix
+    # ./modules/google-drive.nix
     ./modules/hammerspoon.nix
-    ./modules/htu_autobackup.nix
+    ./modules/chatgpt.nix
+    ./modules/htu.nix
     ./modules/iina.nix
     ./modules/jumpcut.nix
     ./modules/less.nix
@@ -22,8 +22,6 @@
     ./modules/mac_finder.nix
     ./modules/mac_fonts.nix
     ./modules/mac_keyboard.nix
-    ./modules/mac_map-caps-to-esc.nix
-    ./modules/mac_nginx.nix
     ./modules/mac_screenshots.nix
     ./modules/mac_terminal.nix
     ./modules/mac_tor.nix
@@ -31,10 +29,9 @@
     ./modules/map-test-tld-to-localhost.nix
     ./modules/moreutils-without-parallel.nix
     ./modules/ngrok.nix
-    ./modules/autoraise.nix
     ./modules/nix.nix
     ./modules/playwright.nix
-    ./modules/python-portaudio.nix
+    ./modules/socks.nix
     ./modules/zsh/fzf.nix
   ]
   ++ [ <home-manager/nix-darwin> ];
@@ -44,8 +41,15 @@
   environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
 
   users.users."${builtins.getEnv "USER"}" = {
-    name = builtins.getEnv "USER";
     home = builtins.getEnv "HOME";
+    description = "_";
+  };
+
+  nix.settings.auto-optimise-store = true;
+
+  nix.gc = {
+    automatic = true;
+    options = "--delete-older-than 30d";
   };
 
   services.lorri.enable = true; # Nix direnv
@@ -70,18 +74,37 @@
   # don't offer new disks for Time Machine backup
   system.defaults.CustomUserPreferences."com.apple.TimeMachine".DoNotOfferNewDisksForBackup = true;
 
+  # disable window tiling gaps
+  system.defaults.CustomUserPreferences."com.apple.WindowManager".EnableTiledWindowMargins = 0;
+
+  # TODO
+  system.defaults.CustomUserPreferences."com.apple.controlcenter"."NSStatusItem Visible Bluetooth" = 1;
+  # TODO
+  system.defaults.CustomUserPreferences."com.apple.controlcenter"."NSStatusItem Visible Display" = 0;
+
   # TODO
   system.defaults.CustomSystemPreferences.NSGlobalDomain.NSTextInsertionPointBlinkPeriodOn = 200;
   system.defaults.CustomSystemPreferences.NSGlobalDomain.NSTextInsertionPointBlinkPeriodOff = 200;
 
+  # defaults write "com.apple.assistant.support" "Search Queries Data Sharing Status" '2'
+
+  # system.defaults.CustomSystemPreferences.
+  # defaults write "com.apple.Spotlight" "orderedItems" '({enabled=1;name=APPLICATIONS;},{enabled=1;name="MENU_EXPRESSION";},{enabled=0;name=CONTACT;},{enabled=1;name="MENU_CONVERSION";},{enabled=0;name="MENU_DEFINITION";},{enabled=0;name=SOURCE;},{enabled=0;name=DOCUMENTS;},{enabled=0;name="EVENT_TODO";},{enabled=0;name=DIRECTORIES;},{enabled=0;name=FONTS;},{enabled=0;name=IMAGES;},{enabled=0;name=MESSAGES;},{enabled=0;name=MOVIES;},{enabled=0;name=MUSIC;},{enabled=0;name="MENU_OTHER";},{enabled=0;name=PDF;},{enabled=0;name=PRESENTATIONS;},{enabled=0;name="MENU_SPOTLIGHT_SUGGESTIONS";},{enabled=0;name=SPREADSHEETS;},{enabled=1;name="SYSTEM_PREFS";},{enabled=0;name=TIPS;},{enabled=0;name=BOOKMARKS;},)'
+
   # turn off keyboard backlight after timeout
   system.defaults.CustomUserPreferences."com.apple.BezelServices".kDimTime = 5;
+
+  # defaults write "app.monitorcontrol.MonitorControl" "useFineScaleBrightness" '1'
+
+  # defaults write "io.tailscale.ipn.macos" "TailscaleStartOnLogin" '1'
 
   # disable sound when connecting charger
   system.defaults.CustomUserPreferences."com.apple.PowerChime".ChimeOnNoHardware = false;
 
-  # TextEdit default to plain text
-  system.defaults.CustomUserPreferences."com.apple.TextEdit".RichText = 0;
+  # disable toolbar rollover delay
+  system.defaults.CustomUserPreferences.NSGlobalDomain.NSToolbarTitleViewRolloverDelay = 0;
+
+  system.defaults.CustomUserPreferences."com.openai.chat"."desktopAppIconBehavior" = "{\"showOnlyInMenuBar\":{}}";
 
   # # Automatically quit printer app once the print jobs complete
   # system.defaults.CustomUserPreferences."com.apple.print.PrintingPrefs"."Quit When Finished" = true;
@@ -94,8 +117,7 @@
     AppleInterfaceStyle = "Dark";
     AppleKeyboardUIMode = 3; # enable full keyboard access for controls
     AppleScrollerPagingBehavior = true; # jump to the spot that's clicked on the scroll bar
-    AppleShowAllExtensions = true;
-    AppleShowScrollBars = "Always";
+    AppleShowScrollBars = "WhenScrolling";
     NSNavPanelExpandedStateForSaveMode = true;
     # AppleActionOnDoubleClick = "Maximize"; # TODO
   };
@@ -106,9 +128,6 @@
 
   environment.systemPackages =
     with pkgs.macApps; [
-      chat-tab
-      pref-edit
-      superwhisper
     ] ++
     (import ./packages.nix pkgs);
 
@@ -125,7 +144,6 @@
     in
     [
       (import ./mac-apps)
-      # (import (builtins.fetchTarball { url = https://github.com/nix-community/neovim-nightly-overlay/archive/master.tar.gz; }))
       (import (builtins.fetchTarball { url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz; }))
       nixpkgsUnstable
     ];
@@ -151,190 +169,64 @@
     };
 
     brews = [
-      "amazon-ecs-cli"
       "blueutil"
-      "borkdude/brew/jet"
       "browser"
+      "defaultbrowser"
       "detox"
       "ffmpeg"
       "imagesnap"
       "jakehilborn/jakehilborn/displayplacer"
-      "jqp"
       "launch"
-      "libiconv"
+      "mpv"
       "nethogs"
       "node"
-      "nvm"
       "pidof"
       "pipx"
-      "pkgxdev/made/pkgx"
-      "pushtotalk"
       "python"
       "python-setuptools"
-      "qsv"
-      "schappim/ocr/ocr"
-      "sleuthkit"
+      "redshift"
       "swiftformat"
       "switchaudio-osx"
       "torsocks"
-      # "askgitdev/treequery/treequery" # TODO
-      # "csvtk"
-      # "espanso" # TODO
-      # "ext4fuse" # TODO
-      # "felixkratz/formulae/svim"
-      # "fig" # TODO
-      # "hgrep" # TODO
-      # "withgraphite/tap/graphite"
     ];
 
     casks = [
-      "android-commandlinetools"
       "battery"
       "beeper"
-      "blackhole-2ch"
-      "caffeine"
-      "choosy"
+      "command-x"
       "cursorcerer"
       "discord"
-      "firefox"
-      "flux"
+      "firefox@nightly"
       "forkgram-telegram"
+      "fuse-t"
+      "fuse-t-sshfs"
       "google-chrome"
-      "google-drive"
-      "grandperspective"
       "hammerspoon"
       "iina"
       "jumpcut"
       "keycastr"
       "kitty"
       "mimestream"
+      "monitorcontrol"
+      "nomachine"
+      "obs"
       "orbstack"
       "prettyclean"
-      "rectangle"
-      "rocket"
-      "roon"
-      "spotify"
-      "steam"
       "sublime-text"
       "tidal"
-      "tor-browser"
       "whatsapp"
+      "zed"
       "zoom"
-      # "alfred"
-      # "alt-tab"
-      # "android-file-transfer"
-      # "audacity"
-      # "bettertouchtool"
-      # "blender"
-      # "brave-browser"
-      # "cheatsheet"
-      # "cleanmymac"
-      # "cloudapp"
-      # "contexts"
-      # "cord"
-      # "coscreen"
-      # "daisydisk"
-      # "dash"
-      # "deepl"
-      # "dropbox"
-      # "ears"
-      # "electrum"
-      # "figma"
-      # "foobar2000"
-      # "fork"
-      # "genymotion"
-      # "github"
-      # "gitify"
-      # "gitkraken" "gitkraken-cli"
-      # "hiddenbar"
-      # "hot"
-      # "inkscape"
-      # "ioquake3"
-      # "karabiner-elements"
-      # "keepingyouawake"
-      # "kindavim"
-      # "knockknock"
-      # "lapce"
-      # "launchbar"
-      # "libreoffice"
-      # "little-snitch"
-      # "macfuse"
-      # "mailmate"
-      # "miniconda"
-      # "mupdf"
-      # "mutify"
-      # "muzzle"
-      # "odrive"
-      # "parsec"
-      # "polypane"
-      # "proxyman"
-      # "raycast"
-      # "shortcat"
-      # "signal"
-      # "sizzy"
-      # "sloth"
-      # "soundsource"
-      # "stats"
-      # "swift-quit"
-      # "tableplus"
-      # "tailscale"
-      # "textual"
-      # "tuple"
-      # "ukelele"
-      # "unified-remote"
-      # "utm"
-      # "vlc"
-      # "vysor"
-      # "warp"
-      # "webtorrent"
-      # "wireshark"
     ];
 
-    # TODO font-input
-    # TODO font-iosevka{-aile,-curly,-etoile}
-    # TODO git-delta
-    # TODO macos-pasteboard
-    # TODO piknik
-    # TODO statsd
-    # TODO taiko
     masApps = {
-      "1Blocker" = 1365531024;
-      "AdGuard for Safari" = 1440147259;
-      "Archive Page Extension" = 6446372766;
-      "Command X" = 6448461551;
-      "Hush" = 1544743900;
-      "Hyperduck" = 6444667067;
-      "Jiffy" = 1502527999;
-      "Nitefall" = 1575190591;
-      "Shareful" = 1522267256;
       "Slack for Desktop" = 803453959;
-      "Super Agent" = 1568262835;
       "Tailscale" = 1475387142;
       "TestFlight" = 899247664;
-      "Vimari" = 1480933944;
       "Xcode" = 497799835;
-      "darker" = 1637413102;
-      # "Actions" = 1586435171;
-      # "Battery Indicator" = 1206020918;
-      # "Black Out" = 1319884285;
-      # "Camera Preview" = 1632827132;
-      # "Command X" = 6448461551;
-      # "Day Progress" = 6450280202;
-      # "Element X - Secure messenger" = 1631335820;
-      # "Lungo" = 1263070803;
-      # "MetaMask - Blockchain Wallet" = 1438144202;
-      # "Noir – Dark Mode for Safari" = 1592917505;
-      # "One Task" = 6465745322;
-      # "Penguin - Plist Editor" = 1634084815;
-      # "Recordia" = 1529006487;
-      # "SingleFile for Safari" = 6444322545;
-      # "Speediness" = 1596706466;
-      # "System Color Picker" = 1545870783;
-      # "Velja" = 1607635845;
     };
 
     taps = [
-      "schappim/ocr"
       "borkdude/brew"
       "homebrew/bundle"
       "homebrew/cask-fonts"
@@ -342,12 +234,7 @@
       "homebrew/command-not-found"
       "homebrew/services"
       "jakehilborn/jakehilborn"
-      "noahgorstein/tap" # jqp
-      "pkgxdev/made"
-      "yulrizka/tap" # pushtotalk
-      # "federico-terzi/espanso"
-      # "felixkratz/formulae" # svim
-      # "withgraphite/tap"
+      "macos-fuse-t/homebrew-cask"
     ];
   };
 
@@ -364,12 +251,10 @@
     '';
   };
 
-  # system.defaults.universalaccess.reduceTransparency = true;
+  system.defaults.smb.NetBIOSName = config.networking.hostName;
+  system.defaults.smb.ServerDescription = config.networking.hostName;
 
   system.activationScripts.postUserActivation.text = ''
-    # # TODO: apply settings immediately
-    # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-
     echo "disable boot sound"
     sudo /usr/sbin/nvram SystemAudioVolume=%80
 
@@ -379,5 +264,10 @@
     echo "reduce menu bar whitespace"
     defaults write -g NSStatusItemSelectionPadding -int 16
     defaults write -g NSStatusItemSpacing -int 16
+
+    # xattr -d com.apple.quarantine /Applications/Forkgram.app
+
+    # # TODO: apply settings immediately
+    # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
   '';
 }

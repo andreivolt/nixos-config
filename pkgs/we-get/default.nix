@@ -1,14 +1,9 @@
-{ beautifulsoup4
-, buildPythonPackage
-, colorama
-, docopt
-, fetchFromGitHub
-, poetry-core
-, prompt_toolkit
-, pygments
+{ lib ? (import <nixpkgs> {}).lib
+, python3Packages ? (import <nixpkgs> {}).python3Packages
+, fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub
 }:
 
-buildPythonPackage rec {
+python3Packages.buildPythonPackage rec {
   pname = "we-get";
   version = "1.0";
 
@@ -21,13 +16,14 @@ buildPythonPackage rec {
 
   format = "pyproject";
 
-  nativeBuildInputs = [
+  nativeBuildInputs = with python3Packages; [
     poetry-core
   ];
 
-  propagatedBuildInputs = [
+  propagatedBuildInputs = with python3Packages; [
     colorama
     docopt
+    requests
     beautifulsoup4
     prompt_toolkit
     pygments

@@ -14,4 +14,8 @@
     NewWindowTarget = "PfHm"; # new windows open in home dir
     _FXSortFoldersFirst = true; # TODO
   };
+
+  system.defaults.NSGlobalDomain = {
+    AppleShowAllExtensions = true;
+  };
 }

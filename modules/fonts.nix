@@ -20,16 +20,15 @@
     # hasklig
     # jetbrains-mono
     # material-icons
+    # noto-fonts-emoji
     # overpass
     # powerline-fonts
     atkinson-hyperlegible
     commit-mono
-    cascadia-code
     d2coding
     google-fonts
-    hack-font
-    ia-writer-duospace
     nerdfonts
+    hack-font
     # (nerdfonts.override {
     #   fonts = [
     #     "FiraCode"
@@ -42,8 +41,6 @@
     #   ];
     # })
     noto-fonts-emoji
-    proggyfonts
-    sudo-font
     twitter-color-emoji
     ubuntu_font_family
     vistafonts

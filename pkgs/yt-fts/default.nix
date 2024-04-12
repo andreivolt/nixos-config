@@ -1,17 +1,9 @@
-{ beautifulsoup4
-, buildPythonPackage
-, chromadb
-, click
-, fetchFromGitHub
-, lib
-, openai
-, pip
-, requests
-, rich
-, sqlite-utils
+{ lib ? (import <nixpkgs> {}).lib
+, python3Packages ? (import <nixpkgs> {}).python3Packages
+, fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub
 }:
 
-buildPythonPackage rec {
+python3Packages.buildPythonPackage rec {
   pname = "yt-fts";
   version = "38331d735496fec01c2b38c3612dc5171b837245";
 
@@ -22,7 +14,7 @@ buildPythonPackage rec {
     sha256 = "sha256-1mZaxRPGQzYTrPnnM4Bmmq9eC3GvhkMJLJkRMO1KgyU=";
   };
 
-  propagatedBuildInputs = [
+  propagatedBuildInputs = with python3Packages; [
     beautifulsoup4
     chromadb
     click
@@ -30,6 +22,7 @@ buildPythonPackage rec {
     pip
     requests
     rich
+    sqlite-utils
   ];
 
   meta = with lib; {

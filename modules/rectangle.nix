@@ -1,5 +1,6 @@
 {
-  # TODO
+  homebrew.casks = [ "rectangle" ];
+
   system.defaults.CustomUserPreferences."com.knollsoft.Rectangle" = {
     hideMenubarIcon = true;
     launchOnLogin = true;

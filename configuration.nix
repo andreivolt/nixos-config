@@ -2,40 +2,25 @@
 
 {
   imports = [
-    # ./modules/adblock.nix
-    # ./modules/chrome
-    # ./modules/cloudflare-dns.nix # nixos
-    # ./modules/dropbox.nix
-    # ./modules/emacs.nix
-    # ./modules/foot.nix # terminal
-    # ./modules/gebaard.nix
-    # ./modules/insync.nix
-    # ./modules/ipfs.nix
-    # ./modules/kdeconnect.nix
-    # ./modules/keybase-sync.nix
-    # ./modules/map-test-tld-to-localhost.nix
-    # ./modules/networkmanager-iwd.nix
-    # ./modules/plymouth.nix # boot animations
-    # ./modules/tmux.nix
-    # ./modules/weechat-matrix.nix
-    # ./modules/wireguard.nix
     ./cachix.nix
     ./hardware-configuration.nix
-    ./modules/adb.nix # linux
+    ./modules/adb.nix
+    ./modules/adblock.nix
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
-    ./modules/clipman.nix # linux
+    ./modules/clipman.nix
+    ./modules/clojure.nix
     ./modules/command-not-found.nix
-    ./modules/cuff.nix # torrent search cli # nixos
+    ./modules/cuff.nix
     ./modules/cursor.nix
-    ./modules/dict.nix # linux
-    ./modules/disable-ipv6.nix # linux
+    ./modules/dict.nix
+    ./modules/disable-ipv6.nix
     ./modules/docker.nix
-    ./modules/fbterm.nix # linux
+    ./modules/fbterm.nix
     ./modules/fingerprint-unlock.nix
     ./modules/firefox-wayland.nix
     ./modules/flashfocus.nix
-    ./modules/flatpak.nix # linux
+    ./modules/flatpak.nix
     ./modules/fonts.nix
     ./modules/gnome-keyring.nix
     ./modules/gnupg.nix
@@ -44,9 +29,8 @@
     ./modules/hardware-video-acceleration.nix
     ./modules/hardware-video-acceleration/mpv.nix
     ./modules/hidpi/console.nix
-    ./modules/hidpi/gnome.nix # TODO: dconf needed?
+    ./modules/hidpi/gnome.nix
     ./modules/hidpi/qt.nix
-    ./modules/himalaya.nix # email client
     ./modules/keybase-files.nix
     ./modules/keybase.nix
     ./modules/less.nix
@@ -54,6 +38,7 @@
     ./modules/locate.nix
     ./modules/lowbatt.nix
     ./modules/mako.nix
+    ./modules/map-test-tld-to-localhost.nix
     ./modules/matrix-cli.nix
     ./modules/mdns.nix
     ./modules/mopidy.nix
@@ -102,8 +87,6 @@
 
   hardware.opengl.enable = true;
 
-  # services.udisks2.enable = true;
-
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
   # 24-hour time format
@@ -116,6 +99,7 @@
 
   # automount removable devices
   services.devmon.enable = true;
+  # services.udisks2.enable = true;
 
   system.stateVersion = "19.09";
 
@@ -173,7 +157,6 @@
 
     home.sessionVariables = {
       EDITOR = "vim";
-      # BROWSER = "google-chrome-stable";
       BROWSER = "firefox";
     };
 
@@ -253,6 +236,4 @@
   programs.mosh.enable = true;
 
   services.gvfs.enable = true;
-
-  # programs.noisetorch.enable = true; # mic noise suppression
 }
