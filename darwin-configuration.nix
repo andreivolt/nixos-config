@@ -2,18 +2,18 @@
 
 {
   imports = [
-    # ./modules/firewall.nix
-    # ./modules/git.nix
     # ./modules/ipfs.nix
-    # ./modules/mac_postgres.nix
     ./cachix.nix
+    ./modules/autoraise.nix
+    ./modules/clojure
     ./modules/command-not-found.nix
     ./modules/file-associations.nix
+    ./modules/firewall.nix
     ./modules/flux.nix
     ./modules/gnupg.nix
     ./modules/google-drive.nix
     ./modules/hammerspoon.nix
-    ./modules/htu_autobackup.nix
+    ./modules/htu.nix
     ./modules/iina.nix
     ./modules/jumpcut.nix
     ./modules/less.nix
@@ -31,10 +31,8 @@
     ./modules/map-test-tld-to-localhost.nix
     ./modules/moreutils-without-parallel.nix
     ./modules/ngrok.nix
-    ./modules/autoraise.nix
     ./modules/nix.nix
     ./modules/playwright.nix
-    ./modules/python-portaudio.nix
     ./modules/zsh/fzf.nix
   ]
   ++ [ <home-manager/nix-darwin> ];
@@ -191,7 +189,6 @@
       "android-commandlinetools"
       "battery"
       "beeper"
-      "blackhole-2ch"
       "caffeine"
       "choosy"
       "cursorcerer"
@@ -201,7 +198,6 @@
       "forkgram-telegram"
       "google-chrome"
       "google-drive"
-      "grandperspective"
       "hammerspoon"
       "iina"
       "jumpcut"
@@ -225,6 +221,7 @@
       # "android-file-transfer"
       # "audacity"
       # "bettertouchtool"
+      # "blackhole-2ch" # TODO
       # "blender"
       # "brave-browser"
       # "cheatsheet"
@@ -290,9 +287,6 @@
       # "wireshark"
     ];
 
-    # TODO font-input
-    # TODO font-iosevka{-aile,-curly,-etoile}
-    # TODO git-delta
     # TODO macos-pasteboard
     # TODO piknik
     # TODO statsd
@@ -377,7 +371,7 @@
     chflags nohidden ~/Library
 
     echo "reduce menu bar whitespace"
-    defaults write -g NSStatusItemSelectionPadding -int 16
-    defaults write -g NSStatusItemSpacing -int 16
+    defaults write -g NSStatusItemSelectionPadding -int 20
+    defaults write -g NSStatusItemSpacing -int 20
   '';
 }

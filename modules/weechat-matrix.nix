@@ -52,8 +52,8 @@
     matrix_org.port = 443
     matrix_org.proxy = ""
     matrix_org.ssl_verify = on
-    matrix_org.username = "${builtins.getEnv "MATRIX_ORG.USERNAME"}"
-    matrix_org.password = "${builtins.getEnv "MATRIX_ORG.PASSWORD"}"
+    matrix_org.username = "${builtins.getEnv "MATRIX_USERNAME"}"
+    matrix_org.password = "${builtins.getEnv "MATRIX_PASSWORD"}"
     matrix_org.device_name = "Weechat Matrix"
     matrix_org.autoreconnect_delay = 10
     matrix_org.sso_helper_listening_port = 0

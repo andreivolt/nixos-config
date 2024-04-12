@@ -2,9 +2,13 @@
 
 {
   home-manager.users.andrei = { pkgs, config, ... }: {
-    home.packages = with pkgs; [
+    home.packages = with pkgs; let
+      edn = callPackage ../../pkgs/edn { };
+    in [
+      babashka
       clojure
       clojure-lsp
+      edn
       leiningen
       zprint
     ];

@@ -2,9 +2,8 @@
 
 {
   imports = [
-    # ./modules/adblock.nix
     # ./modules/chrome
-    # ./modules/cloudflare-dns.nix # nixos
+    # ./modules/cloudflare-dns.nix
     # ./modules/dropbox.nix
     # ./modules/emacs.nix
     # ./modules/foot.nix # terminal
@@ -13,18 +12,19 @@
     # ./modules/ipfs.nix
     # ./modules/kdeconnect.nix
     # ./modules/keybase-sync.nix
-    # ./modules/map-test-tld-to-localhost.nix
     # ./modules/networkmanager-iwd.nix
-    # ./modules/plymouth.nix # boot animations
+    # ./modules/plymouth.nix
     # ./modules/tmux.nix
     # ./modules/weechat-matrix.nix
     # ./modules/wireguard.nix
     ./cachix.nix
     ./hardware-configuration.nix
     ./modules/adb.nix # linux
+    ./modules/adblock.nix
     ./modules/alacritty/alacritty.nix
     ./modules/aria2.nix
     ./modules/clipman.nix # linux
+    ./modules/clojure
     ./modules/command-not-found.nix
     ./modules/cuff.nix # torrent search cli # nixos
     ./modules/cursor.nix
@@ -54,6 +54,7 @@
     ./modules/locate.nix
     ./modules/lowbatt.nix
     ./modules/mako.nix
+    ./modules/map-test-tld-to-localhost.nix
     ./modules/matrix-cli.nix
     ./modules/mdns.nix
     ./modules/mopidy.nix

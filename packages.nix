@@ -8,7 +8,6 @@ pkgs: with pkgs; let
   carbonyl = (callPackage ./pkgs/carbonyl { }).package;
   chart-stream = callPackage ./pkgs/chart-stream { };
   cuff = callPackage ./pkgs/cuff { };
-  edn = callPackage ./pkgs/edn { };
   ffsclient = callPackage ./pkgs/ffs_client { };
   googler = callPackage ./pkgs/googler { };
   gpt-cli = callPackage ./pkgs/gpt-cli { inherit (python3Packages) anthropic attrs black google-generativeai openai pydantic prompt-toolkit poetry-core orjson pytest pyyaml rich tiktoken tokenizers typing-extensions; };
@@ -40,27 +39,44 @@ in
   # archivemount
   # asdf-vm
   # aspell
+  # cariddi
   # chruby
   # cht-sh
   # datamash
   # eksctl
+  # electrum
+  # elixir
+  # erlang
+  # fastlane
   # freerdp
+  # gcalcli
   # gcsfuse
+  # hexyl
   # heygpt # TODO
+  # httrack
+  # kubectl
+  # kubectx
+  # kubernetes-helm
   # lazydocker
-  # mongodb # TODO
+  # linode-cli
+  # mongodb
   # navi
+  # nixpkgsUnstable.python3Packages.html2image
   # ntfy # TODO
   # oauth2l
   # perceptualdiff
   # potrace
   # prettyping
   # python3Packages.distro
+  # realvnc-vnc-viewer
   # remarshal
   # remmina
   # ripgrep-all
+  # selenium-server-standalone
   # tealdeer
   # testdisk
+  # visidata
+  # vultr-cli
   (callPackage cached-nix-shell {})
   (firefox_decrypt.overrideAttrs (oldAttrs: { makeWrapperArgs = oldAttrs.makeWrapperArgs ++ [ "--prefix" "DYLD_LIBRARY_PATH" ":" (lib.makeLibraryPath [ nss ]) ]; }))
   (hiPrio expect)
@@ -79,7 +95,6 @@ in
   anypaste
   archiver
   aria
-  ariang
   asciinema
   ast-grep
   athena-jot
@@ -90,14 +105,11 @@ in
   awscli2
   awslogs
   awsls
-  babashka
   backblaze-b2
   bat
   bc
   beautysh
   black
-  boot
-  brightness
   broot
   brotab
   browsh
@@ -106,7 +118,6 @@ in
   bundix
   cachix
   cargo
-  cariddi
   castnow
   catdoc
   catt
@@ -120,7 +131,6 @@ in
   chromedriver
   clang
   cloc
-  clojure
   cmake
   colordiff
   comma
@@ -147,17 +157,13 @@ in
   duf
   easyocr
   edir
-  edn
-  elixir
   enscript
   entr
-  erlang
   eslint_d
   espeak-ng
   eternal-terminal
   eza
   fastgron
-  fastlane
   fd
   fetchmail
   ffmpeg-full
@@ -175,7 +181,6 @@ in
   fswatch
   fx
   fzf
-  gcalcli
   gdrive3
   geckodriver
   geoipWithDatabase
@@ -208,7 +213,6 @@ in
   gum
   helix
   heroku
-  hexyl
   highlight
   hr
   html-tidy
@@ -216,7 +220,6 @@ in
   htmlq
   htop
   httpie
-  httrack
   humanfriendly
   hyperfine
   iftop
@@ -241,18 +244,13 @@ in
   jtab
   jtbl
   keybase
-  kubectl
-  kubectx
-  kubernetes-helm
   lastpass-cli
   lazygit
-  leiningen
   lesspipe
   lf
   libarchive
   librsvg
   libsixel
-  linode-cli
   llm
   lolcat
   lsof
@@ -307,11 +305,9 @@ in
   nixpkgsUnstable.ncdu
   nixpkgsUnstable.neovide
   nixpkgsUnstable.nix-doc
-  nixpkgsUnstable.python3Packages.html2image
   nixpkgsUnstable.python3Packages.htmldate
   nixpkgsUnstable.python3Packages.pipx
   nixpkgsUnstable.python3Packages.trafilatura
-  nixpkgsUnstable.qutebrowser
   nixpkgsUnstable.tg
   nixpkgsUnstable.wordnet
   nload
@@ -385,7 +381,6 @@ in
   rbenv
   rclone
   readability-cli
-  realvnc-vnc-viewer
   recode
   redis
   ripgrep
@@ -408,7 +403,6 @@ in
   scriptisto
   sd
   sdcv
-  selenium-server-standalone
   semgrep
   shell_gpt
   shellcheck
@@ -465,13 +459,9 @@ in
   urlwatch
   vhs
   viddy
-  vimpager
   vimv-rs
-  visidata
   viu
-  vivid
   vscode
-  vultr-cli
   w3m
   wdiff
   we-get
@@ -504,43 +494,45 @@ in
   ytfzf
   zig
   zip
-  zprint
 ] ++
-(lib.optionals stdenv.hostPlatform.isDarwin [
-  # pagekite # TODO
-  # wsc
+(lib.optionals stdenv.hostPlatform.isDarwin (with darwin; [
+  # brightness
   # xcode TODO
+  apple_sdk.frameworks.Security
+  apple_sdk.frameworks.SystemConfiguration
   asitop
   coreutils
-  darwin.apple_sdk.frameworks.Security
-  darwin.apple_sdk.frameworks.SystemConfiguration
-  darwin.ios-deploy
-  darwin.iproute2mac
-  darwin.openwith
-  darwin.trash
   dockutil
   duti
   findutils
   gawk
   gnugrep
   gnused
+  grandperspective
+  ios-deploy
+  iproute2mac
+  lsusb
   m-cli # TODO
   mas
   mkalias
+  openwith
   pbpaste-html
+  plistwatch
   pngpaste
   pstree
   psutils
   reattach-to-user-namespace
+  rectangle
   skhd
   terminal-notifier
+  trash
   util-linux
   watch
   watchexec
   xcode-install
   xcodes
   xcpretty
-]) ++
+])) ++
 lib.optionals stdenv.hostPlatform.isLinux [
   # (zathura.override { useMupdf = true; })
   # conda
@@ -579,7 +571,6 @@ lib.optionals stdenv.hostPlatform.isLinux [
   downonspot
   dtrx
   efibootmgr
-  electrum
   emacs
   emote
   ethtool
