@@ -24,6 +24,7 @@
     ./modules/gnupg.nix
     ./modules/gtk.nix
     ./modules/ipv6-disable.nix
+    ./modules/insync.nix
     ./modules/libvirt.nix
     ./modules/local-test-domain.nix
     ./modules/lowbatt.nix
@@ -39,6 +40,7 @@
     ./modules/sway.nix
     ./modules/swayidle.nix
     ./modules/swaylock.nix
+    ./modules/thinkpad-video.nix
     ./modules/tor.nix
     ./modules/v4l2loopback.nix
     ./modules/wayvnc.nix
@@ -46,7 +48,8 @@
     ./modules/zsh-nix-completion.nix
     ./overlays/mozilla.nix
     ./overlays/unstable.nix
-  ] ++ [ <home-manager/nixos> ];
+    <home-manager/nixos>
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -134,8 +137,8 @@
     xdg.userDirs = {
       enable = true;
       createDirectories = true;
-      documents = "$HOME/documents";
-      download = "$HOME/downloads";
+      documents = "~/documents";
+      download = "~/downloads";
     };
 
     xdg.mimeApps.enable = true;

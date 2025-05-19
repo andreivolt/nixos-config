@@ -1,4 +1,6 @@
 {
+  homebrew.casks = [ "hammerspoon" ];
+
   system.defaults.CustomUserPreferences."org.hammerspoon.Hammerspoon" = {
     MJShowMenuIconKey = false; # hide menu bar icon
     MJKeepConsoleOnTopKey = true; # console always on top
@@ -9,4 +11,3 @@
     sha256 = "0bm2cl3xa8rijmj6biq5dx4flr2arfn7j13qxbfi843a8dwpyhvk";
   };
 }
-

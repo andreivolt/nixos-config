@@ -9,7 +9,8 @@
 
   fonts.packages = with pkgs; [
     atkinson-hyperlegible
-    (nerdfonts.override { fonts = [ "Iosevka" "IosevkaTerm" ]; })
+    nerd-fonts.iosevka
+    nerd-fonts.iosevka-term
     ubuntu_font_family
   ];
 }
