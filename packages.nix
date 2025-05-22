@@ -4,7 +4,7 @@ pkgs: with pkgs; let
   json2nix = callPackage ./pkgs/json2nix { };
   pbpaste-html = callPackage ./pkgs/pbpaste-html { };
   pushover-cli = callPackage ./pkgs/pushover-cli { };
-  screenshot_tweet = callPackage ./pkgs/screenshot_tweet { };
+  screenshot_tweet = pkgs.python3.pkgs.callPackage ./pkgs/screenshot_tweet { };
   ttok = pkgs.python3.pkgs.callPackage ./pkgs/ttok {};
 in
 [
