@@ -12,6 +12,8 @@
 
   system.stateVersion = 4;
 
+  system.primaryUser = "andrei";
+
   environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
 
   imports = [
@@ -29,19 +31,16 @@
     ./modules/mac_htu.nix
     ./modules/mac_iina.nix
     ./modules/mac_jumpcut.nix
-    ./modules/mac_rectangle.nix
     ./modules/mac_socks-proxy.nix
     ./modules/mac_spotlight.nix
     ./modules/mac_tor.nix
     ./modules/moreutils-without-parallel.nix
-    # ./modules/nix.nix
     ./modules/zsh-nix-completion.nix
-    ./overlays/mozilla.nix
     ./overlays/unstable.nix
-    <home-manager/nix-darwin>
   ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.hostPlatform = "aarch64-darwin";
 
   # using Determinate Nix
   nix.enable = false;
@@ -194,27 +193,31 @@
   # disable smart quotes
   system.defaults.NSGlobalDomain.NSAutomaticQuoteSubstitutionEnabled = false;
 
-  system.activationScripts.postUserActivation.text = ''
-    echo 'disable boot sound'
-    sudo /usr/sbin/nvram SystemAudioVolume=%80
-
-    echo 'reduce menu bar whitespace'
-    defaults write -g NSStatusItemSelectionPadding -int 16
-    defaults write -g NSStatusItemSpacing -int 16
-
-    echo 'disable auto brightness'
-    sudo defaults write /Library/Preferences/com.apple.iokit.AmbientLightSensor "Automatic Display Enabled" -bool false
-
-    ln -sfn ~/Google\ Drive/My\ Drive ~/drive
-    ln -sfn ~/drive/bin ~/bin
-
-    /opt/homebrew/bin/defaultbrowser chrome
-
-    osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/System/Library/Desktop Pictures/Solid Colors/Black.png"'
-
-    # # TODO: apply settings immediately
-    # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
-  '';
+  # system.activationScripts.postUserActivation.text = ''
+  #   echo 'disable boot sound'
+  #   sudo /usr/sbin/nvram SystemAudioVolume=%80
+  #
+  #   echo 'reduce menu bar whitespace'
+  #   defaults write -g NSStatusItemSelectionPadding -int 16
+  #   defaults write -g NSStatusItemSpacing -int 16
+  #
+  #   echo 'keep awake when remote session active when on power'
+  #   sudo pmset -c ttyskeepawake 1
+  #   sudo pmset -b ttyskeepawake 0
+  #
+  #   echo 'disable auto brightness'
+  #   sudo defaults write /Library/Preferences/com.apple.iokit.AmbientLightSensor "Automatic Display Enabled" -bool false
+  #
+  #   ln -sfn ~/Google\ Drive/My\ Drive ~/drive
+  #   ln -sfn ~/drive/bin ~/bin
+  #
+  #   /opt/homebrew/bin/defaultbrowser chrome
+  #
+  #   osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/System/Library/Desktop Pictures/Solid Colors/Black.png"'
+  #
+  #   # # TODO: apply settings immediately
+  #   # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+  # '';
 
   homebrew = {
     enable = true;

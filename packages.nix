@@ -8,17 +8,14 @@ pkgs: with pkgs; let
   ttok = pkgs.python3.pkgs.callPackage ./pkgs/ttok {};
 in
 [
-  # zoom-us
-  cached-nix-shell
   android-tools
   aria2
   arp-scan
   bat
-  bc
   brotab
-  doctl
   btop
   bun
+  cached-nix-shell
   cargo
   catt
   curl
@@ -27,8 +24,10 @@ in
   direnv
   discord
   dnsutils
+  doctl
   duf
   edir
+  eslint
   eza
   fastgron
   fd
@@ -59,7 +58,6 @@ in
   jq
   json2nix
   lastpass-cli
-  libiconvReal
   lsof
   mediainfo
   moreutilsWithoutParallel
@@ -106,7 +104,6 @@ in
   tree-sitter
   trurl
   ttok
-  unstable.eslint
   uv
   viddy
   vscode
@@ -130,6 +127,7 @@ in
     SystemConfiguration
 ]) ++
 [
+  # pbpaste-html # TODO
   asitop
   coreutils
   duti
@@ -138,10 +136,10 @@ in
   gnugrep
   gnused
   impbcopy
+  libiconvReal
   lsusb
   m-cli
   mas
-  # pbpaste-html # TODO
   plistwatch
   pngpaste
   psutils
@@ -168,7 +166,6 @@ lib.optionals stdenv.hostPlatform.isLinux [
   imv
   inotify-tools
   iotop
-  kitty
   libnotify
   libreoffice-fresh
   libsForQt5.breeze-gtk
@@ -179,15 +176,15 @@ lib.optionals stdenv.hostPlatform.isLinux [
   nethogs
   pciutils
   playerctl
-  puppeteer-cli
   psmisc
+  puppeteer-cli
   slack
   strace
   sublime4
   swaytools
+  telegram-desktop
   tidal-hifi
   trash-cli
-  telegram-desktop
   usbutils
   whatsapp-for-linux
   wl-clipboard-x11
@@ -195,4 +192,5 @@ lib.optionals stdenv.hostPlatform.isLinux [
   xdg-user-dirs
   xdragon
   ytmdesktop
+  zoom-us
 ]
