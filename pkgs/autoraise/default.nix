@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-ustWLc+RRcrRJkgsCVN0brrk0p+/+xHlk512mFAOGTk=";
   };
 
-  buildInputs = with darwin.apple_sdk.frameworks; [
+  buildInputs = with darwin.apple_sdk_11_0.frameworks; [
     AppKit
     ApplicationServices
     Carbon

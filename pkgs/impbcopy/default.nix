@@ -17,7 +17,7 @@ stdenv.mkDerivation rec {
 
   buildInputs =
     [ clang ] ++
-    (with darwin.apple_sdk.frameworks; [ Foundation AppKit Cocoa ]);
+    (with darwin.apple_sdk_11_0.frameworks; [ Foundation AppKit Cocoa ]);
 
   buildPhase = ''
     clang -Wall -O2 -ObjC \

@@ -1,9 +1,9 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   users.users.andrei = {
     home = "/Users/andrei";
-    description = "Andrei";
+    description = "_";
   };
 
   ids.gids.nixbld = 350; # TODO
@@ -51,6 +51,9 @@
   programs.zsh.enableCompletion = false; # slow
 
   home-manager.useGlobalPkgs = true;
+  home-manager.sharedModules = [
+    inputs.mac-app-util.homeManagerModules.default
+  ];
 
   home-manager.users.andrei = { pkgs, ... }: {
     home.stateVersion = "23.11";
@@ -66,7 +69,7 @@
     programs.zsh = {
       enable = true; # TODO
       enableCompletion = false;
-      initExtra = "source ~/.zshrc.extra.zsh;";
+      initContent = "source ~/.zshrc.extra.zsh;";
     };
   };
 
@@ -256,7 +259,6 @@
       "cursorcerer"
       "flux"
       "ghostty"
-      "google-chrome"
       "iina"
       "jordanbaird-ice"
       "jumpcut"

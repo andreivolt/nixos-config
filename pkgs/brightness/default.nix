@@ -16,7 +16,7 @@ in stdenv.mkDerivation rec {
     hash = "sha256-UU/bxg7uiaycQK+iAhhE8wqMbFOQ0tayACxaw8X7BBc=";
   };
 
-  buildInputs = with darwin.apple_sdk.frameworks; [
+  buildInputs = with darwin.apple_sdk_11_0.frameworks; [
     ApplicationServices
     CoreDisplay
     DisplayServices

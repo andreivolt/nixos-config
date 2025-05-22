@@ -120,13 +120,7 @@ in
 ] ++
 (lib.optionals stdenv.hostPlatform.isDarwin [
   iproute2mac
-] ++ (with darwin;
-  (with darwin.apple_sdk.frameworks; [
-    CoreFoundation
-    Security
-    SystemConfiguration
-]) ++
-[
+] ++ (with darwin; [
   # pbpaste-html # TODO
   asitop
   coreutils

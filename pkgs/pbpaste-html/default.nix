@@ -15,7 +15,7 @@ stdenv.mkDerivation {
   };
 
   buildInputs = [
-    darwin.apple_sdk.frameworks.Cocoa
+    darwin.apple_sdk_11_0.frameworks.Cocoa
     swift
   ];
 
