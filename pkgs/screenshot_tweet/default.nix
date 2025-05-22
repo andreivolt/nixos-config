@@ -1,9 +1,8 @@
 {
-  nixpkgs ? import <nixpkgs> {},
-  buildPythonApplication ? nixpkgs.python3.pkgs.buildPythonApplication,
-  fetchFromGitHub ? nixpkgs.fetchFromGitHub,
-  playwright ? nixpkgs.python3.pkgs.playwright,
-  playwright-driver ? nixpkgs.playwright-driver
+  buildPythonApplication,
+  fetchFromGitHub,
+  playwright,
+  playwright-driver
 }:
 
 buildPythonApplication rec {

@@ -1,7 +1,8 @@
+{ inputs, ... }:
 {
   nixpkgs.overlays = [
     (self: super: {
-      unstable = import <nixpkgs-unstable> { };
+      unstable = inputs.nixpkgs.legacyPackages.${super.system};
     })
   ];
 }

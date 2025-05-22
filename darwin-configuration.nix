@@ -1,9 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  users.users."${builtins.getEnv "USER"}" = {
-    home = builtins.getEnv "HOME";
-    description = "_";
+  users.users.andrei = {
+    home = "/Users/andrei";
+    description = "Andrei";
   };
 
   ids.gids.nixbld = 350; # TODO
