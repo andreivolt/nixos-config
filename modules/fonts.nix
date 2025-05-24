@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   # TODO
   # fonts.fontconfig.defaultFonts = {
   #   monospace = [ "Source Code Pro" ];
@@ -14,7 +12,6 @@
     ubuntu_font_family
   ];
 }
-
 # (iosevka.override {
 #   set = "custom";
 #   privateBuildPlan = {
@@ -37,3 +34,4 @@
 #   #   "v-zshaped-l"
 #   # ];
 # })
+

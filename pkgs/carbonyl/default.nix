@@ -1,8 +1,8 @@
-{ fetchurl
-, stdenv
-, unzip
+{
+  fetchurl,
+  stdenv,
+  unzip,
 }:
-
 stdenv.mkDerivation rec {
   pname = "carbonyl";
   version = "0.0.3";
@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
     sha256 = "0r40v6pfmya1ppqk11abz33r9l6q6nzyw04xzyl99snqcir1kycc";
   };
 
-  nativeBuildInputs = [ unzip ];
+  nativeBuildInputs = [unzip];
 
   unpackPhase = "unzip $src";
 

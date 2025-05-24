@@ -10,5 +10,5 @@
     wifi.powersave = true; # TODO: doesn't come back after powersave
   };
 
-  users.users.andrei.extraGroups = [ "networkmanager" ];
+  users.users.andrei.extraGroups = ["networkmanager"];
 }

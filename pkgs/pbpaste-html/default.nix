@@ -1,10 +1,10 @@
-{ darwin
-, fetchgit
-, lib
-, stdenv
-, swift
+{
+  darwin,
+  fetchgit,
+  lib,
+  stdenv,
+  swift,
 }:
-
 stdenv.mkDerivation {
   name = "pbpaste-html";
 

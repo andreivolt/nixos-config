@@ -1,16 +1,15 @@
-{ buildPythonApplication
-, buildPythonPackage
-, colorama
-, fetchPypi
-, lib
-, mutagen
-, prettytable
-, pycrypto
-, pydub
-, requests
-}:
-
-let
+{
+  buildPythonApplication,
+  buildPythonPackage,
+  colorama,
+  fetchPypi,
+  lib,
+  mutagen,
+  prettytable,
+  pycrypto,
+  pydub,
+  requests,
+}: let
   aigpy = buildPythonPackage rec {
     pname = "aigpy";
     version = "2022.7.8.1";
@@ -33,26 +32,26 @@ let
     };
   };
 in
-buildPythonApplication rec {
-  pname = "tidal-dl";
-  version = "2022.8.29.1";
+  buildPythonApplication rec {
+    pname = "tidal-dl";
+    version = "2022.8.29.1";
 
-  src = fetchPypi {
-    inherit pname version;
-    sha256 = "sha256-Dvhz/fxj75z3Y9mv19gt300Ue1UYR01mn9E1F3Hm13o=";
-  };
+    src = fetchPypi {
+      inherit pname version;
+      sha256 = "sha256-Dvhz/fxj75z3Y9mv19gt300Ue1UYR01mn9E1F3Hm13o=";
+    };
 
-  doCheck = true;
+    doCheck = true;
 
-  propagatedBuildInputs = [
-    aigpy
-    prettytable
-    pycrypto
-    pydub
-  ];
+    propagatedBuildInputs = [
+      aigpy
+      prettytable
+      pycrypto
+      pydub
+    ];
 
-  meta = with lib; {
-    homepage = "https://github.com/yaronzz/Tidal-Media-Downloader";
-    description = "Tidal-Media-Downloader";
-  };
-}
+    meta = with lib; {
+      homepage = "https://github.com/yaronzz/Tidal-Media-Downloader";
+      description = "Tidal-Media-Downloader";
+    };
+  }

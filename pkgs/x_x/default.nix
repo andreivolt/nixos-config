@@ -1,8 +1,8 @@
-{ lib ? (import <nixpkgs> {}).lib
-, python3Packages ? (import <nixpkgs> {}).python3Packages
-, fetchPypi ? (import <nixpkgs> {}).fetchPypi
+{
+  lib ? (import <nixpkgs> {}).lib,
+  python3Packages ? (import <nixpkgs> {}).python3Packages,
+  fetchPypi ? (import <nixpkgs> {}).fetchPypi,
 }:
-
 python3Packages.buildPythonPackage rec {
   pname = "x_x";
   version = "0.9";

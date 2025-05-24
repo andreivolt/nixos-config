@@ -1,9 +1,9 @@
-{ buildGoPackage
-, fetchFromGitHub
-, lib
-, stdenv
+{
+  buildGoPackage,
+  fetchFromGitHub,
+  lib,
+  stdenv,
 }:
-
 buildGoPackage rec {
   name = "gorun-unstable-${version}";
   version = "2018-04-08";

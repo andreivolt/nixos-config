@@ -1,8 +1,8 @@
-{ lib ? (import <nixpkgs> {}).lib
-, python3Packages ? (import <nixpkgs> {}).python3Packages
-, fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub
+{
+  lib ? (import <nixpkgs> {}).lib,
+  python3Packages ? (import <nixpkgs> {}).python3Packages,
+  fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub,
 }:
-
 python3Packages.buildPythonPackage rec {
   pname = "twscrape";
   version = "0.11.1";

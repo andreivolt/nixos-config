@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-let
+{pkgs, ...}: let
   # Path to the helper script
   lockWithFingerprintPath = pkgs.writeShellScript "lockWithFingerprint" ''
     #!/bin/sh
@@ -14,13 +12,12 @@ let
       swaylock -f -c 000000
     fi
   '';
-in
-{
-  environment.systemPackages = [ pkgs.fprintd ];
+in {
+  environment.systemPackages = [pkgs.fprintd];
 
-  services.udev.packages = [ pkgs.fprintd ];
+  services.udev.packages = [pkgs.fprintd];
 
-  services.dbus.packages = [ pkgs.fprintd ];
+  services.dbus.packages = [pkgs.fprintd];
 
   services.fprintd.enable = true;
 

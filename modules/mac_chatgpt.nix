@@ -1,5 +1,5 @@
 {
-  homebrew.casks = [ "chatgpt" ];
+  homebrew.casks = ["chatgpt"];
 
   system.defaults.CustomUserPreferences."com.openai.chat" = {
     "desktopAppIconBehavior" = "{\"showOnlyInMenuBar\":{}}";

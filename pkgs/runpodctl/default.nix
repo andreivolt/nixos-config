@@ -1,5 +1,8 @@
-{ lib, buildGoModule, fetchFromGitHub }:
-
+{
+  lib,
+  buildGoModule,
+  fetchFromGitHub,
+}:
 buildGoModule rec {
   pname = "runpodctl";
   version = "1.14.3";
@@ -17,7 +20,7 @@ buildGoModule rec {
     description = "RunPod CLI for pod management";
     homepage = "https://github.com/runpod/runpodctl";
     license = licenses.gpl3Plus;
-    maintainers = with maintainers; [ siraben ];
+    maintainers = with maintainers; [siraben];
     mainProgram = "cli";
   };
 }

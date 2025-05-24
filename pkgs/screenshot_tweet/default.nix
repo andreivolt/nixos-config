@@ -2,9 +2,8 @@
   buildPythonApplication,
   fetchFromGitHub,
   playwright,
-  playwright-driver
+  playwright-driver,
 }:
-
 buildPythonApplication rec {
   pname = "screenshot-tweet";
   version = "1.0";

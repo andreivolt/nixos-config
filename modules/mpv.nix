@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home-manager.users.andrei.programs.mpv = {
     enable = true;
     scripts = with pkgs.mpvScripts; [

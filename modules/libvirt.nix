@@ -3,5 +3,5 @@
 
   virtualisation.libvirtd.enable = true;
 
-  users.users.andrei.extraGroups = [ "libvirtd" ];
+  users.users.andrei.extraGroups = ["libvirtd"];
 }

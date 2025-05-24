@@ -1,9 +1,9 @@
-{ clang
-, darwin
-, fetchFromGitHub
-, stdenv
+{
+  clang,
+  darwin,
+  fetchFromGitHub,
+  stdenv,
 }:
-
 stdenv.mkDerivation {
   name = "mkalias";
 

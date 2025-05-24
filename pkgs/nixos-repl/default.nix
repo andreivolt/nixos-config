@@ -1,7 +1,7 @@
-{ expect
-, writeScriptBin
+{
+  expect,
+  writeScriptBin,
 }:
-
 writeScriptBin "nixos-repl" ''
   #!/usr/bin/env ${expect}/bin/expect
   set timeout 119

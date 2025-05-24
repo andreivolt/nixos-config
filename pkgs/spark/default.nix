@@ -1,7 +1,7 @@
-{ buildGoModule
-, fetchFromGitHub
+{
+  buildGoModule,
+  fetchFromGitHub,
 }:
-
 buildGoModule {
   name = "spark";
   vendorHash = null;

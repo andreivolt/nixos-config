@@ -1,10 +1,12 @@
-{ pkgs, config, ... }:
-
 {
+  pkgs,
+  config,
+  ...
+}: {
   users.users.andrei = {
     isNormalUser = true;
     shell = pkgs.zsh;
-    extraGroups = [ "wheel" ];
+    extraGroups = ["wheel"];
   };
 
   networking.hostName = builtins.getEnv "HOSTNAME";
@@ -63,7 +65,7 @@
 
   console.earlySetup = true;
   console.font = "ter-132n";
-  console.packages = [ pkgs.terminus_font ];
+  console.packages = [pkgs.terminus_font];
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
 
@@ -110,7 +112,7 @@
 
   time.timeZone = "Europe/Paris";
 
-  home-manager.users.andrei = { pkgs, ... }: {
+  home-manager.users.andrei = {pkgs, ...}: {
     nixpkgs.overlays = config.nixpkgs.overlays;
 
     home.packages = import ./packages.nix pkgs;
@@ -142,21 +144,19 @@
     };
 
     xdg.mimeApps.enable = true;
-    xdg.mimeApps.defaultApplications =
-      let
-        browser = "firefox";
-      in
-      {
-        "application/pdf" = "org.pwmt.zathura.desktop";
-        "image/jpeg" = "imv.desktop";
-        "image/png" = "imv.desktop";
-        "inode/directory" = "thunar.desktop";
-        "text/html" = "${browser}.desktop";
-        "text/plain" = "sublime_text.desktop";
-        "video/mp4" = "mpv.desktop";
-        "x-scheme-handler/http" = "${browser}.desktop";
-        "x-scheme-handler/https" = "${browser}.desktop";
-      };
+    xdg.mimeApps.defaultApplications = let
+      browser = "firefox";
+    in {
+      "application/pdf" = "org.pwmt.zathura.desktop";
+      "image/jpeg" = "imv.desktop";
+      "image/png" = "imv.desktop";
+      "inode/directory" = "thunar.desktop";
+      "text/html" = "${browser}.desktop";
+      "text/plain" = "sublime_text.desktop";
+      "video/mp4" = "mpv.desktop";
+      "x-scheme-handler/http" = "${browser}.desktop";
+      "x-scheme-handler/https" = "${browser}.desktop";
+    };
     xdg.configFile."mimeapps.list".force = true;
   };
 }

@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home-manager.users.andrei.services.swayidle = {
     enable = true;
     systemdTarget = "sway-session.target";

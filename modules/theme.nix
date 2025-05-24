@@ -48,7 +48,6 @@ rec {
     };
   };
 
-
   white_bg = "707880";
   white_fg = "aaaaaa";
   black_bg = "131313";

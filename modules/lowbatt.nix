@@ -1,11 +1,12 @@
-{ config, lib, pkgs, ... }:
-
-with lib;
-
-let
-  cfg = config.services.lowbatt;
-in
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+with lib; let
+  cfg = config.services.lowbatt;
+in {
   options = {
     services.lowbatt = {
       enable = mkOption {
@@ -41,7 +42,7 @@ in
       timerConfig.OnBootSec = "1m";
       timerConfig.OnUnitInactiveSec = "1m";
       timerConfig.Unit = "lowbatt.service";
-      wantedBy = [ "timers.target" ];
+      wantedBy = ["timers.target"];
     };
     systemd.user.services."lowbatt" = {
       description = "battery level notifier";
@@ -67,7 +68,6 @@ in
     };
   };
 }
-
 # systemd.timers.suspend-on-low-battery = {
 #   wantedBy = [ "multi-user.target" ];
 #   timerConfig = {
@@ -88,3 +88,4 @@ in
 #       onFailure = [ "suspend.target" ];
 #       script = "${battery-level-sufficient}/bin/battery-level-sufficient";
 #     };
+

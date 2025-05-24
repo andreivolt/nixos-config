@@ -1,10 +1,10 @@
-{ clang
-, darwin
-, fetchgit
-, lib
-, stdenv
+{
+  clang,
+  darwin,
+  fetchgit,
+  lib,
+  stdenv,
 }:
-
 stdenv.mkDerivation rec {
   pname = "impbcopy";
   version = "1.0";
@@ -16,8 +16,8 @@ stdenv.mkDerivation rec {
   };
 
   buildInputs =
-    [ clang ] ++
-    (with darwin.apple_sdk_11_0.frameworks; [ Foundation AppKit Cocoa ]);
+    [clang]
+    ++ (with darwin.apple_sdk_11_0.frameworks; [Foundation AppKit Cocoa]);
 
   buildPhase = ''
     clang -Wall -O2 -ObjC \

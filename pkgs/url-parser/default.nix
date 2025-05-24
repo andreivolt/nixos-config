@@ -1,8 +1,8 @@
-{ lib
-, buildGoPackage
-, fetchgit
+{
+  lib,
+  buildGoPackage,
+  fetchgit,
 }:
-
 buildGoPackage rec {
   pname = "url-parser";
   version = "2017-07-17";

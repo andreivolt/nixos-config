@@ -1,8 +1,6 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home-manager.users.andrei.home.packages = with pkgs; let
-    edn = callPackage ../pkgs/edn { };
+    edn = callPackage ../pkgs/edn {};
   in [
     babashka
     boot

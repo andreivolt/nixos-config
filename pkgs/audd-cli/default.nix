@@ -1,7 +1,7 @@
-{ fetchFromGitHub
-, stdenv
+{
+  fetchFromGitHub,
+  stdenv,
 }:
-
 stdenv.mkDerivation {
   name = "audd-cli";
 

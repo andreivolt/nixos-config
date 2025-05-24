@@ -1,7 +1,7 @@
-{ buildGoModule
-, fetchFromGitHub
+{
+  buildGoModule,
+  fetchFromGitHub,
 }:
-
 buildGoModule rec {
   pname = "csv2xlsx";
   version = "1.0";

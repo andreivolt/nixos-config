@@ -1,12 +1,9 @@
-{ pkgs, ... }:
-
-let
+{pkgs, ...}: let
   cursor-theme = "Adwaita";
   cursor-size = 48;
-in
-{
+in {
   home-manager.users.andrei = {
-    home.packages = [ pkgs.gnome.adwaita-icon-theme ];
+    home.packages = [pkgs.gnome.adwaita-icon-theme];
 
     home.sessionVariables = {
       XCURSOR_THEME = cursor-theme;

@@ -1,12 +1,12 @@
-{ lib
-, buildPythonPackage
-, fetchFromGitHub
-, beautifulsoup4
-, pysocks
-, requests
-, retrying
+{
+  lib,
+  buildPythonPackage,
+  fetchFromGitHub,
+  beautifulsoup4,
+  pysocks,
+  requests,
+  retrying,
 }:
-
 buildPythonPackage rec {
   pname = "scihub";
   version = "1.0";

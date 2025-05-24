@@ -1,7 +1,7 @@
-{ fetchFromGitHub
-, mkYarnPackage
+{
+  fetchFromGitHub,
+  mkYarnPackage,
 }:
-
 mkYarnPackage {
   name = "livescript";
   src = fetchFromGitHub {

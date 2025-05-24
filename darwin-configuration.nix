@@ -1,6 +1,9 @@
-{ config, pkgs, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
   users.users.andrei = {
     home = "/Users/andrei";
     description = "_";
@@ -55,7 +58,7 @@
     inputs.mac-app-util.homeManagerModules.default
   ];
 
-  home-manager.users.andrei = { pkgs, ... }: {
+  home-manager.users.andrei = {pkgs, ...}: {
     home.stateVersion = "23.11";
     home.enableNixpkgsReleaseCheck = false;
 
@@ -250,11 +253,13 @@
       "pipx"
       "redshift"
       "switchaudio-osx"
+      "unoconv"
     ];
 
     casks = [
       "battery"
       "beeper"
+      # "blackhole-2ch"
       "command-x"
       "cursorcerer"
       "flux"
@@ -266,13 +271,11 @@
       "libreoffice"
       "middleclick"
       "mimestream"
-      "monitorcontrol"
       "nomachine"
       "obs"
       "orbstack"
       "roon"
       "sublime-text"
-      "telegram-desktop"
       "tidal"
       "whatsapp"
     ];
