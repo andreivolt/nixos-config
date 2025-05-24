@@ -1,56 +1,45 @@
-{ pkgs ? import <nixpkgs> {} }:
-
+{pkgs ? import <nixpkgs> {}}:
 with pkgs;
+  python311.withPackages (ps:
+    with ps; [
+      (buildPythonPackage rec {
+        pname = "undetected-chromedriver";
+        version = "3.5.4";
+        pyproject = true;
 
-python311.withPackages (ps: with ps; [
-  (buildPythonPackage rec {
-    pname = "undetected-chromedriver";
-    version = "3.5.4";
-    pyproject = true;
+        buildInputs = [setuptools];
 
-    buildInputs = [ setuptools ];
-
-    src = fetchPypi {
-      inherit pname version;
-      hash = "sha256-le/dh53fjyou/2kZ+jGM00wIC9B/uBrgzbeUnAFColg=";
-    };
-  })
-])
-
-
+        src = fetchPypi {
+          inherit pname version;
+          hash = "sha256-le/dh53fjyou/2kZ+jGM00wIC9B/uBrgzbeUnAFColg=";
+        };
+      })
+    ])
 # # based on
 # # nixpkgs/pkgs/development/tools/selenium/chromedriver/default.nix
 # # https://github.com/ultrafunkamsterdam/undetected-chromedriver
-
 # # note: chromedriver must have the same major version as chromium
-
 # { lib
 # , stdenv
 # , chromedriver
 # }:
-
 # let
 #   allSpecs = {
 #     x86_64-linux = {
 #       system = "linux64";
 #     };
-
 #     x86_64-darwin = {
 #       system = "mac-x64";
 #     };
-
 #     aarch64-darwin = {
 #       system = "mac-arm64";
 #     };
 #   };
-
 #   spec = allSpecs.${stdenv.hostPlatform.system}
 #     or (throw "missing chromedriver binary for ${stdenv.hostPlatform.system}");
 # in
-
 # chromedriver.overrideAttrs (oldAttrs: rec {
 #   pname = "undetected-chromedriver";
-
 #   # patch this function:
 #   # (function () {window.cdc_adoQpoasnfa76pfcZLmcfl_Array = window.Array;...
 #   # ...;}).apply({navigator:
@@ -59,13 +48,10 @@ python311.withPackages (ps: with ps; [
 #   # the string "undetected chromedriver" is expected by undetected_chromedriver/patcher.py
 #   # this is valid javascript: (function() { return; ""; })()
 #   # based on https://github.com/ultrafunkamsterdam/undetected-chromedriver
-
 #   # note: chromedriver has no buildPhase
 #   # TODO assert
-
 #   buildPhase = ''
 #     runHook preBuild
-
 #     echo patching chromedriver
 #     sed -i.bak -E \
 #       's/\(function \(\) \{window.cdc_[a-zA-Z0-9]{22}/(function () {return;"undetected chromedriver";/' \
@@ -82,12 +68,9 @@ python311.withPackages (ps: with ps; [
 #       exit 1
 #     fi
 #     rm "chromedriver-${spec.system}/chromedriver.bak"
-
 #     runHook postBuild
 #   '';
 # })
-
-
 # { lib
 # , fetchFromGitHub
 # , pkgs-undetected-chromedriver
@@ -100,13 +83,11 @@ python311.withPackages (ps: with ps; [
 # , websockets
 # , selenium
 # }:
-
 # buildPythonApplication rec {
 #   pname = "undetected-chromedriver";
 #   # https://pypi.org/project/undetected-chromedriver/
 #   version = "3.5.4";
 #   pyproject = true;
-
 #   passthru = {
 #     # patched chromedriver binary
 #     # usage:
@@ -118,7 +99,6 @@ python311.withPackages (ps: with ps; [
 #     */
 #     bin = pkgs-undetected-chromedriver;
 #   };
-
 #   src = fetchFromGitHub {
 #     /*
 #     owner = "ultrafunkamsterdam";
@@ -135,21 +115,17 @@ python311.withPackages (ps: with ps; [
 #     rev = "52c80c160b747b067d14a73908ca5c0e9d3eb15a";
 #     hash = "sha256-42ETV3VFI4E3vNeVxovGxTr5KPFVyFlrhA7wmVVHM94=";
 #   };
-
 #   nativeBuildInputs = [
 #     setuptools
 #     wheel
 #   ];
-
 #   propagatedBuildInputs = [
 #     requests
 #     certifi
 #     websockets
 #     selenium
 #   ];
-
 #   pythonImportsCheck = [ "undetected_chromedriver" ];
-
 #   meta = with lib; {
 #     description = "Custom Selenium Chromedriver | Zero-Config | Passes ALL bot mitigation systems (like Distil / Imperva/ Datadadome / CloudFlare IUAM";
 #     homepage = "https://github.com/ultrafunkamsterdam/undetected-chromedriver";
@@ -157,3 +133,4 @@ python311.withPackages (ps: with ps; [
 #     maintainers = with maintainers; [ ];
 #   };
 # }
+

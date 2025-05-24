@@ -1,8 +1,8 @@
-{ fetchFromGitHub
-, nodejs
-, stdenv
+{
+  fetchFromGitHub,
+  nodejs,
+  stdenv,
 }:
-
 stdenv.mkDerivation {
   name = "nix-beautify";
 

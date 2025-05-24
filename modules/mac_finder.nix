@@ -1,6 +1,8 @@
-{ config, pkgs, ... }:
-
 {
+  config,
+  pkgs,
+  ...
+}: {
   system.defaults.finder = {
     _FXShowPosixPathInTitle = true;
     AppleShowAllExtensions = true;

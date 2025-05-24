@@ -1,7 +1,7 @@
-{ fetchurl
-, stdenv
+{
+  fetchurl,
+  stdenv,
 }:
-
 stdenv.mkDerivation rec {
   name = "edn";
   src = fetchurl {

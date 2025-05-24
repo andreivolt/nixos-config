@@ -1,8 +1,8 @@
-{ lib ? (import <nixpkgs> {}).lib
-, python3Packages ? (import <nixpkgs> {}).python3Packages
-, fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub
+{
+  lib ? (import <nixpkgs> {}).lib,
+  python3Packages ? (import <nixpkgs> {}).python3Packages,
+  fetchFromGitHub ? (import <nixpkgs> {}).fetchFromGitHub,
 }:
-
 python3Packages.buildPythonPackage rec {
   pname = "yt-fts";
   version = "38331d735496fec01c2b38c3612dc5171b837245";

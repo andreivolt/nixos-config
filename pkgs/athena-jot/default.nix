@@ -1,8 +1,8 @@
-{ fetchurl
-, libarchive
-, stdenv
+{
+  fetchurl,
+  libarchive,
+  stdenv,
 }:
-
 stdenv.mkDerivation rec {
   pname = "athena-jot";
   version = "9.4-0";
@@ -12,7 +12,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-zggK6eEDK8rqJq3cIWdhaaj4y7RgexS7qQp+KpvLdPg=";
   };
 
-  nativeBuildInputs = [ libarchive ];
+  nativeBuildInputs = [libarchive];
 
   unpackPhase = ''
     bsdtar -xf $src

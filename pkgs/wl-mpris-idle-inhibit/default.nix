@@ -1,7 +1,7 @@
-{ buildRustPackage
-, fetchFromGitHub
+{
+  buildRustPackage,
+  fetchFromGitHub,
 }:
-
 buildRustPackage rec {
   name = "wl-mpris-idle-inhibit";
   version = "1ee2598fe8863b75569b43b003f2eaea7b8936be";

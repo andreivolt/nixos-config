@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   launchd.user.agents.htu-file-watcher = {
     script = ''
       ${pkgs.fswatch}/bin/fswatch -o ~/Downloads | while read; do

@@ -1,7 +1,7 @@
-{ fetchFromGitHub
-, mkYarnPackage
+{
+  fetchFromGitHub,
+  mkYarnPackage,
 }:
-
 mkYarnPackage {
   name = "imagemin-cli";
   src = fetchFromGitHub {

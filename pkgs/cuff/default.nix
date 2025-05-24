@@ -1,14 +1,14 @@
-{ fetchFromGitHub
-, installShellFiles
-, lib
-, stdenv
+{
+  fetchFromGitHub,
+  installShellFiles,
+  lib,
+  stdenv,
 }:
-
 stdenv.mkDerivation rec {
   name = "cuff-${version}";
   version = "1.0";
 
-  nativeBuildInputs = [ installShellFiles ];
+  nativeBuildInputs = [installShellFiles];
 
   src = fetchFromGitHub {
     owner = "loiccoyle";

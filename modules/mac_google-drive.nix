@@ -1,5 +1,5 @@
 {
-  homebrew.casks = [ "google-drive" ];
+  homebrew.casks = ["google-drive"];
 
   system.defaults.CustomUserPreferences."com.google.drivefs.settings" = {
     AutomaticErrorReporting = 0;

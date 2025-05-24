@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   # TODO
   # fonts.fontconfig.defaultFonts = {
   #   monospace = [ "Source Code Pro" ];
@@ -11,10 +9,10 @@
     atkinson-hyperlegible
     nerd-fonts.iosevka
     nerd-fonts.iosevka-term
+    nerd-fonts.commit-mono
     ubuntu_font_family
   ];
 }
-
 # (iosevka.override {
 #   set = "custom";
 #   privateBuildPlan = {
@@ -37,3 +35,4 @@
 #   #   "v-zshaped-l"
 #   # ];
 # })
+

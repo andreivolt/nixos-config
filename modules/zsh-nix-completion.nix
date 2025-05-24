@@ -1,7 +1,5 @@
-{ pkgs, ... }:
+{pkgs, ...}: {
+  environment.systemPackages = [pkgs.nix-zsh-completions];
 
-{
-  environment.systemPackages = [ pkgs.nix-zsh-completions ];
-
-  environment.pathsToLink = [ "/share/zsh" ];
+  environment.pathsToLink = ["/share/zsh"];
 }

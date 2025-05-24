@@ -81,15 +81,16 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1742156590,
-        "narHash": "sha256-aTM/2CrNN5utdVEQGsOA+kl4UozgH7VPLBQL5OXtBrg=",
+        "lastModified": 1744050665,
+        "narHash": "sha256-6BF4KdSi1umFQqO8DXiE0/IPS0tcmj2tUadTolGIHfo=",
         "owner": "hraban",
         "repo": "mac-app-util",
-        "rev": "341ede93f290df7957047682482c298e47291b4d",
+        "rev": "6cee19d4fad9044a53bd78390bd6b51e0c98c74a",
         "type": "github"
       },
       "original": {
         "owner": "hraban",
+        "ref": "link-contents",
         "repo": "mac-app-util",
         "type": "github"
       }

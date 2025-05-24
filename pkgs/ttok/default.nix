@@ -1,10 +1,10 @@
-{ lib
-, buildPythonPackage
-, fetchPypi
-, click
-, tiktoken
+{
+  lib,
+  buildPythonPackage,
+  fetchPypi,
+  click,
+  tiktoken,
 }:
-
 buildPythonPackage rec {
   pname = "ttok";
   version = "0.2";

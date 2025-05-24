@@ -1,12 +1,12 @@
-{ buildPythonApplication
-, fetchFromGitHub
-, lib
-, pytestCheckHook
-, python3
-, pythonOlder
-, setuptools
+{
+  buildPythonApplication,
+  fetchFromGitHub,
+  lib,
+  pytestCheckHook,
+  python3,
+  pythonOlder,
+  setuptools,
 }:
-
 buildPythonApplication rec {
   pname = "strip-tags";
   version = "0.5.1";

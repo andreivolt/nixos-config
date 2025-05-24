@@ -1,12 +1,13 @@
-{ config, pkgs, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
   users.users.andrei = {
     home = "/Users/andrei";
     description = "_";
   };
-
-  ids.gids.nixbld = 350; # TODO
 
   networking.hostName = "mac";
 
@@ -14,13 +15,11 @@
 
   system.primaryUser = "andrei";
 
-  environment.darwinConfig = "$HOME/drive/nixos-config/darwin-configuration.nix";
-
   imports = [
     ./modules/clojure.nix
     ./modules/fonts.nix
     ./modules/gnupg.nix
-    ./modules/local-test-domain.nix
+    ./modules/dnsmasq.nix
     ./modules/mac_autoraise.nix
     ./modules/mac_chatgpt.nix
     ./modules/mac_dock.nix
@@ -55,7 +54,7 @@
     inputs.mac-app-util.homeManagerModules.default
   ];
 
-  home-manager.users.andrei = { pkgs, ... }: {
+  home-manager.users.andrei = {pkgs, ...}: {
     home.stateVersion = "23.11";
     home.enableNixpkgsReleaseCheck = false;
 
@@ -250,11 +249,13 @@
       "pipx"
       "redshift"
       "switchaudio-osx"
+      "unoconv"
     ];
 
     casks = [
       "battery"
       "beeper"
+      # "blackhole-2ch"
       "command-x"
       "cursorcerer"
       "flux"
@@ -266,13 +267,11 @@
       "libreoffice"
       "middleclick"
       "mimestream"
-      "monitorcontrol"
       "nomachine"
       "obs"
       "orbstack"
       "roon"
       "sublime-text"
-      "telegram-desktop"
       "tidal"
       "whatsapp"
     ];

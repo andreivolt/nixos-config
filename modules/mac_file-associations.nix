@@ -1,6 +1,10 @@
 {
-  home-manager.users.andrei = { pkgs, config, ... }: {
-    home.activation.duti = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+  home-manager.users.andrei = {
+    pkgs,
+    config,
+    ...
+  }: {
+    home.activation.duti = config.lib.dag.entryAfter ["writeBoundary"] ''
       ${pkgs.duti}/bin/duti ${pkgs.writeText "_" ''
         com.colliderli.iina aac all
         com.colliderli.iina mp4 all
@@ -21,6 +25,6 @@
 
         org.mozilla.nightly .xpi all
       ''}
-   '';
+    '';
   };
 }

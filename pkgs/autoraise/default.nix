@@ -1,12 +1,12 @@
-{ alternative_task_switcher ? false
-, darwin
-, experimental_focus_first ? true
-, fetchurl
-, lib
-, old_activation_method ? false
-, stdenv
+{
+  alternative_task_switcher ? false,
+  darwin,
+  experimental_focus_first ? true,
+  fetchurl,
+  lib,
+  old_activation_method ? false,
+  stdenv,
 }:
-
 stdenv.mkDerivation rec {
   pname = "AutoRaise";
   version = "4.7";
@@ -23,17 +23,15 @@ stdenv.mkDerivation rec {
     SkyLight
   ];
 
-  preConfigure =
-    let
-      flags = lib.concatStringsSep " " [
-        (lib.optionalString alternative_task_switcher "-DALTERNATIVE_TASK_SWITCHER")
-        (lib.optionalString old_activation_method "-DOLD_ACTIVATION_METHOD")
-        (lib.optionalString experimental_focus_first "-DEXPERIMENTAL_FOCUS_FIRST")
-      ];
-    in
-    ''
-      export CXXFLAGS="${flags}"
-    '';
+  preConfigure = let
+    flags = lib.concatStringsSep " " [
+      (lib.optionalString alternative_task_switcher "-DALTERNATIVE_TASK_SWITCHER")
+      (lib.optionalString old_activation_method "-DOLD_ACTIVATION_METHOD")
+      (lib.optionalString experimental_focus_first "-DEXPERIMENTAL_FOCUS_FIRST")
+    ];
+  in ''
+    export CXXFLAGS="${flags}"
+  '';
 
   prePatch = ''
     substituteInPlace AutoRaise.mm --replace 'kAXValueCGPointType' 'kAXValueTypeCGPoint'

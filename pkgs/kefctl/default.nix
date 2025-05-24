@@ -2,13 +2,12 @@
   nixpkgs ? import <nixpkgs> {},
   perl ? nixpkgs.perl,
   fetchFromGitHub ? nixpkgs.fetchFromGitHub,
-  stdenv ? nixpkgs.stdenv
+  stdenv ? nixpkgs.stdenv,
 }:
-
 stdenv.mkDerivation {
   pname = "kefctl";
   version = "1.1.7";
-  buildInputs = [ perl ];
+  buildInputs = [perl];
   src = fetchFromGitHub {
     owner = "andreivolt";
     repo = "kefctl";

@@ -1,8 +1,8 @@
-{ buildPythonApplication
-, fetchFromGitHub
-, tabulate
+{
+  buildPythonApplication,
+  fetchFromGitHub,
+  tabulate,
 }:
-
 buildPythonApplication rec {
   pname = "jtbl";
   version = "1.6.0";

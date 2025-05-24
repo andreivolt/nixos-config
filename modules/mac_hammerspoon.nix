@@ -1,5 +1,5 @@
 {
-  homebrew.casks = [ "hammerspoon" ];
+  homebrew.casks = ["hammerspoon"];
 
   system.defaults.CustomUserPreferences."org.hammerspoon.Hammerspoon" = {
     MJShowMenuIconKey = false; # hide menu bar icon
