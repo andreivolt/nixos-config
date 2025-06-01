@@ -14,7 +14,7 @@
   '';
 
   # SSH config for nix daemon to use remote builders
-  environment.etc."ssh/ssh_config".text = ''
+  environment.etc."ssh/ssh_config.d/nix-remote-builders".text = ''
     Host riva.avolt.net
         HostName riva.avolt.net
         User root
