@@ -81,6 +81,7 @@
   nix.buildMachines = [{
     hostName = "riva.avolt.net";
     sshUser = "root";
+    sshKey = "/Users/andrei/.ssh/id_rsa";
     system = "x86_64-linux";
     maxJobs = 4;
     supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
