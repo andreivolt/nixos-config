@@ -99,6 +99,7 @@
   home-manager.users.andrei = {pkgs, ...}: {
     home.stateVersion = "23.11";
     home.enableNixpkgsReleaseCheck = false;
+    nixpkgs.config = config.nixpkgs.config;
     nixpkgs.overlays = config.nixpkgs.overlays;
 
     home.packages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./packages.nix pkgs);
