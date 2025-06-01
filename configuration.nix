@@ -1,200 +1,160 @@
-{ config, pkgs, ... }:
-
-let
-  hostName = "${builtins.readFile ./.hostname}";
-
-in {
-  imports =
-    [
-      ./alacritty.nix
-      ./autocutsel.nix
-      ./docker-gc.nix
-      ./docker-nginx-proxy.nix
-      ./hardware-configuration.nix
-      ./packages.nix
-      ./udiskie.nix
-    ];
-
-  networking = {
-    hostName = hostName;
-    enableIPv6 = false;
-    #wireless.enable = true;
-    firewall.allowedTCPPorts = [ 80 443 ];
-  }
-
-  time.timeZone = "Europe/Paris";
-
-  i18n = {
-    consoleKeyMap = "fr";
-    defaultLocale = "en_US.UTF-8";
+{
+  pkgs,
+  config,
+  ...
+}: {
+  users.users.andrei = {
+    isNormalUser = true;
+    shell = pkgs.zsh;
+    extraGroups = ["wheel"];
   };
 
+  networking.hostName = builtins.getEnv "HOSTNAME";
 
-  services = {
-    udisks2.enable = true;
-    unclutter-xfixes.enable = true;
-    emacs.enable = true;
-    offlineimap.enable = true;
-    tor.enable = true;
-    avahi = {
-      enable = true;
-      publish.enable = true;
-      nssmdns = true;
-    };
-    openvpn.servers = {
-      us = {
-        config = '' config /home/avo/.openvpn.conf '';
-        autoStart = false;
-      };
-    };
-    redshift = {
-      enable = true;
-      latitude = "48.85";
-      longitude = "2.35";
-      temperature.night = 4000;
-    };
-  };
-
-
-  systemd.services.docker-nginx-proxy.enable = true;
-
-  nixpkgs.config.zathura.useMupdf = true;
-
-  boot.loader.timeout = 1;
-
-  boot.kernel.sysctl = {
-    "fs.inotify.max_user_watches" = 100000;
-    "vm.swappiness" = 1;
-    "vm.vfs_cache_pressure" = 50;
-  };
-
-  hardware = {
-    bluetooth.enable = true;
-
-    pulseaudio = {
-      enable = true;
-      package = pkgs.pulseaudioFull;
-   };
-  };
-
-  system = {
-    autoUpgrade = {
-      enable = true;
-      channel = "https://nixos.org/channels/nixos-unstable";
-    };
-  };
+  imports = [
+    ./hardware-configuration.nix
+    ./modules/adb.nix
+    ./modules/brother-printer.nix
+    ./modules/brother-scanner.nix
+    ./modules/clojure.nix
+    ./modules/cursor.nix
+    ./modules/docker.nix
+    ./modules/fingerprint.nix
+    ./modules/flashfocus.nix
+    ./modules/fonts.nix
+    ./modules/gnome-keyring.nix
+    ./modules/gnupg.nix
+    ./modules/gtk.nix
+    ./modules/ipv6-disable.nix
+    ./modules/insync.nix
+    ./modules/libvirt.nix
+    ./modules/dnsmasq.nix
+    ./modules/lowbatt.nix
+    ./modules/mako.nix
+    ./modules/moreutils-without-parallel.nix
+    ./modules/mpv.nix
+    ./modules/networkmanager.nix
+    ./modules/nix.nix
+    ./modules/nixos-rebuild-summary.nix
+    ./modules/pipewire.nix
+    ./modules/play-with-mpv.nix
+    ./modules/qt.nix
+    ./modules/sway.nix
+    ./modules/swayidle.nix
+    ./modules/swaylock.nix
+    ./modules/thinkpad-video.nix
+    ./modules/tor.nix
+    ./modules/v4l2loopback.nix
+    ./modules/wayvnc.nix
+    ./modules/xdg-portals.nix
+    ./modules/zsh-nix-completion.nix
+    <home-manager/nixos>
+  ];
 
   nixpkgs.config.allowUnfree = true;
 
-  programs.adb.enable = true;
+  # don't show boot options
+  boot.loader.timeout = 0;
 
-  users.users.avo = {
-    uid = 1000;
-    isNormalUser = true;
-    shell = pkgs.zsh;
-    extraGroups = [
-      "adbusers"
-      "docker"
-      "ipfs"
-      "libvirtd"
-      "wheel"
-    ];
-    openssh.authorizedKeys.keys = [
-      "${builtins.readFile ./ssh-keys/avo.pub}"
-    ];
-  };
+  # # use maximum resolution in systemd-boot
+  # boot.loader.systemd-boot.consoleMode = lib.mkDefault "max";
 
-  programs.zsh = {
-    enable = true;
-    enableCompletion = true;
-  };
+  console.keyMap = "fr";
 
-  environment.variables."EDITOR" = "vim";
+  console.earlySetup = true;
+  console.font = "ter-132n";
+  console.packages = [pkgs.terminus_font];
+
+  environment.etc."mailcap".text = "*/*; xdg-open '%s'";
+
+  # 24-hour time format
+  environment.variables.LC_TIME = "C.UTF-8";
+
+  hardware.bluetooth.enable = true;
+  hardware.opengl.enable = true;
+
+  i18n.consoleKeyMap = "fr";
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  programs.mosh.enable = true;
+
+  programs.nix-ld.enable = true;
+
+  programs.zsh.enable = true;
 
   security.sudo.wheelNeedsPassword = false;
 
-  #fonts.fontconfig.ultimate.enable = false;
-
-  fonts.fonts = with pkgs; [
-    corefonts
-    google-fonts
-    liberation_ttf
-    vistafonts
-  ];
-
-
-  services.xserver = {
+  services.avahi = {
     enable = true;
+    nssmdns = true;
+  };
 
-    videoDrivers = [ "nvidia" ];
+  # automount removable devices
+  services.devmon.enable = true;
 
-    layout = "fr";
+  services.flatpak.enable = true;
 
-    libinput = {
+  services.gvfs.enable = true;
+
+  services.lowbatt = {
+    enable = true;
+    notifyCapacity = 40;
+    suspendCapacity = 10;
+  };
+
+  services.sshd.enable = true;
+
+  services.tailscale.enable = true;
+
+  services.upower.enable = true;
+
+  time.timeZone = "Europe/Paris";
+
+  home-manager.users.andrei = {pkgs, ...}: {
+    nixpkgs.overlays = config.nixpkgs.overlays;
+
+    home.packages = import ./packages.nix pkgs;
+
+    programs.fzf = {
       enable = true;
-      naturalScrolling = true;
-      accelSpeed = "0.4";
+      enableZshIntegration = true;
     };
 
-    displayManager = {
-      auto = {
-        enable = true;
-        user = "avo";
-      };
-      sessionCommands = ''
-        ${pkgs.sxhkd}/bin/sxhkd &
-        ${pkgs.dropbox}/bin/dropbox start &
-      '';
+    programs.zsh = {
+      enable = true; # TODO
+      enableCompletion = false;
+      initExtra = "source ~/.zshrc.extra.zsh;";
     };
 
-    windowManager = {
-      default = "xmonad";
-      xmonad  = {
-        enable = true;
-        enableContribAndExtras = true;
-        extraPackages = haskellPackages: [
-          haskellPackages.xmobar
-        ];
-      };
+    services.clipman.enable = true;
+
+    services.playerctld.enable = true;
+
+    services.wob.enable = true;
+
+    xdg.enable = true;
+
+    xdg.userDirs = {
+      enable = true;
+      createDirectories = true;
+      documents = "~/documents";
+      download = "~/downloads";
     };
-  };
 
-  programs.ssh.extraConfig = ''
-    Host *
-      ControlMaster auto
-      ControlPersist 0
-      ControlPath /tmp/ssh-%C
-  '';
-
-  virtualisation.docker.enable = true;
-
-  systemd.services.docker-gc.enable = true;
-
-
-  services.ipfs.enable = true;
-  environment.variables."IPFS_PATH" = "/var/lib/ipfs/.ipfs";
-
-  virtualisation.libvirtd.enable = true;
-  environment.variables."LIBVIRT_DEFAULT_URI" = "qemu:///system";
-
-  services.dnsmasq = {
-    enable = true;
-    servers = ["8.8.8.8" "8.8.4.4"];
-
-    extraConfig = ''
-      address=/test/127.0.0.1
-    '';
-  };
-
-  services.printing = {
-    enable = true;
-    clientConf = ''
-      <Printer default>
-        UUID urn:uuid:3c151d9e-3d44-3a04-59f9-5cdfbb513438
-        Info DCPL2520DW
-        MakeModel everywhere
-        DeviceURI ipp://192.168.1.15/ipp/print
-      </Printer>
-    '';
+    xdg.mimeApps.enable = true;
+    xdg.mimeApps.defaultApplications = let
+      browser = "firefox";
+    in {
+      "application/pdf" = "org.pwmt.zathura.desktop";
+      "image/jpeg" = "imv.desktop";
+      "image/png" = "imv.desktop";
+      "inode/directory" = "thunar.desktop";
+      "text/html" = "${browser}.desktop";
+      "text/plain" = "sublime_text.desktop";
+      "video/mp4" = "mpv.desktop";
+      "x-scheme-handler/http" = "${browser}.desktop";
+      "x-scheme-handler/https" = "${browser}.desktop";
+    };
+    xdg.configFile."mimeapps.list".force = true;
   };
 }
