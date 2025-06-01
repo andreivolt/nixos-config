@@ -20,14 +20,6 @@
         User root
         IdentityFile /Users/andrei/.ssh/id_rsa
         IdentitiesOnly yes
-        StrictHostKeyChecking yes
-  '';
-
-  # Copy known_hosts for host key verification
-  system.activationScripts.copySSHKnownHosts.text = ''
-    mkdir -p /var/root/.ssh
-    cp /Users/andrei/.ssh/known_hosts /var/root/.ssh/known_hosts
-    chmod 644 /var/root/.ssh/known_hosts
-    chown root:wheel /var/root/.ssh/known_hosts
+        StrictHostKeyChecking no
   '';
 }
