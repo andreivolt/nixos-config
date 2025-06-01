@@ -18,4 +18,10 @@
     NewWindowTarget = "PfHm"; # new windows open in home dir
     _FXSortFoldersFirst = true; # TODO
   };
+
+  # prevent creation of .DS_Store files
+  system.defaults.CustomUserPreferences."com.apple.desktopservices" = {
+    DSDontWriteNetworkStores = true;
+    DSDontWriteUSBStores = true;
+  };
 }
