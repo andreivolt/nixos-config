@@ -93,6 +93,8 @@
   environment.variables.LC_TIME = "C.UTF-8";
 
   home-manager.users.andrei = {pkgs, ...}: {
+    home.stateVersion = "23.11";
+    home.enableNixpkgsReleaseCheck = false;
     nixpkgs.overlays = config.nixpkgs.overlays;
 
     home.packages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./packages.nix pkgs);
