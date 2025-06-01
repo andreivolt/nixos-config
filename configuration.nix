@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }: {
   users.users.andrei = {
@@ -113,7 +114,7 @@
   home-manager.users.andrei = {pkgs, ...}: {
     nixpkgs.overlays = config.nixpkgs.overlays;
 
-    home.packages = import ./packages.nix pkgs;
+    home.packages = import "${inputs.self}/packages.nix" pkgs;
 
     programs.fzf = {
       enable = true;

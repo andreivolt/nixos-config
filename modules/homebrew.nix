@@ -1,4 +1,4 @@
-{...}: {
+{inputs, ...}: {
   homebrew = {
     enable = true;
 
@@ -13,9 +13,9 @@
       # require_sha = true;
     };
 
-    brews = import ../homebrew-brews.nix;
-    casks = import ../homebrew-casks.nix;
-    masApps = import ../homebrew-masapps.nix;
+    brews = import "${inputs.self}/homebrew-brews.nix";
+    casks = import "${inputs.self}/homebrew-casks.nix";
+    masApps = import "${inputs.self}/homebrew-masapps.nix";
     taps = [
       "homebrew/bundle"
       "homebrew/cask-versions"
