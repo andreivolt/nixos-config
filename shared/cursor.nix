@@ -3,7 +3,7 @@
   cursor-size = 48;
 in {
   home-manager.users.andrei = {
-    home.packages = [pkgs.gnome.adwaita-icon-theme];
+    home.packages = [pkgs.adwaita-icon-theme];
 
     home.sessionVariables = {
       XCURSOR_THEME = cursor-theme;
