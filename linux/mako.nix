@@ -4,7 +4,7 @@
     width = 800;
     height = 9999;
     backgroundColor = "#000000CC";
-    font = "${(import (dirOf <nixos-config> + /modules/theme.nix)).font.family} 28";
+    font = "${(import ../shared/theme.nix).font.family} 28";
     layer = "overlay";
     borderSize = 1;
     borderColor = "#00ff00";
