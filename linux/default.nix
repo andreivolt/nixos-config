@@ -44,8 +44,12 @@
   ];
 
   networking.hostName = builtins.getEnv "HOSTNAME";
+  system.stateVersion = "23.11";
 
   boot.loader.timeout = 0;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.devices = [ "/dev/sda" ];  # Placeholder - adjust per machine
+  fileSystems."/" = { device = "/dev/sda1"; fsType = "ext4"; };  # Placeholder
   # boot.loader.systemd-boot.consoleMode = lib.mkDefault "max";
 
   console.keyMap = "fr";
