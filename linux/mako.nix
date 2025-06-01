@@ -10,12 +10,9 @@
     borderColor = "#00ff00";
     margin = "20";
     padding = "20";
-    extraConfig = ''
-      [app-name=tidal-hifi]
-      default-timeout=5000
-
-      [app-name=Spotify]
-      default-timeout=5000
-    '';
+    settings = {
+      "app-name=tidal-hifi".default-timeout = 5000;
+      "app-name=Spotify".default-timeout = 5000;
+    };
   };
 }
