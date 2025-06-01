@@ -12,6 +12,11 @@
     ../shared/fonts.nix
     ../shared/gnupg.nix
     ../shared/insync.nix
+    ../shared/moreutils-without-parallel.nix
+    ../shared/mpv.nix
+    ../shared/nix.nix
+    ../shared/tor.nix
+    ../shared/zsh-nix-completion.nix
     ./adb.nix
     ./brother-printer.nix
     ./brother-scanner.nix
@@ -35,12 +40,6 @@
     ./v4l2loopback.nix
     ./wayvnc.nix
     ./xdg-portals.nix
-    ../shared/moreutils-without-parallel.nix
-    ../shared/mpv.nix
-    ../shared/nix.nix
-    ../shared/play-with-mpv.nix
-    ../shared/tor.nix
-    ../shared/zsh-nix-completion.nix
   ];
 
   networking.hostName = builtins.getEnv "HOSTNAME";
