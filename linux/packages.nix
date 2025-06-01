@@ -10,7 +10,7 @@ with pkgs;
     detox
     ffmpeg-full
     fswebcam
-    gcolor2
+    gcolor3
     gnome-epub-thumbnailer
     imv
     inotify-tools
