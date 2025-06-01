@@ -9,6 +9,6 @@
       enableSSHSupport = true;
     }
     // lib.optionalAttrs (pkgs.stdenv.hostPlatform.isLinux) {
-      pinentryFlandreir = "tty";
+      pinentryFlavor = "tty";
     };
 }
