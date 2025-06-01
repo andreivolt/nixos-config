@@ -6,41 +6,42 @@
   ...
 }: {
   imports = [
-    ./shared/clojure.nix
-    ./darwin/activity-monitor.nix
-    ./darwin/auto-brightness.nix
-    ./darwin/autoraise.nix
-    ./darwin/boot-sound.nix
-    ./darwin/chatgpt.nix
-    ./darwin/default-browser.nix
-    ./darwin/dock.nix
-    ./darwin/file-associations.nix
-    ./darwin/finder.nix
-    ./darwin/google-drive.nix
-    ./darwin/hammerspoon.nix
-    ./darwin/htu.nix
-    ./darwin/icloud.nix
-    ./darwin/iina.nix
-    ./darwin/interface.nix
-    ./darwin/jumpcut.nix
-    ./darwin/keyboard.nix
-    ./darwin/menu-bar.nix
-    ./darwin/power-management.nix
-    ./darwin/privacy.nix
-    ./darwin/screencapture.nix
-    ./darwin/security.nix
-    ./darwin/socks-proxy.nix
-    ./darwin/spotlight.nix
-    ./darwin/system-preferences.nix
-    ./darwin/tor.nix
-    ./darwin/trackpad.nix
-    ./darwin/wallpaper.nix
-    ./shared/dnsmasq.nix
-    ./shared/fonts.nix
-    ./shared/gnupg.nix
-    ./darwin/homebrew
-    ./shared/moreutils-without-parallel.nix
-    ./shared/zsh-nix-completion.nix
+    ../shared/clojure.nix
+    ../shared/dnsmasq.nix
+    ../shared/fonts.nix
+    ../shared/gnupg.nix
+    ../shared/moreutils-without-parallel.nix
+    ../shared/play-with-mpv.nix
+    ../shared/zsh-nix-completion.nix
+    ./activity-monitor.nix
+    ./auto-brightness.nix
+    ./autoraise.nix
+    ./boot-sound.nix
+    ./chatgpt.nix
+    ./default-browser.nix
+    ./dock.nix
+    ./file-associations.nix
+    ./finder.nix
+    ./google-drive.nix
+    ./hammerspoon.nix
+    ./homebrew
+    ./htu.nix
+    ./icloud.nix
+    ./iina.nix
+    ./interface.nix
+    ./jumpcut.nix
+    ./keyboard.nix
+    ./menu-bar.nix
+    ./power-management.nix
+    ./privacy.nix
+    ./screencapture.nix
+    ./security.nix
+    ./socks-proxy.nix
+    ./spotlight.nix
+    ./system-preferences.nix
+    ./tor.nix
+    ./trackpad.nix
+    ./wallpaper.nix
   ];
 
   users.users.andrei = {
@@ -51,7 +52,7 @@
   programs.zsh.enable = true; # needed for setting path
   programs.zsh.enableCompletion = false; # slow
 
-  environment.systemPackages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./darwin/packages.nix pkgs);
+  environment.systemPackages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./packages.nix pkgs);
 
   home-manager.useGlobalPkgs = true;
   home-manager.sharedModules = [
