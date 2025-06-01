@@ -5,7 +5,7 @@ with pkgs;
     alsa-utils
     beeper
     binutils
-    breeze-qt5
+    libsForQt5.breeze-qt5
     caprine-bin
     detox
     ffmpeg-full
