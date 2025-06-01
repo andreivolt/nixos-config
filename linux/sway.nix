@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: let
-  theme = import (dirOf <nixos-config> + /modules/theme.nix);
+  theme = import ../shared/theme.nix;
 in {
   hardware.opengl.enable = true;
 
