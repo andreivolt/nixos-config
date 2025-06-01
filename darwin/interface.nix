@@ -7,6 +7,7 @@
     # Font and appearance
     AppleFontSmoothing = 0;
     AppleInterfaceStyle = "Dark";
+    # reduceTransparency = true;
 
     # Finder and file handling
     AppleScrollerPagingBehavior = true;
