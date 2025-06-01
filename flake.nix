@@ -56,6 +56,7 @@
           nixpkgs.config.allowBroken = true;
           nixpkgs.config.permittedInsecurePackages = [
             "openssl-1.1.1w"
+            "python3.12-youtube-dl-2021.12.17"
           ];
           nixpkgs.hostPlatform = "x86_64-linux";
           nixpkgs.overlays = [
