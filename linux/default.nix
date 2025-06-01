@@ -46,8 +46,6 @@
 
   networking.hostName = builtins.getEnv "HOSTNAME";
 
-  nixpkgs.config.allowUnfree = true;
-
   boot.loader.timeout = 0;
   # boot.loader.systemd-boot.consoleMode = lib.mkDefault "max";
 
