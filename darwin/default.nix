@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   inputs,
   ...
@@ -7,7 +8,6 @@
   imports = [
     ./shared/clojure.nix
     ./darwin/activity-monitor.nix
-    ./darwin/apply-settings.nix
     ./darwin/auto-brightness.nix
     ./darwin/autoraise.nix
     ./darwin/boot-sound.nix
@@ -43,15 +43,6 @@
     ./shared/zsh-nix-completion.nix
   ];
 
-  networking.hostName = "mac";
-  system.stateVersion = 4;
-  system.primaryUser = "andrei";
-
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.hostPlatform = "aarch64-darwin";
-
-  nix.enable = false; # using Determinate Nix
-
   users.users.andrei = {
     home = "/Users/andrei";
     description = "_";
@@ -84,4 +75,9 @@
       initContent = "source ~/.zshrc.extra.zsh;";
     };
   };
+
+  # system.activationScripts.applySettings.text = lib.mkAfter ''
+  #   echo 'apply settings immediately'
+  #   /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u 2>/dev/null || true
+  # '';
 }
