@@ -1,5 +1,5 @@
-{pkgs, ...}: let
-  autoraise = pkgs.callPackage ../pkgs/autoraise {experimental_focus_first = true;};
+{pkgs, inputs, ...}: let
+  autoraise = pkgs.callPackage "${inputs.self}/pkgs/autoraise" {experimental_focus_first = true;};
 in {
   launchd.user.agents.autoRaise.serviceConfig = {
     ProgramArguments = [
