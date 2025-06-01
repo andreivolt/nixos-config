@@ -29,6 +29,7 @@
       modules = [
         {
           nixpkgs.config.allowUnfree = true;
+          nixpkgs.hostPlatform = "aarch64-darwin";
           nixpkgs.overlays = [
             (import "${inputs.self}/pkgs")
             (final: prev: {
@@ -52,6 +53,7 @@
       modules = [
         {
           nixpkgs.config.allowUnfree = true;
+          nixpkgs.hostPlatform = "x86_64-linux";
           nixpkgs.overlays = [
             (import "${inputs.self}/pkgs")
             (final: prev: {
