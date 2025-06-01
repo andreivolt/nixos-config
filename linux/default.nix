@@ -60,7 +60,6 @@
   hardware.bluetooth.enable = true;
   hardware.opengl.enable = true;
 
-  i18n.consoleKeyMap = "fr";
   i18n.defaultLocale = "en_US.UTF-8";
 
   time.timeZone = "Europe/Paris";
