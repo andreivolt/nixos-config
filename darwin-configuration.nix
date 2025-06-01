@@ -4,17 +4,6 @@
   inputs,
   ...
 }: {
-  users.users.andrei = {
-    home = "/Users/andrei";
-    description = "_";
-  };
-
-  networking.hostName = "mac";
-
-  system.stateVersion = 4;
-
-  system.primaryUser = "andrei";
-
   imports = [
     ./modules/clojure.nix
     ./modules/fonts.nix
@@ -22,8 +11,11 @@
     ./modules/dnsmasq.nix
     ./modules/homebrew.nix
     ./modules/darwin/activity-monitor.nix
+    ./modules/darwin/auto-brightness.nix
     ./modules/darwin/autoraise.nix
+    ./modules/darwin/boot-sound.nix
     ./modules/darwin/chatgpt.nix
+    ./modules/darwin/default-browser.nix
     ./modules/darwin/dock.nix
     ./modules/darwin/file-associations.nix
     ./modules/darwin/finder.nix
@@ -34,6 +26,8 @@
     ./modules/darwin/interface.nix
     ./modules/darwin/jumpcut.nix
     ./modules/darwin/keyboard.nix
+    ./modules/darwin/menu-bar.nix
+    ./modules/darwin/power-management.nix
     ./modules/darwin/privacy.nix
     ./modules/darwin/screencapture.nix
     ./modules/darwin/security.nix
@@ -42,20 +36,30 @@
     ./modules/darwin/system-preferences.nix
     ./modules/darwin/tor.nix
     ./modules/darwin/trackpad.nix
+    ./modules/darwin/wallpaper.nix
     ./modules/moreutils-without-parallel.nix
     ./modules/zsh-nix-completion.nix
   ];
 
+  networking.hostName = "mac";
+  system.stateVersion = 4;
+  system.primaryUser = "andrei";
+
   nixpkgs.config.allowUnfree = true;
   nixpkgs.hostPlatform = "aarch64-darwin";
 
-  # using Determinate Nix
-  nix.enable = false;
-
+  nix.enable = false; # using Determinate Nix
   # services.lorri.enable = true;
+
+  users.users.andrei = {
+    home = "/Users/andrei";
+    description = "_";
+  };
 
   programs.zsh.enable = true; # needed for setting path
   programs.zsh.enableCompletion = false; # slow
+
+  environment.systemPackages = import "${inputs.self}/packages.nix" pkgs;
 
   home-manager.useGlobalPkgs = true;
   home-manager.sharedModules = [
@@ -80,8 +84,6 @@
     };
   };
 
-  environment.systemPackages = import "${inputs.self}/packages.nix" pkgs;
-
   # TODO Safari full URL
   # system.defaults.CustomUserPreferences."com.apple.Safari".ShowFullURLInSmartSearchField = true;
 
@@ -91,30 +93,8 @@
   # TODO reduce transparency
   # system.defaults.universalaccess.reduceTransparency = true;
 
-  # system.activationScripts.postUserActivation.text = ''
-  #   echo 'disable boot sound'
-  #   sudo /usr/sbin/nvram SystemAudioVolume=%80
-  #
-  #   echo 'reduce menu bar whitespace'
-  #   defaults write -g NSStatusItemSelectionPadding -int 16
-  #   defaults write -g NSStatusItemSpacing -int 16
-  #
-  #   echo 'keep awake when remote session active when on power'
-  #   sudo pmset -c ttyskeepawake 1
-  #   sudo pmset -b ttyskeepawake 0
-  #
-  #   echo 'disable auto brightness'
-  #   sudo defaults write /Library/Preferences/com.apple.iokit.AmbientLightSensor "Automatic Display Enabled" -bool false
-  #
-  #   ln -sfn ~/Google\ Drive/My\ Drive ~/drive
-  #   ln -sfn ~/drive/bin ~/bin
-  #
-  #   /opt/homebrew/bin/defaultbrowser chrome
-  #
-  #   osascript -e 'tell application "Finder" to set desktop picture to POSIX file "/System/Library/Desktop Pictures/Solid Colors/Black.png"'
-  #
-  #   # # TODO: apply settings immediately
-  #   # /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+  # TODO: apply settings immediately
+  # system.activationScripts.postActivation.text = ''
+  #   /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
   # '';
-
 }
