@@ -6,41 +6,41 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ./shared/clojure.nix
-    ./shared/cursor.nix
-    ./shared/dnsmasq.nix
-    ./shared/fonts.nix
-    ./shared/gnupg.nix
-    ./shared/insync.nix
-    ./linux/adb.nix
-    ./linux/brother-printer.nix
-    ./linux/brother-scanner.nix
-    ./linux/docker.nix
-    ./linux/fingerprint.nix
-    ./linux/flashfocus.nix
-    ./linux/gnome-keyring.nix
-    ./linux/gtk.nix
-    ./linux/ipv6-disable.nix
-    ./linux/libvirt.nix
-    ./linux/lowbatt.nix
-    ./linux/mako.nix
-    ./linux/networkmanager.nix
-    ./linux/nixos-rebuild-summary.nix
-    ./linux/pipewire.nix
-    ./linux/qt.nix
-    ./linux/sway.nix
-    ./linux/swayidle.nix
-    ./linux/swaylock.nix
-    ./linux/thinkpad-video.nix
-    ./linux/v4l2loopback.nix
-    ./linux/wayvnc.nix
-    ./linux/xdg-portals.nix
-    ./shared/moreutils-without-parallel.nix
-    ./shared/mpv.nix
-    ./shared/nix.nix
-    ./shared/play-with-mpv.nix
-    ./shared/tor.nix
-    ./shared/zsh-nix-completion.nix
+    ../shared/clojure.nix
+    ../shared/cursor.nix
+    ../shared/dnsmasq.nix
+    ../shared/fonts.nix
+    ../shared/gnupg.nix
+    ../shared/insync.nix
+    ./adb.nix
+    ./brother-printer.nix
+    ./brother-scanner.nix
+    ./docker.nix
+    ./fingerprint.nix
+    ./flashfocus.nix
+    ./gnome-keyring.nix
+    ./gtk.nix
+    ./ipv6-disable.nix
+    ./libvirt.nix
+    ./lowbatt.nix
+    ./mako.nix
+    ./networkmanager.nix
+    ./nixos-rebuild-summary.nix
+    ./pipewire.nix
+    ./qt.nix
+    ./sway.nix
+    ./swayidle.nix
+    ./swaylock.nix
+    ./thinkpad-video.nix
+    ./v4l2loopback.nix
+    ./wayvnc.nix
+    ./xdg-portals.nix
+    ../shared/moreutils-without-parallel.nix
+    ../shared/mpv.nix
+    ../shared/nix.nix
+    ../shared/play-with-mpv.nix
+    ../shared/tor.nix
+    ../shared/zsh-nix-completion.nix
     <home-manager/nixos>
   ];
 
@@ -96,7 +96,7 @@
   home-manager.users.andrei = {pkgs, ...}: {
     nixpkgs.overlays = config.nixpkgs.overlays;
 
-    home.packages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./linux/packages.nix pkgs);
+    home.packages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./packages.nix pkgs);
 
     programs.fzf = {
       enable = true;
