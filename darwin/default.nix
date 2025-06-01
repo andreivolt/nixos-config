@@ -82,8 +82,13 @@
     hostName = "riva.avolt.net";
     sshUser = "root";
     system = "x86_64-linux";
+    maxJobs = 4;
+    supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
   }];
   nix.distributedBuilds = true;
+  nix.extraOptions = ''
+    builders-use-substitutes = true
+  '';
 
   # system.activationScripts.applySettings.text = lib.mkAfter ''
   #   echo 'apply settings immediately'
