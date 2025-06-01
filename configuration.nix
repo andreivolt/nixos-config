@@ -13,40 +13,40 @@
 
   imports = [
     ./hardware-configuration.nix
-    ./modules/adb.nix
-    ./modules/brother-printer.nix
-    ./modules/brother-scanner.nix
+    ./modules/linux/adb.nix
+    ./modules/linux/brother-printer.nix
+    ./modules/linux/brother-scanner.nix
     ./modules/clojure.nix
     ./modules/cursor.nix
-    ./modules/docker.nix
-    ./modules/fingerprint.nix
-    ./modules/flashfocus.nix
+    ./modules/linux/docker.nix
+    ./modules/linux/fingerprint.nix
+    ./modules/linux/flashfocus.nix
     ./modules/fonts.nix
-    ./modules/gnome-keyring.nix
+    ./modules/linux/gnome-keyring.nix
     ./modules/gnupg.nix
-    ./modules/gtk.nix
-    ./modules/ipv6-disable.nix
+    ./modules/linux/gtk.nix
+    ./modules/linux/ipv6-disable.nix
     ./modules/insync.nix
-    ./modules/libvirt.nix
+    ./modules/linux/libvirt.nix
     ./modules/dnsmasq.nix
-    ./modules/lowbatt.nix
-    ./modules/mako.nix
+    ./modules/linux/lowbatt.nix
+    ./modules/linux/mako.nix
     ./modules/moreutils-without-parallel.nix
     ./modules/mpv.nix
-    ./modules/networkmanager.nix
+    ./modules/linux/networkmanager.nix
     ./modules/nix.nix
-    ./modules/nixos-rebuild-summary.nix
-    ./modules/pipewire.nix
+    ./modules/linux/nixos-rebuild-summary.nix
+    ./modules/linux/pipewire.nix
     ./modules/play-with-mpv.nix
-    ./modules/qt.nix
-    ./modules/sway.nix
-    ./modules/swayidle.nix
-    ./modules/swaylock.nix
-    ./modules/thinkpad-video.nix
+    ./modules/linux/qt.nix
+    ./modules/linux/sway.nix
+    ./modules/linux/swayidle.nix
+    ./modules/linux/swaylock.nix
+    ./modules/linux/thinkpad-video.nix
     ./modules/tor.nix
-    ./modules/v4l2loopback.nix
-    ./modules/wayvnc.nix
-    ./modules/xdg-portals.nix
+    ./modules/linux/v4l2loopback.nix
+    ./modules/linux/wayvnc.nix
+    ./modules/linux/xdg-portals.nix
     ./modules/zsh-nix-completion.nix
     <home-manager/nixos>
   ];
