@@ -4,7 +4,7 @@ with pkgs;
     iproute2mac
   ]
   ++ (with darwin; [
-    andrei.pbpaste-html
+    # andrei.pbpaste-html # TODO: Swift/Cocoa SDK compatibility issues
     andrei.impbcopy
     asitop
     coreutils
