@@ -52,6 +52,23 @@
         "type": "indirect"
       }
     },
+    "hammerspoon-spoons": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1689613197,
+        "narHash": "sha256-BVQ/3hJo1TK0IwfHpOHtzEWpgzlclYuFL9HZJRKEit8=",
+        "owner": "Hammerspoon",
+        "repo": "Spoons",
+        "rev": "3f6bb38a4b1d98ec617e1110450cbc53b15513ec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Hammerspoon",
+        "repo": "Spoons",
+        "rev": "3f6bb38a4b1d98ec617e1110450cbc53b15513ec",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -167,6 +184,7 @@
     },
     "root": {
       "inputs": {
+        "hammerspoon-spoons": "hammerspoon-spoons",
         "home-manager": "home-manager",
         "mac-app-util": "mac-app-util",
         "nix-darwin": "nix-darwin",
