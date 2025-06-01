@@ -1,9 +1,7 @@
 {pkgs, ...}: let
-  # Path to the helper script
   lockWithFingerprintPath = pkgs.writeShellScript "lockWithFingerprint" ''
     #!/bin/sh
 
-    # Use fingerprint for authentication if available
     if [[ $(fprintd-enroll -l) != "No devices available" ]]; then
       pam-auth-update --enable fprintd
       swaylock -f -c 000000 -- \
@@ -21,8 +19,9 @@ in {
 
   services.fprintd.enable = true;
 
-  services.fprintd.tod = {
-    enable = true;
-    driver = pkgs.libfprint-2-tod1-vfs0090;
-  };
+  # TODO: broken
+  # services.fprintd.tod = {
+  #   enable = true;
+  #   driver = pkgs.libfprint-2-tod1-vfs0090;
+  # };
 }

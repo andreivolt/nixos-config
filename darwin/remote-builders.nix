@@ -3,7 +3,7 @@
   nix.buildMachines = [{
     hostName = "riva.avolt.net";
     sshUser = "root";
-    sshKey = "/Users/andrei/.ssh/id_rsa";
+    sshKey = "/var/root/.ssh/id_rsa";
     system = "x86_64-linux";
     maxJobs = 4;
     supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
@@ -18,7 +18,7 @@
     Host riva.avolt.net
         HostName riva.avolt.net
         User root
-        IdentityFile /Users/andrei/.ssh/id_rsa
+        IdentityFile /var/root/.ssh/id_rsa
         IdentitiesOnly yes
         StrictHostKeyChecking no
   '';

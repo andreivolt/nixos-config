@@ -16,7 +16,7 @@
     ./brother-printer.nix
     ./brother-scanner.nix
     ./docker.nix
-    # ./fingerprint.nix  # Disabled: libfprint-2-tod1-vfs0090 is broken
+    ./fingerprint.nix
     ./flashfocus.nix
     ./gnome-keyring.nix
     ./gtk.nix
