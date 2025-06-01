@@ -17,7 +17,8 @@ stdenv.mkDerivation rec {
   unpackPhase = "unzip $src";
 
   installPhase = ''
-    mkdir -p $out/bin
-    cp -r * $out/bin/
+    mkdir -p $out/bin $out/lib/carbonyl
+    cp carbonyl-*/carbonyl $out/bin/
+    cp carbonyl-*/*.{dat,bin,dylib} $out/lib/carbonyl/
   '';
 }
