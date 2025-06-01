@@ -80,6 +80,7 @@
   # Remote builders (requires remote NixOS machine)
   nix.buildMachines = [{
     hostName = "riva.avolt.net";
+    sshUser = "root";
     system = "x86_64-linux";
   }];
   nix.distributedBuilds = true;
