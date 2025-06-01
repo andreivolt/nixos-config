@@ -11,7 +11,6 @@
     ../shared/fonts.nix
     ../shared/gnupg.nix
     ../shared/moreutils-without-parallel.nix
-    ../shared/play-with-mpv.nix
     ../shared/zsh-nix-completion.nix
     ./activity-monitor.nix
     ./auto-brightness.nix

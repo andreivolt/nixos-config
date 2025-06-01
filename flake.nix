@@ -24,7 +24,7 @@
     home-manager,
     mac-app-util,
     hammerspoon-spoons,
-  }: 
+  }:
   let
     # Common nixpkgs configuration
     commonNixpkgsConfig = {
