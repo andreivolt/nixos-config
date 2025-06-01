@@ -24,18 +24,25 @@
     home-manager,
     mac-app-util,
     hammerspoon-spoons,
-  }: {
+  }: 
+  let
+    # Common nixpkgs configuration
+    commonNixpkgsConfig = {
+      config.allowUnfree = true;
+      overlays = [
+        (import "${inputs.self}/pkgs")
+        (final: prev: {
+          unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+        })
+      ];
+    };
+  in {
     darwinConfigurations."mac" = nix-darwin.lib.darwinSystem {
       modules = [
         {
-          nixpkgs.config.allowUnfree = true;
-          nixpkgs.hostPlatform = "aarch64-darwin";
-          nixpkgs.overlays = [
-            (import "${inputs.self}/pkgs")
-            (final: prev: {
-              unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
-            })
-          ];
+          nixpkgs = commonNixpkgsConfig // {
+            hostPlatform = "aarch64-darwin";
+          };
 
           networking.hostName = "mac";
           system.stateVersion = 4;
@@ -52,19 +59,16 @@
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       modules = [
         {
-          nixpkgs.config.allowUnfree = true;
-          nixpkgs.config.allowBroken = true;
-          nixpkgs.config.permittedInsecurePackages = [
-            "openssl-1.1.1w"
-            "python3.12-youtube-dl-2021.12.17"
-          ];
-          nixpkgs.hostPlatform = "x86_64-linux";
-          nixpkgs.overlays = [
-            (import "${inputs.self}/pkgs")
-            (final: prev: {
-              unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
-            })
-          ];
+          nixpkgs = commonNixpkgsConfig // {
+            hostPlatform = "x86_64-linux";
+            config = commonNixpkgsConfig.config // {
+              # nixpkgs.config.allowBroken = true;
+              permittedInsecurePackages = [
+                "openssl-1.1.1w"
+                "python3.12-youtube-dl-2021.12.17"
+              ];
+            };
+          };
         }
         "${inputs.self}/linux"
         home-manager.nixosModules.home-manager
