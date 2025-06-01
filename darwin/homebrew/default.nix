@@ -13,9 +13,9 @@
       # require_sha = true;
     };
 
-    brews = import "${inputs.self}/homebrew-brews.nix";
-    casks = import "${inputs.self}/homebrew-casks.nix";
-    masApps = import "${inputs.self}/homebrew-masapps.nix";
+    brews = import ./brews.nix;
+    casks = import ./casks.nix;
+    masApps = import ./masapps.nix;
     taps = [
       "homebrew/bundle"
       "homebrew/cask-versions"

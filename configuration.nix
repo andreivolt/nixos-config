@@ -4,72 +4,57 @@
   inputs,
   ...
 }: {
-  users.users.andrei = {
-    isNormalUser = true;
-    shell = pkgs.zsh;
-    extraGroups = ["wheel"];
-  };
-
-  networking.hostName = builtins.getEnv "HOSTNAME";
-
   imports = [
     ./hardware-configuration.nix
-    ./modules/linux/adb.nix
-    ./modules/linux/brother-printer.nix
-    ./modules/linux/brother-scanner.nix
-    ./modules/clojure.nix
-    ./modules/cursor.nix
-    ./modules/linux/docker.nix
-    ./modules/linux/fingerprint.nix
-    ./modules/linux/flashfocus.nix
-    ./modules/fonts.nix
-    ./modules/linux/gnome-keyring.nix
-    ./modules/gnupg.nix
-    ./modules/linux/gtk.nix
-    ./modules/linux/ipv6-disable.nix
-    ./modules/insync.nix
-    ./modules/linux/libvirt.nix
-    ./modules/dnsmasq.nix
-    ./modules/linux/lowbatt.nix
-    ./modules/linux/mako.nix
-    ./modules/moreutils-without-parallel.nix
-    ./modules/mpv.nix
-    ./modules/linux/networkmanager.nix
-    ./modules/nix.nix
-    ./modules/linux/nixos-rebuild-summary.nix
-    ./modules/linux/pipewire.nix
-    ./modules/play-with-mpv.nix
-    ./modules/linux/qt.nix
-    ./modules/linux/sway.nix
-    ./modules/linux/swayidle.nix
-    ./modules/linux/swaylock.nix
-    ./modules/linux/thinkpad-video.nix
-    ./modules/tor.nix
-    ./modules/linux/v4l2loopback.nix
-    ./modules/linux/wayvnc.nix
-    ./modules/linux/xdg-portals.nix
-    ./modules/zsh-nix-completion.nix
+    ./shared/clojure.nix
+    ./shared/cursor.nix
+    ./shared/dnsmasq.nix
+    ./shared/fonts.nix
+    ./shared/gnupg.nix
+    ./shared/insync.nix
+    ./linux/adb.nix
+    ./linux/brother-printer.nix
+    ./linux/brother-scanner.nix
+    ./linux/docker.nix
+    ./linux/fingerprint.nix
+    ./linux/flashfocus.nix
+    ./linux/gnome-keyring.nix
+    ./linux/gtk.nix
+    ./linux/ipv6-disable.nix
+    ./linux/libvirt.nix
+    ./linux/lowbatt.nix
+    ./linux/mako.nix
+    ./linux/networkmanager.nix
+    ./linux/nixos-rebuild-summary.nix
+    ./linux/pipewire.nix
+    ./linux/qt.nix
+    ./linux/sway.nix
+    ./linux/swayidle.nix
+    ./linux/swaylock.nix
+    ./linux/thinkpad-video.nix
+    ./linux/v4l2loopback.nix
+    ./linux/wayvnc.nix
+    ./linux/xdg-portals.nix
+    ./shared/moreutils-without-parallel.nix
+    ./shared/mpv.nix
+    ./shared/nix.nix
+    ./shared/play-with-mpv.nix
+    ./shared/tor.nix
+    ./shared/zsh-nix-completion.nix
     <home-manager/nixos>
   ];
 
+  networking.hostName = builtins.getEnv "HOSTNAME";
+
   nixpkgs.config.allowUnfree = true;
 
-  # don't show boot options
   boot.loader.timeout = 0;
-
-  # # use maximum resolution in systemd-boot
   # boot.loader.systemd-boot.consoleMode = lib.mkDefault "max";
 
   console.keyMap = "fr";
-
   console.earlySetup = true;
   console.font = "ter-132n";
   console.packages = [pkgs.terminus_font];
-
-  environment.etc."mailcap".text = "*/*; xdg-open '%s'";
-
-  # 24-hour time format
-  environment.variables.LC_TIME = "C.UTF-8";
 
   hardware.bluetooth.enable = true;
   hardware.opengl.enable = true;
@@ -77,10 +62,16 @@
   i18n.consoleKeyMap = "fr";
   i18n.defaultLocale = "en_US.UTF-8";
 
+  time.timeZone = "Europe/Paris";
+
+  users.users.andrei = {
+    isNormalUser = true;
+    shell = pkgs.zsh;
+    extraGroups = ["wheel"];
+  };
+
   programs.mosh.enable = true;
-
   programs.nix-ld.enable = true;
-
   programs.zsh.enable = true;
 
   security.sudo.wheelNeedsPassword = false;
@@ -89,32 +80,25 @@
     enable = true;
     nssmdns = true;
   };
-
-  # automount removable devices
   services.devmon.enable = true;
-
   services.flatpak.enable = true;
-
   services.gvfs.enable = true;
-
   services.lowbatt = {
     enable = true;
     notifyCapacity = 40;
     suspendCapacity = 10;
   };
-
   services.sshd.enable = true;
-
   services.tailscale.enable = true;
-
   services.upower.enable = true;
 
-  time.timeZone = "Europe/Paris";
+  environment.etc."mailcap".text = "*/*; xdg-open '%s'";
+  environment.variables.LC_TIME = "C.UTF-8";
 
   home-manager.users.andrei = {pkgs, ...}: {
     nixpkgs.overlays = config.nixpkgs.overlays;
 
-    home.packages = import "${inputs.self}/packages.nix" pkgs;
+    home.packages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./linux/packages.nix pkgs);
 
     programs.fzf = {
       enable = true;
@@ -128,20 +112,16 @@
     };
 
     services.clipman.enable = true;
-
     services.playerctld.enable = true;
-
     services.wob.enable = true;
 
     xdg.enable = true;
-
     xdg.userDirs = {
       enable = true;
       createDirectories = true;
       documents = "~/documents";
       download = "~/downloads";
     };
-
     xdg.mimeApps.enable = true;
     xdg.mimeApps.defaultApplications = let
       browser = "firefox";
