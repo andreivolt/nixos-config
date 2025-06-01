@@ -4,7 +4,7 @@ with pkgs;
     iproute2mac
   ]
   ++ (with darwin; [
-    # andrei.pbpaste-html # TODO
+    andrei.pbpaste-html # TODO
     andrei.impbcopy
     asitop
     coreutils
