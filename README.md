@@ -1,2 +1,0 @@
-# mynix
-NixOS configuration files

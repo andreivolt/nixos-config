@@ -1,0 +1,16 @@
+[
+  "blueutil"
+  "browser"
+  "defaultbrowser"
+  "detox"
+  "ffmpeg"
+  "imagesnap"
+  "jakehilborn/jakehilborn/displayplacer"
+  "mpv"
+  "nethogs"
+  "pidof"
+  "pipx"
+  "redshift"
+  "switchaudio-osx"
+  "unoconv"
+]
