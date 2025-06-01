@@ -5,7 +5,6 @@ with pkgs;
     alsa-utils
     beeper
     binutils
-    breeze-gtk
     breeze-qt5
     caprine-bin
     detox
