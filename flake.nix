@@ -62,7 +62,7 @@
           nixpkgs = commonNixpkgsConfig // {
             hostPlatform = "x86_64-linux";
             config = commonNixpkgsConfig.config // {
-              # nixpkgs.config.allowBroken = true;
+              allowBroken = true;
               permittedInsecurePackages = [
                 "openssl-1.1.1w"
                 "python3.12-youtube-dl-2021.12.17"
