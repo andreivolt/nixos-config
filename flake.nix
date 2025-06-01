@@ -10,6 +10,10 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # mac-app-util.url = "github:hraban/mac-app-util";
     mac-app-util.url = "github:hraban/mac-app-util/link-contents";
+    hammerspoon-spoons = {
+      url = "github:Hammerspoon/Spoons/3f6bb38a4b1d98ec617e1110450cbc53b15513ec";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {
@@ -19,18 +23,25 @@
     nixpkgs-unstable,
     home-manager,
     mac-app-util,
+    hammerspoon-spoons,
   }: {
     darwinConfigurations."mac" = nix-darwin.lib.darwinSystem {
       modules = [
         {
+          nixpkgs.config.allowUnfree = true;
           nixpkgs.overlays = [
             (import "${inputs.self}/pkgs")
             (final: prev: {
               unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
             })
           ];
+
+          networking.hostName = "mac";
+          system.stateVersion = 4;
+          system.primaryUser = "andrei";
+          nix.enable = false; # using Determinate Nix
         }
-        "${inputs.self}/darwin-configuration.nix"
+        "${inputs.self}/darwin"
         home-manager.darwinModules.home-manager
         mac-app-util.darwinModules.default
       ];
@@ -40,6 +51,7 @@
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       modules = [
         {
+          nixpkgs.config.allowUnfree = true;
           nixpkgs.overlays = [
             (import "${inputs.self}/pkgs")
             (final: prev: {
@@ -47,7 +59,7 @@
             })
           ];
         }
-        "${inputs.self}/configuration.nix"
+        "${inputs.self}/linux"
         home-manager.nixosModules.home-manager
       ];
       specialArgs = {inherit inputs;};
