@@ -34,6 +34,7 @@
     ./menu-bar.nix
     ./power-management.nix
     ./privacy.nix
+    ./remote-builders.nix
     ./screencapture.nix
     ./security.nix
     ./socks-proxy.nix
@@ -76,20 +77,6 @@
       initContent = "source ~/.zshrc.extra.zsh;";
     };
   };
-
-  # Remote builders (requires remote NixOS machine)
-  nix.buildMachines = [{
-    hostName = "riva.avolt.net";
-    sshUser = "root";
-    sshKey = "/Users/andrei/.ssh/id_rsa";
-    system = "x86_64-linux";
-    maxJobs = 4;
-    supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-  }];
-  nix.distributedBuilds = true;
-  nix.extraOptions = ''
-    builders-use-substitutes = true
-  '';
 
   # system.activationScripts.applySettings.text = lib.mkAfter ''
   #   echo 'apply settings immediately'
