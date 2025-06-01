@@ -80,7 +80,7 @@
     };
   };
 
-  environment.systemPackages = import ./packages.nix pkgs;
+  environment.systemPackages = import "${inputs.self}/packages.nix" pkgs;
 
   # TODO Safari full URL
   # system.defaults.CustomUserPreferences."com.apple.Safari".ShowFullURLInSmartSearchField = true;
