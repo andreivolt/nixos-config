@@ -2,7 +2,6 @@
   fetchgit,
   lib,
   stdenv,
-  swift,
   darwin,
 }:
 stdenv.mkDerivation {
@@ -15,14 +14,17 @@ stdenv.mkDerivation {
     hash = "sha256-Qrc//qkk0DjOaNW/chjZKMvSKURig6bZq+pHoIQdOVo=";
   };
 
-  nativeBuildInputs = [ swift ];
+  nativeBuildInputs = with darwin.apple_sdk_11_0; [
+    clang
+  ];
   
-  buildInputs = lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Cocoa
+  buildInputs = with darwin.apple_sdk_11_0.frameworks; [
+    Foundation
+    AppKit
   ];
 
   buildPhase = ''
-    swiftc -framework Cocoa -o pbpaste-html pbpaste-html.swift
+    clang -framework Foundation -framework AppKit -o pbpaste-html pbpaste-html.swift
   '';
 
   installPhase = ''
