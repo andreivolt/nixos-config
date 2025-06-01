@@ -3,7 +3,6 @@ with pkgs;
   [
     (python3.withPackages (ps: with ps; [ llm llm-anthropic llm-gemini ]))
     alejandra
-    andrei.json2nix
     andrei.pushover-cli
     andrei.screenshot_tweet
     andrei.ttok
