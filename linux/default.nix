@@ -41,7 +41,6 @@
     ../shared/play-with-mpv.nix
     ../shared/tor.nix
     ../shared/zsh-nix-completion.nix
-    <home-manager/nixos>
   ];
 
   networking.hostName = builtins.getEnv "HOSTNAME";
