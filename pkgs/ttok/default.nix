@@ -5,10 +5,10 @@
 }:
 python3.pkgs.buildPythonApplication rec {
   pname = "ttok";
-  version = "0.2";
+  version = "0.3";
   src = fetchPypi {
     inherit pname version;
-    sha256 = "sha256-tex7OTWBlLvSyuUPxYnl+ArDuxc645p+pNUj4sCi10U=";
+    sha256 = "sha256-BHSgCldHYNsiTSSur6UOG56t9qV056bBMkZYvZuCSbg=";
   };
   propagatedBuildInputs = with python3.pkgs; [
     click
