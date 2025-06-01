@@ -24,13 +24,13 @@
       modules = [
         {
           nixpkgs.overlays = [
-            (import ./pkgs)
+            (import "${inputs.self}/pkgs")
             (final: prev: {
               unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
             })
           ];
         }
-        ./darwin-configuration.nix
+        "${inputs.self}/darwin-configuration.nix"
         home-manager.darwinModules.home-manager
         mac-app-util.darwinModules.default
       ];
@@ -41,13 +41,13 @@
       modules = [
         {
           nixpkgs.overlays = [
-            (import ./pkgs)
+            (import "${inputs.self}/pkgs")
             (final: prev: {
               unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
             })
           ];
         }
-        ./configuration.nix
+        "${inputs.self}/configuration.nix"
         home-manager.nixosModules.home-manager
       ];
       specialArgs = {inherit inputs;};
