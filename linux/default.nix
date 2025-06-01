@@ -5,7 +5,7 @@
   ...
 }: {
   imports = [
-    ./hardware-configuration.nix
+    # ./hardware-configuration.nix  # Machine-specific, not tracked in git
     ../shared/clojure.nix
     ../shared/cursor.nix
     ../shared/dnsmasq.nix
