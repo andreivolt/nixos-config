@@ -5,11 +5,15 @@
   #   sansSerif = [ "Source Sans Pro" ];
   # };
 
+  nixpkgs.config.input-fonts.acceptLicense = true;
+
   fonts.packages = with pkgs; [
-    atkinson-hyperlegible
+    andrei.pragmasevka-nerd-font
+    andrei.xanh-mono
     nerd-fonts.iosevka
     nerd-fonts.iosevka-term
-    nerd-fonts.commit-mono
+    nerd-fonts.sauce-code-pro
+    input-fonts
     ubuntu_font_family
   ];
 }
