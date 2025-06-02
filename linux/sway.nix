@@ -7,17 +7,7 @@
 in {
   hardware.opengl.enable = true;
 
-  home-manager.users.andrei = {config, ...}: let
-    startsway = pkgs.writeShellScriptBin "startsway" ''
-      exec systemd-cat --identifier sway \
-        sway --debug
-    '';
-  in {
-    nixpkgs.overlays = [
-      (_: _: {inherit startsway;})
-      # (import (dirOf <nixos-config> + /modules/wayland-overlay.nix))
-    ];
-
+  home-manager.users.andrei = {config, ...}: {
     wayland.windowManager.sway = let
       mouseButtonBindings = ''
         # Close window by middle clicking title bar:
@@ -267,7 +257,10 @@ in {
       grimshot # screenshots
       inactive-windows-transparency
       slurp
-      startsway # start sway with logs going to systemd
+      (pkgs.writeShellScriptBin "startsway" ''
+        exec systemd-cat --identifier sway \
+          sway --debug
+      '') # start sway with logs going to systemd
       sway-audio-idle-inhibit
       swaybg # set background
       swayidle
