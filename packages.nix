@@ -1,15 +1,20 @@
 pkgs:
 with pkgs;
   [
+    # ghostty # TODO
     (python3.withPackages (ps: with ps; [ llm llm-anthropic llm-gemini ]))
     alejandra
+    andrei.anypaste
+    andrei.nixos-repl
     andrei.pushover-cli
     andrei.screenshot_tweet
-    andrei.ttok
     android-tools
     aria2
     arp-scan
+    ast-grep
     bat
+    bfg-repo-cleaner
+    black
     brotab
     btop
     bun
@@ -39,9 +44,7 @@ with pkgs;
     gdrive3
     gh
     ghostscript
-    git
-    git-extras
-    git-open
+    git git-extras git-open
     glab
     glow
     gnupg
@@ -92,12 +95,14 @@ with pkgs;
     pv
     rclone
     redo
+    rich-cli
     ripgrep
     rlwrap
     rsync
     rubocop
     ruby
     rust-script
+    rustc cargo
     scc
     scriptisto
     shell-gpt
@@ -105,6 +110,8 @@ with pkgs;
     sox
     sqlite
     sqlite-utils
+    sqlite-vec
+    stack
     tabview
     tcpdump
     telegram-desktop

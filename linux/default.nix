@@ -11,9 +11,9 @@
     ../shared/dnsmasq.nix
     ../shared/fonts.nix
     ../shared/gnupg.nix
-    ../shared/insync.nix
+    ./insync.nix
     ../shared/moreutils-without-parallel.nix
-    ../shared/mpv.nix
+    ./mpv.nix
     ../shared/nix.nix
     ../shared/tor.nix
     ../shared/zsh-nix-completion.nix
@@ -33,10 +33,8 @@
     ./nixos-rebuild-summary.nix
     ./pipewire.nix
     ./qt.nix
-    ./sway.nix
-    ./swayidle.nix
-    ./swaylock.nix
-    ./thinkpad-video.nix
+    ./sway
+    ./thinkpad.nix
     ./v4l2loopback.nix
     ./wayvnc.nix
     ./xdg-portals.nix
@@ -101,11 +99,6 @@
     nixpkgs.overlays = config.nixpkgs.overlays;
 
     home.packages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./packages.nix pkgs);
-
-    programs.fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
 
     programs.zsh = {
       enable = true; # TODO
