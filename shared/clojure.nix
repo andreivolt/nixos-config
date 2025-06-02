@@ -6,7 +6,6 @@
     boot
     clojure
     clojure-lsp
-    edn
     leiningen
     zprint
   ];
