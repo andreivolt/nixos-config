@@ -15,9 +15,7 @@ stdenv.mkDerivation rec {
     hash = "sha256-xgO6GJUxZ2Nd2EwKlHJMYHE2QQoklyoZlK3owEtrO5Y=";
   };
 
-  buildInputs =
-    [clang]
-    ++ (with darwin.apple_sdk_11_0.frameworks; [Foundation AppKit Cocoa]);
+  buildInputs = [clang];
 
   buildPhase = ''
     clang -Wall -O2 -ObjC \

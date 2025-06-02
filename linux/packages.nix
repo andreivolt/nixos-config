@@ -5,7 +5,6 @@ with pkgs;
     alsa-utils
     beeper
     binutils
-    libsForQt5.breeze-qt5
     caprine-bin
     detox
     ffmpeg-full
@@ -18,11 +17,13 @@ with pkgs;
     libnotify
     libreoffice-fresh
     libsForQt5.breeze-gtk
+    libsForQt5.breeze-qt5
     libsForQt5.kdegraphics-thumbnailers
     lm_sensors
     lshw
     mpv
     nethogs
+    osquery
     pciutils
     playerctl
     psmisc

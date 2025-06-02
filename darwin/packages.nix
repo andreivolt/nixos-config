@@ -6,6 +6,7 @@ with pkgs;
   ++ (with darwin; [
     # andrei.pbpaste-html # TODO: Swift/Cocoa SDK compatibility issues
     andrei.impbcopy
+    andrei.videosnap
     asitop
     coreutils
     duti
