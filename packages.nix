@@ -55,6 +55,7 @@ with pkgs;
     iftop
     imagemagick
     inetutils
+    jet
     jo
     jq
     just
