@@ -11,6 +11,7 @@
     ../shared/fonts.nix
     ../shared/gnupg.nix
     ../shared/moreutils-without-parallel.nix
+    ../shared/uvx-shims.nix
     ./tor.nix
     ../shared/zsh-nix-completion.nix
     ./activity-monitor.nix
