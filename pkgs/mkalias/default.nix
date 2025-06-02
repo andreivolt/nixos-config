@@ -9,7 +9,6 @@ stdenv.mkDerivation {
 
   buildInputs = [
     clang
-    darwin.apple_sdk_11_0.frameworks.Foundation
   ];
 
   src = fetchFromGitHub {
