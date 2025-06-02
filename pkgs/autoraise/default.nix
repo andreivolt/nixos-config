@@ -16,12 +16,7 @@ stdenv.mkDerivation rec {
     sha256 = "sha256-ustWLc+RRcrRJkgsCVN0brrk0p+/+xHlk512mFAOGTk=";
   };
 
-  buildInputs = with darwin.apple_sdk.frameworks; [
-    AppKit
-    ApplicationServices
-    Carbon
-    SkyLight
-  ];
+  buildInputs = [ ];
 
   preConfigure =
     let

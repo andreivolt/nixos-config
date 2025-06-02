@@ -1,5 +1,4 @@
 {
-  # Remote builders configuration
   nix.buildMachines = [{
     hostName = "riva.avolt.net";
     sshUser = "root";
