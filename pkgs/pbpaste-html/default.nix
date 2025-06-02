@@ -17,9 +17,7 @@ stdenv.mkDerivation {
 
   nativeBuildInputs = [ swift ];
   
-  buildInputs = with darwin.apple_sdk.frameworks; [
-    Cocoa
-  ];
+  buildInputs = [ ];
 
   buildPhase = ''
     swiftc -framework Cocoa -o pbpaste-html pbpaste-html.swift
