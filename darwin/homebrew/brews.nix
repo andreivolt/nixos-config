@@ -6,11 +6,11 @@
   "ffmpeg"
   "imagesnap"
   "jakehilborn/jakehilborn/displayplacer"
+  "libmagic"
   "mpv"
   "nethogs"
   "pidof"
   "pipx"
   "redshift"
   "switchaudio-osx"
-  "unoconv"
 ]

@@ -251,16 +251,13 @@ in {
     with sway-contrib; [
       # kanshi  # display configuration # TODO: needed?
       # oguri # animated background # TODO: needed?
+      (pkgs.writeShellScriptBin "startsway" '' exec systemd-cat --identifier sway sway --debug '')
       bemenu
       gammastep
       grim
       grimshot # screenshots
       inactive-windows-transparency
       slurp
-      (pkgs.writeShellScriptBin "startsway" ''
-        exec systemd-cat --identifier sway \
-          sway --debug
-      '') # start sway with logs going to systemd
       sway-audio-idle-inhibit
       swaybg # set background
       swayidle

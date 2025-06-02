@@ -30,4 +30,9 @@
     NetBIOSName = config.networking.hostName;
     ServerDescription = config.networking.hostName;
   };
+
+  # Enable automatic software updates
+  system.defaults.SoftwareUpdate = {
+    AutomaticallyInstallMacOSUpdates = true;
+  };
 }
