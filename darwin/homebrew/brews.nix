@@ -6,6 +6,7 @@
   "ffmpeg"
   "imagesnap"
   "jakehilborn/jakehilborn/displayplacer"
+  "libmagic"
   "mpv"
   "nethogs"
   "pidof"

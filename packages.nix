@@ -1,15 +1,20 @@
 pkgs:
 with pkgs;
   [
-    (python3.withPackages (ps: with ps; [ llm llm-anthropic llm-gemini ]))
+    # ghostty # TODO
     alejandra
+    andrei.anypaste
+    andrei.nixos-repl
     andrei.pushover-cli
     andrei.screenshot_tweet
-    andrei.ttok
     android-tools
     aria2
     arp-scan
+    ast-grep
+    babashka
     bat
+    bfg-repo-cleaner
+    boot
     brotab
     btop
     bun
@@ -17,6 +22,8 @@ with pkgs;
     carapace
     cargo
     catt
+    clojure
+    clojure-lsp
     csvkit
     curl
     delta
@@ -39,9 +46,7 @@ with pkgs;
     gdrive3
     gh
     ghostscript
-    git
-    git-extras
-    git-open
+    git git-extras git-open
     glab
     glow
     gnupg
@@ -60,6 +65,7 @@ with pkgs;
     jq
     just
     lastpass-cli
+    leiningen
     litecli
     lsof
     mediainfo
@@ -92,12 +98,15 @@ with pkgs;
     pv
     rclone
     redo
+    rich-cli
     ripgrep
     rlwrap
     rsync
     rubocop
     ruby
+    ruff
     rust-script
+    rustc cargo
     scc
     scriptisto
     shell-gpt
@@ -105,6 +114,9 @@ with pkgs;
     sox
     sqlite
     sqlite-utils
+    sqlite-vec
+    stack
+    stylua
     tabview
     tcpdump
     telegram-desktop
@@ -131,4 +143,5 @@ with pkgs;
     xurls
     yt-dlp
     zathura
+    zprint
   ]

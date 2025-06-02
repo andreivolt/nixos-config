@@ -7,9 +7,9 @@
     askForPasswordDelay = 0;
   };
 
-  # firewall
-  system.defaults.alf = {
-    globalstate = 2;
-    stealthenabled = 1;
-  };
+  # # firewall
+  # system.defaults.alf = {
+  #   globalstate = 2;
+  #   stealthenabled = 1;
+  # };
 }

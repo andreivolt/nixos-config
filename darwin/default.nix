@@ -6,13 +6,10 @@
   ...
 }: {
   imports = [
-    ../shared/clojure.nix
     ../shared/dnsmasq.nix
     ../shared/fonts.nix
     ../shared/gnupg.nix
     ../shared/moreutils-without-parallel.nix
-    ../shared/uvx-shims.nix
-    ./tor.nix
     ../shared/zsh-nix-completion.nix
     ./activity-monitor.nix
     ./auto-brightness.nix
@@ -33,6 +30,7 @@
     ./jumpcut.nix
     ./keyboard.nix
     ./menu-bar.nix
+    ./music-history.nix
     ./power-management.nix
     ./privacy.nix
     ./remote-builders.nix
@@ -41,6 +39,8 @@
     ./socks-proxy.nix
     ./spotlight.nix
     ./system-preferences.nix
+    ./telegram-archive.nix
+    ./tor.nix
     ./trackpad.nix
     ./wallpaper.nix
   ];
@@ -66,11 +66,6 @@
 
     programs.man.generateCaches = true;
 
-    programs.fzf = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-
     programs.zsh = {
       enable = true; # TODO
       enableCompletion = false;
@@ -78,8 +73,7 @@
     };
   };
 
-  # system.activationScripts.applySettings.text = lib.mkAfter ''
-  #   echo 'apply settings immediately'
-  #   /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u 2>/dev/null || true
-  # '';
+  system.activationScripts.postActivation.text = ''
+    sudo -u andrei /System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+  '';
 }
