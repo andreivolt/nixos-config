@@ -10,6 +10,7 @@
     ../shared/dnsmasq.nix
     ../shared/fonts.nix
     ../shared/gnupg.nix
+    ../shared/direnv.nix
     ./insync.nix
     ../shared/moreutils-without-parallel.nix
     ./mpv.nix

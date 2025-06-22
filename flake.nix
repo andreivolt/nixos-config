@@ -26,7 +26,6 @@
     hammerspoon-spoons,
   }:
   let
-    # Common nixpkgs configuration
     commonNixpkgsConfig = {
       config.allowUnfree = true;
       overlays = [
