@@ -4,6 +4,7 @@ with pkgs;
     iproute2mac
   ]
   ++ (with darwin; [
+    fswatch
     asitop
     coreutils
     duti
