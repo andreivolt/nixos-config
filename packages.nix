@@ -3,12 +3,12 @@ with pkgs;
   [
     # ghostty # TODO
     alejandra
+    fdupes
     andrei.anypaste
     andrei.nixos-repl
     andrei.pushover-cli
     andrei.screenshot_tweet
     android-tools
-    geoipWithDatabase
     aria2
     arp-scan
     ast-grep
@@ -25,6 +25,7 @@ with pkgs;
     catt
     clojure
     clojure-lsp
+    cmake
     csvkit
     curl
     curlie
@@ -47,6 +48,7 @@ with pkgs;
     freerdp
     fzf
     gdrive3
+    geoipWithDatabase
     gh
     ghostscript
     git git-extras git-open
@@ -56,6 +58,7 @@ with pkgs;
     go
     google-chrome
     google-cloud-sdk
+    gum
     htmlq
     htop-vim
     httpie
@@ -111,6 +114,7 @@ with pkgs;
     ruff
     rust-script
     rustc cargo
+    rustfmt
     scc
     scriptisto
     shell-gpt
@@ -140,6 +144,7 @@ with pkgs;
     wakeonlan
     watchexec
     wdiff
+    websocat
     weechat
     wget
     xdg-utils
