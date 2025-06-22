@@ -11,6 +11,7 @@
     ../shared/gnupg.nix
     ../shared/moreutils-without-parallel.nix
     ../shared/zsh-nix-completion.nix
+    ../shared/direnv.nix
     ./activity-monitor.nix
     ./auto-brightness.nix
     ./autoraise.nix
@@ -23,6 +24,7 @@
     ./google-drive.nix
     ./hammerspoon.nix
     ./homebrew
+    ./host-opener.nix
     ./htu.nix
     ./icloud.nix
     ./iina.nix

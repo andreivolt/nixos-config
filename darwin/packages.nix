@@ -7,6 +7,7 @@ with pkgs;
     # andrei.pbpaste-html # TODO: Swift/Cocoa SDK compatibility issues
     andrei.impbcopy
     andrei.videosnap
+    fswatch
     asitop
     coreutils
     duti
