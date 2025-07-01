@@ -3,8 +3,8 @@ with pkgs;
   [
     # ghostty # TODO
     alejandra
-    fdupes
     android-tools
+    gopass
     aria2
     arp-scan
     ast-grep
@@ -27,6 +27,7 @@ with pkgs;
     curlie
     delta
     deno
+    devd
     direnv
     discord
     dnsutils
@@ -38,6 +39,7 @@ with pkgs;
     eza
     fastgron
     fd
+    fdupes
     file
     firefox_decrypt
     flyctl
@@ -57,7 +59,6 @@ with pkgs;
     gum
     htmlq
     htop-vim
-    httpie
     hyperfine
     iftop
     imagemagick
@@ -65,6 +66,7 @@ with pkgs;
     jet
     jo
     jq
+    json2nix
     just
     lastpass-cli
     leiningen
@@ -129,7 +131,6 @@ with pkgs;
     tmate
     tmux
     tree
-    tree-sitter
     trurl
     upterm
     usql
@@ -144,8 +145,10 @@ with pkgs;
     weechat
     wget
     xdg-utils
+    xh
     xmlstarlet
     xurls
+    yazi
     yt-dlp
     zathura
     zed-editor

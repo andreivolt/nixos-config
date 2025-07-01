@@ -93,6 +93,8 @@
   environment.variables.LC_TIME = "C.UTF-8";
 
   home-manager.users.andrei = {pkgs, ...}: {
+    imports = [ ../shared/rust-script-warmer.nix ];
+    
     home.stateVersion = "23.11";
     home.enableNixpkgsReleaseCheck = false;
     nixpkgs.config = config.nixpkgs.config;

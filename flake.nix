@@ -14,6 +14,10 @@
       url = "github:Hammerspoon/Spoons/3f6bb38a4b1d98ec617e1110450cbc53b15513ec";
       flake = false;
     };
+    json2nix = {
+      url = "github:sempruijs/json2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -24,6 +28,7 @@
     home-manager,
     mac-app-util,
     hammerspoon-spoons,
+    json2nix,
   }:
   let
     commonNixpkgsConfig = {
@@ -32,6 +37,7 @@
         (import "${inputs.self}/pkgs")
         (final: prev: {
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
+          json2nix = inputs.json2nix.packages.${prev.system}.default;
         })
       ];
     };
