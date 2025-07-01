@@ -17,6 +17,7 @@
     ./autoraise.nix
     ./boot-sound.nix
     ./chatgpt.nix
+    ./claude-command-monitor.nix
     ./default-browser.nix
     ./dock.nix
     ./file-associations.nix
@@ -60,6 +61,7 @@
   home-manager.useGlobalPkgs = true;
   home-manager.sharedModules = [
     inputs.mac-app-util.homeManagerModules.default
+    ../shared/rust-script-warmer.nix
   ];
 
   home-manager.users.andrei = {pkgs, ...}: {
