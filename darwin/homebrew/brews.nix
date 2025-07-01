@@ -1,6 +1,7 @@
 [
   "blueutil"
   "browser"
+  "cliclick"
   "defaultbrowser"
   "detox"
   "ffmpeg"
