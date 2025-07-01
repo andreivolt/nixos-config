@@ -21,7 +21,6 @@ with pkgs;
     mas
     monitorcontrol
     plistwatch
-    pngpaste
     psutils
     terminal-notifier
     trash
