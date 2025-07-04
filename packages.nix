@@ -1,14 +1,14 @@
 pkgs:
-with pkgs;
-  [
+with pkgs; [
     # ghostty # TODO
     alejandra
     andrei.anypaste
+    scrcpy
     andrei.nixos-repl
+    zoom-us
     andrei.pushover-cli
     andrei.screenshot_tweet
     android-tools
-    gopass
     aria2
     arp-scan
     ast-grep
@@ -60,6 +60,7 @@ with pkgs;
     go
     google-chrome
     google-cloud-sdk
+    gopass
     gum
     htmlq
     htop-vim
@@ -113,6 +114,7 @@ with pkgs;
     rsync
     rubocop
     ruby
+    ruby-lsp
     ruff
     rust-script
     rustc cargo
@@ -121,6 +123,7 @@ with pkgs;
     scriptisto
     shell-gpt
     socat
+    sops age
     sox
     sqlite
     sqlite-utils
