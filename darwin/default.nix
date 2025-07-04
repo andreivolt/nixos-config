@@ -13,6 +13,7 @@
     ../shared/zsh-nix-completion.nix
     ../shared/direnv.nix
     ./activity-monitor.nix
+    ./alt-tab.nix
     ./auto-brightness.nix
     ./autoraise.nix
     ./boot-sound.nix
