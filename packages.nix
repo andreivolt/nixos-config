@@ -2,8 +2,6 @@ pkgs:
 with pkgs; [
     # ghostty # TODO
     alejandra
-    scrcpy
-    zoom-us
     android-tools
     aria2
     arp-scan
@@ -21,6 +19,7 @@ with pkgs; [
     catt
     clojure
     clojure-lsp
+    cloudflared
     cmake
     csvkit
     curl
@@ -28,13 +27,16 @@ with pkgs; [
     delta
     deno
     devd
+    diffsitter
     direnv
     discord
     dnsutils
     doctl
     dogdns
     duf
+    dwdiff
     edir
+    emacs
     eslint
     eza
     fastgron
@@ -70,6 +72,8 @@ with pkgs; [
     json2nix
     just
     lastpass-cli
+    lazydocker
+    lazygit
     leiningen
     litecli
     lsof
@@ -87,7 +91,7 @@ with pkgs; [
     nix-prefetch-git
     nixd
     nmap
-    nodejs
+    nushell
     nvimpager
     oci-cli
     ouch
@@ -98,6 +102,7 @@ with pkgs; [
     pdftk
     pkg-config
     pnpm
+    poppler-utils
     portaudio
     pstree
     pulumi-bin
@@ -116,6 +121,7 @@ with pkgs; [
     rustc cargo
     rustfmt
     scc
+    scrcpy
     scriptisto
     shell-gpt
     socat
@@ -151,9 +157,11 @@ with pkgs; [
     xh
     xmlstarlet
     xurls
+    yarn-berry
     yazi
     yt-dlp
     zathura
     zed-editor
+    zoom-us
     zprint
   ]

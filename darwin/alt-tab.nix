@@ -8,6 +8,7 @@
     appearanceVisibility = 2;
     fadeOutAnimation = true;
     holdShortcut = "\\U2318";
+    menubarIconShown = false;
     previewFadeInAnimation = false;
     previewFocusedWindow = true;
     showTitles = 2;
