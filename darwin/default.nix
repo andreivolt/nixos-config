@@ -31,7 +31,6 @@
     ./icloud.nix
     ./iina.nix
     ./interface.nix
-    ./jumpcut.nix
     ./keyboard.nix
     ./menu-bar.nix
     ./music-history.nix
