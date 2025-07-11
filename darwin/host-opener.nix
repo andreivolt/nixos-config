@@ -3,7 +3,7 @@
     serviceConfig = {
       ProgramArguments = [
         "${pkgs.bun}/bin/bun"
-        "/Users/andrei/Insync/andrei.volt@gmail.com/Google Drive/dev/android-share/host-opener.js"
+        "/Users/andrei/dev/android-share/host-opener.js"
       ];
       RunAtLoad = true;
       KeepAlive = true;
