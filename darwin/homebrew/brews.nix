@@ -10,6 +10,7 @@
   "libmagic"
   "mpv"
   "nethogs"
+  "node"
   "pidof"
   "pipx"
   "redshift"
