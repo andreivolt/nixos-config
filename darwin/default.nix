@@ -73,7 +73,7 @@
     programs.zsh = {
       enable = true; # TODO
       enableCompletion = false;
-      initContent = "source ~/.zshrc.extra.zsh;";
+      initContent = "source ~/.config/zsh/rc.zsh";
     };
   };
 
