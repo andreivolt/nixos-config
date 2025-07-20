@@ -105,7 +105,7 @@
     programs.zsh = {
       enable = true; # TODO
       enableCompletion = false;
-      initExtra = "source ~/.zshrc.extra.zsh;";
+      initExtra = "source ~/.config/zsh/rc.zsh";
     };
 
     services.clipman.enable = true;
