@@ -1,5 +1,8 @@
 {...}: {
-  security.pam.services.sudo_local.touchIdAuth = true;
+  security.pam.services.sudo_local = {
+    touchIdAuth = true;
+    reattach = true;
+  };
 
   # screen lock settings
   system.defaults.CustomUserPreferences."com.apple.screensaver" = {
