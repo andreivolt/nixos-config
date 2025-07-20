@@ -4,7 +4,7 @@
   "command-x"
   "cursorcerer"
   "flux-app"
-  "ghostty"
+  "ghostty@tip"
   "google-chrome"
   "iina"
   "insync"
