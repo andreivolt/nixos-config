@@ -7,11 +7,12 @@
     home.activation.duti = config.lib.dag.entryAfter ["writeBoundary"] ''
       ${pkgs.duti}/bin/duti ${pkgs.writeText "_" ''
         com.colliderli.iina aac all
-        com.colliderli.iina mp4 all
-        com.colliderli.iina mp3 all
-        com.colliderli.iina webm all
+        com.colliderli.iina flac all
         com.colliderli.iina mov all
+        com.colliderli.iina mp3 all
+        com.colliderli.iina mp4 all
         com.colliderli.iina ogg all
+        com.colliderli.iina webm all
 
         com.mimestream.Mimestream mailto all
 
