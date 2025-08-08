@@ -15,7 +15,6 @@
     ./activity-monitor.nix
     ./alt-tab.nix
     ./auto-brightness.nix
-    ./autoraise.nix
     ./boot-sound.nix
     ./chatgpt.nix
     ./claude-command-monitor.nix
