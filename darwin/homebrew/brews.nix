@@ -4,6 +4,7 @@
   "cliclick"
   "defaultbrowser"
   "detox"
+  "fennel"
   "ffmpeg"
   "imagesnap"
   "jakehilborn/jakehilborn/displayplacer"

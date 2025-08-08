@@ -1,6 +1,5 @@
 [
   "battery"
-  "beeper"
   "command-x"
   "cursorcerer"
   "flux-app"
@@ -11,6 +10,7 @@
   "jordanbaird-ice"
   "keepingyouawake"
   "keycastr"
+  "kitty"
   "libreoffice"
   "maccy"
   "middleclick"
@@ -24,7 +24,6 @@
   "sublime-text"
   "tidal"
   "tor-browser"
-  "tuple"
   "unified-remote"
   "whatsapp"
   # "blackhole-2ch"
