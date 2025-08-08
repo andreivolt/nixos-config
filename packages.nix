@@ -32,8 +32,9 @@ pkgs: with pkgs; [
   duf
   dwdiff
   edir
-  emacs
   erdtree
+  tree-sitter
+  pry
   eslint
   eza
   fastgron
@@ -58,7 +59,9 @@ pkgs: with pkgs; [
   gojq
   google-chrome
   google-cloud-sdk
-  gopass
+  timg
+  procs
+  jujutsu
   gum
   htmlq
   htop-vim
