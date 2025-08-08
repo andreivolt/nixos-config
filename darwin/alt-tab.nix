@@ -14,5 +14,8 @@
     showTitles = 2;
     titleTruncation = 1;
     windowDisplayDelay = 0;
+
+    SUEnableAutomaticChecks = 0;
+    updatePolicy = 0;
   };
 }
