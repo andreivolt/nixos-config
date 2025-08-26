@@ -3,7 +3,6 @@ pkgs: with pkgs; [
   alejandra # nix formatter
   andrei.anypaste
   andrei.nixos-repl
-  andrei.pushover-cli
   android-tools
   aria2
   arp-scan
