@@ -1,6 +1,9 @@
 pkgs: with pkgs; [
   # ghostty # TODO
+  age
   alejandra # nix formatter
+  spotify
+  ansifilter
   android-tools
   aria2
   arp-scan
@@ -35,8 +38,6 @@ pkgs: with pkgs; [
   dwdiff
   edir
   erdtree
-  tree-sitter
-  pry
   eslint
   eza
   fastgron
@@ -61,9 +62,6 @@ pkgs: with pkgs; [
   gojq
   google-chrome
   google-cloud-sdk
-  timg
-  procs
-  jujutsu
   gum
   htmlq
   htop-vim
@@ -74,6 +72,7 @@ pkgs: with pkgs; [
   jet
   jo
   json2nix
+  jujutsu
   just
   lastpass-cli
   lazydocker
@@ -109,6 +108,8 @@ pkgs: with pkgs; [
   pnpm
   poppler-utils
   portaudio
+  procs
+  pry
   pstree
   pulumi-bin
   pv
@@ -124,15 +125,14 @@ pkgs: with pkgs; [
   ruff
   rust-script
   rustc
-  cargo
   rustfmt
+  # rustup
   scc
   scrcpy
   scriptisto
   shell-gpt
   socat
   sops
-  age
   sox
   sqlite
   sqlite-utils
@@ -144,9 +144,11 @@ pkgs: with pkgs; [
   telegram-desktop
   terminal-colors
   tidyp
+  timg
   tmate
   tmux
   tree
+  tree-sitter
   trurl
   upterm
   usql
