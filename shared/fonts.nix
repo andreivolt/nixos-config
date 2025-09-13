@@ -9,10 +9,9 @@
 
   fonts.packages = with pkgs; [
     andrei.pragmasevka-nerd-font
+    cascadia-code
     nerd-fonts.iosevka
     nerd-fonts.iosevka-term
-    nerd-fonts.sauce-code-pro
-    input-fonts
     ubuntu_font_family
   ];
 }
