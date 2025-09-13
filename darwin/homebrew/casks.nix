@@ -10,7 +10,6 @@
   "jordanbaird-ice"
   "keepingyouawake"
   "keycastr"
-  "kitty"
   "libreoffice"
   "maccy"
   "middleclick"
