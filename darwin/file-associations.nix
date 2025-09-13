@@ -21,8 +21,8 @@
 
         org.mozilla.nightly public.url all
 
-        net.kovidgoyal.kitty public.shell-script shell
-        net.kovidgoyal.kitty public.unix-executable shell
+        com.mitchellh.ghostty public.shell-script shell
+        com.mitchellh.ghostty public.unix-executable shell
 
         org.mozilla.nightly .xpi all
       ''}
