@@ -2,6 +2,7 @@
   "blueutil"
   "browser"
   "cliclick"
+  "libiconv"
   "defaultbrowser"
   "detox"
   "fennel"
