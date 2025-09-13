@@ -3,7 +3,7 @@
     script = ''
       ${pkgs.fswatch}/bin/fswatch -o ~/Downloads | while read; do
         find ~/Downloads -type f -name 'htu_*' | while read f; do
-          cat $f >> ~/drive/htu.tsv
+          cat $f >> ~/Google Drive/My Drive/htu.tsv
           rm $f
         done
       done
