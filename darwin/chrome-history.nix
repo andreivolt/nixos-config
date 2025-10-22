@@ -11,5 +11,6 @@
       StandardOutPath = "/tmp/chrome-history-export.log";
       StandardErrorPath = "/tmp/chrome-history-export.err";
     };
+    path = [pkgs.uv];
   };
 }
