@@ -27,7 +27,7 @@
     ./hammerspoon.nix
     ./homebrew
     ./host-opener.nix
-    ./htu.nix
+    ./chrome-history.nix
     ./icloud.nix
     ./iina.nix
     ./interface.nix
