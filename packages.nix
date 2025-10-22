@@ -3,7 +3,9 @@ pkgs: with pkgs; [
   age
   alejandra # nix formatter
   spotify
+  ff2mpv
   andrei.anypaste
+  mpv
   ansifilter
   andrei.nixos-repl
   android-tools
