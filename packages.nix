@@ -86,8 +86,8 @@ pkgs: with pkgs; [
   mosh
   ncdu_1
   neovide
-  neovim
   neovim-remote
+  nvim-nightly
   netcat
   nix-index
   nix-prefetch-git
