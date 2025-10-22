@@ -18,6 +18,7 @@
       url = "github:sempruijs/json2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   outputs = inputs @ {
@@ -29,15 +30,18 @@
     mac-app-util,
     hammerspoon-spoons,
     json2nix,
+    neovim-nightly-overlay,
   }:
   let
     commonNixpkgsConfig = {
       config.allowUnfree = true;
       overlays = [
         (import "${inputs.self}/pkgs")
+        neovim-nightly-overlay.overlays.default
         (final: prev: {
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
           json2nix = inputs.json2nix.packages.${prev.system}.default;
+          nvim-nightly = prev.neovim;
         })
       ];
     };
