@@ -13,6 +13,7 @@
     nerd-fonts.iosevka
     nerd-fonts.iosevka-term
     ubuntu_font_family
+    roboto
   ];
 }
 # (iosevka.override {

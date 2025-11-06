@@ -4,7 +4,6 @@
   "cursorcerer"
   "flux-app"
   "ghostty@tip"
-  "google-chrome"
   "iina"
   "insync"
   "keepingyouawake"

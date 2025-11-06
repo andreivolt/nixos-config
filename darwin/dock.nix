@@ -8,6 +8,8 @@
     autohide-delay = 0.1;
     autohide-time-modifier = 0.1;
     enable-spring-load-actions-on-all-items = false;
+    # defaults write "com.apple.dock" "enterMissionControlByTopWindowDrag" '0'
+    show-process-indicators = false;
     expose-animation-duration = 0.1;
     mineffect = "scale";
     minimize-to-application = true;
