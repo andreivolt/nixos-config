@@ -18,7 +18,6 @@
     masApps = import ./masapps.nix;
     taps = [
       "homebrew/bundle"
-      "homebrew/cask-versions"
       "homebrew/command-not-found"
       "homebrew/services"
       "jakehilborn/jakehilborn"
