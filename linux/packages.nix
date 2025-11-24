@@ -42,4 +42,5 @@ with pkgs;
     xdragon
     ytmdesktop
     zoom-us
+    (emacs.override { withGTK2 = false; withGTK3 = false; })
   ]
