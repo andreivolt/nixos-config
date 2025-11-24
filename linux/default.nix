@@ -18,10 +18,12 @@
     ../shared/tor.nix
     ../shared/zsh-nix-completion.nix
     ./adb.nix
+    ./battery-monitor.nix
     ./brother-printer.nix
     ./brother-scanner.nix
     ./cliphist.nix
     ./docker.nix
+    ./dropdown.nix
     ./fingerprint.nix
     ./flashfocus.nix
     ./gnome-keyring.nix
@@ -32,13 +34,16 @@
     ./mako.nix
     ./networkmanager.nix
     ./nixos-rebuild-summary.nix
+    ./nm-applet.nix
     ./pipewire.nix
     ./qt.nix
+    ./rclone.nix
     ./swaybg.nix
     # ./sway  # Uncomment to use Sway
     ./hyprland  # Using Hyprland
     ./swaync.nix
     ./thinkpad.nix
+    ./trayscale.nix
     ./waybar.nix
     ./v4l2loopback.nix
     ./wayvnc.nix
