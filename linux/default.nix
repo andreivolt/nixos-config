@@ -6,6 +6,9 @@
 }: {
   imports = [
     # ./hardware-configuration.nix  # Machine-specific, not tracked in git
+    ./disk-config.nix  # Disk configuration with disko
+    ./impermanence.nix  # Impermanence setup
+    ./users-persist.nix  # User-specific persistence configuration
     ../shared/cursor.nix
     ../shared/dnsmasq.nix
     ../shared/fonts.nix
@@ -53,11 +56,8 @@
   networking.hostName = builtins.getEnv "HOSTNAME";
   system.stateVersion = "23.11";
 
-  boot.loader.timeout = 0;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.devices = [ "/dev/sda" ];  # Placeholder - adjust per machine
-  fileSystems."/" = { device = "/dev/sda1"; fsType = "ext4"; };  # Placeholder
-  # boot.loader.systemd-boot.consoleMode = lib.mkDefault "max";
+  # Boot loader configuration is now in disk-config.nix
+  # Filesystem configuration is handled by disko and impermanence modules
 
   console.keyMap = "fr";
   console.earlySetup = true;

@@ -18,6 +18,14 @@
       url = "github:sempruijs/json2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Impermanence and disko for NixOS
+    impermanence = {
+      url = "github:nix-community/impermanence";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -29,6 +37,8 @@
     mac-app-util,
     hammerspoon-spoons,
     json2nix,
+    impermanence,
+    disko,
   }:
   let
     commonNixpkgsConfig = {
@@ -74,6 +84,10 @@
               ];
             };
           };
+
+          # Configure the disk device for this machine
+          # Change this to match your actual disk (e.g., /dev/sda, /dev/nvme0n1, etc.)
+          nixos.diskDevice = "/dev/nvme0n1";
         }
         "${inputs.self}/linux"
         home-manager.nixosModules.home-manager
