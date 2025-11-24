@@ -5,6 +5,9 @@
   # disable window tiling margins
   system.defaults.CustomUserPreferences."com.apple.WindowManager".EnableTiledWindowMargins = 0;
 
+  # TODO
+  # defaults write "Apple Global Domain" "NSGlassDiffusionSetting" '1'
+
   # control center
   system.defaults.CustomUserPreferences."com.apple.controlcenter" = {
     "NSStatusItem Visible Bluetooth" = 1;
