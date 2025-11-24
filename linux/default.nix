@@ -20,6 +20,7 @@
     ./adb.nix
     ./brother-printer.nix
     ./brother-scanner.nix
+    ./cliphist.nix
     ./docker.nix
     ./fingerprint.nix
     ./flashfocus.nix
@@ -33,8 +34,12 @@
     ./nixos-rebuild-summary.nix
     ./pipewire.nix
     ./qt.nix
-    ./sway
+    ./swaybg.nix
+    # ./sway  # Uncomment to use Sway
+    ./hyprland  # Using Hyprland
+    ./swaync.nix
     ./thinkpad.nix
+    ./waybar.nix
     ./v4l2loopback.nix
     ./wayvnc.nix
     ./xdg-portals.nix
@@ -108,9 +113,20 @@
       initExtra = "source ~/.config/zsh/rc.zsh";
     };
 
-    services.clipman.enable = true;
+    # services.clipman.enable = true;  # Replaced by cliphist
     services.playerctld.enable = true;
     services.wob.enable = true;
+
+    # Vicinae launcher daemon
+    programs.vicinae = {
+      enable = true;
+      systemd = {
+        enable = true;
+        autoStart = true;
+        target = "graphical-session.target";
+      };
+      useLayerShell = true;
+    };
 
     xdg.enable = true;
     xdg.userDirs = {
