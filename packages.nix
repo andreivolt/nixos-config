@@ -75,7 +75,6 @@ pkgs: with pkgs; [
   jo
   json2nix
   jujutsu
-  just
   lastpass-cli
   lazydocker
   lazygit
