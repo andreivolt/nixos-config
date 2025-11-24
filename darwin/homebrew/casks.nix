@@ -15,7 +15,6 @@
   "nomachine"
   "obs"
   "orbstack"
-  "osquery"
   "pop-app"
   "proxyman"
   "roon"
