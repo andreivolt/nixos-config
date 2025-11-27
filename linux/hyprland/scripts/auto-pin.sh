@@ -1,36 +1,52 @@
 #!/usr/bin/env bash
 # Auto-pin windows when they become floating or are opened floating
-# Usage: auto-pin-pip.sh [class|title:pattern]
-# Example: auto-pin-pip.sh mpv
-# Example: auto-pin-pip.sh "title:Picture in picture"
+# Usage: auto-pin.sh [class|title:pattern]
+# Example: auto-pin.sh mpv
+# Example: auto-pin.sh "title:Picture in picture"
+#
+# Note: Pinned windows cannot go fullscreen in Hyprland.
+# Use Super+Y to manually unpin before fullscreening.
 
 pattern="$1"
+lockdir="/tmp/hypr-auto-pin-locks"
+mkdir -p "$lockdir"
 
-socat -t 999999 - UNIX-CONNECT:"$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while read -r line; do
+while read -r line; do
     case "$line" in
         openwindow*)
             addr="${line#*>>}"
             addr="${addr%%,*}"
-            # Delay to let window rules apply
-            sleep 0.1
-            ;&
-        changefloatingmode*)
-            [[ -z "$addr" ]] && { addr="${line#*>>}"; addr="${addr%%,*}"; }
-
-            # Get window info
-            info=$(hyprctl clients -j | jq -r ".[] | select(.address == \"0x$addr\")")
-            floating=$(echo "$info" | jq -r '.floating')
-            class=$(echo "$info" | jq -r '.class')
-            title=$(echo "$info" | jq -r '.title')
-
-            [[ "$floating" != "true" ]] && { addr=""; continue; }
-
-            if [[ "$pattern" == title:* ]]; then
-                [[ "$title" == "${pattern#title:}" ]] && hyprctl dispatch pin address:0x"$addr"
-            else
-                [[ "$class" == "$pattern" ]] && hyprctl dispatch pin address:0x"$addr"
-            fi
-            addr=""
+            sleep 0.2  # Let window settle
             ;;
+        changefloatingmode*)
+            addr="${line#*>>}"
+            addr="${addr%%,*}"
+            ;;
+        *) continue ;;
     esac
-done
+
+    # Per-address lock to prevent double-processing
+    lockfile="$lockdir/$addr"
+    if [[ -f "$lockfile" ]] && [[ $(find "$lockfile" -mmin -0.05 2>/dev/null) ]]; then
+        continue
+    fi
+
+    # Get window info
+    read -r floating pinned class title < <(hyprctl clients -j | jq -r ".[] | select(.address == \"0x$addr\") | [.floating, .pinned, .class, .title] | @tsv")
+
+    [[ "$floating" != "true" ]] && continue
+    [[ "$pinned" == "true" ]] && continue
+
+    # Check pattern match
+    if [[ "$pattern" == title:* ]]; then
+        [[ "$title" != "${pattern#title:}" ]] && continue
+    else
+        [[ "$class" != "$pattern" ]] && continue
+    fi
+
+    # Pin the window
+    touch "$lockfile"
+    hyprctl dispatch pin address:0x"$addr"
+    sleep 0.3
+    rm -f "$lockfile"
+done < <(socat -t 999999 - UNIX-CONNECT:"$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock")
