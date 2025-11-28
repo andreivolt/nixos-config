@@ -2,6 +2,7 @@ pkgs:
 with pkgs;
   [
     acpi
+    brightnessctl  # For brightness control keys
     eww
     grim
     hyprsunset
@@ -10,6 +11,7 @@ with pkgs;
     kitty
     slurp
     wf-recorder
+    wofi  # Application launcher
     ydotool
     alsa-utils
     beeper
