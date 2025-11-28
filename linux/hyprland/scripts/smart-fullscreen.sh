@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Smart fullscreen: unpins window before fullscreening, re-pins on exit
 # Usage: smart-fullscreen.sh [0|1]  (0=real fullscreen, 1=maximize)
 

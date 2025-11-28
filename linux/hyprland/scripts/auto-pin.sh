@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Auto-pin windows when they become floating or are opened floating
 # Usage: auto-pin.sh [class|title:pattern]
 # Example: auto-pin.sh mpv
