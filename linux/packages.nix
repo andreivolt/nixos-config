@@ -51,4 +51,6 @@ with pkgs;
     xdragon
     ytmdesktop
     emacs
+    nodejs
+
   ]

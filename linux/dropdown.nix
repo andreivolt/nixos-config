@@ -2,7 +2,8 @@
 
 let
   terminal = pkgs.kitty;
-  terminalCommand = "${terminal}/bin/kitty --class dropdown";
+  # --single-instance keeps one kitty process, --instance-group dropdown ensures dropdown windows share same instance
+  terminalCommand = "${terminal}/bin/kitty --single-instance --instance-group dropdown --class dropdown";
 in {
   # Dropdown terminal service
   home-manager.users.andrei = { config, pkgs, ... }: {
@@ -16,7 +17,6 @@ in {
         Type = "simple";
         ExecStart = terminalCommand;
         Restart = "on-failure";
-        RestartSec = 3;
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
