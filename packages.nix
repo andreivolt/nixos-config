@@ -61,6 +61,7 @@ pkgs: with pkgs; [
   git-open
   glab
   glow
+  gnumake
   gnupg
   go
   gojq
@@ -152,6 +153,7 @@ pkgs: with pkgs; [
   tree
   tree-sitter
   trurl
+  unzip
   upterm
   usql
   uv
