@@ -37,7 +37,6 @@
     ./ipv6-disable.nix
     ./libvirt.nix
     ./lowbatt.nix
-    ./mako.nix
     ./networkmanager.nix
     ./nixos-rebuild-summary.nix
     ./nm-applet.nix
