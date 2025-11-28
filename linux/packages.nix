@@ -24,6 +24,7 @@ with pkgs;
     gnome-epub-thumbnailer
     imv
     inotify-tools
+    jq
     iotop
     libnotify
     libreoffice-fresh
