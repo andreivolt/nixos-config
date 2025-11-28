@@ -33,6 +33,9 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    vicinae = {
+      url = "github:vicinaehq/vicinae";
+    };
   };
 
   outputs = inputs @ {
@@ -48,6 +51,7 @@
     disko,
     hyprland,
     hyprland-plugins,
+    vicinae,
   }:
   let
     commonNixpkgsConfig = {
