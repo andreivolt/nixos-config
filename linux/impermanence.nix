@@ -57,6 +57,6 @@
 
   # Ensure andrei user's password file exists
   users.users.andrei = {
-    passwordFile = lib.mkDefault "/persist/passwords/andrei";
+    hashedPasswordFile = lib.mkDefault "/persist/passwords/andrei";
   };
 }

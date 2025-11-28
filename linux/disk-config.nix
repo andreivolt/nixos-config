@@ -36,43 +36,39 @@
                 content = {
                   type = "luks";
                   name = "cryptroot";
-                  # Performance optimizations for SSD
                   extraOpenArgs = [
                     "--allow-discards"
                     "--perf-no_read_workqueue"
                     "--perf-no_write_workqueue"
                   ];
-                  settings = {
-                    # Ask for password on boot
-                    allowDiscards = true;
-                  };
+                  settings.allowDiscards = true;
                   content = {
                     type = "btrfs";
                     extraArgs = [ "-L" "nixos" "-f" ];
                     subvolumes = {
                       "/root" = {
                         mountpoint = "/btrfs_root";
-                        mountOptions = [ "subvol=root" "noatime" ];
+                        mountOptions = [ "noatime" ];
                       };
                       "/nix" = {
                         mountpoint = "/nix";
-                        mountOptions = [ "subvol=nix" "noatime" ];
+                        mountOptions = [ "noatime" ];
                       };
                       "/persist" = {
                         mountpoint = "/persist";
-                        mountOptions = [ "subvol=persist" "noatime" ];
+                        mountOptions = [ "noatime" ];
                       };
                       "/home" = {
                         mountpoint = "/home";
-                        mountOptions = [ "subvol=home" "noatime" ];
+                        mountOptions = [ "noatime" ];
                       };
                       "/log" = {
                         mountpoint = "/var/log";
-                        mountOptions = [ "subvol=log" "noatime" ];
+                        mountOptions = [ "noatime" ];
                       };
                       "/swap" = {
                         mountpoint = "/swap";
-                        swap.swapfile.size = "8G";  # Adjust based on RAM
+                        swap.swapfile.size = "8G";
                       };
                     };
                   };
@@ -87,17 +83,10 @@
     # Boot loader configuration
     boot.loader = {
       systemd-boot.enable = true;
-      systemd-boot.configurationLimit = 10;  # Keep only 10 generations
+      systemd-boot.configurationLimit = 10;
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot";
-      timeout = 3;  # Boot menu timeout in seconds
-    };
-
-    # Enable LUKS support in initrd
-    boot.initrd.luks.devices."cryptroot" = {
-      # Device will be determined by disko
-      preLVM = true;
-      allowDiscards = true;
+      timeout = 3;
     };
 
     # Kernel parameters for better SSD performance and power management

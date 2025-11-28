@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
+  imports = [
+    ./vars.nix
+  ];
+
   programs.hyprland = {
     enable = true;
     withUWSM = true;
@@ -13,5 +17,10 @@
 
   environment.systemPackages = with pkgs; [
     hyprshot
-  ];
+  ] ++ (with inputs.hyprland.packages.${pkgs.system}; [
+    hyprland-qtutils
+  ]) ++ (with inputs.hyprland-plugins.packages.${pkgs.system}; [
+    hyprexpo
+    hyprbars
+  ]);
 }

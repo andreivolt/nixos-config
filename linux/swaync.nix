@@ -2,7 +2,7 @@
 
 {
   # Install swaync package
-  environment.systemPackages = [ pkgs.swaync ];
+  environment.systemPackages = [ pkgs.swaynotificationcenter ];
 
   # SwayNotificationCenter service
   home-manager.users.andrei = { config, pkgs, ... }: {

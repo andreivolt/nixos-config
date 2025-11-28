@@ -2,6 +2,15 @@ pkgs:
 with pkgs;
   [
     acpi
+    eww
+    grim
+    hyprsunset
+    lan-mouse  # Wayland-native keyboard/mouse sharing (both machines Linux)
+    waynergy  # Wayland-native Synergy client (if server is Mac/Windows with Synergy license)
+    kitty
+    slurp
+    wf-recorder
+    ydotool
     alsa-utils
     beeper
     binutils
@@ -21,7 +30,6 @@ with pkgs;
     libsForQt5.kdegraphics-thumbnailers
     lm_sensors
     lshw
-    mpv
     nethogs
     osquery
     pciutils
@@ -32,7 +40,6 @@ with pkgs;
     strace
     sublime4
     swaytools
-    telegram-desktop
     tidal-hifi
     trash-cli
     usbutils
@@ -41,6 +48,5 @@ with pkgs;
     xdg-user-dirs
     xdragon
     ytmdesktop
-    zoom-us
-    (emacs.override { withGTK2 = false; withGTK3 = false; })
+    emacs
   ]

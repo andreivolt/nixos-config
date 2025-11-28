@@ -26,6 +26,13 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hyprland = {
+      url = "github:hyprwm/Hyprland";
+    };
+    hyprland-plugins = {
+      url = "github:hyprwm/hyprland-plugins";
+      inputs.hyprland.follows = "hyprland";
+    };
   };
 
   outputs = inputs @ {
@@ -39,6 +46,8 @@
     json2nix,
     impermanence,
     disko,
+    hyprland,
+    hyprland-plugins,
   }:
   let
     commonNixpkgsConfig = {
@@ -91,6 +100,7 @@
         }
         "${inputs.self}/linux"
         home-manager.nixosModules.home-manager
+        hyprland.nixosModules.default
       ];
       specialArgs = {inherit inputs;};
     };

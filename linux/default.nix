@@ -30,6 +30,7 @@
     ./fingerprint.nix
     ./flashfocus.nix
     ./gnome-keyring.nix
+    ./greetd.nix
     ./gtk.nix
     ./ipv6-disable.nix
     ./libvirt.nix
@@ -65,7 +66,7 @@
   console.packages = [pkgs.terminus_font];
 
   hardware.bluetooth.enable = true;
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -75,6 +76,9 @@
     isNormalUser = true;
     shell = pkgs.zsh;
     extraGroups = ["wheel"];
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDicuhnKrdUp8G8JZH+jEZWpTTCYO5zQ7I30an07AfS8VP734swtLVc6Hwl5wZ37R8mbusOccw2VsUAZYQBWBZs4tqmzHxAT2fIPo22xgXggdgyb6uXcC7/pvb6BiCkIYawAU3Rbw7Le295HC3g/SkJMlpiKlJllyyzjyP3JISBYKMJdO6PJxsfUHJDG5LCA1/hMyjKjPT5QO6/Go4usEgThcvMxJiV9bVL16PAuENnFLCA3avj9cfk/5VN/HUG1f3SVFQytivFPIb54ke3tgr7Z/a2MZKj+GcTpmxoFLlsmmz6uPSRE+eB8QzpRlO+rny9YmHhKmt10tdEU/KITQAlBLfowE5fJIZIjlui70pWgh62GFDO/30RaJXkUSD8pYUwzzcdAWVbMZsyJ1A7O79deryp8ZFBAUJsiaw2KhCCOLcVFv06n2wUyUZjPE2u1NduWQLZLP/Vnzi1JRYhims8RzN/UyA24uY3XbKZ+jV8kUuoHATiNiI62/CJExABhOk= andrei@mac"
+    ];
   };
 
   programs.mosh.enable = true;
@@ -85,7 +89,7 @@
 
   services.avahi = {
     enable = true;
-    nssmdns = true;
+    nssmdns4 = true;
   };
   services.devmon.enable = true;
   services.flatpak.enable = true;
@@ -102,6 +106,8 @@
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
   environment.variables.LC_TIME = "C.UTF-8";
 
+  
+
   home-manager.users.andrei = {pkgs, ...}: {
     imports = [ ../shared/rust-script-warmer.nix ];
     
@@ -115,23 +121,23 @@
     programs.zsh = {
       enable = true; # TODO
       enableCompletion = false;
-      initExtra = "source ~/.config/zsh/rc.zsh";
+      initContent = "source ~/.config/zsh/rc.zsh";
     };
 
     # services.clipman.enable = true;  # Replaced by cliphist
     services.playerctld.enable = true;
     services.wob.enable = true;
 
-    # Vicinae launcher daemon
-    programs.vicinae = {
-      enable = true;
-      systemd = {
-        enable = true;
-        autoStart = true;
-        target = "graphical-session.target";
-      };
-      useLayerShell = true;
-    };
+    # Vicinae launcher daemon (requires custom module)
+    # programs.vicinae = {
+    #   enable = true;
+    #   systemd = {
+    #     enable = true;
+    #     autoStart = true;
+    #     target = "graphical-session.target";
+    #   };
+    #   useLayerShell = true;
+    # };
 
     xdg.enable = true;
     xdg.userDirs = {
