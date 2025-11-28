@@ -35,6 +35,7 @@
     ./greetd.nix
     ./gtk.nix
     ./ipv6-disable.nix
+    ./lan-mouse.nix
     ./libvirt.nix
     ./lowbatt.nix
     ./networkmanager.nix
