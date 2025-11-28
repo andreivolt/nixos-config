@@ -11,6 +11,7 @@ with pkgs;
     kitty
     slurp
     wf-recorder
+    wayland-pipewire-idle-inhibit  # CLI tool to prevent idle/sleep
     wofi  # Application launcher
     ydotool
     alsa-utils
