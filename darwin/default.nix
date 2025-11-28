@@ -33,6 +33,7 @@
     ./interface.nix
     ./keyboard.nix
     ./menu-bar.nix
+    ./monitor-control.nix
     ./music-history.nix
     ./power-management.nix
     ./privacy.nix
@@ -43,6 +44,7 @@
     ./spotlight.nix
     ./system-preferences.nix
     ./telegram-archive.nix
+    ./telegram-open.nix
     ./tor.nix
     ./trackpad.nix
     ./wallpaper.nix
