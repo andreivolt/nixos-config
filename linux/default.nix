@@ -69,6 +69,7 @@
   console.packages = [pkgs.terminus_font];
 
   hardware.bluetooth.enable = true;
+  hardware.enableRedistributableFirmware = true;
   hardware.graphics.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
