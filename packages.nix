@@ -5,7 +5,6 @@ pkgs: with pkgs; [
   spotify
   ff2mpv
   andrei.anypaste
-  mpv
   ansifilter
   andrei.nixos-repl
   android-tools
@@ -113,7 +112,6 @@ pkgs: with pkgs; [
   portaudio
   procs
   pry
-  pstree
   pulumi-bin
   pv
   rclone
