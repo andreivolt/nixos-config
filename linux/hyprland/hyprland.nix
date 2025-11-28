@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   programs.hyprland = {
@@ -13,5 +13,10 @@
 
   environment.systemPackages = with pkgs; [
     hyprshot
-  ];
+  ] ++ (with inputs.hyprland.packages.${pkgs.system}; [
+    hyprland-qtutils
+  ]) ++ (with inputs.hyprland-plugins.packages.${pkgs.system}; [
+    hyprexpo
+    hyprbars
+  ]);
 }
