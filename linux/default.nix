@@ -112,7 +112,10 @@
   
 
   home-manager.users.andrei = {pkgs, ...}: {
-    imports = [ ../shared/rust-script-warmer.nix ];
+    imports = [
+      ../shared/rust-script-warmer.nix
+      inputs.vicinae.homeManagerModules.default
+    ];
     
     home.stateVersion = "23.11";
     home.enableNixpkgsReleaseCheck = false;
@@ -130,17 +133,10 @@
     # services.clipman.enable = true;  # Replaced by cliphist
     services.playerctld.enable = true;
     services.wob.enable = true;
-
-    # Vicinae launcher daemon (requires custom module)
-    # programs.vicinae = {
-    #   enable = true;
-    #   systemd = {
-    #     enable = true;
-    #     autoStart = true;
-    #     target = "graphical-session.target";
-    #   };
-    #   useLayerShell = true;
-    # };
+    services.vicinae = {
+      enable = true;
+      autoStart = true;
+    };
 
     xdg.enable = true;
     xdg.userDirs = {
