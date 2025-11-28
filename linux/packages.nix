@@ -18,14 +18,18 @@ with pkgs;
     binutils
     caprine-bin
     detox
+    kdePackages.dolphin
     ffmpeg-full
     fswebcam
     gcolor3
     gnome-epub-thumbnailer
     imv
     inotify-tools
+    nerd-fonts.iosevka
+    nerd-fonts.iosevka-term
     jq
     iotop
+    liberation_ttf
     libnotify
     libreoffice-fresh
     libsForQt5.breeze-gtk
@@ -35,6 +39,7 @@ with pkgs;
     lshw
     nethogs
     osquery
+    pavucontrol
     pciutils
     playerctl
     psmisc
@@ -43,6 +48,7 @@ with pkgs;
     strace
     sublime4
     swaytools
+    tela-icon-theme
     tidal-hifi
     trash-cli
     usbutils
