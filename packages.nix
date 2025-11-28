@@ -51,6 +51,7 @@ pkgs: with pkgs; [
   fzf
   gdrive3
   geoipWithDatabase
+  gcc  # C compiler/linker for rust-script and other build tools
   gh
   ghostscript
   git
