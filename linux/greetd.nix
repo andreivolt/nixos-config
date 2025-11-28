@@ -5,6 +5,7 @@ let
 in {
   services.greetd = {
     enable = true;
+    vt = 5;  # Use VT5 since F1-F4 are remapped to number keys
     settings = {
       default_session = {
         command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --remember-session --cmd 'uwsm start ${hyprland}/bin/hyprland'";
