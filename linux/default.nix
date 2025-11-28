@@ -104,7 +104,10 @@
     suspendCapacity = 10;
   };
   services.sshd.enable = true;
-  services.tailscale.enable = true;
+  services.tailscale = {
+    enable = true;
+    extraUpFlags = ["--operator=andrei"];
+  };
   services.upower.enable = true;
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
