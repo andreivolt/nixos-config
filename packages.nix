@@ -4,7 +4,6 @@ pkgs: with pkgs; [
   alejandra # nix formatter
   spotify
   ff2mpv
-  mpv
   ansifilter
   android-tools
   aria2
@@ -111,7 +110,6 @@ pkgs: with pkgs; [
   portaudio
   procs
   pry
-  pstree
   pulumi-bin
   pv
   rclone
