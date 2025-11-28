@@ -1,9 +1,9 @@
 { config, lib, pkgs, ... }:
 
-{
-  # Install foot package
-  environment.systemPackages = [ pkgs.foot ];
-
+let
+  terminal = pkgs.kitty;
+  terminalCommand = "${terminal}/bin/kitty --class dropdown";
+in {
   # Dropdown terminal service
   home-manager.users.andrei = { config, pkgs, ... }: {
     systemd.user.services.dropdown = {
@@ -14,7 +14,7 @@
       };
       Service = {
         Type = "simple";
-        ExecStart = "${pkgs.foot}/bin/footclient --app-id=footclient-dropdown";
+        ExecStart = terminalCommand;
         Restart = "on-failure";
         RestartSec = 3;
       };
