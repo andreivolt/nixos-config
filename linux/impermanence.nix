@@ -33,6 +33,7 @@
       "/var/lib/libvirt"
       "/var/lib/lxd"
       "/var/lib/machines"
+      "/var/lib/tailscale"
       { directory = "/var/lib/roon-server"; user = "roon-server"; group = "roon-server"; mode = "u=rwx,g=rx,o="; }
     ];
     files = [
