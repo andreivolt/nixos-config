@@ -27,6 +27,7 @@
     ./cliphist.nix
     ./docker.nix
     ./dropdown.nix
+    ./fkey-remap.nix
     ./fingerprint.nix
     ./flashfocus.nix
     ./gnome-keyring.nix
