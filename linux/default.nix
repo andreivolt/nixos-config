@@ -27,6 +27,7 @@
     ./cliphist.nix
     ./docker.nix
     ./dropdown.nix
+    ./eww.nix
     ./fkey-remap.nix
     ./fingerprint.nix
     ./flashfocus.nix
@@ -43,6 +44,7 @@
     ./pipewire.nix
     ./qt.nix
     ./rclone.nix
+    ./roon-server.nix
     ./swaybg.nix
     # ./sway  # Uncomment to use Sway
     ./hyprland  # Using Hyprland

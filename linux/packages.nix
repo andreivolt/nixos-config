@@ -52,4 +52,6 @@ with pkgs;
     xdragon
     ytmdesktop
     emacs
+    nodejs
+    roon-tui  # Terminal UI for Roon
   ]
