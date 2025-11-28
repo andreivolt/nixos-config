@@ -7,13 +7,16 @@
   # Use hwdb to remap F1-F4 to 1-4 at the kernel input layer
   # This is the most reliable method for system-wide remapping
   services.udev.extraHwdb = ''
-    # Remap F1-F4 to number keys 1-4
+    # Remap F1-F4 to number keys 1-4 (AZERTY keyboard)
     # Works at kernel level, affects console and all graphical sessions
+    # On AZERTY, these keycodes produce: 1=&, 2=é, 3=", 4='
+    # With Shift: 1, 2, 3, 4
+    # Scancodes verified for ThinkPad AT keyboard
     evdev:atkbd:*
-     KEYBOARD_KEY_3b=2   # F1 -> 1
-     KEYBOARD_KEY_3c=3   # F2 -> 2
-     KEYBOARD_KEY_3d=4   # F3 -> 3
-     KEYBOARD_KEY_3e=5   # F4 -> 4
+     KEYBOARD_KEY_3b=key_1
+     KEYBOARD_KEY_3c=key_2
+     KEYBOARD_KEY_3d=key_3
+     KEYBOARD_KEY_3e=key_4
   '';
 
   # Adjust virtual console keybindings
