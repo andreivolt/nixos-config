@@ -57,6 +57,9 @@
   # This is required for the impermanence setup
   programs.fuse.userAllowOther = true;
 
+  # Use persistent storage for Nix builds instead of tmpfs
+  nix.settings.build-dir = "/persist/nix-build";
+
   # Ensure andrei user's password file exists
   users.users.andrei = {
     hashedPasswordFile = lib.mkDefault "/persist/passwords/andrei";
