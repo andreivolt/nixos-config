@@ -39,6 +39,9 @@
     nixos-apple-silicon = {
       url = "github:nix-community/nixos-apple-silicon";
     };
+    lan-mouse = {
+      url = "github:feschber/lan-mouse";
+    };
   };
 
   outputs = inputs @ {
@@ -56,6 +59,7 @@
     hyprland-plugins,
     vicinae,
     nixos-apple-silicon,
+    lan-mouse,
   }:
   let
     commonNixpkgsConfig = {
@@ -66,9 +70,9 @@
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
           json2nix = inputs.json2nix.packages.${prev.system}.default;
         })
-        # Patch lan-mouse to reduce pointer speed (0.5x)
+        # Use lan-mouse from flake (latest with CLI/daemon support) with pointer speed patch
         (final: prev: {
-          lan-mouse = prev.lan-mouse.overrideAttrs (oldAttrs: {
+          lan-mouse = inputs.lan-mouse.packages.${prev.system}.default.overrideAttrs (oldAttrs: {
             patches = (oldAttrs.patches or []) ++ [
               ./pkgs/lan-mouse-pointer-speed.patch
             ];
