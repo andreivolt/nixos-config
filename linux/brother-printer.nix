@@ -1,4 +1,5 @@
-{pkgs, ...}: {
+{pkgs, lib, ...}: lib.mkIf (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
+  # Brother printer config only for x86_64-linux
   services.printing.enable = true;
 
   programs.system-config-printer.enable = true;

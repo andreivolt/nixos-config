@@ -8,15 +8,15 @@
   imports = [
     ../linux/base.nix
     ./disk-config.nix
-    ../linux/insync.nix
     ../linux/mpv.nix
   ];
 
   networking.hostName = "asahi";
   system.stateVersion = "24.05";
 
-  # Apple Silicon support (GPU driver now in standard Mesa, no special config needed)
+  # Apple Silicon support
   hardware.asahi.setupAsahiSound = true;
+  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
 
   # Boot - Apple Silicon uses m1n1 -> U-Boot -> systemd-boot
   boot.loader.efi.canTouchEfiVariables = false;
