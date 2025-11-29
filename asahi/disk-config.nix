@@ -15,7 +15,7 @@
 
   options.asahi.rootPartition = lib.mkOption {
     type = lib.types.str;
-    default = "/dev/nvme0n1p5";  # Adjust: run `lsblk` to find yours
+    default = "/dev/nvme0n1p6";  # Adjust: run `lsblk` to find yours
     description = "The root partition created by Asahi installer";
   };
 
