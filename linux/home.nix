@@ -31,12 +31,7 @@
   };
 
   xdg.enable = true;
-  xdg.userDirs = {
-    enable = true;
-    createDirectories = true;
-    documents = "~/documents";
-    download = "~/downloads";
-  };
+  xdg.userDirs.enable = true;
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = let
     browser = "firefox";
