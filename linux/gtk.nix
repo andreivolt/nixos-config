@@ -7,7 +7,7 @@
 
     gtk = {
       enable = true;
-      theme.name = "Breeze";
+      theme.name = "Breeze-Dark";
       iconTheme.name = "Tela-dark";
       font = {
         name = "Noto Sans";
