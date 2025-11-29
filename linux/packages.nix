@@ -6,6 +6,7 @@ with pkgs;
     eww
     grim
     hyprsunset
+    input-leap  # KVM software (Synergy fork) - works with Wayland via libei
     lan-mouse  # Wayland-native keyboard/mouse sharing (both machines Linux)
     waynergy  # Wayland-native Synergy client (if server is Mac/Windows with Synergy license)
     kitty
