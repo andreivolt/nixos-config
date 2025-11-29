@@ -19,6 +19,7 @@ with pkgs; [
   gcc
   gh
   git
+  glib
   gnumake
   google-chrome
   grim
