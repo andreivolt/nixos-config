@@ -25,9 +25,58 @@
 
   services.playerctld.enable = true;
   services.wob.enable = true;
+  services.cliphist.enable = true;
+  services.swaync.enable = true;
+  services.network-manager-applet.enable = true;
+  services.trayscale.enable = true;
   services.vicinae = {
     enable = true;
     autoStart = true;
+  };
+
+  # Custom systemd services
+  systemd.user.services.eww = {
+    Unit = {
+      Description = "Eww daemon";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.eww}/bin/eww daemon --no-daemonize";
+      ExecStartPost = "${pkgs.eww}/bin/eww open bar";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.eww-hyprland-listener = {
+    Unit = {
+      Description = "EWW Hyprland workspace listener";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" "eww.service" ];
+      Requires = [ "eww.service" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "%h/.config/eww/scripts/hyprland-listener";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+  };
+
+  systemd.user.services.lan-mouse = {
+    Unit = {
+      Description = "Lan Mouse - mouse/keyboard sharing";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.lan-mouse}/bin/lan-mouse --daemon";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
   };
 
   xdg.enable = true;
