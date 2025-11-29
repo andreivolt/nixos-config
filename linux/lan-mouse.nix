@@ -20,7 +20,7 @@
       };
       Service = {
         Type = "simple";
-        ExecStart = "${pkgs.lan-mouse}/bin/lan-mouse --daemon";
+        ExecStart = "${pkgs.lan-mouse}/bin/lan-mouse --frontend gtk";
         Restart = "on-failure";
       };
       Install.WantedBy = [ "graphical-session.target" ];
