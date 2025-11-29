@@ -2,9 +2,14 @@
 
 let
   terminal = pkgs.kitty;
-  # --single-instance keeps one kitty process, --instance-group dropdown ensures dropdown windows share same instance
-  # -1 runs kitty in single-instance mode with login shell
-  terminalCommand = "${terminal}/bin/kitty --single-instance --instance-group dropdown --class dropdown ${pkgs.zsh}/bin/zsh --login";
+  tmux = pkgs.tmux;
+
+  # Script to attach to dropdown tmux session (create if not exists)
+  # -A flag attaches to existing or creates new session
+  # Hide status bar inline
+  dropdownScript = pkgs.writeShellScript "dropdown-terminal" ''
+    exec ${terminal}/bin/kitty --class dropdown ${tmux}/bin/tmux new-session -A -s dropdown \; set -g status off
+  '';
 in {
   # Dropdown terminal service
   home-manager.users.andrei = { config, pkgs, ... }: {
@@ -16,7 +21,7 @@ in {
       };
       Service = {
         Type = "simple";
-        ExecStart = terminalCommand;
+        ExecStart = "${dropdownScript}";
         Restart = "on-failure";
       };
       Install.WantedBy = [ "graphical-session.target" ];
