@@ -36,6 +36,9 @@
     vicinae = {
       url = "github:vicinaehq/vicinae";
     };
+    nixos-apple-silicon = {
+      url = "github:nix-community/nixos-apple-silicon";
+    };
   };
 
   outputs = inputs @ {
@@ -52,6 +55,7 @@
     hyprland,
     hyprland-plugins,
     vicinae,
+    nixos-apple-silicon,
   }:
   let
     commonNixpkgsConfig = {
@@ -103,6 +107,21 @@
           nixos.diskDevice = "/dev/nvme0n1";
         }
         "${inputs.self}/linux"
+        home-manager.nixosModules.home-manager
+        hyprland.nixosModules.default
+      ];
+      specialArgs = {inherit inputs;};
+    };
+
+    nixosConfigurations.asahi = nixpkgs.lib.nixosSystem {
+      modules = [
+        {
+          nixpkgs = commonNixpkgsConfig // {
+            hostPlatform = "aarch64-linux";
+          };
+        }
+        nixos-apple-silicon.nixosModules.apple-silicon-support
+        "${inputs.self}/asahi"
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
       ];
