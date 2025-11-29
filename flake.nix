@@ -66,6 +66,14 @@
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
           json2nix = inputs.json2nix.packages.${prev.system}.default;
         })
+        # Patch lan-mouse to reduce pointer speed (0.5x)
+        (final: prev: {
+          lan-mouse = prev.lan-mouse.overrideAttrs (oldAttrs: {
+            patches = (oldAttrs.patches or []) ++ [
+              ./pkgs/lan-mouse-pointer-speed.patch
+            ];
+          });
+        })
       ];
     };
   in {

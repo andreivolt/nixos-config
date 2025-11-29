@@ -1,0 +1,17 @@
+diff --git a/input-emulation/src/wlroots.rs b/input-emulation/src/wlroots.rs
+index 6049c1d..a9a92e9 100644
+--- a/input-emulation/src/wlroots.rs
++++ b/input-emulation/src/wlroots.rs
+@@ -180,7 +180,11 @@ impl VirtualInput {
+         match event {
+             Event::Pointer(e) => {
+                 match e {
+-                    PointerEvent::Motion { time, dx, dy } => self.pointer.motion(time, dx, dy),
++                    PointerEvent::Motion { time, dx, dy } => {
++                        // Scale down motion for slower cursor (0.5 = half speed)
++                        let scale = 0.5;
++                        self.pointer.motion(time, dx * scale, dy * scale)
++                    }
+                     PointerEvent::Button {
+                         time,
+                         button,
