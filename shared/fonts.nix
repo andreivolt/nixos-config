@@ -13,7 +13,7 @@
     corefonts
     nerd-fonts.iosevka
     nerd-fonts.iosevka-term
-    ubuntu_font_family
+    ubuntu-classic
     roboto
   ];
 }

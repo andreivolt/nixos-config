@@ -21,7 +21,7 @@ with pkgs; [
   git
   glib
   gnumake
-  google-chrome
+  chromium
   grim
   htop-vim
   hyprsunset
@@ -32,8 +32,8 @@ with pkgs; [
   lazygit
   liberation_ttf
   libnotify
-  libsForQt5.breeze-gtk
-  libsForQt5.breeze-qt5
+  # libsForQt5.breeze-gtk  # Removed from nixpkgs-unstable
+  # libsForQt5.breeze-qt5  # Removed from nixpkgs-unstable
   lm_sensors
   lshw
   lsof

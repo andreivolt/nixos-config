@@ -2,7 +2,7 @@
   home-manager.users.andrei = {
     home.packages = with pkgs; [
       libsForQt5.qtstyleplugin-kvantum
-      libsForQt5.breeze-qt5
+      # libsForQt5.breeze-qt5  # Removed from nixpkgs-unstable
     ];
 
     # Configure qt5ct for dark theme

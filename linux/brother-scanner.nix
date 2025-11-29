@@ -1,4 +1,5 @@
-{
+{pkgs, lib, ...}: lib.mkIf (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
+  # Brother scanner driver only supports x86_64-linux
   hardware.sane.enable = true;
 
   hardware.sane.brscan5 = {
