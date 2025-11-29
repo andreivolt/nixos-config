@@ -1,169 +1,78 @@
-pkgs: with pkgs; [
-  # ghostty # TODO
-  age
-  alejandra # nix formatter
-  spotify
-  ff2mpv
-  ansifilter
-  android-tools
-  aria2
-  arp-scan
-  ast-grep
-  babashka
+# Base package set shared by all Linux systems
+pkgs:
+with pkgs; [
+  acpi
+  alejandra
+  alsa-utils
   bat
-  bfg-repo-cleaner
-  boot
+  binutils
+  brightnessctl
   btop
-  bun
-  cached-nix-shell
-  cargo
-  catt
-  clojure
-  clojure-lsp
-  cloudflared
-  cmake
-  csvkit
   curl
-  curlie
   delta
-  deno
-  diffsitter
-  direnv
-  discord
-  dnsutils
-  doctl
-  dogdns
-  duf
-  dwdiff
-  edir
-  erdtree
-  eslint
+  eww
   eza
-  fastgron
   fd
-  fdupes
+  ffmpeg-full
   file
-  firefox_decrypt
-  flyctl
-  freerdp
   fzf
-  gdrive3
-  geoipWithDatabase
-  gcc  # C compiler/linker for rust-script and other build tools
+  gcc
   gh
-  ghostscript
   git
-  git-extras
-  git-open
-  glab
-  glow
   gnumake
-  gnupg
-  go
-  gojq
   google-chrome
-  google-cloud-sdk
-  gum
-  htmlq
+  grim
   htop-vim
-  hyperfine
-  iftop
-  imagemagick
-  inetutils
-  jet
-  jo
-  json2nix
-  jujutsu
-  lastpass-cli
-  lazydocker
+  hyprsunset
+  imv
+  inotify-tools
+  jq
+  kitty
   lazygit
-  litecli
+  liberation_ttf
+  libnotify
+  libsForQt5.breeze-gtk
+  libsForQt5.breeze-qt5
+  lm_sensors
+  lshw
   lsof
-  mediainfo
-  mitmproxy
-  mkcert
-  moreutilsWithoutParallel
   mosh
   ncdu_1
-  neovide
   neovim
-  neovim-remote
-  netcat
+  nerd-fonts.iosevka-term
   nix-index
-  nix-prefetch-git
-  nixd
-  nixfmt-rfc-style # nix formatter
   nmap
-  nushell
-  nvimpager
-  oci-cli
-  ouch
-  pandoc
-  parallel
-  patchelf
-  patchutils
-  pdftk
+  nodejs
+  pavucontrol
+  pciutils
   pkg-config
-  pnpm
-  poppler-utils
-  portaudio
-  procs
-  pry
-  pulumi-bin
-  pv
+  playerctl
+  psmisc
   rclone
-  redo
   ripgrep
-  rlwrap
   rsync
-  rubocop
-  ruby
-  ruby-lsp
-  ruff
-  rust-script
-  rustc
-  rustfmt
-  # rustup
-  scc
-  scrcpy
-  shell-gpt
+  slurp
   socat
   sops
-  sox
-  sqlite
-  sqlite-utils
-  stack
-  stylua
-  tabview
+  strace
+  swaytools
   tcpdump
+  tela-icon-theme
   telegram-desktop
-  terminal-colors
-  tidyp
-  timg
   tmux
+  trash-cli
   tree
-  tree-sitter
-  trurl
   unzip
-  upterm
-  uv
-  viddy
-  vscode
-  w3m
-  wakeonlan
-  watchexec
-  wdiff
-  websocat
-  weechat
+  usbutils
+  wayland-pipewire-idle-inhibit
   wget
+  wf-recorder
+  wlprop
+  wofi
+  xdg-user-dirs
   xdg-utils
-  xh
-  xurls
-  yarn-berry
   yazi
+  ydotool
   yt-dlp
   zathura
-  zed-editor
-  zoom-us
-  zprint
 ]
