@@ -38,6 +38,7 @@
     };
     nixos-apple-silicon = {
       url = "github:nix-community/nixos-apple-silicon";
+      # Don't follow our nixpkgs - use their tested version
     };
     lan-mouse = {
       url = "github:feschber/lan-mouse";
@@ -100,7 +101,7 @@
       specialArgs = {inherit inputs;};
     };
 
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.nixos = nixpkgs-unstable.lib.nixosSystem {
       modules = [
         {
           nixpkgs = commonNixpkgsConfig // {
@@ -125,12 +126,15 @@
       specialArgs = {inherit inputs;};
     };
 
-    nixosConfigurations.asahi = nixpkgs.lib.nixosSystem {
+    # Use nixpkgs-unstable for asahi to match nixos-apple-silicon expectations
+    nixosConfigurations.asahi = nixpkgs-unstable.lib.nixosSystem {
       modules = [
         {
-          nixpkgs = commonNixpkgsConfig // {
-            hostPlatform = "aarch64-linux";
-          };
+          nixpkgs.hostPlatform = "aarch64-linux";
+          nixpkgs.config.allowUnfree = true;
+          nixpkgs.overlays = [
+            nixos-apple-silicon.overlays.default
+          ] ++ commonNixpkgsConfig.overlays;
         }
         nixos-apple-silicon.nixosModules.apple-silicon-support
         "${inputs.self}/asahi"

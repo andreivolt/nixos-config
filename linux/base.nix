@@ -21,7 +21,6 @@
     ./docker.nix
     ./dropdown.nix
     ./eww.nix
-    ./flashfocus.nix
     ./gnome-keyring.nix
     ./greetd.nix
     ./gtk.nix
