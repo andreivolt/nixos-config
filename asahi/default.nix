@@ -1,0 +1,36 @@
+{
+  pkgs,
+  config,
+  inputs,
+  lib,
+  ...
+}: {
+  imports = [
+    ../linux/base.nix
+    ./disk-config.nix
+    ../linux/insync.nix
+    ../linux/mpv.nix
+  ];
+
+  networking.hostName = "asahi";
+  system.stateVersion = "24.05";
+
+  # Apple Silicon support (GPU driver now in standard Mesa, no special config needed)
+  hardware.asahi.setupAsahiSound = true;
+
+  # Boot - Apple Silicon uses m1n1 -> U-Boot -> systemd-boot
+  boot.loader.efi.canTouchEfiVariables = false;
+
+  # Lid switch behavior
+  services.logind.lidSwitchExternalPower = "ignore";
+
+  # Keyboard backlight permissions
+  services.udev.extraRules = ''
+    SUBSYSTEM=="leds", ACTION=="add", KERNEL=="kbd_backlight", RUN+="${pkgs.coreutils}/bin/chgrp input /sys/class/leds/kbd_backlight/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/leds/kbd_backlight/brightness"
+  '';
+
+  home-manager.users.andrei = import ../linux/home.nix {
+    inherit config inputs;
+    # Uses only base packages.nix (no extra packages for space-constrained install)
+  };
+}
