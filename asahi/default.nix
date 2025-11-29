@@ -16,13 +16,15 @@
 
   # Apple Silicon support
   hardware.asahi.setupAsahiSound = true;
-  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
+  # Firmware will be extracted from /boot/asahi/all_firmware.tar.gz after install
+  # hardware.asahi.peripheralFirmwareDirectory = ./firmware;
+  hardware.asahi.extractPeripheralFirmware = false;
 
   # Boot - Apple Silicon uses m1n1 -> U-Boot -> systemd-boot
   boot.loader.efi.canTouchEfiVariables = false;
 
   # Lid switch behavior
-  services.logind.lidSwitchExternalPower = "ignore";
+  services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
   # Keyboard backlight permissions
   services.udev.extraRules = ''
