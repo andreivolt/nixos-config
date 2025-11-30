@@ -54,7 +54,6 @@ with pkgs; [
   socat
   sops
   strace
-  swaytools
   tcpdump
   tela-icon-theme
   telegram-desktop
