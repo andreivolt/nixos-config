@@ -1,6 +1,7 @@
-# Base package set shared by all Linux systems
+# Base package set shared by all Linux systems (x86_64 and aarch64)
 pkgs:
 with pkgs; [
+  # System utilities
   acpi
   alejandra
   alsa-utils
@@ -32,8 +33,6 @@ with pkgs; [
   lazygit
   liberation_ttf
   libnotify
-  # libsForQt5.breeze-gtk  # Removed from nixpkgs-unstable
-  # libsForQt5.breeze-qt5  # Removed from nixpkgs-unstable
   lm_sensors
   lshw
   lsof
@@ -76,4 +75,139 @@ with pkgs; [
   ydotool
   yt-dlp
   zathura
+
+  # Development tools (cross-platform)
+  age
+  android-tools
+  ansifilter
+  aria2
+  arp-scan
+  ast-grep
+  babashka
+  bfg-repo-cleaner
+  bun
+  cached-nix-shell
+  cargo
+  catt
+  clojure
+  clojure-lsp
+  cloudflared
+  cmake
+  csvkit
+  curlie
+  deno
+  diffsitter
+  direnv
+  dnsutils
+  doctl
+  dogdns
+  duf
+  dwdiff
+  edir
+  erdtree
+  eslint
+  fastgron
+  fdupes
+  ff2mpv
+  firefox_decrypt
+  flyctl
+  freerdp
+  gdrive3
+  geoipWithDatabase
+  ghostscript
+  git-extras
+  git-open
+  glab
+  glow
+  gnupg
+  go
+  gojq
+  google-cloud-sdk
+  gum
+  htmlq
+  hyperfine
+  iftop
+  imagemagick
+  inetutils
+  jet
+  jo
+  json2nix
+  jujutsu
+  lastpass-cli
+  lazydocker
+  litecli
+  mediainfo
+  mitmproxy
+  mkcert
+  moreutilsWithoutParallel
+  neovide
+  neovim-remote
+  netcat
+  nix-prefetch-git
+  nixd
+  nixfmt-rfc-style
+  nushell
+  nvimpager
+  ouch
+  pandoc
+  parallel
+  patchelf
+  patchutils
+  pdftk
+  pnpm
+  poppler-utils
+  portaudio
+  procs
+  pry
+  pv
+  redo
+  rlwrap
+  rubocop
+  ruby
+  ruby-lsp
+  ruff
+  rust-script
+  rustc
+  rustfmt
+  scc
+  scrcpy
+  shell-gpt
+  sox
+  sqlite
+  sqlite-utils
+  stack
+  stylua
+  tabview
+  terminal-colors
+  tidyp
+  timg
+  tree-sitter
+  trurl
+  upterm
+  uv
+  viddy
+  w3m
+  wakeonlan
+  watchexec
+  wdiff
+  websocat
+  weechat
+  xh
+  xurls
+  yarn-berry
+  zprint
+
+  # GUI apps (cross-platform)
+  detox
+  emacs
+  fswebcam
+  gcolor3
+  gnome-epub-thumbnailer
+  iotop
+  kdePackages.dolphin
+  lan-mouse
+  libreoffice-fresh
+  nethogs
+  dragon-drop
+  zed-editor
 ]
