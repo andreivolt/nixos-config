@@ -11,7 +11,7 @@ in {
     hyprland-auto-pin-pip = {
       Unit = {
         Description = "Auto-pin Picture-in-Picture windows";
-        PartOf = ["hyprland-session.target"];
+        PartOf = ["graphical-session.target"];
       };
       Service = {
         Type = "simple";
@@ -20,7 +20,7 @@ in {
         RestartSec = 1;
       };
       Install = {
-        WantedBy = ["hyprland-session.target"];
+        WantedBy = ["graphical-session.target"];
       };
     };
   };
