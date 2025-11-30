@@ -37,11 +37,15 @@
             extraArgs = [ "-L" "nixos" "-f" ];
             subvolumes = {
               "/@" = {
-                mountpoint = "/";
+                mountpoint = "/btrfs_root";
                 mountOptions = [ "noatime" "compress=zstd" ];
               };
               "/@nix" = {
                 mountpoint = "/nix";
+                mountOptions = [ "noatime" "compress=zstd" ];
+              };
+              "/@persist" = {
+                mountpoint = "/persist";
                 mountOptions = [ "noatime" "compress=zstd" ];
               };
               "/@home" = {
@@ -83,7 +87,7 @@
     services.btrfs.autoScrub = {
       enable = true;
       interval = "monthly";
-      fileSystems = [ "/" ];
+      fileSystems = [ "/btrfs_root" ];
     };
 
     environment.systemPackages = with pkgs; [
