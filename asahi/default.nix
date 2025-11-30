@@ -41,6 +41,6 @@
 
   home-manager.users.andrei = import ../linux/home.nix {
     inherit config inputs;
-    extraPackagesFile = "${inputs.self}/asahi/packages-extra.nix";
+    # No extraPackagesFile - uses only base packages.nix (cross-platform)
   };
 }
