@@ -22,7 +22,6 @@ with pkgs; [
   git
   glib
   gnumake
-  chromium
   grim
   htop-vim
   hyprsunset
