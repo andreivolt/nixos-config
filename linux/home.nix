@@ -47,4 +47,15 @@
     "x-scheme-handler/https" = "${browser}.desktop";
   };
   xdg.configFile."mimeapps.list".force = true;
+
+  # Chromium flags for Wayland
+  xdg.configFile."chromium-flags.conf".text = ''
+    --enable-features=UseOzonePlatform
+    --ozone-platform=wayland
+    --enable-wayland-ime
+    --font-render-hinting=none
+    --force-font-family-sans-serif=Tahoma
+    --oauth2-client-id=77185425430.apps.googleusercontent.com
+    --oauth2-client-secret=OTJgUOQcT7lO7GsGZq2G4IlT
+  '';
 }
