@@ -16,9 +16,8 @@
 
   # Apple Silicon support
   hardware.asahi.setupAsahiSound = true;
-  # Firmware will be extracted from /boot/asahi/all_firmware.tar.gz after install
-  # hardware.asahi.peripheralFirmwareDirectory = ./firmware;
-  hardware.asahi.extractPeripheralFirmware = false;
+  hardware.asahi.peripheralFirmwareDirectory = ./firmware;
+  hardware.asahi.extractPeripheralFirmware = true;
 
   # Boot - Apple Silicon uses m1n1 -> U-Boot -> systemd-boot
   boot.loader.efi.canTouchEfiVariables = false;
