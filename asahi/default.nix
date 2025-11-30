@@ -8,6 +8,8 @@
   imports = [
     ../linux/base.nix
     ./disk-config.nix
+    ./impermanence.nix
+    ./users-persist.nix
     ../linux/mpv.nix
   ];
 
@@ -18,6 +20,13 @@
   hardware.asahi.setupAsahiSound = true;
   hardware.asahi.peripheralFirmwareDirectory = ./firmware;
   hardware.asahi.extractPeripheralFirmware = true;
+
+  # Fix firmware symlink for touchpad (tpmtfw) - kernel looks for apple/ but firmware is in vendor/vendorfw/apple/
+  system.activationScripts.appleFirmwareSymlink = lib.stringAfter ["etc"] ''
+    if [ -d /lib/firmware/vendor/vendorfw/apple ] && [ ! -e /lib/firmware/apple ]; then
+      ln -sf /lib/firmware/vendor/vendorfw/apple /lib/firmware/apple
+    fi
+  '';
 
   # Boot - Apple Silicon uses m1n1 -> U-Boot -> systemd-boot
   boot.loader.efi.canTouchEfiVariables = false;
