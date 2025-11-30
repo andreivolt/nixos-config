@@ -41,6 +41,6 @@
 
   home-manager.users.andrei = import ../linux/home.nix {
     inherit config inputs;
-    # Uses only base packages.nix (no extra packages for space-constrained install)
+    extraPackagesFile = "${inputs.self}/linux/packages-extra.nix";
   };
 }
