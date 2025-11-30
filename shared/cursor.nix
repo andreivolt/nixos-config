@@ -10,11 +10,6 @@ in {
       XCURSOR_SIZE = cursor-size;
     };
 
-    # fix sway cursor size
-    wayland.windowManager.sway.config.seat."*" = {
-      xcursor_theme = "${cursor-theme} ${toString cursor-size}";
-    };
-
     gtk.cursorTheme.name = cursor-theme;
     gtk.cursorTheme.size = cursor-size;
   };
