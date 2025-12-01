@@ -9,10 +9,8 @@
   programs.dconf.enable = true;
 
   # Set GSETTINGS_SCHEMA_DIR so gsettings can find schemas
-  # NIXOS_OZONE_WL enables native Wayland for Electron/Chromium apps
   environment.sessionVariables = {
     GSETTINGS_SCHEMA_DIR = "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}/glib-2.0/schemas";
-    NIXOS_OZONE_WL = "1";
   };
 
   home-manager.users.andrei = {

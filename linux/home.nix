@@ -36,6 +36,8 @@
     commandLineArgs = [
       "--oauth2-client-id=77185425430.apps.googleusercontent.com"
       "--oauth2-client-secret=OTJgUOQcT7lO7GsGZq2G4IlT"
+      # Force dark mode for prefers-color-scheme media query
+      "--force-dark-mode"
     ];
   };
 
