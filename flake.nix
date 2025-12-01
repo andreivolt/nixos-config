@@ -69,12 +69,12 @@
       overlays = [
         (import "${inputs.self}/pkgs")
         (final: prev: {
-          unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.system};
-          json2nix = inputs.json2nix.packages.${prev.system}.default;
+          unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
+          json2nix = inputs.json2nix.packages.${prev.stdenv.hostPlatform.system}.default;
         })
         # Use lan-mouse from flake (latest with CLI/daemon support) with pointer speed patch
         (final: prev: {
-          lan-mouse = inputs.lan-mouse.packages.${prev.system}.default.overrideAttrs (oldAttrs: {
+          lan-mouse = inputs.lan-mouse.packages.${prev.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
             patches = (oldAttrs.patches or []) ++ [
               ./pkgs/lan-mouse-pointer-speed.patch
             ];

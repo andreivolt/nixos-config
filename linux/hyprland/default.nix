@@ -17,9 +17,9 @@
 
   environment.systemPackages = with pkgs; [
     hyprshot
-  ] ++ (with inputs.hyprland.packages.${pkgs.system}; [
+  ] ++ (with inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}; [
     hyprland-qtutils
-  ]) ++ (with inputs.hyprland-plugins.packages.${pkgs.system}; [
+  ]) ++ (with inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system}; [
     hyprexpo
     hyprbars
   ]);
