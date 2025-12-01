@@ -24,6 +24,7 @@
     hideMounts = true;
     directories = [
       "/var/lib/bluetooth"
+      "/var/lib/iwd"  # iwd WiFi backend (needed for NetworkManager WiFi persistence)
       "/var/lib/nixos"
       "/var/lib/systemd/coredump"
       "/etc/NetworkManager/system-connections"
