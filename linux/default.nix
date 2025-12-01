@@ -19,7 +19,6 @@
     ./lan-mouse.nix
     ./libvirt.nix
     ./nixos-rebuild-summary.nix
-    ./rclone.nix
     ./roon-server.nix
     ./thinkpad.nix
     # ./wayvnc.nix

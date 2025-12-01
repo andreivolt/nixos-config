@@ -38,6 +38,7 @@
     ./xdg-portals.nix
     ./chromium.nix
     ./dolphin.nix
+    ./rclone.nix
   ];
 
   console.keyMap = "fr";
