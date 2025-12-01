@@ -1,13 +1,20 @@
 {pkgs, ...}: {
   home-manager.users.andrei = {
-    # Use home-manager's qt module for proper dark theme
+    # Provide Qt configuration tools for user customization
+    home.packages = with pkgs; [
+      libsForQt5.qt5ct
+      kdePackages.qt6ct
+      # Dark theme packages available for user selection
+      adwaita-qt
+      adwaita-qt6
+      libsForQt5.qtstyleplugin-kvantum
+      kdePackages.qtstyleplugin-kvantum
+    ];
+
+    # Use qt5ct/qt6ct for hybrid approach (Nix provides packages, user configures via GUI)
     qt = {
       enable = true;
-      platformTheme.name = "adwaita";
-      style = {
-        name = "adwaita-dark";
-        package = pkgs.adwaita-qt;
-      };
+      platformTheme.name = "qtct";
     };
   };
 }
