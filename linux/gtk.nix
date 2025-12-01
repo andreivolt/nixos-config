@@ -22,7 +22,8 @@
 
     gtk = {
       enable = true;
-      theme.name = "Breeze-Dark";
+      # Use Adwaita - it properly responds to color-scheme (unlike Breeze which has no light/dark variants)
+      theme.name = "Adwaita";
       iconTheme.name = "Tela-dark";
       font = {
         name = "Noto Sans";

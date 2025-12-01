@@ -10,10 +10,10 @@
     # Configure which portal handles which interface
     config = {
       common = {
-        default = [ "gtk" ];
+        default = [ "gnome" "gtk" ];
       };
       hyprland = {
-        default = [ "hyprland" "gtk" ];
+        default = [ "gnome" "hyprland" "gtk" ];
         # Hyprland portal handles these specific interfaces
         "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
