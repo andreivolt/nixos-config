@@ -22,7 +22,7 @@
     ./rclone.nix
     ./roon-server.nix
     ./thinkpad.nix
-    ./wayvnc.nix
+    # ./wayvnc.nix
   ];
 
   networking.hostName = builtins.getEnv "HOSTNAME";
