@@ -1,2 +1,3 @@
-hardware-configuration.nix
+linux/hardware-configuration.nix
+asahi/hardware-configuration.nix
 /persist/
