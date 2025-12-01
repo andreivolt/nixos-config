@@ -7,7 +7,7 @@ with pkgs; [
   caprine-bin
   discord
   input-leap
-  libsForQt5.kdegraphics-thumbnailers
+  kdePackages.kdegraphics-thumbnailers
   oci-cli
   osquery
   pulumi-bin
@@ -19,7 +19,7 @@ with pkgs; [
   tidal-hifi
   vscode
   waynergy
-  whatsapp-for-linux
+  wasistlos
   ytmdesktop
   zoom-us
 ]
