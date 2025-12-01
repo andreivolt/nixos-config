@@ -26,6 +26,7 @@ with pkgs; [
   htop-vim
   hyprsunset
   imv
+  swayimg
   inotify-tools
   jq
   kitty
@@ -220,4 +221,5 @@ with pkgs; [
   nethogs
   dragon-drop
   zed-editor
+  sublime4
 ]
