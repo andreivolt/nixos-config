@@ -20,5 +20,12 @@
         gtk-application-prefer-dark-theme = true;
       };
     };
+
+    # Set color-scheme for apps that use XDG Settings portal (Chromium, etc.)
+    dconf.settings = {
+      "org/gnome/desktop/interface" = {
+        color-scheme = "prefer-dark";
+      };
+    };
   };
 }
