@@ -31,6 +31,10 @@
   # Boot - Apple Silicon uses m1n1 -> U-Boot -> systemd-boot
   boot.loader.efi.canTouchEfiVariables = false;
 
+  # Enable notch area for full display utilization
+  # This allows the bar to sit in the notch area like macOS
+  boot.kernelParams = [ "apple_dcp.show_notch=1" ];
+
   # Lid switch behavior
   services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
