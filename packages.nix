@@ -52,6 +52,7 @@ with pkgs; [
   rclone
   ripgrep
   rsync
+  sshpass
   slurp
   socat
   sops
