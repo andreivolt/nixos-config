@@ -70,6 +70,6 @@
   qt = {
     enable = true;
     platformTheme = "qt5ct";
-    style = "breeze";
+    style = null;  # Don't set QT_STYLE_OVERRIDE, let qt5ct/qt6ct handle it
   };
 }
