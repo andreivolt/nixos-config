@@ -33,13 +33,24 @@
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = let
     browser = "firefox";
+    image-viewer = "swayimg.desktop";
+    text-editor = "sublime_text.desktop";
   in {
+    "application/epub+zip" = "org.pwmt.zathura.desktop";
     "application/pdf" = "org.pwmt.zathura.desktop";
-    "image/jpeg" = "imv.desktop";
-    "image/png" = "imv.desktop";
+    "image/avif" = image-viewer;
+    "image/bmp" = image-viewer;
+    "image/gif" = image-viewer;
+    "image/heic" = image-viewer;
+    "image/heif" = image-viewer;
+    "image/jpeg" = image-viewer;
+    "image/png" = image-viewer;
+    "image/svg+xml" = image-viewer;
+    "image/tiff" = image-viewer;
+    "image/webp" = image-viewer;
     "inode/directory" = "thunar.desktop";
     "text/html" = "${browser}.desktop";
-    "text/plain" = "sublime_text.desktop";
+    "text/plain" = text-editor;
     "video/mp4" = "mpv.desktop";
     "x-scheme-handler/http" = "${browser}.desktop";
     "x-scheme-handler/https" = "${browser}.desktop";
