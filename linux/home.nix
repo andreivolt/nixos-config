@@ -6,6 +6,7 @@
   imports = [
     ../shared/rust-script-warmer.nix
     ./hyprland-auto-pin.nix
+    ./vicinae.nix
     inputs.vicinae.homeManagerModules.default
   ];
 
@@ -26,15 +27,6 @@
 
   services.playerctld.enable = true;
   services.wob.enable = true;
-  services.vicinae = {
-    enable = true;
-    autoStart = true;
-  };
-
-  # Fix vicinae Qt environment - it hardcodes qt5ct which we don't use
-  systemd.user.services.vicinae.Service.Environment = [
-    "QT_QPA_PLATFORMTHEME=adwaita"
-  ];
 
   xdg.enable = true;
   xdg.userDirs.enable = true;
