@@ -10,16 +10,16 @@
     # Configure which portal handles which interface
     config = {
       common = {
-        default = [ "gnome" "gtk" ];
+        default = [ "gtk" ];
       };
       hyprland = {
-        default = [ "gnome" "hyprland" "gtk" ];
+        default = [ "hyprland" "gtk" ];
         # Hyprland portal handles these specific interfaces
         "org.freedesktop.impl.portal.Screenshot" = [ "hyprland" ];
         "org.freedesktop.impl.portal.ScreenCast" = [ "hyprland" ];
         "org.freedesktop.impl.portal.GlobalShortcuts" = [ "hyprland" ];
-        # GNOME portal for Settings (better dark mode support)
-        "org.freedesktop.impl.portal.Settings" = [ "gnome" ];
+        # GTK portal for Settings (gnome portal doesn't start outside GNOME)
+        "org.freedesktop.impl.portal.Settings" = [ "gtk" ];
         "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
         "org.freedesktop.impl.portal.AppChooser" = [ "gtk" ];
       };
