@@ -31,14 +31,6 @@
     autoStart = true;
   };
 
-  programs.chromium = {
-    enable = true;
-    commandLineArgs = [
-      "--oauth2-client-id=77185425430.apps.googleusercontent.com"
-      "--oauth2-client-secret=OTJgUOQcT7lO7GsGZq2G4IlT"
-    ];
-  };
-
   xdg.enable = true;
   xdg.userDirs.enable = true;
   xdg.mimeApps.enable = true;

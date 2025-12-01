@@ -9,11 +9,8 @@
   programs.dconf.enable = true;
 
   # Set GSETTINGS_SCHEMA_DIR so gsettings can find schemas
-  # Google API keys for Chromium sign-in/sync
   environment.sessionVariables = {
     GSETTINGS_SCHEMA_DIR = "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}/glib-2.0/schemas";
-    GOOGLE_DEFAULT_CLIENT_ID = "77185425430.apps.googleusercontent.com";
-    GOOGLE_DEFAULT_CLIENT_SECRET = "OTJgUOQcT7lO7GsGZq2G4IlT";
   };
 
   home-manager.users.andrei = {
