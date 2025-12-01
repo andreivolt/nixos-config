@@ -6,6 +6,7 @@ with pkgs; [
   boot
   caprine-bin
   discord
+  google-chrome
   input-leap
   kdePackages.kdegraphics-thumbnailers
   oci-cli

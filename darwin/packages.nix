@@ -1,6 +1,7 @@
 pkgs:
 with pkgs;
   [
+    google-chrome
     iproute2mac
   ]
   ++ (with darwin; [
