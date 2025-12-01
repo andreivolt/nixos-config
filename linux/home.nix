@@ -71,4 +71,26 @@
     "x-scheme-handler/https" = "${browser}.desktop";
   };
   xdg.configFile."mimeapps.list".force = true;
+
+  # Custom desktop files with proper MimeType for Dolphin/KDE
+  xdg.desktopEntries = {
+    zathura = {
+      name = "Zathura";
+      comment = "A minimalistic document viewer";
+      exec = "zathura %U";
+      icon = "org.pwmt.zathura";
+      terminal = false;
+      categories = ["Office" "Viewer"];
+      mimeType = ["application/pdf" "application/epub+zip" "application/oxps" "application/x-fictionbook"];
+    };
+    swayimg = {
+      name = "Swayimg";
+      comment = "Image viewer for Wayland";
+      exec = "swayimg %U";
+      icon = "swayimg";
+      terminal = false;
+      categories = ["Graphics" "Viewer"];
+      mimeType = ["image/jpeg" "image/png" "image/gif" "image/bmp" "image/webp" "image/avif" "image/heic" "image/heif" "image/tiff" "image/svg+xml"];
+    };
+  };
 }
