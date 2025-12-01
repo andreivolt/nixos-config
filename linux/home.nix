@@ -31,6 +31,11 @@
     autoStart = true;
   };
 
+  # Fix vicinae Qt environment - it hardcodes qt5ct which we don't use
+  systemd.user.services.vicinae.Service.Environment = [
+    "QT_QPA_PLATFORMTHEME=adwaita"
+  ];
+
   xdg.enable = true;
   xdg.userDirs.enable = true;
   xdg.mimeApps.enable = true;
