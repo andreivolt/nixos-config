@@ -35,6 +35,7 @@
     };
     vicinae = {
       url = "github:vicinaehq/vicinae";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nixos-apple-silicon = {
       url = "github:nix-community/nixos-apple-silicon";
