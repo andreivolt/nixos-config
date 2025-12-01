@@ -36,6 +36,7 @@
     ./v4l2loopback.nix
     ./waybar.nix
     ./xdg-portals.nix
+    ./chromium.nix
   ];
 
   console.keyMap = "fr";
