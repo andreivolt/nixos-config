@@ -37,6 +37,7 @@
     ./waybar.nix
     ./xdg-portals.nix
     ./chromium.nix
+    ./dolphin.nix
   ];
 
   console.keyMap = "fr";
