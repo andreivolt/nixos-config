@@ -40,6 +40,7 @@ with pkgs; [
   ncdu_1
   neovim
   nerd-fonts.iosevka-term
+  nix-top
   nix-index
   nmap
   nodejs
