@@ -21,6 +21,7 @@
     ./nixos-rebuild-summary.nix
     ./roon-server.nix
     ./thinkpad.nix
+    ./touchscreen.nix
     # ./wayvnc.nix
   ];
 
