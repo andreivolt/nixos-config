@@ -102,7 +102,7 @@
       specialArgs = {inherit inputs;};
     };
 
-    nixosConfigurations.nixos = nixpkgs-unstable.lib.nixosSystem {
+    nixosConfigurations.watts = nixpkgs-unstable.lib.nixosSystem {
       modules = [
         {
           nixpkgs = commonNixpkgsConfig // {
