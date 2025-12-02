@@ -22,7 +22,7 @@
 
   # Networking
   networking = {
-    hostName = "watts";
+    hostName = "ampere";
     domain = "";
     firewall = {
       enable = true;
