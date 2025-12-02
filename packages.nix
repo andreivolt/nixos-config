@@ -68,6 +68,7 @@ with pkgs; [
   wayland-pipewire-idle-inhibit
   wget
   wf-recorder
+  wl-clipboard
   wl-clipboard-x11
   wlprop
   wofi
