@@ -13,7 +13,7 @@
     ../linux/mpv.nix
   ];
 
-  networking.hostName = "asahi";
+  networking.hostName = "riva";
   system.stateVersion = "24.05";
 
   # Apple Silicon support

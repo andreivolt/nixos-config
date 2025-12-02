@@ -22,7 +22,7 @@
 
   # Networking
   networking = {
-    hostName = "oci";
+    hostName = "watts";
     domain = "";
     firewall = {
       enable = true;
@@ -71,6 +71,12 @@
   security.acme = {
     acceptTerms = true;
     defaults.email = "andrei@avolt.net";
+  };
+
+  # Tailscale client to join the network
+  services.tailscale = {
+    enable = true;
+    extraUpFlags = ["--login-server=https://hs.avolt.net"];
   };
 
   system.stateVersion = "23.11";
