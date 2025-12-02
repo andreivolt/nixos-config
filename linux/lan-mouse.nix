@@ -1,18 +1,25 @@
 { config, pkgs, lib, ... }:
 
 let
-  # Machine-specific peer configuration
-  isAsahi = config.networking.hostName == "asahi";
+  hostname = config.networking.hostName;
 
-  # Mac (Asahi) IP - ThinkPad connects to this
-  macIP = "192.168.1.195";
-  # ThinkPad IP - Mac connects to this
-  thinkpadIP = "192.168.1.171";
+  # Peer configurations using Tailscale MagicDNS hostnames
+  peerConfigs = {
+    watts = {
+      direction = "right";
+      peer = "riva";
+    };
+    riva = {
+      direction = "left";
+      peer = "watts";
+    };
+  };
+
+  hasPeerConfig = peerConfigs ? ${hostname};
+  peerConfig = peerConfigs.${hostname} or null;
 in {
   # Open UDP port for lan-mouse
   networking.firewall.allowedUDPPorts = [ 4242 ];
-  # Open TCP port for Input Leap (Synergy fork)
-  networking.firewall.allowedTCPPorts = [ 24800 ];
 
   # Enable uinput for emulating input devices (required for lan-mouse receiver)
   hardware.uinput.enable = true;
@@ -20,24 +27,16 @@ in {
 
   # Lan Mouse config and service
   home-manager.users.andrei = { config, pkgs, ... }: {
-    # Generate lan-mouse config file
-    xdg.configFile."lan-mouse/config.toml".text = if isAsahi then ''
-      # Asahi (Mac) config - ThinkPad is to the left
-      port = 4242
+    # Generate lan-mouse config file (only if hostname has peer config)
+    xdg.configFile = lib.optionalAttrs hasPeerConfig {
+      "lan-mouse/config.toml".text = ''
+        port = 4242
 
-      [left]
-      hostname = "thinkpad"
-      ips = ["${thinkpadIP}"]
-      activate_on_startup = true
-    '' else ''
-      # ThinkPad config - Mac is to the right
-      port = 4242
-
-      [right]
-      hostname = "mac"
-      ips = ["${macIP}"]
-      activate_on_startup = true
-    '';
+        [${peerConfig.direction}]
+        hostname = "${peerConfig.peer}"
+        activate_on_startup = true
+      '';
+    };
 
     # Lan Mouse systemd user service (daemon mode, no GUI)
     systemd.user.services.lan-mouse = {
