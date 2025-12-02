@@ -127,8 +127,8 @@
       specialArgs = {inherit inputs;};
     };
 
-    # Use nixpkgs-unstable for asahi to match nixos-apple-silicon expectations
-    nixosConfigurations.asahi = nixpkgs-unstable.lib.nixosSystem {
+    # Use nixpkgs-unstable for riva (Apple Silicon) to match nixos-apple-silicon expectations
+    nixosConfigurations.riva = nixpkgs-unstable.lib.nixosSystem {
       modules = [
         {
           nixpkgs.hostPlatform = "aarch64-linux";
