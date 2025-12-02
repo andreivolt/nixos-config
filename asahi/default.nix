@@ -38,11 +38,6 @@
   # Lid switch behavior
   services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
-  # Keyboard backlight permissions
-  services.udev.extraRules = ''
-    SUBSYSTEM=="leds", ACTION=="add", KERNEL=="kbd_backlight", RUN+="${pkgs.coreutils}/bin/chgrp input /sys/class/leds/kbd_backlight/brightness", RUN+="${pkgs.coreutils}/bin/chmod g+w /sys/class/leds/kbd_backlight/brightness"
-  '';
-
   home-manager.users.andrei = import ../linux/home.nix {
     inherit config inputs;
     # No extraPackagesFile - uses only base packages.nix (cross-platform)

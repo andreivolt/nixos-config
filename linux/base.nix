@@ -39,6 +39,7 @@
     ./chromium.nix
     ./dolphin.nix
     ./rclone.nix
+    ./kbd-backlight-idle.nix
   ];
 
   console.keyMap = "fr";
