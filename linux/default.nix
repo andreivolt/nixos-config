@@ -24,7 +24,7 @@
     # ./wayvnc.nix
   ];
 
-  networking.hostName = builtins.getEnv "HOSTNAME";
+  networking.hostName = "watts";
   system.stateVersion = "23.11";
 
   # Configure the disk device for this machine

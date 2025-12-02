@@ -10,6 +10,7 @@
     ./disk-config.nix
     ./impermanence.nix
     ./users-persist.nix
+    ../linux/lan-mouse.nix
     ../linux/mpv.nix
   ];
 
