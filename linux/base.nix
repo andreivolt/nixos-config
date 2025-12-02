@@ -82,7 +82,7 @@
   services.sshd.enable = true;
   services.tailscale = {
     enable = true;
-    extraUpFlags = ["--operator=andrei"];
+    extraUpFlags = ["--operator=andrei" "--login-server=https://hs.avolt.net"];
   };
   services.upower.enable = true;
 
