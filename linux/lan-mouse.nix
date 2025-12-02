@@ -8,10 +8,12 @@ let
     watts = {
       direction = "right";
       peer = "riva";
+      ip = "100.64.0.2";
     };
     riva = {
       direction = "left";
       peer = "watts";
+      ip = "100.64.0.3";
     };
   };
 
@@ -25,19 +27,8 @@ in {
   hardware.uinput.enable = true;
   users.users.andrei.extraGroups = [ "input" ];
 
-  # Lan Mouse config and service
+  # Lan Mouse service only - config managed by GUI
   home-manager.users.andrei = { config, pkgs, ... }: {
-    # Generate lan-mouse config file (only if hostname has peer config)
-    xdg.configFile = lib.optionalAttrs hasPeerConfig {
-      "lan-mouse/config.toml".text = ''
-        port = 4242
-
-        [${peerConfig.direction}]
-        hostname = "${peerConfig.peer}"
-        activate_on_startup = true
-      '';
-    };
-
     # Lan Mouse systemd user service (daemon mode, no GUI)
     systemd.user.services.lan-mouse = {
       Unit = {
