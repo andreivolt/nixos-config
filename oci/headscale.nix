@@ -11,8 +11,6 @@
     port = 8080;
 
     settings = {
-      # Server URL - clients will connect to this
-      # TODO: Set your domain name here
       server_url = "https://hs.avolt.net";
 
       # DNS configuration for the tailnet
@@ -20,8 +18,7 @@
         magic_dns = true;
         base_domain = "tail.avolt.net";
         nameservers.global = [
-          "1.1.1.1"
-          "9.9.9.9"
+          "https://dns.nextdns.io/1c27d6"
         ];
       };
 
