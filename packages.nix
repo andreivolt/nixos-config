@@ -204,10 +204,7 @@ with pkgs; [
   emacs
   fswebcam
   gcolor3
-  gnome-epub-thumbnailer
   iotop
-  kdePackages.dolphin
-  kdePackages.kservice
   lan-mouse
   libreoffice-fresh
   nethogs
