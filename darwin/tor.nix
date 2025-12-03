@@ -4,5 +4,6 @@
       name = "tor";
       restart_service = true;
     }
+    "torsocks"
   ];
 }
