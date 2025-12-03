@@ -30,13 +30,12 @@
       "/etc/NetworkManager/system-connections"
       { directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
       "/etc/nixos"
+      "/var/lib/docker"
     ];
     files = [
       "/etc/machine-id"
       "/etc/ssh/ssh_host_ed25519_key"
       "/etc/ssh/ssh_host_ed25519_key.pub"
-      "/etc/ssh/ssh_host_rsa_key"
-      "/etc/ssh/ssh_host_rsa_key.pub"
       { file = "/etc/nix/id_rsa"; parentDirectory = { mode = "u=rwx,g=,o="; }; }
     ];
     # No user-specific persistence needed since /home is already persistent
@@ -52,8 +51,8 @@
   # This is required for the impermanence setup
   programs.fuse.userAllowOther = true;
 
-  # # Use persistent storage for Nix builds instead of tmpfs
-  # nix.settings.build-dir = "/persist/nix-build";
+  # Use persistent storage for Nix builds instead of tmpfs
+  nix.settings.build-dir = "/persist/nix-build";
 
   # Ensure andrei user's password file exists
   users.users.andrei = {
