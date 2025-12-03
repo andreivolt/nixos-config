@@ -8,7 +8,6 @@ with pkgs; [
   discord
   google-chrome
   input-leap
-  kdePackages.kdegraphics-thumbnailers
   oci-cli
   osquery
   pulumi-bin
