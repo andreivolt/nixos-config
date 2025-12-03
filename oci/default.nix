@@ -5,8 +5,6 @@
   ...
 }: {
   imports = [
-    ./disk-config.nix
-    ./impermanence.nix
     ./headscale.nix
     ../shared/ssh.nix
   ];
