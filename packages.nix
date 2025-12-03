@@ -59,7 +59,17 @@ with pkgs; [
   strace
   tcpdump
   tela-icon-theme
-  telegram-desktop
+  (symlinkJoin {
+    name = "telegram-desktop-wrapped";
+    paths = [telegram-desktop];
+    nativeBuildInputs = [makeWrapper];
+    postBuild = ''
+      rm $out/bin/Telegram
+      makeWrapper ${telegram-desktop}/bin/Telegram $out/bin/Telegram \
+        --set QT_QPA_PLATFORMTHEME xdgdesktopportal
+      ln -sf $out/bin/Telegram $out/bin/telegram-desktop
+    '';
+  })
   tmux
   trash-cli
   tree
