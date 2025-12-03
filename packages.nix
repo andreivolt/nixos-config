@@ -1,8 +1,164 @@
-# Base package set shared by all Linux systems (x86_64 and aarch64)
 pkgs:
-with pkgs; [
+let
+  inherit (pkgs) lib;
+  inherit (pkgs.stdenv) isLinux isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isAarch64 isx86_64;
+in
+with pkgs;
+
+# Universal packages (all platforms)
+[
+  # Development tools (cross-platform)
+  age
+  andrei.anypaste
+  andrei.nixos-repl
+  android-tools
+  ansifilter
+  aria2
+  arp-scan
+  ast-grep
+  babashka
+  bfg-repo-cleaner
+  bun
+  cached-nix-shell
+  carapace
+  cargo
+  catt
+  clojure
+  clojure-lsp
+  cloudflared
+  cmake
+  csvkit
+  curlie
+  deno
+  devd
+  diffsitter
+  direnv
+  dnsutils
+  doctl
+  dogdns
+  duf
+  dwdiff
+  edir
+  erdtree
+  eslint
+  fastgron
+  fdupes
+  ff2mpv
+  firefox_decrypt
+  flyctl
+  freerdp
+  gdrive3
+  geoipWithDatabase
+  ghostscript
+  git-extras
+  git-open
+  glab
+  glow
+  gnupg
+  go
+  gojq
+  google-cloud-sdk
+  gum
+  htmlq
+  hyperfine
+  iftop
+  imagemagick
+  inetutils
+  jet
+  jo
+  json2nix
+  jujutsu
+  lastpass-cli
+  lazydocker
+  leiningen
+  litecli
+  mediainfo
+  mitmproxy
+  mkcert
+  moreutilsWithoutParallel
+  neovim-remote
+  netcat
+  nix-prefetch-git
+  nixd
+  nixfmt-rfc-style
+  nushell
+  nvimpager
+  oci-cli
+  openssl
+  ouch
+  pandoc
+  parallel
+  patchelf
+  patchutils
+  pdftk
+  pnpm
+  poppler-utils
+  portaudio
+  procs
+  pry
+  pv
+  redo
+  rich-cli
+  rlwrap
+  rubocop
+  ruby
+  ruby-lsp
+  ruff
+  rust-script
+  rustc
+  rustfmt
+  scc
+  scrcpy
+  scriptisto
+  shell-gpt
+  sox
+  sqlite
+  sqlite-utils
+  sqlite-vec
+  stack
+  stylua
+  tabview
+  terminal-colors
+  tidyp
+  timg
+  tmate
+  tree-sitter
+  trurl
+  upterm
+  usql
+  uv
+  viddy
+  w3m
+  wakeonlan
+  watchexec
+  wdiff
+  websocat
+  weechat
+  xh
+  xmlstarlet
+  xurls
+  yarn-berry
+  zprint
+
+  # GUI apps (cross-platform)
+  emacs
+  gcolor3
+  lan-mouse
+  neovide
+  zed-editor
+]
+
+# Linux only (x86 + arm)
+++ lib.optionals isLinux [
   # System utilities
   acpi
+  detox
+  fswebcam
+  iotop
+  libreoffice-fresh
+  nethogs
+  dragon-drop
   alejandra
   alsa-utils
   bat
@@ -88,149 +244,58 @@ with pkgs; [
   ydotool
   yt-dlp
   zathura
-
-  # Development tools (cross-platform)
-  age
-  andrei.anypaste
-  andrei.nixos-repl
-  android-tools
-  ansifilter
-  aria2
-  arp-scan
-  ast-grep
-  babashka
-  bfg-repo-cleaner
-  bun
-  cached-nix-shell
-  carapace
-  cargo
-  catt
-  clojure
-  clojure-lsp
-  cloudflared
-  cmake
-  csvkit
-  curlie
-  deno
-  devd
-  diffsitter
-  direnv
-  dnsutils
-  doctl
-  dogdns
-  duf
-  dwdiff
-  edir
-  erdtree
-  eslint
-  fastgron
-  fdupes
-  ff2mpv
-  firefox_decrypt
-  flyctl
-  freerdp
-  gdrive3
-  geoipWithDatabase
-  ghostscript
-  git-extras
-  git-open
-  glab
-  glow
-  gnupg
-  go
-  gojq
-  google-cloud-sdk
-  gum
-  htmlq
-  hyperfine
-  iftop
-  imagemagick
-  inetutils
-  jet
-  jo
-  json2nix
-  jujutsu
-  lastpass-cli
-  lazydocker
-  leiningen
-  litecli
-  mediainfo
-  mitmproxy
-  mkcert
-  moreutilsWithoutParallel
-  neovide
-  neovim-remote
-  netcat
-  nix-prefetch-git
-  nixd
-  nixfmt-rfc-style
-  nushell
-  nvimpager
-  ouch
-  pandoc
-  parallel
-  patchelf
-  patchutils
-  pdftk
-  pnpm
-  poppler-utils
-  portaudio
-  procs
-  pry
-  pv
-  redo
-  rich-cli
-  rlwrap
-  rubocop
-  ruby
-  ruby-lsp
-  ruff
-  rust-script
-  rustc
-  rustfmt
-  scc
-  scrcpy
-  scriptisto
-  shell-gpt
-  sox
-  sqlite
-  sqlite-utils
-  sqlite-vec
-  stack
-  stylua
-  tabview
-  terminal-colors
-  tidyp
-  timg
-  tmate
-  tree-sitter
-  trurl
-  upterm
-  usql
-  uv
-  viddy
-  w3m
-  wakeonlan
-  watchexec
-  wdiff
-  websocat
-  weechat
-  xh
-  xmlstarlet
-  xurls
-  yarn-berry
-  zprint
-
-  # GUI apps (cross-platform)
-  detox
-  emacs
-  fswebcam
-  gcolor3
-  iotop
-  lan-mouse
-  libreoffice-fresh
-  nethogs
-  dragon-drop
-  zed-editor
   sublime4
 ]
+
+# x86_64-linux only
+++ lib.optionals (isLinux && isx86_64) [
+  beeper
+  boot
+  caprine-bin
+  discord
+  google-chrome
+  input-leap
+  osquery
+  pulumi-bin
+  puppeteer-cli
+***REMOVED***
+  slack
+  spotify
+  tidal-hifi
+  vscode
+  waynergy
+  wasistlos
+  ytmdesktop
+  zoom-us
+]
+
+# darwin only
+++ lib.optionals isDarwin [
+  google-chrome
+  iproute2mac
+]
+++ lib.optionals isDarwin (with darwin; [
+  # andrei.pbpaste-html # TODO: Swift/Cocoa SDK compatibility issues
+  andrei.impbcopy
+  andrei.videosnap
+  fswatch
+  asitop
+  coreutils
+  duti
+  findutils
+  gawk
+  gnugrep
+  gnused
+  libiconvReal
+  lsusb
+  m-cli
+  mas
+  monitorcontrol
+  plistwatch
+  psutils
+  terminal-notifier
+  trash
+  util-linux
+  watch
+  xcodes
+])
