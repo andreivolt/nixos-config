@@ -5,18 +5,13 @@
   ...
 }: {
   imports = [
-    ./hardware-configuration.nix
+    ./disk-config.nix
+    ./impermanence.nix
     ./headscale.nix
     ../shared/ssh.nix
   ];
 
-  # Boot configuration for OCI
   boot.tmp.cleanOnBoot = true;
-  boot.loader.grub = {
-    enable = true;
-    device = "/dev/sda";
-    efiSupport = false;
-  };
 
   # Use zram for swap (important for 1GB RAM instances)
   zramSwap.enable = true;
