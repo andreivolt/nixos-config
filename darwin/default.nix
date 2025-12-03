@@ -56,7 +56,7 @@
   programs.zsh.enable = true; # needed for setting path
   programs.zsh.enableCompletion = false; # slow
 
-  environment.systemPackages = (import "${inputs.self}/packages.nix" pkgs) ++ (import ./packages.nix pkgs);
+  environment.systemPackages = import "${inputs.self}/packages.nix" pkgs;
 
   home-manager.useGlobalPkgs = true;
   home-manager.sharedModules = [
