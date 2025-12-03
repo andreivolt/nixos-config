@@ -33,6 +33,13 @@
                   mountpoint = "/boot";
                 };
               };
+              swap = {
+                size = "2G";
+                content = {
+                  type = "swap";
+                  randomEncryption = true;
+                };
+              };
               root = {
                 size = "100%";
                 content = {
