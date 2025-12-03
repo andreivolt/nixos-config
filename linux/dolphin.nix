@@ -1,7 +1,21 @@
-# Dolphin file manager configuration for non-Plasma WMs (Hyprland, etc.)
-# Fix file associations not working without Plasma
-# https://github.com/NixOS/nixpkgs/issues/409986
-{pkgs, ...}: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   environment.etc."xdg/menus/applications.menu".source =
     "${pkgs.kdePackages.plasma-workspace}/etc/xdg/menus/plasma-applications.menu";
+
+  environment.systemPackages = with pkgs;
+    [
+      kdePackages.dolphin
+      kdePackages.kservice
+      kdePackages.ffmpegthumbs
+      kdePackages.kio-extras
+      gnome-epub-thumbnailer
+      libheif
+    ]
+    ++ lib.optionals (pkgs.stdenv.hostPlatform.isx86_64) [
+      kdePackages.kdegraphics-thumbnailers
+    ];
 }
