@@ -231,6 +231,7 @@ with pkgs;
   yazi
   ydotool
   yt-dlp
+  wasistlos
   zathura
   sublime4
 ]
@@ -252,7 +253,6 @@ with pkgs;
   tidal-hifi
   vscode
   waynergy
-  wasistlos
   ytmdesktop
   zoom-us
 ]
