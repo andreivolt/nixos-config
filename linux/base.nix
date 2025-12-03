@@ -13,6 +13,7 @@
     ../shared/direnv.nix
     ../shared/moreutils-without-parallel.nix
     ../shared/nix.nix
+    ../shared/ssh.nix
     ./tor.nix
     ../shared/zsh-nix-completion.nix
     ./brother-printer.nix
