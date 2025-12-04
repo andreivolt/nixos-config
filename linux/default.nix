@@ -6,6 +6,7 @@
 }: {
   imports = [
     ./base.nix
+    ./gui.nix
     ./disk-config.nix
     ./impermanence.nix
     ./users-persist.nix
