@@ -7,6 +7,7 @@
 }: {
   imports = [
     ../linux/base.nix
+    ../linux/gui.nix
     ./disk-config.nix
     ./impermanence.nix
     ./users-persist.nix

@@ -17,6 +17,7 @@
 
   home.packages =
     (import "${inputs.self}/packages.nix" pkgs)
+    ++ (import "${inputs.self}/packages-gui.nix" pkgs)
     ++ (if extraPackagesFile != null then import extraPackagesFile pkgs else []);
 
   programs.zsh = {
