@@ -2,12 +2,13 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }: {
   imports = [
     ./hardware-configuration.nix
     ./headscale.nix
-    ../shared/ssh.nix
+    ../linux/base.nix
   ];
 
   boot.tmp.cleanOnBoot = true;
@@ -32,38 +33,16 @@
     };
   };
 
-  # SSH access
-  services.openssh = {
-    enable = true;
-    settings = {
-      PermitRootLogin = "prohibit-password";
-      PasswordAuthentication = false;
-    };
+  # SSH access (override base.nix settings for server)
+  services.openssh.settings = {
+    PermitRootLogin = "prohibit-password";
   };
 
-  # andrei user (same as other machines)
-  users.users.andrei = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-  };
+  # Override tailscale for server (no --operator flag)
+  services.tailscale.extraUpFlags = lib.mkForce ["--login-server=https://hs.avolt.net"];
 
-  security.sudo.wheelNeedsPassword = false;
-
-  # Basic packages
-  environment.systemPackages = with pkgs; [
-    neovim
-    tmux
-    htop
-    curl
-    jq
-  ];
-
-  # Automatic garbage collection to save disk space
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
+  # Override gc for server (more aggressive cleanup)
+  nix.gc.options = lib.mkForce "--delete-older-than 7d";
 
   # ACME for SSL certificates
   security.acme = {
@@ -71,10 +50,17 @@
     defaults.email = "andrei@avolt.net";
   };
 
-  # Tailscale client to join the network
-  services.tailscale = {
-    enable = true;
-    extraUpFlags = ["--login-server=https://hs.avolt.net"];
+  # Home Manager for andrei user (CLI only, no GUI packages)
+  home-manager.useGlobalPkgs = true;
+  home-manager.users.andrei = {pkgs, ...}: {
+    home.stateVersion = "23.11";
+    home.enableNixpkgsReleaseCheck = false;
+
+    programs.zsh = {
+      enable = true;
+      enableCompletion = false;
+      initContent = "source ~/.config/zsh/rc.zsh";
+    };
   };
 
   system.stateVersion = "23.11";

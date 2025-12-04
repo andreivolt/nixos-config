@@ -157,6 +157,7 @@
           };
         }
         "${inputs.self}/ampere"
+        home-manager.nixosModules.home-manager
       ];
       specialArgs = {inherit inputs;};
     };
