@@ -6,9 +6,8 @@ let
 in
 with pkgs;
 
-# Universal packages (all platforms)
+# Base CLI tools (all platforms)
 [
-  # Development tools (cross-platform)
   age
   andrei.anypaste
   andrei.nixos-repl
@@ -44,10 +43,8 @@ with pkgs;
   eslint
   fastgron
   fdupes
-  ff2mpv
   firefox_decrypt
   flyctl
-  freerdp
   gdrive3
   geoipWithDatabase
   ghostscript
@@ -67,7 +64,7 @@ with pkgs;
   inetutils
   jet
   jo
-  json2nix
+  # json2nix # disabled: cross-compilation issues with cabal2nix
   jujutsu
   lastpass-cli
   lazydocker
@@ -76,7 +73,7 @@ with pkgs;
   mediainfo
   mitmproxy
   mkcert
-  moreutilsWithoutParallel
+  moreutils
   neovim-remote
   netcat
   nix-prefetch-git
@@ -88,7 +85,6 @@ with pkgs;
   openssl
   ouch
   pandoc
-  parallel
   patchelf
   patchutils
   pdftk
@@ -109,7 +105,6 @@ with pkgs;
   rustc
   rustfmt
   scc
-  scrcpy
   scriptisto
   shell-gpt
   sox
@@ -140,34 +135,22 @@ with pkgs;
   xurls
   yarn-berry
   zprint
-
-  # GUI apps (cross-platform)
-  emacs
-  gcolor3
-  lan-mouse
-  neovide
-  zed-editor
 ]
 
-# Linux only (x86 + arm)
+# Linux CLI
 ++ lib.optionals isLinux [
-  # System utilities
+  wev
   acpi
-  detox
-  fswebcam
-  iotop
-  libreoffice-fresh
-  nethogs
-  dragon-drop
   alejandra
+  alsa-lib.dev
   alsa-utils
+  openssl.dev
   bat
   binutils
-  brightnessctl
   btop
   curl
   delta
-  eww
+  detox
   eza
   fd
   ffmpeg-full
@@ -178,104 +161,57 @@ with pkgs;
   git
   glib
   gnumake
-  grim
   htop-vim
-  hyprsunset
-  imv
-  swayimg
   inotify-tools
+  iotop
   jq
-  kitty
   lazygit
-  liberation_ttf
-  libnotify
   lm_sensors
   lshw
   lsof
   mosh
   ncdu_1
   neovim
-  nerd-fonts.iosevka-term
+  nethogs
   nix-top
   nix-index
   nmap
   nodejs
-  pavucontrol
   pciutils
   pkg-config
-  playerctl
   psmisc
   rclone
   ripgrep
   rsync
   sshpass
-  slurp
   socat
   sops
   strace
   tcpdump
-  tela-icon-theme
-  (symlinkJoin {
-    name = "telegram-desktop-wrapped";
-    paths = [telegram-desktop];
-    nativeBuildInputs = [makeWrapper];
-    postBuild = ''
-      rm $out/bin/Telegram
-      makeWrapper ${telegram-desktop}/bin/Telegram $out/bin/Telegram \
-        --set QT_QPA_PLATFORMTHEME xdgdesktopportal
-      ln -sf $out/bin/Telegram $out/bin/telegram-desktop
-    '';
-  })
   tmux
   trash-cli
   tree
   unzip
   usbutils
-  wayland-pipewire-idle-inhibit
   wget
-  wf-recorder
-  wl-clipboard
-  wl-clipboard-x11
-  wlprop
-  wofi
   xdg-user-dirs
   xdg-utils
   yazi
-  ydotool
   yt-dlp
-  wasistlos
-  zathura
-  sublime4
 ]
 
-# x86_64-linux only
+# x86_64-linux CLI
 ++ lib.optionals (isLinux && isx86_64) [
-  beeper
   boot
-  caprine-bin
-  discord
-  google-chrome
-  input-leap
   osquery
   pulumi-bin
-  puppeteer-cli
-  roon-tui
-  slack
-  spotify
-  tidal-hifi
-  vscode
-  waynergy
-  ytmdesktop
-  zoom-us
 ]
 
-# darwin only
+# darwin CLI
 ++ lib.optionals isDarwin [
-  google-chrome
   iproute2mac
 ]
 ++ lib.optionals isDarwin (with darwin; [
-  # andrei.pbpaste-html # TODO: Swift/Cocoa SDK compatibility issues
   andrei.impbcopy
   andrei.videosnap
   fswatch
@@ -290,8 +226,6 @@ with pkgs;
   lsusb
   m-cli
   mas
-  monitorcontrol
-  plistwatch
   psutils
   terminal-notifier
   trash
