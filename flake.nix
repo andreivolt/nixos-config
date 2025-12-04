@@ -149,14 +149,14 @@
     };
 
     # Oracle Cloud Infrastructure (OCI) free tier server - Headscale
-    nixosConfigurations.oci = nixpkgs-unstable.lib.nixosSystem {
+    nixosConfigurations.ampere = nixpkgs-unstable.lib.nixosSystem {
       modules = [
         {
           nixpkgs = commonNixpkgsConfig // {
             hostPlatform = "x86_64-linux";
           };
         }
-        "${inputs.self}/oci"
+        "${inputs.self}/ampere"
       ];
       specialArgs = {inherit inputs;};
     };
