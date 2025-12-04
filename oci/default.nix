@@ -5,6 +5,7 @@
   ...
 }: {
   imports = [
+    ./hardware-configuration.nix
     ./headscale.nix
     ../shared/ssh.nix
   ];
