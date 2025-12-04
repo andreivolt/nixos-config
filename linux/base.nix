@@ -1,4 +1,5 @@
-# Base NixOS configuration shared between linux and asahi
+# Base NixOS configuration - CLI only (no GUI)
+# For desktop environments, also import gui.nix
 {
   pkgs,
   config,
@@ -6,41 +7,21 @@
   ...
 }: {
   imports = [
-    ../shared/cursor.nix
     ../shared/dnsmasq.nix
-    ../shared/fonts.nix
     ../shared/gnupg.nix
     ../shared/direnv.nix
     ../shared/moreutils-without-parallel.nix
     ../shared/nix.nix
     ../shared/ssh.nix
-    ./tor.nix
     ../shared/zsh-nix-completion.nix
     ./brother-printer.nix
     ./brother-scanner.nix
-    ./cliphist.nix
     ./docker.nix
-    ./dropdown.nix
-    ./eww.nix
-    ./gnome-keyring.nix
-    ./greetd.nix
-    ./gtk.nix
-    ./hyprland
     ./lowbatt.nix
     ./networkmanager.nix
-    ./nm-applet.nix
-    ./pipewire.nix
-    ./qt.nix
-    ./swaybg.nix
-    ./swaync.nix
-    ./trayscale.nix
-    ./v4l2loopback.nix
-    ./waybar.nix
-    ./xdg-portals.nix
-    ./chromium.nix
-    ./dolphin.nix
     ./rclone.nix
-    ./kbd-backlight-idle.nix
+    ./tor.nix
+    ./v4l2loopback.nix
   ];
 
   console.keyMap = "fr";
@@ -50,7 +31,6 @@
 
   hardware.bluetooth.enable = true;
   hardware.enableRedistributableFirmware = true;
-  hardware.graphics.enable = true;
 
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -72,9 +52,6 @@
     enable = true;
     nssmdns4 = true;
   };
-  services.devmon.enable = true;
-  services.flatpak.enable = true;
-  services.gvfs.enable = true;
   services.lowbatt = {
     enable = true;
     notifyCapacity = 40;
@@ -85,10 +62,10 @@
     enable = true;
     extraUpFlags = ["--operator=andrei" "--login-server=https://hs.avolt.net"];
   };
-  services.upower.enable = true;
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
   environment.variables.LC_TIME = "C.UTF-8";
+  environment.systemPackages = import "${inputs.self}/packages.nix" pkgs;
 
   
 }
