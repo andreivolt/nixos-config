@@ -83,6 +83,36 @@
         PasswordAuthentication no
       '';
 
+      # SSH client config - host aliases for Tailnet machines
+      programs.ssh = {
+        enable = true;
+        matchBlocks = {
+          "riva" = {
+            hostname = "riva.tail.avolt.net";
+            user = "andrei";
+          };
+          "watts" = {
+            hostname = "watts.tail.avolt.net";
+            user = "andrei";
+          };
+          "ampere" = {
+            hostname = "ampere.tail.avolt.net";
+            user = "andrei";
+          };
+          "mac" = {
+            hostname = "mac.tail.avolt.net";
+            user = "andrei";
+          };
+        };
+      };
+
+      # Known hosts for Tailnet machines
+      home.file.".ssh/known_hosts".text = ''
+        riva,riva.tail.avolt.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMLnH+F2bxmtxgUnNN9CeNBt6n43H3u2TmmPghgyFRN8
+        watts,watts.tail.avolt.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIM2FRYqJEu/63o4VROBZ9+v6YWjfCr+pxyObaaP4FGv
+        ampere,ampere.tail.avolt.net,hs.avolt.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII9YxDDUlniLwYScXpg5shPmLPz0UFWe52+Rz2yjWM2k
+      '';
+
       # Minimal zsh config - source dotfiles
       programs.zsh = {
         enable = true;
