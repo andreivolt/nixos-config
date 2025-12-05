@@ -8,12 +8,12 @@ with pkgs;
 
 [
   emacs
-  gcolor3
-  lan-mouse
   neovide
   zed-editor
 ]
 ++ lib.optionals isLinux [
+  gcolor3
+  lan-mouse
   brightnessctl
   dragon-drop
   eww
