@@ -9,9 +9,15 @@
           size = 15.5;
         };
 
+        extraConfig = ''
+          font_family family='IosevkaTerm Nerd Font Mono' style=Light
+          modify_font baseline 0
+          modify_font cell_height -3px
+          modify_font cell_width 84%
+          modify_font underline_thickness 200%
+        '';
+
         settings = {
-          # Font adjustments
-          modify_font = "cell_height -3px";
           bold_font = "auto";
           italic_font = "auto";
           bold_italic_font = "auto";
