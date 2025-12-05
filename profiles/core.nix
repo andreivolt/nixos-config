@@ -9,6 +9,7 @@
   imports = [
     ../shared/bat.nix
     ../shared/dnsmasq.nix
+    ../shared/git.nix
     ../shared/gnupg.nix
     ../shared/direnv.nix
     ../shared/nix.nix
