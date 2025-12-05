@@ -14,6 +14,7 @@
     ../shared/gnupg.nix
     ../shared/direnv.nix
     ../shared/nix.nix
+    ../shared/rubocop.nix
     ../shared/ssh.nix
     ../shared/tmux.nix
     ../shared/zsh-nix-completion.nix
