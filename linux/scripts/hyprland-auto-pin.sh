@@ -37,9 +37,10 @@ while read -r line; do
     [[ "$floating" != "true" ]] && continue
     [[ "$pinned" == "true" ]] && continue
 
-    # Check pattern match
+    # Check pattern match (substring/glob matching)
     if [[ "$pattern" == title:* ]]; then
-        [[ "$title" != "${pattern#title:}" ]] && continue
+        match_pattern="${pattern#title:}"
+        [[ "$title" != *"$match_pattern"* ]] && continue
     else
         [[ "$class" != "$pattern" ]] && continue
     fi
