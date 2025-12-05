@@ -6,11 +6,14 @@
   ...
 }: {
   imports = [
+    ../../shared/alacritty.nix
     ../../shared/bat.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
+    ../../shared/ghostty.nix
     ../../shared/git.nix
     ../../shared/gnupg.nix
+    ../../shared/kitty.nix
     ../../shared/mpv.nix
     ../../shared/tmux.nix
     ../../shared/zsh-nix-completion.nix

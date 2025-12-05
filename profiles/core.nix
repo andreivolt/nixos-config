@@ -7,11 +7,14 @@
   ...
 }: {
   imports = [
+    ../shared/alacritty.nix
     ../shared/bat.nix
     ../shared/dnsmasq.nix
+    ../shared/ghostty.nix
     ../shared/git.nix
     ../shared/gnupg.nix
     ../shared/direnv.nix
+    ../shared/kitty.nix
     ../shared/nix.nix
     ../shared/ssh.nix
     ../shared/tmux.nix
