@@ -7,11 +7,11 @@ in
 with pkgs;
 
 [
-  emacs
   neovide
   zed-editor
 ]
 ++ lib.optionals isLinux [
+  emacs-pgtk
   gcolor3
   lan-mouse
   brightnessctl
@@ -73,6 +73,7 @@ with pkgs;
   zoom-us
 ]
 ++ lib.optionals isDarwin [
+  emacs
   google-chrome
   monitorcontrol
   plistwatch
