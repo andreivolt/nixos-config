@@ -29,7 +29,6 @@
           background_blur = 25;
 
           # Cursor
-          cursor = "none";
           cursor_stop_blinking_after = 0;
           cursor_trail = 1;
           cursor_trail_decay = "0.02 0.08";
@@ -41,11 +40,6 @@
 
           # Tab bar
           tab_bar_style = "powerline";
-          active_tab_background = "#ff00ff";
-          active_tab_foreground = "#000000";
-          inactive_tab_background = "#1c1c1c";
-          inactive_tab_foreground = "#d3d3d3";
-          tab_bar_background = "#000000";
 
           remember_window_size = "no";
           confirm_os_window_close = 0;
