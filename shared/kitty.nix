@@ -53,7 +53,7 @@
           macos_show_window_title_in = "window";
           allow_remote_control = "socket-only";
           listen_on = "unix:/tmp/kitty";
-          kitty_mod = "cmd";
+          kitty_mod = if pkgs.stdenv.isDarwin then "cmd" else "ctrl+shift";
           paste_actions = "quote-urls-at-prompt,replace-dangerous-control-codes";
           notify_on_cmd_finish = "unfocused";
           enable_audio_bell = "no";
