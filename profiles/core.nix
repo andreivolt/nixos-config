@@ -9,6 +9,7 @@
   imports = [
     ../shared/bat.nix
     ../shared/btop.nix
+    ../shared/cargo.nix
     ../shared/curl.nix
     ../shared/dircolors.nix
     ../shared/direnv.nix
@@ -27,6 +28,7 @@
     ../shared/rustfmt.nix
     ../shared/ssh.nix
     ../shared/tmux.nix
+    ../shared/wezterm.nix
     ../shared/zsh-nix-completion.nix
     ../linux/docker.nix
     ../linux/rclone.nix
