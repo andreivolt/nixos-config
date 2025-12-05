@@ -9,6 +9,7 @@
     ../../shared/aria2.nix
     ../../shared/bat.nix
     ../../shared/btop.nix
+    ../../shared/cargo.nix
     ../../shared/curl.nix
     ../../shared/dircolors.nix
     ../../shared/direnv.nix
@@ -26,6 +27,7 @@
     ../../shared/rubocop.nix
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
+    ../../shared/wezterm.nix
     ../../shared/zsh-nix-completion.nix
     ./activity-monitor.nix
     ./alt-tab.nix
