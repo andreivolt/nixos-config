@@ -1,0 +1,24 @@
+pkgs:
+with pkgs; with pkgs.darwin; [
+  andrei.impbcopy
+  andrei.videosnap
+  asitop
+  coreutils
+  duti
+  findutils
+  fswatch
+  gawk
+  gnugrep
+  gnused
+  iproute2mac
+  libiconvReal
+  lsusb
+  m-cli
+  mas
+  psutils
+  terminal-notifier
+  trash
+  util-linux
+  watch
+  xcodes
+]

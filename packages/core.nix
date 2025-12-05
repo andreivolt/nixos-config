@@ -1,17 +1,8 @@
 pkgs:
-let
-  inherit (pkgs) lib;
-  inherit (pkgs.stdenv) isLinux isDarwin;
-  inherit (pkgs.stdenv.hostPlatform) isAarch64 isx86_64;
-in
-with pkgs;
-
-# Base CLI tools (all platforms)
-[
+with pkgs; [
   age
   andrei.anypaste
   andrei.nixos-repl
-  android-tools
   ansifilter
   aria2
   arp-scan
@@ -22,7 +13,6 @@ with pkgs;
   cached-nix-shell
   carapace
   cargo
-  catt
   clojure
   clojure-lsp
   cloudflared
@@ -64,7 +54,6 @@ with pkgs;
   inetutils
   jet
   jo
-  # json2nix # disabled: cross-compilation issues with cabal2nix
   jujutsu
   lastpass-cli
   lazydocker
@@ -136,100 +125,3 @@ with pkgs;
   yarn-berry
   zprint
 ]
-
-# Linux CLI
-++ lib.optionals isLinux [
-  wev
-  acpi
-  alejandra
-  alsa-lib.dev
-  alsa-utils
-  openssl.dev
-  bat
-  binutils
-  btop
-  curl
-  delta
-  detox
-  eza
-  fd
-  ffmpeg-full
-  file
-  fzf
-  gcc
-  gh
-  git
-  glib
-  gnumake
-  htop-vim
-  inotify-tools
-  iotop
-  jq
-  lazygit
-  lm_sensors
-  lshw
-  lsof
-  mosh
-  ncdu_1
-  neovim
-  nethogs
-  nix-top
-  nix-index
-  nmap
-  nodejs
-  pciutils
-  pkg-config
-  psmisc
-  rclone
-  ripgrep
-  rsync
-  sshpass
-  socat
-  sops
-  strace
-  tcpdump
-  tmux
-  trash-cli
-  tree
-  unzip
-  usbutils
-  wget
-  xdg-user-dirs
-  xdg-utils
-  yazi
-  yt-dlp
-]
-
-# x86_64-linux CLI
-++ lib.optionals (isLinux && isx86_64) [
-  boot
-  osquery
-  pulumi-bin
-]
-
-# darwin CLI
-++ lib.optionals isDarwin [
-  iproute2mac
-]
-++ lib.optionals isDarwin (with darwin; [
-  andrei.impbcopy
-  andrei.videosnap
-  fswatch
-  asitop
-  coreutils
-  duti
-  findutils
-  gawk
-  gnugrep
-  gnused
-  libiconvReal
-  lsusb
-  m-cli
-  mas
-  psutils
-  terminal-notifier
-  trash
-  util-linux
-  watch
-  xcodes
-])
