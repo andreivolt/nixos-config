@@ -52,7 +52,7 @@ with pkgs;
   wl-clipboard
   wl-clipboard-x11
   wlprop
-  wofi
+  rofi
   wtype
   zathura
   sublime4
