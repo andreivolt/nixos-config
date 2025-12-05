@@ -44,6 +44,11 @@
     lan-mouse = {
       url = "github:feschber/lan-mouse";
     };
+    nix-on-droid = {
+      url = "github:nix-community/nix-on-droid/release-24.05";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.home-manager.follows = "home-manager";
+    };
   };
 
   outputs = inputs @ {
@@ -62,6 +67,7 @@
     vicinae,
     nixos-apple-silicon,
     lan-mouse,
+    nix-on-droid,
   }:
   let
     commonNixpkgsConfig = {
@@ -160,6 +166,19 @@
         home-manager.nixosModules.home-manager
       ];
       specialArgs = {inherit inputs;};
+    };
+
+    # Android phone via nix-on-droid
+    nixOnDroidConfigurations.phone = nix-on-droid.lib.nixOnDroidConfiguration {
+      pkgs = import nixpkgs-unstable {
+        system = "aarch64-linux";
+        config.allowUnfree = true;
+        overlays = commonNixpkgsConfig.overlays;
+      };
+      modules = [
+        "${inputs.self}/hosts/phone"
+      ];
+      extraSpecialArgs = {inherit inputs;};
     };
   };
 }

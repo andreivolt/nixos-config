@@ -1,3 +1,4 @@
+# Core CLI packages - works on all platforms including phone
 pkgs:
 with pkgs; [
   age
