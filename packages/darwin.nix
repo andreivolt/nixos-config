@@ -8,7 +8,7 @@ with pkgs; with pkgs.darwin; [
   gawk
   gnugrep
   gnused
-  iproute2mac
+  pkgs.iproute2mac
   libiconvReal
   lsusb
   m-cli
