@@ -20,6 +20,7 @@
     ../shared/zsh-nix-completion.nix
     ../linux/docker.nix
     ../linux/rclone.nix
+    ../linux/swayimg.nix
   ];
 
   console.keyMap = "fr";
