@@ -17,8 +17,12 @@
     ../../shared/git.nix
     ../../shared/gitlab.nix
     ../../shared/gnupg.nix
+    ../../shared/hushlogin.nix
     ../../shared/mpv.nix
+    ../../shared/npm.nix
+    ../../shared/parallel.nix
     ../../shared/readline.nix
+    ../../shared/ripgrep.nix
     ../../shared/rubocop.nix
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
