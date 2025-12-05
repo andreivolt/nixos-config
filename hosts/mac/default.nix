@@ -20,6 +20,7 @@
     ../../shared/kitty.nix
     ../../shared/mpv.nix
     ../../shared/rubocop.nix
+    ../../shared/rustfmt.nix
     ../../shared/tmux.nix
     ../../shared/zsh-nix-completion.nix
     ./activity-monitor.nix
