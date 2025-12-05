@@ -6,7 +6,6 @@ let
 in
 with pkgs;
 
-# GUI apps (cross-platform)
 [
   emacs
   gcolor3
@@ -14,8 +13,6 @@ with pkgs;
   neovide
   zed-editor
 ]
-
-# Linux GUI only
 ++ lib.optionals isLinux [
   brightnessctl
   dragon-drop
@@ -60,8 +57,6 @@ with pkgs;
   zathura
   sublime4
 ]
-
-# x86_64-linux GUI only
 ++ lib.optionals (isLinux && isx86_64) [
   beeper
   caprine-bin
@@ -78,8 +73,6 @@ with pkgs;
   ytmdesktop
   zoom-us
 ]
-
-# darwin GUI only
 ++ lib.optionals isDarwin [
   google-chrome
   monitorcontrol
