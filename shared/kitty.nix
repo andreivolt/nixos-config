@@ -1,6 +1,6 @@
-{
+{pkgs, ...}: {
   home-manager.sharedModules = [
-    {
+    ({lib, ...}: {
       programs.kitty = {
         enable = true;
 
@@ -114,6 +114,10 @@
           "kitty_mod+a>l" = "set_background_opacity -0.1";
         };
       };
-    }
+
+      xdg.configFile."kitty/macos-launch-services-cmdline" = lib.mkIf pkgs.stdenv.isDarwin {
+        text = "--start-as=fullscreen";
+      };
+    })
   ];
 }
