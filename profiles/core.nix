@@ -7,20 +7,17 @@
   ...
 }: {
   imports = [
-    ../shared/alacritty.nix
     ../shared/bat.nix
     ../shared/btop.nix
     ../shared/curl.nix
     ../shared/dircolors.nix
     ../shared/direnv.nix
     ../shared/dnsmasq.nix
-    ../shared/ghostty.nix
     ../shared/git.nix
     ../shared/gnupg.nix
     ../shared/hushlogin.nix
     ../shared/aria2.nix
     ../shared/glab.nix
-    ../shared/kitty.nix
     ../shared/nix.nix
     ../shared/npm.nix
     ../shared/parallel.nix
@@ -33,7 +30,6 @@
     ../shared/zsh-nix-completion.nix
     ../linux/docker.nix
     ../linux/rclone.nix
-    ../linux/swayimg.nix
   ];
 
   console.keyMap = "fr";
