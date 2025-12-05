@@ -8,6 +8,7 @@
   imports = [
     ../../shared/alacritty.nix
     ../../shared/bat.nix
+    ../../shared/btop.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
     ../../shared/ghostty.nix
