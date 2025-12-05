@@ -23,6 +23,11 @@
     # Services
     ../linux/tor.nix
 
+    ../shared/alacritty.nix
+    ../shared/ghostty.nix
+    ../shared/kitty.nix
+    ../linux/swayimg.nix
+
     # GUI components
     ../shared/cursor.nix
     ../shared/fonts.nix
