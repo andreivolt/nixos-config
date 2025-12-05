@@ -1,0 +1,30 @@
+require 'bundler/inline'
+
+gemfile do
+  source :rubygems
+
+  gem "awesome_print"
+  gem "looksee"
+  gem "pry-doc"
+  gem "pry-nav"
+  gem "wirb"
+  gem "pry-inline"
+  gem "pry-byebug"
+end
+
+require 'pry-nav'
+require 'wirb'
+require 'awesome_print'
+require 'looksee'
+require 'pry-doc'
+Pry.config.editor = proc { |file, line| "nvim +#{line} #{file}"}
+
+Pry.commands.alias_command "c", "continue"
+Pry.commands.alias_command "n", "next"
+Pry.commands.alias_command "q", "exit"
+Pry.commands.alias_command "s", "step"
+Pry.commands.alias_command "w", "whereami"
+
+Pry.config.print = proc do |output, value|
+  Pry::Helpers::BaseHelpers.stagger_output("=> #{value.ai}", output)
+end
