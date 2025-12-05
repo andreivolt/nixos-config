@@ -13,6 +13,7 @@
     ../../shared/git.nix
     ../../shared/gnupg.nix
     ../../shared/mpv.nix
+    ../../shared/rubocop.nix
     ../../shared/tmux.nix
     ../../shared/zsh-nix-completion.nix
     ../../shared/direnv.nix
