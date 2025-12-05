@@ -95,7 +95,7 @@
           system.primaryUser = "andrei";
           nix.enable = false; # using Determinate Nix
         }
-        "${inputs.self}/darwin"
+        "${inputs.self}/hosts/mac"
         home-manager.darwinModules.home-manager
         mac-app-util.darwinModules.default
       ];
@@ -120,7 +120,7 @@
           # Change this to match your actual disk (e.g., /dev/sda, /dev/nvme0n1, etc.)
           nixos.diskDevice = "/dev/nvme0n1";
         }
-        "${inputs.self}/linux"
+        "${inputs.self}/hosts/watts"
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
       ];
@@ -141,7 +141,7 @@
           ] ++ commonNixpkgsConfig.overlays;
         }
         nixos-apple-silicon.nixosModules.apple-silicon-support
-        "${inputs.self}/asahi"
+        "${inputs.self}/hosts/riva"
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
       ];
@@ -156,7 +156,7 @@
             hostPlatform = "x86_64-linux";
           };
         }
-        "${inputs.self}/ampere"
+        "${inputs.self}/hosts/ampere"
         home-manager.nixosModules.home-manager
       ];
       specialArgs = {inherit inputs;};

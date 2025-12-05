@@ -14,14 +14,8 @@
     ../shared/nix.nix
     ../shared/ssh.nix
     ../shared/zsh-nix-completion.nix
-    ./brother-printer.nix
-    ./brother-scanner.nix
-    ./docker.nix
-    ./lowbatt.nix
-    ./networkmanager.nix
-    ./rclone.nix
-    ./tor.nix
-    ./v4l2loopback.nix
+    ../linux/docker.nix
+    ../linux/rclone.nix
   ];
 
   console.keyMap = "fr";
@@ -51,11 +45,6 @@
   services.avahi = {
     enable = true;
     nssmdns4 = true;
-  };
-  services.lowbatt = {
-    enable = true;
-    notifyCapacity = 40;
-    suspendCapacity = 10;
   };
   services.sshd.enable = true;
   services.tailscale = {

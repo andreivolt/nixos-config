@@ -8,7 +8,7 @@
   imports = [
     ./hardware-configuration.nix
     ./headscale.nix
-    ../linux/base.nix
+    ../../profiles/core.nix
   ];
 
   boot.tmp.cleanOnBoot = true;
@@ -16,7 +16,7 @@
   # Use zram for swap (important for 1GB RAM instances)
   zramSwap.enable = true;
 
-  # Networking
+  # Networking - simple DHCP for server (no NetworkManager)
   networking = {
     hostName = "ampere";
     domain = "";

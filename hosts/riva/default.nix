@@ -6,13 +6,13 @@
   ...
 }: {
   imports = [
-    ../linux/base.nix
-    ../linux/gui.nix
+    ../../profiles/core.nix
+    ../../profiles/workstation.nix
     ./disk-config.nix
     ./impermanence.nix
     ./users-persist.nix
-    ../linux/lan-mouse.nix
-    ../linux/mpv.nix
+    ../../linux/lan-mouse.nix
+    ../../linux/mpv.nix
   ];
 
   networking.hostName = "riva";
@@ -38,9 +38,9 @@
   boot.kernelParams = [ "apple_dcp.show_notch=1" ];
 
   # Lid switch behavior
-  services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
+  services.logind.settings.Login.HandleLidSwitchExternalPower = "lock";
 
-  home-manager.users.andrei = import ../linux/home.nix {
+  home-manager.users.andrei = import ../../linux/home.nix {
     inherit config inputs;
     # No extraPackagesFile - uses only base packages.nix (cross-platform)
   };
