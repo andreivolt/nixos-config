@@ -31,6 +31,7 @@
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
     ../../shared/wezterm.nix
+    ../../shared/zsh-dirs.nix
     ../../shared/zsh-nix-completion.nix
     ./activity-monitor.nix
     ./alt-tab.nix
