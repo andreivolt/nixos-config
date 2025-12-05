@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
+FLAKE="$REPO_DIR"
+
+echo "==> Pulling latest changes..."
+git -C "$REPO_DIR" pull
+
+echo "==> Deploying to riva (local)..."
+sudo nixos-rebuild switch --flake "$FLAKE#riva"
+
+echo "==> Deploying to watts..."
+ssh watts "cd ~/dev/nixos-config && git pull && sudo nixos-rebuild switch --flake .#watts"
+
+echo "==> Deploying to ampere (via watts)..."
+ssh watts "cd ~/dev/nixos-config && nixos-rebuild switch --flake .#ampere --target-host ampere --use-remote-sudo"
+
+echo "==> Done!"
