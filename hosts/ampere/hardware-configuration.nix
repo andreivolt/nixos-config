@@ -11,7 +11,7 @@
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/349C-BCCC";
+    device = "/dev/disk/by-uuid/43A5-304A";
     fsType = "vfat";
   };
 
@@ -19,7 +19,7 @@
   boot.initrd.kernelModules = [ "nvme" ];
 
   fileSystems."/" = {
-    device = "/dev/mapper/ocivolume-root";
-    fsType = "xfs";
+    device = "/dev/sda1";
+    fsType = "ext4";
   };
 }

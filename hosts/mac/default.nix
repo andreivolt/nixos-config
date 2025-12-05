@@ -6,12 +6,12 @@
   ...
 }: {
   imports = [
-    ../shared/dnsmasq.nix
-    ../shared/fonts.nix
-    ../shared/gnupg.nix
-    ../shared/moreutils-without-parallel.nix
-    ../shared/zsh-nix-completion.nix
-    ../shared/direnv.nix
+    ../../shared/dnsmasq.nix
+    ../../shared/fonts.nix
+    ../../shared/gnupg.nix
+    ../../shared/moreutils-without-parallel.nix
+    ../../shared/zsh-nix-completion.nix
+    ../../shared/direnv.nix
     ./activity-monitor.nix
     ./alt-tab.nix
     ./auto-brightness.nix
@@ -63,7 +63,7 @@
   home-manager.useGlobalPkgs = true;
   home-manager.sharedModules = [
     inputs.mac-app-util.homeManagerModules.default
-    ../shared/rust-script-warmer.nix
+    ../../shared/rust-script-warmer.nix
   ];
 
   home-manager.users.andrei = {pkgs, ...}: {
