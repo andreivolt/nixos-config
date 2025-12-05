@@ -12,6 +12,7 @@
     ../../shared/git.nix
     ../../shared/gnupg.nix
     ../../shared/mpv.nix
+    ../../shared/tmux.nix
     ../../shared/zsh-nix-completion.nix
     ../../shared/direnv.nix
     ./activity-monitor.nix
