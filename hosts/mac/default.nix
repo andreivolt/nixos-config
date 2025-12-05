@@ -9,7 +9,7 @@
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
     ../../shared/gnupg.nix
-    ../../shared/moreutils-without-parallel.nix
+    ../../shared/mpv.nix
     ../../shared/zsh-nix-completion.nix
     ../../shared/direnv.nix
     ./activity-monitor.nix

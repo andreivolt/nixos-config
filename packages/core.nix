@@ -58,7 +58,13 @@ with pkgs; [
   mediainfo
   mitmproxy
   mkcert
-  moreutils
+  (moreutils.overrideAttrs (old: {
+    postInstall = ''
+      ${old.postInstall or ""}
+      rm -f $out/bin/parallel $out/share/man/man1/parallel.1
+    '';
+  }))
+  parallel
   neovim-remote
   netcat
   nix-prefetch-git
