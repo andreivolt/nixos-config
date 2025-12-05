@@ -22,6 +22,7 @@
     ../shared/nix.nix
     ../shared/npm.nix
     ../shared/parallel.nix
+    ../shared/pry.nix
     ../shared/readline.nix
     ../shared/ripgrep.nix
     ../shared/rubocop.nix
