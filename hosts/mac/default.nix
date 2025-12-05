@@ -8,6 +8,9 @@
   imports = [
     ../../shared/bat.nix
     ../../shared/btop.nix
+    ../../shared/curl.nix
+    ../../shared/dircolors.nix
+    ../../shared/direnv.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
     ../../shared/git.nix
@@ -16,7 +19,6 @@
     ../../shared/rubocop.nix
     ../../shared/tmux.nix
     ../../shared/zsh-nix-completion.nix
-    ../../shared/direnv.nix
     ./activity-monitor.nix
     ./alt-tab.nix
     ./auto-brightness.nix
