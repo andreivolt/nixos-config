@@ -39,6 +39,7 @@
     ../linux/swaybg.nix
     ../linux/swaync.nix
     ../linux/trayscale.nix
+    ../linux/mpv.nix
     ../linux/waybar.nix
     ../linux/xdg-portals.nix
     ../linux/chromium.nix
