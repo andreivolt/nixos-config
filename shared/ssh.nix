@@ -1,4 +1,4 @@
-# SSH configuration for Tailnet machines (riva, watts, ampere, phone)
+# SSH configuration for Tailnet machines (riva, watts, ampere, phone, mac)
 #
 # Keys stored in ~/drive/ssh-keys/:
 #   hosts/<hostname>/ssh_host_ed25519_key[.pub]  -> copy to /persist/etc/ssh/
@@ -18,6 +18,7 @@ let
     watts = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIM2FRYqJEu/63o4VROBZ9+v6YWjfCr+pxyObaaP4FGv";
     ampere = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII9YxDDUlniLwYScXpg5shPmLPz0UFWe52+Rz2yjWM2k";
     phone = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEMhd9BSrNv42Dwegu9YIsj3VzDLMR8dAq+u1ZA/KYs9";
+    mac = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINsJ+vyWfdhN8BsVTNtmHpzJ+g/7INrL2RgRUFpLTEIF";
   };
 
   # =============================================================================
@@ -28,6 +29,7 @@ let
     watts = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAONf0j68+f/g6iATJFcPAqtpnu+WsF16pQJswg+evdv andrei@watts";
     ampere = "";
     phone = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJA4s03JG4C4b9/vd1qB2ZkGzVxuIYSL4cgVUzQ0khzX andrei@phone";
+    mac = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIG8aVjlE6b7OCOZjXwTeb4EfRALer1gLsemR/QvW6/Pr andrei@mac";
   };
 
   allUserKeys = lib.attrValues userKeys;
@@ -50,6 +52,10 @@ in {
     phone = {
       hostNames = [ "phone" "phone.${tailDomain}" ];
       publicKey = hostKeys.phone;
+    };
+    mac = {
+      hostNames = [ "mac" "mac.${tailDomain}" ];
+      publicKey = hostKeys.mac;
     };
   };
 
