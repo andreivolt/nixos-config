@@ -44,6 +44,9 @@
   # Override gc for server (more aggressive cleanup)
   nix.gc.options = lib.mkForce "--delete-older-than 7d";
 
+  # Trust andrei for remote deployments (accept unsigned paths from nix-copy-closure)
+  nix.settings.trusted-users = ["root" "andrei"];
+
   # ACME for SSL certificates
   security.acme = {
     acceptTerms = true;
