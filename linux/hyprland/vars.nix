@@ -1,8 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Machine-specific settings
-  isAsahi = config.networking.hostName == "asahi";
+  # Machine-specific settings (riva is the Asahi machine)
+  isAsahi = config.networking.hostName == "riva";
 
   # Bar height (eww bar)
   barHeight = if isAsahi then 40 else 36;
@@ -13,10 +13,10 @@ let
   screenWidth = 1600;
   screenHeight = if isAsahi then 1040 else 900;
 
-  # Golden ratio (φ ≈ 0.618) dimensions in pixels
-  dropdownWidth = builtins.floor (screenWidth * 0.618);   # 988
+  # Golden ratio (0.618) + half remaining gap (0.191) = 0.809 of screen
+  dropdownWidth = builtins.floor (screenWidth * 0.809);   # 1294
   dropdownHeight = builtins.floor (screenHeight * 0.618); # 643 or 556
-  dropdownX = builtins.floor ((screenWidth - dropdownWidth) / 2); # 306
+  dropdownX = builtins.floor ((screenWidth - dropdownWidth) / 2); # centered horizontally
 in {
   # Generate machine-specific Hyprland variables
   home-manager.users.andrei = { pkgs, ... }: {
@@ -27,8 +27,7 @@ in {
       $barHeight = ${toString barHeight}
     '';
 
-    # Dropdown window rules (machine-specific due to bar height)
-    # Using Hyprland 0.52+ block syntax with pixel values
+    # Dropdown window rules - positioned just below menu bar
     xdg.configFile."hypr/dropdown.conf".text = ''
       windowrule {
         name = dropdown-rules
@@ -36,7 +35,7 @@ in {
         workspace = special:dropdown silent
         float = 1
         size = ${toString dropdownWidth} ${toString dropdownHeight}
-        move = ${toString dropdownX} ${toString (barHeight * 2)}
+        move = ${toString dropdownX} ${toString barHeight}
       }
     '';
   };
