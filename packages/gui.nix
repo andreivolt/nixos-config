@@ -51,7 +51,7 @@ with pkgs;
   wf-recorder
   wl-clipboard
   wlprop
-  wofi
+  rofi
   wtype
   zathura
   sublime4
