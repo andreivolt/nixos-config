@@ -9,6 +9,7 @@
     ../../shared/bat.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
+    ../../shared/git.nix
     ../../shared/gnupg.nix
     ../../shared/mpv.nix
     ../../shared/zsh-nix-completion.nix
