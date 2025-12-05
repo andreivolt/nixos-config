@@ -26,6 +26,7 @@
     useGlobalPkgs = true;
     config = {pkgs, ...}: {
       home.stateVersion = "24.05";
+      home.enableNixpkgsReleaseCheck = false;
 
       # .termux/termux.properties
       home.file.".termux/termux.properties".text = ''
