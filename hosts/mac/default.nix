@@ -7,6 +7,7 @@
 }: {
   imports = [
     ../../shared/alacritty.nix
+    ../../shared/aria2.nix
     ../../shared/bat.nix
     ../../shared/btop.nix
     ../../shared/curl.nix
@@ -16,9 +17,11 @@
     ../../shared/fonts.nix
     ../../shared/ghostty.nix
     ../../shared/git.nix
+    ../../shared/glab.nix
     ../../shared/gnupg.nix
     ../../shared/kitty.nix
     ../../shared/mpv.nix
+    ../../shared/readline.nix
     ../../shared/rubocop.nix
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
