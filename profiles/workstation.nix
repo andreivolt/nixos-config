@@ -7,6 +7,11 @@
   inputs,
   ...
 }: {
+  programs.gnupg.agent.pinentryPackage = pkgs.lib.mkForce pkgs.pinentry-all;
+  # Workstation-specific packages (device-specific + GUI)
+  environment.systemPackages =
+    (import "${inputs.self}/packages/workstation.nix" pkgs)
+    ++ (import "${inputs.self}/packages/gui.nix" pkgs);
   imports = [
     # Desktop hardware & peripherals
     ../linux/brother-printer.nix
