@@ -7,6 +7,7 @@
     ../shared/rust-script-warmer.nix
     ./hyprland-auto-pin.nix
     ./vicinae.nix
+    ./zathura.nix
     inputs.vicinae.homeManagerModules.default
   ];
 
@@ -77,15 +78,6 @@
 
   # Custom desktop files with proper MimeType for Dolphin/KDE
   xdg.desktopEntries = {
-    zathura = {
-      name = "Zathura";
-      comment = "A minimalistic document viewer";
-      exec = "zathura %U";
-      icon = "org.pwmt.zathura";
-      terminal = false;
-      categories = ["Office" "Viewer"];
-      mimeType = ["application/pdf" "application/epub+zip" "application/oxps" "application/x-fictionbook"];
-    };
     swayimg = {
       name = "Swayimg";
       comment = "Image viewer for Wayland";
