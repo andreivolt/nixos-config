@@ -6,9 +6,8 @@
   imports = [
     ../shared/rust-script-warmer.nix
     ./hyprland-auto-pin.nix
-    ./vicinae.nix
+    ./rofi.nix
     ./zathura.nix
-    inputs.vicinae.homeManagerModules.default
   ];
 
   home.stateVersion = "24.05";
