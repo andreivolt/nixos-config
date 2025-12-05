@@ -14,6 +14,7 @@
     ../shared/direnv.nix
     ../shared/nix.nix
     ../shared/ssh.nix
+    ../shared/tmux.nix
     ../shared/zsh-nix-completion.nix
     ../linux/docker.nix
     ../linux/rclone.nix
