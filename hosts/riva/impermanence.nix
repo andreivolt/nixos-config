@@ -31,6 +31,7 @@
       { directory = "/var/lib/colord"; user = "colord"; group = "colord"; mode = "u=rwx,g=rx,o="; }
       "/etc/nixos"
       "/var/lib/docker"
+      "/var/lib/tailscale"
     ];
     files = [
       "/etc/machine-id"
