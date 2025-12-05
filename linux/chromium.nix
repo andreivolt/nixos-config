@@ -6,6 +6,14 @@
   };
 
   home-manager.users.andrei = {
-    programs.chromium.enable = true;
+    programs.chromium = {
+      enable = true;
+      commandLineArgs = [
+        "--enable-features=UseOzonePlatform"
+        "--ozone-platform=wayland"
+        "--font-render-hinting=none"
+        "--force-font-family-sans-serif=Tahoma"
+      ];
+    };
   };
 }
