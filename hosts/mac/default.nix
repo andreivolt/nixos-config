@@ -57,8 +57,9 @@
   programs.zsh.enableCompletion = false; # slow
 
   environment.systemPackages =
-    (import "${inputs.self}/packages.nix" pkgs)
-    ++ (import "${inputs.self}/packages-gui.nix" pkgs);
+    (import "${inputs.self}/packages/core.nix" pkgs)
+    ++ (import "${inputs.self}/packages/darwin.nix" pkgs)
+    ++ (import "${inputs.self}/packages/gui.nix" pkgs);
 
   home-manager.useGlobalPkgs = true;
   home-manager.sharedModules = [
