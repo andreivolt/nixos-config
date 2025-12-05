@@ -8,6 +8,7 @@
 }: {
   imports = [
     ../shared/bat.nix
+    ../shared/btop.nix
     ../shared/dnsmasq.nix
     ../shared/git.nix
     ../shared/gnupg.nix
