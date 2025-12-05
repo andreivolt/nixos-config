@@ -9,7 +9,6 @@
         historyLimit = 99999;
         keyMode = "vi";
         mouse = true;
-        terminal = "tmux-256color";
 
         plugins = with pkgs.tmuxPlugins; [
           {
@@ -31,6 +30,7 @@
         ];
 
         extraConfig = ''
+          set -g default-terminal $TERM
           set -g history-file ~/.local/state/tmux_history
           set -g focus-events on
 
@@ -51,6 +51,7 @@
           bind -r < swap-window -t -1\; select-window -t -1
           bind -r > swap-window -t +1\; select-window -t +1
 
+          bind C-a send-prefix
           bind C-a last-window
           bind C-p prev
           bind C-n next
