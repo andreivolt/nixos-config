@@ -10,7 +10,6 @@
     ../shared/dnsmasq.nix
     ../shared/gnupg.nix
     ../shared/direnv.nix
-    ../shared/moreutils-without-parallel.nix
     ../shared/nix.nix
     ../shared/ssh.nix
     ../shared/zsh-nix-completion.nix

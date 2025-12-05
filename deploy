@@ -4,16 +4,37 @@ set -euo pipefail
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 FLAKE="$REPO_DIR"
 
+cleanup() {
+  pkill -P $$ 2>/dev/null
+  kill $(jobs -p) 2>/dev/null
+}
+trap cleanup EXIT INT TERM
+
+RED=$'\033[0;31m'
+GREEN=$'\033[0;32m'
+BLUE=$'\033[0;34m'
+NC=$'\033[0m'
+
+prefix() {
+  local color=$1 name=$2
+  while IFS= read -r line; do
+    printf '%s[%s]%s %s\n' "$color" "$name" "$NC" "$line"
+  done
+}
+
 echo "==> Pulling latest changes..."
 git -C "$REPO_DIR" pull
 
-echo "==> Deploying to riva (local)..."
-sudo nixos-rebuild switch --flake "$FLAKE#riva"
+sudo nixos-rebuild switch --flake "$FLAKE#riva" 2>&1 | prefix "$GREEN" "riva" &
+pid_riva=$!
 
-echo "==> Deploying to watts..."
-ssh watts "cd ~/dev/nixos-config && git pull && sudo nixos-rebuild switch --flake .#watts"
+ssh watts "cd ~/dev/nixos-config && git pull && sudo nixos-rebuild switch --flake .#watts" 2>&1 | prefix "$BLUE" "watts" &
+pid_watts=$!
 
-echo "==> Deploying to ampere (via watts)..."
-ssh watts "cd ~/dev/nixos-config && nixos-rebuild switch --flake .#ampere --target-host ampere --use-remote-sudo"
+wait $pid_watts
+ssh watts "cd ~/dev/nixos-config && nixos-rebuild switch --flake .#ampere --target-host ampere --use-remote-sudo" 2>&1 | prefix "$RED" "ampere" &
+pid_ampere=$!
+
+wait $pid_riva $pid_ampere
 
 echo "==> Done!"
