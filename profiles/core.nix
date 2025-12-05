@@ -17,11 +17,15 @@
     ../shared/ghostty.nix
     ../shared/git.nix
     ../shared/gnupg.nix
+    ../shared/hushlogin.nix
     ../shared/aria2.nix
     ../shared/glab.nix
     ../shared/kitty.nix
     ../shared/nix.nix
+    ../shared/npm.nix
+    ../shared/parallel.nix
     ../shared/readline.nix
+    ../shared/ripgrep.nix
     ../shared/rubocop.nix
     ../shared/rustfmt.nix
     ../shared/ssh.nix
