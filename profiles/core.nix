@@ -57,7 +57,10 @@
     enable = true;
     nssmdns4 = true;
   };
-  services.sshd.enable = true;
+  services.openssh = {
+    enable = true;
+    settings.PasswordAuthentication = false;
+  };
   services.tailscale = {
     enable = true;
     extraUpFlags = ["--operator=andrei" "--login-server=https://hs.avolt.net"];
