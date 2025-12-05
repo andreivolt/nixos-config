@@ -78,6 +78,13 @@
         enableCompletion = false;
         initExtra = "source ~/.config/zsh/rc.zsh";
       };
+
+      # Direnv (shared with other hosts)
+      programs.direnv = {
+        enable = true;
+        nix-direnv.enable = true;
+        silent = true;
+      };
     };
   };
 }
