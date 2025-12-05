@@ -23,5 +23,20 @@ in {
         WantedBy = ["graphical-session.target"];
       };
     };
+    hyprland-auto-pin-mpv = {
+      Unit = {
+        Description = "Auto-pin mpv windows";
+        PartOf = ["graphical-session.target"];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${auto-pin-script}/bin/hyprland-auto-pin mpv";
+        Restart = "on-failure";
+        RestartSec = 1;
+      };
+      Install = {
+        WantedBy = ["graphical-session.target"];
+      };
+    };
   };
 }
