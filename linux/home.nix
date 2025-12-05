@@ -16,8 +16,10 @@
   nixpkgs.overlays = config.nixpkgs.overlays;
 
   home.packages =
-    (import "${inputs.self}/packages.nix" pkgs)
-    ++ (import "${inputs.self}/packages-gui.nix" pkgs)
+    (import "${inputs.self}/packages/core.nix" pkgs)
+    ++ (import "${inputs.self}/packages/linux.nix" pkgs)
+    ++ (import "${inputs.self}/packages/workstation.nix" pkgs)
+    ++ (import "${inputs.self}/packages/gui.nix" pkgs)
     ++ (if extraPackagesFile != null then import extraPackagesFile pkgs else []);
 
   programs.zsh = {
