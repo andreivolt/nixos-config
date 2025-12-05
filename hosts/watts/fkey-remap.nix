@@ -1,9 +1,8 @@
 { config, lib, pkgs, ... }:
 
 # Remap F1-F4 to number keys 1-4 at kernel level (hwdb)
-# This works in console and Wayland/X11
+# Caps->Escape is in profiles/core.nix (shared across machines)
 {
-  # Use services.udev.extraHwdb which automatically compiles the hwdb
   services.udev.extraHwdb = ''
     evdev:atkbd:*
      KEYBOARD_KEY_3b=key_1
