@@ -9,10 +9,13 @@
   imports = [
     ../shared/bat.nix
     ../shared/btop.nix
+    ../shared/curl.nix
+    ../shared/dircolors.nix
+    ../shared/direnv.nix
     ../shared/dnsmasq.nix
     ../shared/git.nix
     ../shared/gnupg.nix
-    ../shared/direnv.nix
+    ../shared/kitty.nix
     ../shared/nix.nix
     ../shared/rubocop.nix
     ../shared/ssh.nix
