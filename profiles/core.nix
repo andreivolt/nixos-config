@@ -7,6 +7,7 @@
   ...
 }: {
   imports = [
+    ../shared/bat.nix
     ../shared/dnsmasq.nix
     ../shared/gnupg.nix
     ../shared/direnv.nix
