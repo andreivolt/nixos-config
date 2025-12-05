@@ -29,6 +29,7 @@
     ../shared/ssh.nix
     ../shared/tmux.nix
     ../shared/wezterm.nix
+    ../shared/zsh-dirs.nix
     ../shared/zsh-nix-completion.nix
     ../linux/docker.nix
     ../linux/rclone.nix
