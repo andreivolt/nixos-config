@@ -6,6 +6,7 @@
   imports = [
     ../shared/rust-script-warmer.nix
     ./hyprland-auto-pin.nix
+    ./rofi.nix
     ./vicinae.nix
     ./zathura.nix
     inputs.vicinae.homeManagerModules.default
