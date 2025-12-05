@@ -6,6 +6,7 @@
   ...
 }: {
   imports = [
+    ../../shared/aria2.nix
     ../../shared/bat.nix
     ../../shared/btop.nix
     ../../shared/curl.nix
@@ -14,8 +15,10 @@
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
     ../../shared/git.nix
+    ../../shared/glab.nix
     ../../shared/gnupg.nix
     ../../shared/mpv.nix
+    ../../shared/readline.nix
     ../../shared/rubocop.nix
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
