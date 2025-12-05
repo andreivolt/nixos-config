@@ -18,7 +18,6 @@
     ../shared/hushlogin.nix
     ../shared/aria2.nix
     ../shared/glab.nix
-    ../shared/kitty.nix
     ../shared/nix.nix
     ../shared/npm.nix
     ../shared/parallel.nix
@@ -31,7 +30,6 @@
     ../shared/zsh-nix-completion.nix
     ../linux/docker.nix
     ../linux/rclone.nix
-    ../linux/swayimg.nix
   ];
 
   console.keyMap = "fr";
