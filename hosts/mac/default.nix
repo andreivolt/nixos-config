@@ -6,6 +6,7 @@
   ...
 }: {
   imports = [
+    ../../shared/bat.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
     ../../shared/gnupg.nix
