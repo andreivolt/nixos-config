@@ -32,7 +32,7 @@ ssh watts "cd ~/dev/nixos-config && git pull && sudo nixos-rebuild switch --flak
 pid_watts=$!
 
 wait $pid_watts
-ssh watts "cd ~/dev/nixos-config && nixos-rebuild switch --flake .#ampere --target-host ampere --use-remote-sudo" 2>&1 | prefix "$RED" "ampere" &
+ssh watts "cd ~/dev/nixos-config && nixos-rebuild switch --flake .#ampere --target-host ampere --sudo" 2>&1 | prefix "$RED" "ampere" &
 pid_ampere=$!
 
 wait $pid_riva $pid_ampere
