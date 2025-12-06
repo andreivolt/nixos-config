@@ -9,14 +9,20 @@ fi
 for device in apple-panel-bl intel_backlight amdgpu_bl0 acpi_video0; do
   if brightnessctl -d "$device" info &>/dev/null; then
     percent=$(brightnessctl -d "$device" -m | cut -d',' -f4 | tr -d '%')
-    if [ "$percent" -ge 70 ]; then
+    if [ "$percent" -ge 80 ]; then
       icon="󰃠"
-    elif [ "$percent" -ge 40 ]; then
+      class="high"
+    elif [ "$percent" -ge 50 ]; then
       icon="󰃟"
-    else
+      class="medium"
+    elif [ "$percent" -ge 20 ]; then
       icon="󰃞"
+      class="low"
+    else
+      icon="󰃝"
+      class="dim"
     fi
-    echo "{\"text\": \"$icon  $percent%\", \"tooltip\": \"Brightness: $percent%\", \"percentage\": $percent}"
+    echo "{\"text\": \"$icon\", \"tooltip\": \"Brightness: $percent%\", \"percentage\": $percent, \"class\": \"$class\"}"
     exit 0
   fi
 done
