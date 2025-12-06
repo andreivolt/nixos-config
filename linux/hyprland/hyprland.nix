@@ -35,6 +35,11 @@ in {
       ];
       extraConfig = ''
         source = ./main.conf
+
+        # Trayscale - float near tray
+        windowrule = float, class:^(dev.deedles.Trayscale)$
+        windowrule = size 400 500, class:^(dev.deedles.Trayscale)$
+        windowrule = move 100%-410 40, class:^(dev.deedles.Trayscale)$
       '';
     };
   };
