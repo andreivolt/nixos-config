@@ -89,10 +89,21 @@ class SliderPopup(Gtk.Window):
         self.load_css()
         self.show_all()
 
-        # Auto-close after 3 seconds of no interaction
-        self.timeout_id = GLib.timeout_add_seconds(3, self.auto_close)
+        # Close on focus loss or Escape key
+        self.connect("focus-out-event", lambda w, e: self.close())
+        self.connect("key-press-event", self.on_key_press)
+
+        # Auto-close after 5 seconds of no interaction
+        self.timeout_id = GLib.timeout_add_seconds(5, self.auto_close)
         self.scale.connect("button-press-event", self.reset_timeout)
         self.scale.connect("button-release-event", self.reset_timeout)
+
+    def on_key_press(self, widget, event):
+        from gi.repository import Gdk
+        if event.keyval == Gdk.KEY_Escape:
+            self.close()
+            return True
+        return False
 
     def reset_timeout(self, *args):
         if self.timeout_id:
