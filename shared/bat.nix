@@ -1,23 +1,247 @@
-{
+{pkgs, ...}: {
   home-manager.sharedModules = [
     {
       programs.bat = {
         enable = true;
         config = {
           style = "header-filename,grid";
-          theme = "base16";
+          theme = "Aurora";
           wrap = "character";
         };
+        themes = {
+          Aurora = {
+            src = pkgs.writeTextDir "Aurora.tmTheme" ''
+              <?xml version="1.0" encoding="UTF-8"?>
+              <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+              <plist version="1.0">
+              <dict>
+                <key>name</key>
+                <string>Aurora</string>
+                <key>settings</key>
+                <array>
+                  <dict>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#ffffff</string>
+                    </dict>
+                  </dict>
+                  <!-- Comments -->
+                  <dict>
+                    <key>name</key>
+                    <string>Comment</string>
+                    <key>scope</key>
+                    <string>comment, punctuation.definition.comment</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#645775</string>
+                      <key>fontStyle</key>
+                      <string>italic</string>
+                    </dict>
+                  </dict>
+                  <!-- Strings -->
+                  <dict>
+                    <key>name</key>
+                    <string>String</string>
+                    <key>scope</key>
+                    <string>string, string.quoted</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#addb67</string>
+                    </dict>
+                  </dict>
+                  <!-- Numbers -->
+                  <dict>
+                    <key>name</key>
+                    <string>Number</string>
+                    <key>scope</key>
+                    <string>constant.numeric</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#ffcb65</string>
+                    </dict>
+                  </dict>
+                  <!-- Constants -->
+                  <dict>
+                    <key>name</key>
+                    <string>Constant</string>
+                    <key>scope</key>
+                    <string>constant, constant.language, constant.character</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#FD9720</string>
+                    </dict>
+                  </dict>
+                  <!-- Keywords -->
+                  <dict>
+                    <key>name</key>
+                    <string>Keyword</string>
+                    <key>scope</key>
+                    <string>keyword, keyword.control, keyword.operator.logical</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#be9af7</string>
+                    </dict>
+                  </dict>
+                  <!-- Storage/Type keywords -->
+                  <dict>
+                    <key>name</key>
+                    <string>Storage</string>
+                    <key>scope</key>
+                    <string>storage, storage.type, storage.modifier</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#be9af7</string>
+                    </dict>
+                  </dict>
+                  <!-- Operators -->
+                  <dict>
+                    <key>name</key>
+                    <string>Operator</string>
+                    <key>scope</key>
+                    <string>keyword.operator, punctuation.accessor</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#ff5874</string>
+                    </dict>
+                  </dict>
+                  <!-- Functions -->
+                  <dict>
+                    <key>name</key>
+                    <string>Function</string>
+                    <key>scope</key>
+                    <string>entity.name.function, meta.function-call, support.function</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#6690c4</string>
+                    </dict>
+                  </dict>
+                  <!-- Classes/Types -->
+                  <dict>
+                    <key>name</key>
+                    <string>Class</string>
+                    <key>scope</key>
+                    <string>entity.name.class, entity.name.type, support.class, support.type</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#ffcb65</string>
+                    </dict>
+                  </dict>
+                  <!-- Variables -->
+                  <dict>
+                    <key>name</key>
+                    <string>Variable</string>
+                    <key>scope</key>
+                    <string>variable, variable.other</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#e7d3fb</string>
+                    </dict>
+                  </dict>
+                  <!-- Parameters -->
+                  <dict>
+                    <key>name</key>
+                    <string>Parameter</string>
+                    <key>scope</key>
+                    <string>variable.parameter</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#FD9720</string>
+                    </dict>
+                  </dict>
+                  <!-- Punctuation -->
+                  <dict>
+                    <key>name</key>
+                    <string>Punctuation</string>
+                    <key>scope</key>
+                    <string>punctuation, punctuation.definition, punctuation.separator</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#e7d3fb</string>
+                    </dict>
+                  </dict>
+                  <!-- Tags (HTML/XML) -->
+                  <dict>
+                    <key>name</key>
+                    <string>Tag</string>
+                    <key>scope</key>
+                    <string>entity.name.tag</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#ff5874</string>
+                    </dict>
+                  </dict>
+                  <!-- Attributes -->
+                  <dict>
+                    <key>name</key>
+                    <string>Attribute</string>
+                    <key>scope</key>
+                    <string>entity.other.attribute-name</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#A1EFE4</string>
+                    </dict>
+                  </dict>
+                  <!-- Section/Heading -->
+                  <dict>
+                    <key>name</key>
+                    <string>Section</string>
+                    <key>scope</key>
+                    <string>entity.name.section, markup.heading</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#be9af7</string>
+                      <key>fontStyle</key>
+                      <string>bold</string>
+                    </dict>
+                  </dict>
+                  <!-- URLs/Links -->
+                  <dict>
+                    <key>name</key>
+                    <string>Link</string>
+                    <key>scope</key>
+                    <string>markup.underline.link, string.other.link</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#54CED6</string>
+                    </dict>
+                  </dict>
+                  <!-- Invalid -->
+                  <dict>
+                    <key>name</key>
+                    <string>Invalid</string>
+                    <key>scope</key>
+                    <string>invalid, invalid.illegal</string>
+                    <key>settings</key>
+                    <dict>
+                      <key>foreground</key>
+                      <string>#ec5f67</string>
+                    </dict>
+                  </dict>
+                </array>
+              </dict>
+              </plist>
+            '';
+            file = "Aurora.tmTheme";
+          };
+        };
       };
-      programs.zsh.initContent = ''
-        cat() {
-          if [[ -t 1 ]]; then
-            bat "$@"
-          else
-            command cat "$@"
-          fi
-        }
-      '';
     }
   ];
 }
