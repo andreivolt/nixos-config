@@ -36,10 +36,17 @@ in {
       extraConfig = ''
         source = ./main.conf
 
-        # Trayscale - float near tray
+        # Trayscale - float, pinned, centered, no titlebar
         windowrule = float on, match:class dev.deedles.Trayscale
+        windowrule = pin on, match:class dev.deedles.Trayscale
         windowrule = size 400 500, match:class dev.deedles.Trayscale
-        windowrule = move 100%-410 40, match:class dev.deedles.Trayscale
+        windowrule = center on, match:class dev.deedles.Trayscale
+        windowrule = hyprbars:no_bar 1, match:class dev.deedles.Trayscale
+
+        # Pavucontrol - float, pinned, centered
+        windowrule = float on, match:class org.pulseaudio.pavucontrol
+        windowrule = pin on, match:class org.pulseaudio.pavucontrol
+        windowrule = center on, match:class org.pulseaudio.pavucontrol
       '';
     };
   };
