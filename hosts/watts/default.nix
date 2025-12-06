@@ -23,7 +23,6 @@
     ./roon-server.nix
     ./thinkpad.nix
     ../../linux/touchscreen.nix
-    # ../../linux/wayvnc.nix
   ];
 
   networking.hostName = "watts";

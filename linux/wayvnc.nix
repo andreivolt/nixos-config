@@ -5,13 +5,10 @@
     systemd.user.services.wayvnc = {
       Unit = {
         PartOf = ["graphical-session.target"];
-        After = ["netns@tailscale0.service" "graphical-session.target"];
-        BindsTo = ["netns@tailscale0.service"];
+        After = ["graphical-session.target"];
         ConditionEnvironment = ["WAYLAND_DISPLAY"];
-        JoinsNameSpaceOf = "netns@tailscale0.service";
       };
-      Service.PrivateNetwork = true;
-      Service.ExecStart = "${pkgs.wayvnc}/bin/wayvnc";
+      Service.ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.wayvnc}/bin/wayvnc $(${pkgs.tailscale}/bin/tailscale ip -4)'";
       Install.WantedBy = ["graphical-session.target"];
     };
   };
