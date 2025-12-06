@@ -128,6 +128,7 @@ with pkgs; [
   xh
   xmlstarlet
   xurls
+  xxd
   yarn-berry
   zprint
 ]
