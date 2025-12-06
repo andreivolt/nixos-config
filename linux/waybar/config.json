@@ -184,7 +184,7 @@
     "tooltip-format": "{desc}\nVolume: {volume}%",
     "on-click": "waybar-slider-popup volume",
     "on-click-right": "pavucontrol",
-    "on-click-middle": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
   },
 
   "custom/separator": {

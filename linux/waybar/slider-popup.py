@@ -190,19 +190,20 @@ class SliderPopup(Gtk.Window):
     def get_volume(self):
         try:
             result = subprocess.run(
-                ['pactl', 'get-sink-volume', '@DEFAULT_SINK@'],
+                ['wpctl', 'get-volume', '@DEFAULT_AUDIO_SINK@'],
                 capture_output=True, text=True
             )
             if result.returncode == 0:
-                for part in result.stdout.split():
-                    if '%' in part:
-                        return int(part.rstrip('%'))
+                # Output format: "Volume: 0.50" or "Volume: 0.50 [MUTED]"
+                parts = result.stdout.split()
+                if len(parts) >= 2:
+                    return int(float(parts[1]) * 100)
         except Exception:
             pass
         return 50
 
     def set_volume(self, value):
-        subprocess.run(['pactl', 'set-sink-volume', '@DEFAULT_SINK@', f'{value}%'])
+        subprocess.run(['wpctl', 'set-volume', '@DEFAULT_AUDIO_SINK@', f'{value}%'])
 
     def get_kbd_backlight(self):
         try:
