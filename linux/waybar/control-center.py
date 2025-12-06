@@ -18,7 +18,7 @@ class ControlCenter(Gtk.Window):
         GtkLayerShell.set_layer(self, GtkLayerShell.Layer.OVERLAY)
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.RIGHT, True)
-        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, 38)
+        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, 3)
         GtkLayerShell.set_margin(self, GtkLayerShell.Edge.RIGHT, 10)
         GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.NONE)
 

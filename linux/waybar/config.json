@@ -183,8 +183,9 @@
     },
     "tooltip": true,
     "tooltip-format": "{desc}\nVolume: {volume}%",
-    "on-click": "pavucontrol",
-    "on-click-right": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
+    "on-click": "waybar-slider-popup volume",
+    "on-click-right": "pavucontrol",
+    "on-click-middle": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
   },
 
   "custom/separator": {
@@ -205,7 +206,7 @@
     "return-type": "json",
     "interval": 2,
     "tooltip": true,
-    "on-click": "~/.config/waybar/scripts/control-center.sh",
+    "on-click": "waybar-slider-popup brightness",
     "on-scroll-up": "brightnessctl set 5%+",
     "on-scroll-down": "brightnessctl set 5%-"
   },
@@ -215,9 +216,9 @@
     "return-type": "json",
     "interval": 2,
     "tooltip": true,
+    "on-click": "waybar-slider-popup kbd-backlight",
     "on-scroll-up": "brightnessctl -d kbd_backlight set 10%+",
     "on-scroll-down": "brightnessctl -d kbd_backlight set 10%-",
-    "on-click": "~/.config/waybar/scripts/control-center.sh",
     "on-click-right": "brightnessctl -d kbd_backlight set 0%",
     "on-click-middle": "brightnessctl -d kbd_backlight set 100%"
   },
@@ -225,7 +226,7 @@
   "custom/control-center": {
     "format": "󰒓",
     "tooltip": false,
-    "on-click": "~/.config/waybar/scripts/control-center.sh"
+    "on-click": "waybar-control-center"
   },
 
   "custom/dictate": {
