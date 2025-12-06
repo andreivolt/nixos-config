@@ -16,7 +16,6 @@ with pkgs;
   lan-mouse
   brightnessctl
   dragon-drop
-  eww
   ff2mpv
   freerdp
   fswebcam
