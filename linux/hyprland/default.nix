@@ -36,6 +36,7 @@ in {
       systemd.enable = false;  # UWSM handles this
       plugins = [
         hyprlandPlugins.hyprbars
+        hyprlandPlugins.hyprexpo
       ];
       extraConfig = ''
         source = ./main.conf
