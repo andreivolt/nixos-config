@@ -44,7 +44,7 @@
           border: none;
           padding: 10px;
           background: #1a1a1a;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
         }
 
         .notification-content {
