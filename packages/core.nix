@@ -38,6 +38,7 @@ with pkgs; [
   geoipWithDatabase
   ghostscript
   git-extras
+  git-filter-repo
   git-open
   glab
   glow
