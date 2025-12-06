@@ -4,7 +4,7 @@ let
   # Machine-specific settings (riva is the Asahi machine)
   isAsahi = config.networking.hostName == "riva";
 
-  # Bar height (eww bar)
+  # Bar height (waybar)
   barHeight = if isAsahi then 40 else 36;
 
   # Screen dimensions (effective, after scaling)
