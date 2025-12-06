@@ -37,9 +37,9 @@ in {
         source = ./main.conf
 
         # Trayscale - float near tray
-        windowrule = float, class:^(dev.deedles.Trayscale)$
-        windowrule = size 400 500, class:^(dev.deedles.Trayscale)$
-        windowrule = move 100%-410 40, class:^(dev.deedles.Trayscale)$
+        windowrule = float on, match:class dev.deedles.Trayscale
+        windowrule = size 400 500, match:class dev.deedles.Trayscale
+        windowrule = move 100%-410 40, match:class dev.deedles.Trayscale
       '';
     };
   };
