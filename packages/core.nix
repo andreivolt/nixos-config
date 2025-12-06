@@ -119,6 +119,7 @@ with pkgs; [
   weechat
   xh
   xurls
+  xxd
   yarn-berry
   zprint
 ]
