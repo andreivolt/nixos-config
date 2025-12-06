@@ -3,6 +3,7 @@
 
 import gi
 import subprocess
+import sys
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('GtkLayerShell', '0.1')
@@ -60,6 +61,17 @@ class ControlCenter(Gtk.Window):
         self.load_css()
 
         self.show_all()
+
+        # Close on focus loss or Escape key
+        self.connect("focus-out-event", lambda w, e: self.close())
+        self.connect("key-press-event", self.on_key_press)
+
+    def on_key_press(self, widget, event):
+        from gi.repository import Gdk
+        if event.keyval == Gdk.KEY_Escape:
+            self.close()
+            return True
+        return False
 
     def load_css(self):
         css = b"""
@@ -201,6 +213,31 @@ class ControlCenter(Gtk.Window):
 
 
 if __name__ == "__main__":
-    win = ControlCenter()
-    win.connect("destroy", Gtk.main_quit)
-    Gtk.main()
+    import os
+    import signal
+
+    pid_file = "/tmp/waybar-control-center.pid"
+
+    # Toggle: if already running, kill it
+    if os.path.exists(pid_file):
+        try:
+            with open(pid_file, 'r') as f:
+                old_pid = int(f.read().strip())
+            os.kill(old_pid, 0)  # Check if running
+            os.kill(old_pid, signal.SIGTERM)  # Kill it
+            os.remove(pid_file)
+            sys.exit(0)
+        except (ProcessLookupError, ValueError, FileNotFoundError):
+            pass
+
+    # Write our PID
+    with open(pid_file, 'w') as f:
+        f.write(str(os.getpid()))
+
+    try:
+        win = ControlCenter()
+        win.connect("destroy", Gtk.main_quit)
+        Gtk.main()
+    finally:
+        if os.path.exists(pid_file):
+            os.remove(pid_file)

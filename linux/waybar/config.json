@@ -18,7 +18,6 @@
     "custom/dictate",
     "tray",
     "custom/tailscale",
-    "network",
     "pulseaudio",
     "custom/brightness",
     "custom/kbd-backlight",
@@ -84,7 +83,7 @@
 
   "tray": {
     "icon-size": 18,
-    "spacing": 8,
+    "spacing": 12,
     "show-passive-items": true
   },
 
