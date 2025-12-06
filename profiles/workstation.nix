@@ -67,4 +67,6 @@
     notifyCapacity = 40;
     suspendCapacity = 10;
   };
+
+  services.logind.settings.Login.HandlePowerKey = "suspend";
 }
