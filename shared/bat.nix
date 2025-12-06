@@ -9,6 +9,15 @@
           wrap = "character";
         };
       };
+      programs.zsh.initContent = ''
+        cat() {
+          if [[ -t 1 ]]; then
+            bat "$@"
+          else
+            command cat "$@"
+          fi
+        }
+      '';
     }
   ];
 }
