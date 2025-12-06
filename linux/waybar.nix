@@ -1,9 +1,9 @@
 { config, lib, pkgs, ... }:
 
 let
-  # Control center as a proper derivation with GTK wrapping
-  controlCenterGui = pkgs.stdenv.mkDerivation {
-    pname = "waybar-control-center-gui";
+  # Waybar popups as a proper derivation with GTK wrapping
+  waybarPopups = pkgs.stdenv.mkDerivation {
+    pname = "waybar-popups";
     version = "1.0";
     src = ./waybar;
     nativeBuildInputs = [ pkgs.wrapGAppsHook3 pkgs.gobject-introspection ];
@@ -14,11 +14,15 @@ let
     ];
     installPhase = ''
       mkdir -p $out/bin
-      cp control-center.py $out/bin/waybar-control-center-gui
-      chmod +x $out/bin/waybar-control-center-gui
+      cp control-center.py $out/bin/waybar-control-center
+      cp slider-popup.py $out/bin/waybar-slider-popup
+      chmod +x $out/bin/waybar-control-center
+      chmod +x $out/bin/waybar-slider-popup
     '';
     postFixup = ''
-      wrapProgram $out/bin/waybar-control-center-gui \
+      wrapProgram $out/bin/waybar-control-center \
+        --prefix PATH : ${pkgs.lib.makeBinPath [ (pkgs.python3.withPackages (ps: with ps; [ pygobject3 pycairo ])) ]}
+      wrapProgram $out/bin/waybar-slider-popup \
         --prefix PATH : ${pkgs.lib.makeBinPath [ (pkgs.python3.withPackages (ps: with ps; [ pygobject3 pycairo ])) ]}
     '';
   };
@@ -27,7 +31,7 @@ in
   # Required packages
   environment.systemPackages = with pkgs; [
     brightnessctl
-    controlCenterGui
+    waybarPopups
   ];
 
   # Waybar configuration via home-manager
