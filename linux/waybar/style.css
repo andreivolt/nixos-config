@@ -324,6 +324,14 @@ window#waybar.empty #window {
   margin: 4px 0;
 }
 
+#tray menu {
+  padding: 8px;
+}
+
+#tray > widget {
+  margin: 0 2px;
+}
+
 #tray > .passive {
   -gtk-icon-effect: dim;
 }
