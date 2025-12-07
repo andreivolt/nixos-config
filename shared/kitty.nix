@@ -108,6 +108,8 @@
           "shift+cmd+equal" = "change_font_size all +0.5";
           "kitty_mod+minus" = "change_font_size all -0.5";
           "kitty_mod+kp_subtract" = "change_font_size all -0.5";
+          "ctrl+minus" = "change_font_size all -0.5";
+          "ctrl+0" = "change_font_size all 0";
           "cmd+minus" = "change_font_size all -0.5";
           "shift+cmd+minus" = "change_font_size all -0.5";
           "kitty_mod+a>m" = "set_background_opacity +0.1";
