@@ -29,7 +29,26 @@
   };
 
   services.playerctld.enable = true;
-  services.wob.enable = true;
+  services.wob = {
+    enable = true;
+    settings = {
+      "" = {
+        anchor = "bottom";
+        margin = 100;
+        height = 30;
+        width = 300;
+        border_size = 1;
+        border_offset = 2;
+        bar_padding = 2;
+        background_color = "00000088";
+        border_color = "ffffff99";
+        bar_color = "ffffffcc";
+        overflow_background_color = "00000088";
+        overflow_border_color = "ff666699";
+        overflow_bar_color = "ff6666cc";
+      };
+    };
+  };
 
   xdg.enable = true;
   xdg.userDirs.enable = true;
