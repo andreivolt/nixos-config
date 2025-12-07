@@ -36,7 +36,7 @@ in {
       systemd.enable = false;  # UWSM handles this
       plugins = [
         hyprlandPlugins.hyprbars
-        hyprlandPlugins.hyprexpo
+        # hyprlandPlugins.hyprexpo  # TODO: causing version mismatch issues
       ];
       extraConfig = ''
         source = ./main.conf
