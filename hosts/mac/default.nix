@@ -46,6 +46,7 @@
     ./homebrew
     ./host-opener.nix
     ./chrome-history.nix
+    ../../shared/ff2mpv.nix
     ./icloud.nix
     ./iina.nix
     ./interface.nix
