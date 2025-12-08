@@ -4,6 +4,7 @@ let
   inherit (pkgs.stdenv.hostPlatform) isx86_64;
 in
 [
+  andrei.battery-time
   wev
   acpi
   alejandra

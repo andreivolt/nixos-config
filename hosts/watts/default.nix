@@ -13,7 +13,6 @@
     ./insync.nix
     ../../linux/mpv.nix
     ../../linux/adb.nix
-    ./battery-monitor.nix
     ./fkey-remap.nix
     ./fingerprint.nix
     ../../linux/ipv6-disable.nix
