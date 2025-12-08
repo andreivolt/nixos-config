@@ -12,7 +12,7 @@
         "--enable-features=UseOzonePlatform"
         "--ozone-platform=wayland"
         "--font-render-hinting=none"
-        "--force-font-family-sans-serif=Tahoma"
+        "--force-font-family-sans-serif=Roboto"
       ];
     };
   };

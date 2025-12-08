@@ -26,8 +26,8 @@
       theme.name = "Adwaita";
       iconTheme.name = "Tela-dark";
       font = {
-        name = "Noto Sans";
-        size = 10;
+        name = "Roboto";
+        size = 12;
       };
       gtk3.extraConfig = {
         gtk-application-prefer-dark-theme = true;

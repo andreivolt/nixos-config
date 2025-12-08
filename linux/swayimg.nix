@@ -10,7 +10,7 @@
         scale = optimal
 
         [font]
-        name = Tahoma
+        name = Roboto
         size = 14
 
         [info]
