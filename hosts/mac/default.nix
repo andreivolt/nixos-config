@@ -86,7 +86,6 @@
   home-manager.useGlobalPkgs = true;
   home-manager.sharedModules = [
     inputs.mac-app-util.homeManagerModules.default
-    ../../shared/rust-script-warmer.nix
   ];
 
   home-manager.users.andrei = {pkgs, ...}: {
