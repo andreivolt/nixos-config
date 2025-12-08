@@ -5,17 +5,27 @@ let
     LED=/sys/class/leds/kbd_backlight/brightness
     TIMEOUT=3
     SAVED=$(cat "$LED")
+    USER_DISABLED=/tmp/kbd-backlight-user-disabled
 
     exec < <(${pkgs.libinput}/bin/libinput debug-events 2>/dev/null)
 
     while true; do
       if read -t $TIMEOUT -r _; then
-        # Input - restore if off
-        [ "$(cat "$LED")" = "0" ] && [ "$SAVED" != "0" ] && echo "$SAVED" > "$LED"
+        # Input detected - restore if off AND not user-disabled
+        if [ "$(cat "$LED")" = "0" ] && [ "$SAVED" != "0" ]; then
+          if [ ! -f "$USER_DISABLED" ]; then
+            echo "$SAVED" > "$LED"
+          fi
+        fi
         cur=$(cat "$LED"); [ "$cur" != "0" ] && SAVED=$cur
       else
-        # Timeout - turn off
-        cur=$(cat "$LED"); [ "$cur" != "0" ] && SAVED=$cur && echo 0 > "$LED"
+        # Timeout - turn off (and clear user-disabled flag so next input restores)
+        cur=$(cat "$LED")
+        if [ "$cur" != "0" ]; then
+          SAVED=$cur
+          echo 0 > "$LED"
+        fi
+        rm -f "$USER_DISABLED"
       fi
     done
   '';

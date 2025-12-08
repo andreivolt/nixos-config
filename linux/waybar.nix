@@ -14,14 +14,10 @@ let
     ];
     installPhase = ''
       mkdir -p $out/bin
-      cp control-center.py $out/bin/waybar-control-center
       cp slider-popup.py $out/bin/waybar-slider-popup
-      chmod +x $out/bin/waybar-control-center
       chmod +x $out/bin/waybar-slider-popup
     '';
     postFixup = ''
-      wrapProgram $out/bin/waybar-control-center \
-        --prefix PATH : ${pkgs.lib.makeBinPath [ (pkgs.python3.withPackages (ps: with ps; [ pygobject3 pycairo ])) ]}
       wrapProgram $out/bin/waybar-slider-popup \
         --prefix PATH : ${pkgs.lib.makeBinPath [ (pkgs.python3.withPackages (ps: with ps; [ pygobject3 pycairo ])) ]}
     '';
@@ -62,8 +58,8 @@ in
         source = ./waybar/scripts/dictate-status.sh;
         executable = true;
       };
-      "waybar/scripts/control-center.sh" = {
-        source = ./waybar/scripts/control-center.sh;
+      "waybar/scripts/kbd-backlight-toggle.sh" = {
+        source = ./waybar/scripts/kbd-backlight-toggle.sh;
         executable = true;
       };
     };
