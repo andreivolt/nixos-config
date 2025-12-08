@@ -47,6 +47,9 @@
   # Trust andrei for remote deployments (accept unsigned paths from nix-copy-closure)
   nix.settings.trusted-users = ["root" "andrei"];
 
+  # Override password file path (no /persist on this host)
+  users.users.andrei.hashedPasswordFile = lib.mkForce "/etc/passwords/andrei";
+
   # ACME for SSL certificates
   security.acme = {
     acceptTerms = true;
