@@ -89,20 +89,18 @@ in {
           sub-shadow-offset = 2;
         };
 
-        bindings = {
-          "Meta+c" = "script-binding uosc/copy-to-clipboard";
-          "Ctrl+c" = "script-binding uosc/copy-to-clipboard";
-          "Meta+z" = "script-binding SimpleUndo/undo";
-          "Ctrl+z" = "script-binding SimpleUndo/undo";
-          "Meta+Shift+z" = "script-binding SimpleUndo/redo";
-          "Ctrl+Shift+z" = "script-binding SimpleUndo/redo";
-          "Meta+y" = "script-binding SimpleUndo/redo";
-          "Ctrl+y" = "script-binding SimpleUndo/redo";
+        bindings = let
+          mod = if isDarwin then "Meta" else "Ctrl";
+        in {
+          "${mod}+c" = "script-binding uosc/copy-to-clipboard";
+          "${mod}+z" = "script-binding SimpleUndo/undo";
+          "${mod}+Shift+z" = "script-binding SimpleUndo/redo";
+          "${mod}+y" = "script-binding SimpleUndo/redo";
           "n" = "script-binding autosubsync/autosubsync-menu";
           "t" = "script-binding seek_to/toggle-seeker";
-          "Ctrl+j" = "script-message load-chat";
-          "Ctrl+Shift+j" = "script-message unload-chat";
-          "Ctrl+Alt+j" = "script-message chat-hidden";
+          "${mod}+j" = "script-message load-chat";
+          "${mod}+Shift+j" = "script-message unload-chat";
+          "${mod}+Alt+j" = "script-message chat-hidden";
         };
       };
 
