@@ -68,5 +68,4 @@ in
 ++ lib.optionals isx86_64 [
   boot
   osquery
-  pulumi-bin
 ]
