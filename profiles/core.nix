@@ -59,10 +59,12 @@
 
   time.timeZone = "Europe/Paris";
 
+  users.mutableUsers = false;
   users.users.andrei = {
     isNormalUser = true;
     shell = pkgs.zsh;
     extraGroups = ["wheel" "video" "input"];
+    hashedPasswordFile = "/persist/passwords/andrei";
   };
 
   programs.mosh.enable = true;
