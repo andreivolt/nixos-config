@@ -24,8 +24,7 @@
     "cpu",
     "memory",
     "battery",
-    "clock",
-    "custom/control-center"
+    "clock"
   ],
 
   "hyprland/workspaces": {
@@ -42,7 +41,7 @@
       "footclient": "󰆍",
       "foot": "󰆍",
       "ghostty": "󰆍",
-      "kitty": "󰄛",
+      "kitty": "󰆍",
       "alacritty": "󰆍",
       "wezterm": "󰆍",
       "org.kde.dolphin": "󰉋",
@@ -215,17 +214,7 @@
     "return-type": "json",
     "interval": 2,
     "tooltip": true,
-    "on-click": "waybar-slider-popup kbd-backlight",
-    "on-scroll-up": "brightnessctl -d kbd_backlight set 10%+",
-    "on-scroll-down": "brightnessctl -d kbd_backlight set 10%-",
-    "on-click-right": "brightnessctl -d kbd_backlight set 0%",
-    "on-click-middle": "brightnessctl -d kbd_backlight set 100%"
-  },
-
-  "custom/control-center": {
-    "format": "󰒓",
-    "tooltip": false,
-    "on-click": "waybar-control-center"
+    "on-click": "~/.config/waybar/scripts/kbd-backlight-toggle.sh"
   },
 
   "custom/dictate": {
