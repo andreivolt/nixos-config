@@ -1,0 +1,32 @@
+--- a/main.lua
++++ b/main.lua
+@@ -197,6 +197,19 @@ function download_live_chat(url, filename)
+     })
+ end
+
++function is_live_video(url)
++    local result = mp.command_native({
++        name = "subprocess",
++        capture_stdout = true,
++        args = { opts['yt-dlp-path'], url, '--print', '%(is_live)s', '--no-download' }
++    })
++    if result.status == 0 then
++        local output = result.stdout:gsub("%s+", "")
++        return output == "True"
++    end
++    return false
++end
++
+ function live_chat_exists_remote(url)
+     local result = mp.command_native({
+         name = "subprocess",
+@@ -340,7 +353,7 @@ function load_live_chat(filename, interactive)
+
+             if not file_exists(filename) then
+                 generating_overlay.data = 'Checking for live chat on remote...'
+                 generating_overlay:update()
+-                if live_chat_exists_remote(path) then
++                if live_chat_exists_remote(path) and not is_live_video(path) then
+                     generating_overlay.data = 'Downloading live chat replay...'
+                     generating_overlay:update()
+
