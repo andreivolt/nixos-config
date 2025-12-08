@@ -344,7 +344,8 @@ window#waybar.empty #window {
 }
 
 #custom-tailscale,
-#custom-dictate {
+#custom-dictate,
+#custom-caffeine {
 	min-width: 28px;
 	padding: 0 6px;
 	margin: 4px 0;
@@ -372,6 +373,15 @@ window#waybar.empty #window {
 	100% {
 		opacity: 1;
 	}
+}
+
+/* Caffeine */
+#custom-caffeine.active {
+	color: #ffffff;
+}
+
+#custom-caffeine.inactive {
+	color: rgba(136, 136, 136, 0.5);
 }
 
 /* Control center button */
