@@ -16,7 +16,6 @@
     # Desktop hardware & peripherals
     ../linux/brother-printer.nix
     ../linux/brother-scanner.nix
-    ../linux/lowbatt.nix
     ../linux/networkmanager.nix
     ../linux/v4l2loopback.nix
 
@@ -64,11 +63,18 @@
   services.upower.enable = true;
 
   # Battery monitoring for laptops
-  services.lowbatt = {
-    enable = true;
-    notifyCapacity = 40;
-    suspendCapacity = 10;
-  };
+  home-manager.sharedModules = [
+    {
+      services.batsignal = {
+        enable = true;
+        extraArgs = [
+          "-w" "40"  # warning notification at 40%
+          "-c" "20"  # critical notification at 20%
+          "-d" "10"  # danger (suspend) at 10%
+        ];
+      };
+    }
+  ];
 
   services.logind.settings.Login.HandlePowerKey = "suspend";
 }
