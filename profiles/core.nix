@@ -91,6 +91,4 @@
   environment.systemPackages =
     (import "${inputs.self}/packages/core.nix" pkgs)
     ++ (import "${inputs.self}/packages/linux.nix" pkgs);
-
-  
 }
