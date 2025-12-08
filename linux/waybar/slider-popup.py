@@ -21,17 +21,15 @@ class SliderPopup(Gtk.Window):
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.TOP, True)
         GtkLayerShell.set_anchor(self, GtkLayerShell.Edge.RIGHT, True)
         GtkLayerShell.set_margin(self, GtkLayerShell.Edge.TOP, 3)
-        # Position based on control type
-        margins = {"volume": 280, "brightness": 220, "kbd-backlight": 160}
-        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.RIGHT, margins.get(control_type, 200))
+        # Position based on control type (right margin from screen edge)
+        margins = {"volume": 195, "brightness": 160}
+        GtkLayerShell.set_margin(self, GtkLayerShell.Edge.RIGHT, margins.get(control_type, 180))
         GtkLayerShell.set_keyboard_mode(self, GtkLayerShell.KeyboardMode.NONE)
 
-        self.set_default_size(200, -1)
-
-        # Main container
-        main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
-        main_box.set_margin_top(12)
-        main_box.set_margin_bottom(12)
+        # Main container - single horizontal row
+        main_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        main_box.set_margin_top(8)
+        main_box.set_margin_bottom(8)
         main_box.set_margin_start(12)
         main_box.set_margin_end(12)
         self.add(main_box)
@@ -45,42 +43,36 @@ class SliderPopup(Gtk.Window):
             self.icon = "󰕾"
             self.get_value = self.get_volume
             self.set_value = self.set_volume
-        elif control_type == "kbd-backlight":
-            self.icon = "󰌌"
-            self.get_value = self.get_kbd_backlight
-            self.set_value = self.set_kbd_backlight
         else:
             print(f"Unknown control type: {control_type}")
             sys.exit(1)
 
-        # Create slider row
+        # Get initial value
         value = self.get_value()
         if value is None:
             print(f"Could not get {control_type} value")
             sys.exit(1)
 
-        row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-
+        # Icon
         icon_label = Gtk.Label(label=self.icon)
         icon_label.get_style_context().add_class("slider-icon")
-        row.pack_start(icon_label, False, False, 0)
+        icon_label.set_valign(Gtk.Align.CENTER)
+        main_box.pack_start(icon_label, False, False, 0)
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-
-        self.value_label = Gtk.Label(label=f"{value}%")
-        self.value_label.get_style_context().add_class("slider-value")
-        self.value_label.set_halign(Gtk.Align.END)
-        vbox.pack_start(self.value_label, False, False, 0)
-
+        # Slider
         self.scale = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL, 0, 100, 5)
         self.scale.set_draw_value(False)
         self.scale.set_value(value)
-        self.scale.set_size_request(150, -1)
+        self.scale.set_size_request(120, -1)
         self.scale.connect("value-changed", self.on_value_changed)
-        vbox.pack_start(self.scale, False, False, 0)
+        main_box.pack_start(self.scale, False, False, 0)
 
-        row.pack_start(vbox, True, True, 0)
-        main_box.pack_start(row, False, False, 0)
+        # Value label
+        self.value_label = Gtk.Label(label=f"{int(value)}%")
+        self.value_label.get_style_context().add_class("slider-value")
+        self.value_label.set_valign(Gtk.Align.CENTER)
+        self.value_label.set_width_chars(4)
+        main_box.pack_start(self.value_label, False, False, 0)
 
         # Close on click outside (button press on window but not on controls)
         self.connect("button-press-event", self.on_button_press)
@@ -131,7 +123,7 @@ class SliderPopup(Gtk.Window):
         window {
             background: rgba(20, 20, 20, 0.95);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
+            border-radius: 3px;
         }
         .slider-icon {
             font-size: 20px;
@@ -144,22 +136,22 @@ class SliderPopup(Gtk.Window):
             font-weight: bold;
         }
         scale {
-            min-height: 8px;
+            min-height: 6px;
         }
         scale trough {
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            min-height: 8px;
+            border-radius: 3px;
+            min-height: 6px;
         }
         scale highlight {
-            background: #888888;
-            border-radius: 4px;
+            background: #00ff00;
+            border-radius: 3px;
         }
         scale slider {
             background: #ffffff;
             border-radius: 50%;
-            min-width: 16px;
-            min-height: 16px;
+            min-width: 14px;
+            min-height: 14px;
         }
         """
         provider = Gtk.CssProvider()
@@ -205,20 +197,22 @@ class SliderPopup(Gtk.Window):
     def set_volume(self, value):
         subprocess.run(['wpctl', 'set-volume', '@DEFAULT_AUDIO_SINK@', f'{value}%'])
 
-    def get_kbd_backlight(self):
-        try:
-            result = subprocess.run(
-                ['brightnessctl', '-d', 'kbd_backlight', '-m'],
-                capture_output=True, text=True
-            )
-            if result.returncode == 0:
-                return int(result.stdout.split(',')[3].rstrip('%'))
-        except Exception:
-            pass
-        return None
+def kill_other_popups(current_type):
+    """Kill other slider popups (mutual exclusion)."""
+    import os
 
-    def set_kbd_backlight(self, value):
-        subprocess.run(['brightnessctl', '-d', 'kbd_backlight', 'set', f'{value}%'])
+    for slider_type in ["brightness", "volume"]:
+        if slider_type == current_type:
+            continue
+        pid_file = f"/tmp/waybar-slider-{slider_type}.pid"
+        if os.path.exists(pid_file):
+            try:
+                with open(pid_file, 'r') as f:
+                    pid = int(f.read().strip())
+                os.kill(pid, 15)
+                os.remove(pid_file)
+            except (ProcessLookupError, ValueError, FileNotFoundError):
+                pass
 
 
 def main():
@@ -245,6 +239,9 @@ def main():
         except (ProcessLookupError, ValueError):
             # Process not running, continue
             pass
+
+    # Kill other popups (mutual exclusion)
+    kill_other_popups(control_type)
 
     # Write our PID
     with open(pid_file, 'w') as f:
