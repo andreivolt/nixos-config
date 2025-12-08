@@ -62,6 +62,10 @@ in
         source = ./waybar/scripts/kbd-backlight-toggle.sh;
         executable = true;
       };
+      "waybar/scripts/caffeine.sh" = {
+        source = ./waybar/scripts/caffeine.sh;
+        executable = true;
+      };
     };
   };
 }
