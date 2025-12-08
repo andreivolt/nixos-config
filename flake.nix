@@ -27,10 +27,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     hyprland = {
-      url = "github:hyprwm/Hyprland";
+      url = "github:hyprwm/Hyprland/v0.52.2";
     };
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins";
+      url = "github:hyprwm/hyprland-plugins/391818ec83528a87a69efedb434ff9e6012ff2fa";
       inputs.hyprland.follows = "hyprland";
     };
     nixos-apple-silicon = {
