@@ -7,6 +7,7 @@ in
 with pkgs;
 
 [
+  ff2mpv
   neovide
   zed-editor
 ]
@@ -16,7 +17,6 @@ with pkgs;
   lan-mouse
   brightnessctl
   dragon-drop
-  ff2mpv
   freerdp
   fswebcam
   grim
