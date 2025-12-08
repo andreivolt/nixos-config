@@ -13,6 +13,13 @@
     cp ${./mpv/seek-to.lua} $out/share/mpv/scripts/seek-to.lua
   '' // { scriptName = "seek-to.lua"; };
 
+  # patched youtube-chat that skips live streams
+  youtube-chat-patched = pkgs.mpvScripts.youtube-chat.overrideAttrs (old: {
+    patches = (old.patches or []) ++ [
+      ./mpv/youtube-chat-skip-live.patch
+    ];
+  });
+
   customScriptsDir = pkgs.runCommand "mpv-custom-scripts" {} ''
     mkdir -p $out
     cp ${./mpv/fastforward.lua} $out/fastforward.lua
@@ -27,18 +34,19 @@ in {
 
         # home-manager merges lists, so additional scripts in platform-specific
         # modules will be added to this list
-        scripts = with pkgs.mpvScripts; [
+        scripts = (with pkgs.mpvScripts; [
           uosc
           thumbfast
           quality-menu
           sponsorblock-minimal
           autosubsync-mpv
           eisa01.undoredo
-          youtube-chat
+        ]) ++ [
+          youtube-chat-patched
           seek-to-custom
-        ] ++ lib.optionals isLinux [
+        ] ++ lib.optionals isLinux (with pkgs.mpvScripts; [
           mpris
-        ];
+        ]);
 
         scriptOpts = {
           # removed visibility conditions from subtitles and speed controls
