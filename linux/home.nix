@@ -4,7 +4,6 @@
 
 {pkgs, ...}: {
   imports = [
-    ../shared/rust-script-warmer.nix
     ./hyprland/pin-auto.nix
     ./rofi.nix
     ./zathura.nix
