@@ -298,7 +298,7 @@ window#waybar.empty #window {
 	color: #888888;
 }
 
-/* Keyboard backlight: gray with opacity levels */
+/* Keyboard backlight: on/off only */
 #custom-kbd-backlight {
 	color: #888888;
 }
@@ -307,15 +307,7 @@ window#waybar.empty #window {
 	color: rgba(136, 136, 136, 0.3);
 }
 
-#custom-kbd-backlight.low {
-	color: rgba(136, 136, 136, 0.5);
-}
-
-#custom-kbd-backlight.medium {
-	color: rgba(136, 136, 136, 0.75);
-}
-
-#custom-kbd-backlight.high {
+#custom-kbd-backlight.on {
 	color: #888888;
 }
 
