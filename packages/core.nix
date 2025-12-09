@@ -2,6 +2,7 @@
 pkgs:
 with pkgs; [
   age
+  alejandra
   andrei.anypaste
   andrei.nixos-repl
   ansifilter
@@ -10,7 +11,9 @@ with pkgs; [
   ast-grep
   babashka
   backblaze-b2
+  bat
   bfg-repo-cleaner
+  btop
   bun
   cached-nix-shell
   carapace
@@ -20,7 +23,9 @@ with pkgs; [
   cloudflared
   cmake
   csvkit
+  curl
   curlie
+  delta
   deno
   devd
   diffsitter
@@ -33,35 +38,48 @@ with pkgs; [
   edir
   erdtree
   eslint
+  eza
   fastgron
+  fd
   fdupes
+  ffmpeg-full
+  file
   firefox_decrypt
   flyctl
+  fzf
+  gcc
   gdrive3
   geoipWithDatabase
+  gh
   ghostscript
+  git
   git-extras
   git-filter-repo
   git-open
   glab
   glow
+  gnumake
   gnupg
   go
   gojq
   google-cloud-sdk
   gum
   htmlq
+  htop-vim
   hyperfine
   iftop
   imagemagick
   inetutils
   jet
   jo
+  jq
   jujutsu
   lastpass-cli
   lazydocker
+  lazygit
   leiningen
   litecli
+  lsof
   mediainfo
   mitmproxy
   mkcert
@@ -71,30 +89,41 @@ with pkgs; [
       rm -f $out/bin/parallel $out/share/man/man1/parallel.1
     '';
   }))
-  parallel
+  mosh
+  ncdu_1
+  neovim
   neovim-remote
   netcat
+  nix-index
   nix-prefetch-git
+  nix-top
   nixd
   nixfmt-rfc-style
+  nmap
+  nodejs
   nushell
   nvimpager
   oci-cli
   openssl
   ouch
   pandoc
+  parallel
   patchelf
   patchutils
   pdftk
+  pkg-config
   pnpm
   poppler-utils
   portaudio
   procs
   pry
   pv
+  rclone
   redo
   rich-cli
+  ripgrep
   rlwrap
+  rsync
   rubocop
   ruby
   ruby-lsp
@@ -105,19 +134,27 @@ with pkgs; [
   scc
   scriptisto
   shell-gpt
+  socat
+  sops
   sox
   sqlite
   sqlite-utils
   sqlite-vec
+  sshpass
   stack
   stylua
   tabview
+  tcpdump
   terminal-colors
   tidyp
   timg
   tmate
+  tmux
+  trash-cli
+  tree
   tree-sitter
   trurl
+  unzip
   upterm
   usql
   uv
@@ -128,10 +165,13 @@ with pkgs; [
   wdiff
   websocat
   weechat
+  wget
   xh
   xmlstarlet
   xurls
   xxd
   yarn-berry
+  yazi
+  yt-dlp
   zprint
 ]
