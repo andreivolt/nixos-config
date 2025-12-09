@@ -14,7 +14,7 @@
       };
       Service = {
         Type = "simple";
-        ExecStart = "${pkgs.swaybg}/bin/swaybg -i /home/andrei/drive/in/macos-wallpapers/monterey.jpg -m fill";
+        ExecStart = "${pkgs.swaybg}/bin/swaybg -c '#000000'";
         Restart = "on-failure";
         RestartSec = 3;
       };
