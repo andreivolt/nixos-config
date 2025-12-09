@@ -58,7 +58,7 @@
   hardware.graphics.enable = true;
 
   # GUI-related services
-  services.devmon.enable = true;
+  services.udisks2.enable = true;
   services.flatpak.enable = true;
   services.gvfs.enable = true;
   services.upower.enable = true;
@@ -69,10 +69,15 @@
       services.batsignal = {
         enable = true;
         extraArgs = [
-          "-w" "40"  # warning notification at 40%
-          "-c" "20"  # critical notification at 20%
-          "-d" "10"  # danger (suspend) at 10%
+          "-w" "40"
+          "-c" "20"
+          "-d" "10"
         ];
+      };
+      services.udiskie = {
+        enable = true;
+        notify = true;
+        tray = "never";
       };
     }
   ];
