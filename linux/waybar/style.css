@@ -113,7 +113,6 @@ window#waybar.empty #window {
 	color: #888888;
 }
 
-/* System Monitoring Modules - consistent sizing */
 #cpu,
 #memory,
 #disk,
@@ -126,8 +125,9 @@ window#waybar.empty #window {
 	padding: 0 6px;
 	margin: 4px 0;
 	border-radius: 0;
-	font-size: 18px;
+	font-size: 28px;
 	border-right: 1px solid rgba(255, 255, 255, 0.15);
+	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
 /* Battery with percent */
@@ -350,8 +350,9 @@ window#waybar.empty #window {
 	padding: 0 6px;
 	margin: 4px 0;
 	color: #888888;
-	font-size: 18px;
+	font-size: 28px;
 	border-right: 1px solid rgba(255, 255, 255, 0.15);
+	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
 #custom-dictate.recording {
