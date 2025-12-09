@@ -7,6 +7,7 @@ with pkgs; [
   arp-scan
   ast-grep
   babashka
+  backblaze-b2
   bfg-repo-cleaner
   bun
   cached-nix-shell
