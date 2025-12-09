@@ -178,7 +178,7 @@
       "phone": "󰏲",
       "portable": "󰏲",
       "car": "󰄋",
-      "default": ["󰕿", "󰖀", "󰕾"]
+      "default": "󰕾"
     },
     "tooltip": true,
     "tooltip-format": "{desc}\nVolume: {volume}%",
