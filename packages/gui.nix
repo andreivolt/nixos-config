@@ -8,6 +8,7 @@ with pkgs;
 
 [
   ff2mpv
+  mpv
   neovide
   zed-editor
 ]
@@ -73,7 +74,6 @@ with pkgs;
 ]
 ++ lib.optionals isDarwin [
   emacs
-  google-chrome
   monitorcontrol
   plistwatch
 ]

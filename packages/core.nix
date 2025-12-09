@@ -2,12 +2,15 @@
 pkgs:
 with pkgs; [
   age
+  alejandra
   ansifilter
   aria2
   arp-scan
   ast-grep
   babashka
+  bat
   bfg-repo-cleaner
+  btop
   bun
   cached-nix-shell
   cargo
@@ -16,7 +19,9 @@ with pkgs; [
   cloudflared
   cmake
   csvkit
+  curl
   curlie
+  delta
   deno
   diffsitter
   direnv
@@ -28,34 +33,47 @@ with pkgs; [
   edir
   erdtree
   eslint
+  eza
   fastgron
+  fd
   fdupes
+  ffmpeg-full
+  file
   firefox_decrypt
   flyctl
+  fzf
+  gcc
   gdrive3
   geoipWithDatabase
+  gh
   ghostscript
+  git
   git-extras
   git-filter-repo
   git-open
   glab
   glow
+  gnumake
   gnupg
   go
   gojq
   google-cloud-sdk
   gum
   htmlq
+  htop-vim
   hyperfine
   iftop
   imagemagick
   inetutils
   jet
   jo
+  jq
   jujutsu
   lastpass-cli
   lazydocker
+  lazygit
   litecli
+  lsof
   mediainfo
   mitmproxy
   mkcert
@@ -65,29 +83,40 @@ with pkgs; [
       rm -f $out/bin/parallel $out/share/man/man1/parallel.1
     '';
   }))
-  parallel
+  mosh
+  ncdu_1
+  neovim
   neovim-remote
   netcat
+  nix-index
   nix-prefetch-git
+  nix-top
   nixd
   nixfmt-rfc-style
+  nmap
+  nodejs
   nushell
   nvimpager
   oci-cli
   openssl
   ouch
   pandoc
+  parallel
   patchelf
   patchutils
   pdftk
+  pkg-config
   pnpm
   poppler-utils
   portaudio
   procs
   pry
   pv
+  rclone
   redo
+  ripgrep
   rlwrap
+  rsync
   rubocop
   ruby
   ruby-lsp
@@ -97,17 +126,25 @@ with pkgs; [
   rustfmt
   scc
   shell-gpt
+  socat
+  sops
   sox
   sqlite
   sqlite-utils
+  sshpass
   stack
   stylua
   tabview
+  tcpdump
   terminal-colors
   tidyp
   timg
+  tmux
+  trash-cli
+  tree
   tree-sitter
   trurl
+  unzip
   upterm
   uv
   viddy
@@ -117,9 +154,12 @@ with pkgs; [
   wdiff
   websocat
   weechat
+  wget
   xh
   xurls
   xxd
   yarn-berry
+  yazi
+  yt-dlp
   zprint
 ]
