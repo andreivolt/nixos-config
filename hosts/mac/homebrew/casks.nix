@@ -1,6 +1,10 @@
 [
   "battery"
   "command-x"
+  "google-chrome"
+  "slack"
+  "spotify"
+  "tailscale-app"
   "cursorcerer"
   "flux-app"
   "ghostty@tip"
