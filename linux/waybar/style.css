@@ -130,13 +130,19 @@ window#waybar.empty #window {
 	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
-/* Battery with percent */
 #battery {
-	padding: 0 8px;
+	min-width: 70px;
+	padding: 0 6px;
 	margin: 4px 0;
 	border-radius: 0;
 	font-size: 14px;
 	border-right: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+#battery.full {
+	min-width: 28px;
+	font-size: 18px;
+	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
 #clock {
