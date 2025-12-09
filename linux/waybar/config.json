@@ -83,7 +83,7 @@
 
   "tray": {
     "icon-size": 18,
-    "spacing": 12,
+    "spacing": 16,
     "show-passive-items": true
   },
 
