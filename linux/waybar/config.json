@@ -232,7 +232,7 @@
     "return-type": "json",
     "interval": 5,
     "signal": 9,
-    "tooltip": true,
+    "tooltip": false,
     "on-click": "~/.config/waybar/scripts/caffeine.sh toggle"
   }
 }
