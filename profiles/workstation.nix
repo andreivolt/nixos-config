@@ -49,6 +49,7 @@
     ../linux/xdg-portals.nix
     ../linux/chromium.nix
     ../linux/dolphin.nix
+    ../linux/kdeconnect.nix
     ../shared/ff2mpv.nix
     ../linux/kbd-backlight-idle.nix
   ];
