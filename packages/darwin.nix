@@ -15,6 +15,7 @@ with pkgs; with pkgs.darwin; [
   lsusb
   m-cli
   mas
+  pstree
   psutils
   terminal-notifier
   trash
