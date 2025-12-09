@@ -1,69 +1,31 @@
+# Linux-specific packages (not available or not needed on Darwin)
 pkgs:
 with pkgs;
 let
   inherit (pkgs.stdenv.hostPlatform) isx86_64;
 in
 [
-  andrei.battery-time
-  wev
   acpi
-  alejandra
   alsa-lib.dev
   alsa-utils
-  openssl.dev
-  bat
+  andrei.battery-time
   binutils
-  btop
-  curl
-  delta
   detox
-  eza
-  fd
-  ffmpeg-full
-  file
-  fzf
-  gcc
-  gh
-  git
   glib
-  gnumake
-  htop-vim
   inotify-tools
   iotop
-  jq
-  lazygit
   lm_sensors
   lshw
   lsof
-  mosh
-  ncdu_1
-  neovim
   nethogs
-  nix-top
-  nix-index
-  nmap
-  nodejs
+  openssl.dev
   pciutils
-  pkg-config
   psmisc
-  rclone
-  ripgrep
-  rsync
-  sshpass
-  socat
-  sops
   strace
-  tcpdump
-  tmux
-  trash-cli
-  tree
-  unzip
   usbutils
-  wget
+  wev
   xdg-user-dirs
   xdg-utils
-  yazi
-  yt-dlp
 ]
 ++ lib.optionals isx86_64 [
   boot
