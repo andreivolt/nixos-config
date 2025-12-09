@@ -59,6 +59,7 @@
     ./screencapture.nix
     ./security.nix
     ./socks-proxy.nix
+    ./ssh.nix
     ./spotlight.nix
     ./system-preferences.nix
     ./telegram-archive.nix
