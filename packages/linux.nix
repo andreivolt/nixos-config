@@ -19,6 +19,7 @@ in
   lsof
   nethogs
   openssl.dev
+  parted
   pciutils
   psmisc
   strace
