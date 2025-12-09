@@ -37,10 +37,40 @@ in
       systemd.enable = true;
     };
 
+    # Auto-restart waybar when CSS changes
+    # moved_to: atomic rename (Claude Edit tool, some editors)
+    # close_write: direct write (vim, manual edits)
+    systemd.user.services.waybar-css-watcher = {
+      Unit = {
+        Description = "Watch waybar CSS for changes";
+        After = [ "waybar.service" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.writeShellScript "waybar-css-watcher" ''
+          ${pkgs.inotify-tools}/bin/inotifywait -m -e moved_to,close_write "$HOME/dev/nixos-config/linux/waybar/" |
+          while read -r dir event file; do
+            if [ "$file" = "style.css" ]; then
+              ${pkgs.systemd}/bin/systemctl --user restart waybar
+            fi
+          done
+        ''}";
+        Restart = "always";
+        RestartSec = 5;
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
+
     # Config files from external sources
     xdg.configFile = {
       "waybar/config".source = ./waybar/config.json;
-      "waybar/style.css".source = ./waybar/style.css;
+      # Out-of-store symlink for live CSS editing without rebuild
+      "waybar/style.css" = {
+        source = config.lib.file.mkOutOfStoreSymlink "/home/andrei/dev/nixos-config/linux/waybar/style.css";
+        onChange = "${pkgs.systemd}/bin/systemctl --user restart waybar || true";
+      };
 
       "waybar/scripts/get-brightness.sh" = {
         source = ./waybar/scripts/get-brightness.sh;
