@@ -1,5 +1,6 @@
 pkgs:
 with pkgs; with pkgs.darwin; [
+  andrei.dmg-unmount
   andrei.impbcopy
   andrei.videosnap
   asitop
