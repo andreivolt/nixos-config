@@ -22,7 +22,6 @@
     # Services
     ../linux/tor.nix
 
-    ../shared/alacritty.nix
     ../shared/ghostty.nix
     ../shared/kitty.nix
     ../linux/swayimg.nix
