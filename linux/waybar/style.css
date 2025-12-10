@@ -121,7 +121,7 @@ window#waybar.empty #window {
 #pulseaudio,
 #custom-brightness,
 #custom-kbd-backlight {
-	min-width: 28px;
+	min-width: 36px;
 	padding: 0 6px;
 	margin: 4px 0;
 	border-radius: 0;
@@ -131,17 +131,12 @@ window#waybar.empty #window {
 }
 
 #battery {
-	min-width: 70px;
+	min-width: 36px;
 	padding: 0 6px;
 	margin: 4px 0;
 	border-radius: 0;
 	font-size: 14px;
 	border-right: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-#battery.full {
-	min-width: 28px;
-	font-size: 18px;
 	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
@@ -352,7 +347,7 @@ window#waybar.empty #window {
 #custom-tailscale,
 #custom-dictate,
 #custom-caffeine {
-	min-width: 28px;
+	min-width: 36px;
 	padding: 0 6px;
 	margin: 4px 0;
 	color: #888888;
