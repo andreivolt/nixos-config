@@ -5,6 +5,7 @@ with pkgs; [
   andrei.darkmode
   andrei.flushdns
   andrei.lock
+  andrei.pngview
   alejandra
   andrei.anypaste
   andrei.nixos-repl
