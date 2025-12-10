@@ -1,9 +1,8 @@
 {pkgs, ...}: {
-  # TODO
-  # fonts.fontconfig.defaultFonts = {
-  #   monospace = [ "Source Code Pro" ];
-  #   sansSerif = [ "Source Sans Pro" ];
-  # };
+  fonts.fontconfig.defaultFonts = {
+    sansSerif = [ "Roboto" ];
+    monospace = [ "IosevkaTerm Nerd Font Mono" ];
+  };
 
   nixpkgs.config.input-fonts.acceptLicense = true;
 
