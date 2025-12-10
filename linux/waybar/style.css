@@ -126,7 +126,6 @@ window#waybar.empty #window {
 	margin: 4px 0;
 	border-radius: 0;
 	font-size: 28px;
-	border-right: 1px solid rgba(255, 255, 255, 0.15);
 	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
@@ -136,14 +135,12 @@ window#waybar.empty #window {
 	margin: 4px 0;
 	border-radius: 0;
 	font-size: 14px;
-	border-right: 1px solid rgba(255, 255, 255, 0.15);
 	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
 #clock {
 	padding: 0 8px;
 	margin: 4px 0;
-	border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 /* CPU states with colors */
@@ -316,7 +313,6 @@ window#waybar.empty #window {
 #tray {
 	padding: 0 15px;
 	margin: 4px 0;
-	border-right: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 #tray menu {
@@ -352,7 +348,6 @@ window#waybar.empty #window {
 	margin: 4px 0;
 	color: #888888;
 	font-size: 28px;
-	border-right: 1px solid rgba(255, 255, 255, 0.15);
 	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
 }
 
