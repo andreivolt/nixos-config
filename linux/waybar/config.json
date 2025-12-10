@@ -33,6 +33,7 @@
     "format-window-separator": " ",
     "window-rewrite-default": "○",
     "window-rewrite": {
+      "title<Picture in picture>": "",
       "firefox": "󰈹",
       "chromium": "󰊯",
       "google-chrome": "󰊯",
