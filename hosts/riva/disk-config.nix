@@ -81,18 +81,10 @@
       efi.efiSysMountPoint = "/boot";
     };
 
-    # BTRFS support
-    boot.supportedFilesystems = [ "btrfs" ];
-
     services.btrfs.autoScrub = {
       enable = true;
       interval = "monthly";
       fileSystems = [ "/btrfs_root" ];
     };
-
-    environment.systemPackages = with pkgs; [
-      btrfs-progs
-      compsize
-    ];
   };
 }

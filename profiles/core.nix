@@ -90,5 +90,9 @@
   environment.variables.LC_TIME = "C.UTF-8";
   environment.systemPackages =
     (import "${inputs.self}/packages/core.nix" pkgs)
-    ++ (import "${inputs.self}/packages/linux.nix" pkgs);
+    ++ (import "${inputs.self}/packages/linux.nix" pkgs)
+    ++ (with pkgs; [ btrfs-progs compsize ]);
+
+  # Btrfs support
+  boot.supportedFilesystems = [ "btrfs" ];
 }

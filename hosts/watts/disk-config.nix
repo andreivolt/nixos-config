@@ -98,20 +98,11 @@
       "udev.log_priority=3"
     ];
 
-    # Enable BTRFS support and tools
-    boot.supportedFilesystems = [ "btrfs" ];
-
     # BTRFS maintenance
     services.btrfs.autoScrub = {
       enable = true;
       interval = "monthly";
       fileSystems = [ "/" ];
     };
-
-    # Useful BTRFS tools
-    environment.systemPackages = with pkgs; [
-      btrfs-progs
-      compsize  # Check compression ratio
-    ];
   };
 }
