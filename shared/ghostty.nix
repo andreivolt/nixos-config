@@ -1,4 +1,7 @@
-{
+let
+  colors = import ./colors.nix;
+  aurora = colors.aurora;
+in {
   home-manager.sharedModules = [
     {
       programs.ghostty = {
@@ -17,33 +20,32 @@
           adjust-font-baseline = 0;
           adjust-cell-width = "-12%";
 
-          # Aurora theme
-          foreground = "#ffffff";
-          background = "#000000";
-          cursor-color = "#ddd0f4";
-          cursor-text = "#211c2f";
-          selection-background = "#3f4060";
-          selection-foreground = "#e7d3fb";
+          foreground = aurora.foreground;
+          background = aurora.background;
+          cursor-color = aurora.cursor;
+          cursor-text = aurora.cursorText;
+          selection-background = aurora.selection.background;
+          selection-foreground = aurora.selection.foreground;
 
           palette = [
-            "0=#070510"
-            "1=#ff5874"
-            "2=#addb67"
-            "3=#ffcb65"
-            "4=#be9af7"
-            "5=#FD9720"
-            "6=#A1EFE4"
-            "7=#645775"
-            "8=#443d60"
-            "9=#ec5f67"
-            "10=#d7ffaf"
-            "11=#fbec9f"
-            "12=#6690c4"
-            "13=#ffbe00"
-            "14=#54CED6"
-            "15=#e7d3fb"
-            "16=#8a6e2b"
-            "17=#a8834a"
+            "0=${aurora.normal.black}"
+            "1=${aurora.normal.red}"
+            "2=${aurora.normal.green}"
+            "3=${aurora.normal.yellow}"
+            "4=${aurora.normal.blue}"
+            "5=${aurora.normal.magenta}"
+            "6=${aurora.normal.cyan}"
+            "7=${aurora.normal.white}"
+            "8=${aurora.bright.black}"
+            "9=${aurora.bright.red}"
+            "10=${aurora.bright.green}"
+            "11=${aurora.bright.yellow}"
+            "12=${aurora.bright.blue}"
+            "13=${aurora.bright.magenta}"
+            "14=${aurora.bright.cyan}"
+            "15=${aurora.bright.white}"
+            "16=${aurora.extended.color16}"
+            "17=${aurora.extended.color17}"
           ];
 
           minimum-contrast = 1;

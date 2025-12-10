@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{pkgs, ...}:
+let
+  colors = import ./colors.nix;
+  aurora = colors.aurora;
+in {
   home-manager.sharedModules = [
     ({lib, ...}: {
       programs.kitty = {
@@ -61,39 +65,39 @@
           visual_bell_color = "red";
 
           # Aurora theme
-          background = "#000000";
-          foreground = "#ffffff";
-          selection_background = "#3f4060";
-          selection_foreground = "#e7d3fb";
-          url_color = "#be9af7";
-          cursor = "#ddd0f4";
-          cursor_text_color = "#211c2f";
-          active_border_color = "#3f4060";
-          inactive_border_color = "#211c2f";
-          active_tab_background = "#211c2f";
-          active_tab_foreground = "#e7d3fb";
-          inactive_tab_background = "#000000";
+          background = aurora.background;
+          foreground = aurora.foreground;
+          selection_background = aurora.selection.background;
+          selection_foreground = aurora.selection.foreground;
+          url_color = aurora.normal.blue;
+          cursor = aurora.cursor;
+          cursor_text_color = aurora.cursorText;
+          active_border_color = aurora.selection.background;
+          inactive_border_color = aurora.cursorText;
+          active_tab_background = aurora.cursorText;
+          active_tab_foreground = aurora.selection.foreground;
+          inactive_tab_background = aurora.background;
           inactive_tab_foreground = "#a0a0a0";
-          tab_bar_background = "#000000";
+          tab_bar_background = aurora.background;
 
-          color0 = "#070510";
-          color1 = "#ff5874";
-          color2 = "#addb67";
-          color3 = "#ffcb65";
-          color4 = "#be9af7";
-          color5 = "#FD9720";
-          color6 = "#A1EFE4";
-          color7 = "#645775";
-          color8 = "#443d60";
-          color9 = "#ec5f67";
-          color10 = "#d7ffaf";
-          color11 = "#fbec9f";
-          color12 = "#6690c4";
-          color13 = "#ffbe00";
-          color14 = "#54CED6";
-          color15 = "#e7d3fb";
-          color16 = "#8a6e2b";
-          color17 = "#a8834a";
+          color0 = aurora.normal.black;
+          color1 = aurora.normal.red;
+          color2 = aurora.normal.green;
+          color3 = aurora.normal.yellow;
+          color4 = aurora.normal.blue;
+          color5 = aurora.normal.magenta;
+          color6 = aurora.normal.cyan;
+          color7 = aurora.normal.white;
+          color8 = aurora.bright.black;
+          color9 = aurora.bright.red;
+          color10 = aurora.bright.green;
+          color11 = aurora.bright.yellow;
+          color12 = aurora.bright.blue;
+          color13 = aurora.bright.magenta;
+          color14 = aurora.bright.cyan;
+          color15 = aurora.bright.white;
+          color16 = aurora.extended.color16;
+          color17 = aurora.extended.color17;
         };
 
         keybindings = {

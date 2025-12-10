@@ -1,7 +1,9 @@
 # Rofi launcher configuration
 # Dark theme, green accents, Roboto, with icons
 { pkgs, ... }:
-{
+let
+  colors = import ../shared/colors.nix;
+in {
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
@@ -28,10 +30,10 @@
 
   xdg.configFile."rofi/theme.rasi".text = ''
     * {
-      bg: #000000dd;
-      bg-sel: #333333;
-      fg: #cccccc;
-      fg-alt: #888888;
+      bg: ${colors.ui.bg};
+      bg-sel: ${colors.ui.bgAlt};
+      fg: ${colors.ui.fg};
+      fg-alt: ${colors.ui.fgDim};
     }
 
     window {
