@@ -32,7 +32,6 @@
     ../shared/fonts.nix
     ../linux/cliphist.nix
     ../linux/dropdown.nix
-    # ../linux/eww.nix
     ../linux/gnome-keyring.nix
     ../linux/greetd.nix
     ../linux/gtk.nix
