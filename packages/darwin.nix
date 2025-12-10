@@ -1,5 +1,6 @@
 pkgs:
 with pkgs; with pkgs.darwin; [
+  andrei.cleanup
   asitop
   coreutils
   duti
