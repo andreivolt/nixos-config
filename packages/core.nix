@@ -2,6 +2,7 @@
 pkgs:
 with pkgs; [
   age
+  andrei.lock
   alejandra
   ansifilter
   aria2
