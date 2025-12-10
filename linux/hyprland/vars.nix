@@ -27,6 +27,7 @@ in {
       $barHeight = ${toString barHeight}
     '';
 
+    # Dropdown window rules - positioned just below menu bar
     xdg.configFile."hypr/dropdown.conf".text = ''
       windowrule {
         name = dropdown-rules
