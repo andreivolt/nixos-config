@@ -2,6 +2,7 @@
 pkgs:
 with pkgs; [
   age
+  andrei.lock
   alejandra
   andrei.anypaste
   andrei.nixos-repl
