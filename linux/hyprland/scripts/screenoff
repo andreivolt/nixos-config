@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Turn off all displays via DPMS
+# Screen will turn back on with any input
+
+hyprctl dispatch dpms off
