@@ -8,7 +8,7 @@
         After = ["graphical-session.target"];
         ConditionEnvironment = ["WAYLAND_DISPLAY"];
       };
-      Service.ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.wayvnc}/bin/wayvnc $(${pkgs.tailscale}/bin/tailscale ip -4)'";
+      Service.ExecStart = "${pkgs.wayvnc}/bin/wayvnc 127.0.0.1";
       Install.WantedBy = ["graphical-session.target"];
     };
   };
