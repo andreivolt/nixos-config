@@ -83,4 +83,9 @@
   ];
 
   services.logind.settings.Login.HandlePowerKey = "suspend";
+
+  networking.firewall = {
+    enable = true;
+    trustedInterfaces = [ "tailscale0" ];
+  };
 }
