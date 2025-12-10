@@ -1,3 +1,4 @@
 linux/hardware-configuration.nix
 asahi/hardware-configuration.nix
 /persist/
+result
