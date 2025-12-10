@@ -35,23 +35,18 @@ in {
       portalPackage = null;
       systemd.enable = false;  # UWSM handles this
       plugins = [
-        # hyprlandPlugins.hyprbars  # TODO: incompatible with pinned v0.52.2
+        hyprlandPlugins.hyprbars
         # hyprlandPlugins.hyprexpo  # TODO: causing version mismatch issues
       ];
       extraConfig = ''
         source = ./main.conf
 
-        # Trayscale - float, pinned, centered
+        # Trayscale - float, pinned, centered, no titlebar
         windowrule = float on, match:class dev.deedles.Trayscale
         windowrule = pin on, match:class dev.deedles.Trayscale
         windowrule = size 400 500, match:class dev.deedles.Trayscale
         windowrule = center on, match:class dev.deedles.Trayscale
-        # windowrule = hyprbars:no_bar 1, match:class dev.deedles.Trayscale  # TODO: requires hyprbars plugin
-
-        # Pavucontrol - float, pinned, centered
-        windowrule = float on, match:class org.pulseaudio.pavucontrol
-        windowrule = pin on, match:class org.pulseaudio.pavucontrol
-        windowrule = center on, match:class org.pulseaudio.pavucontrol
+        windowrule = hyprbars:no_bar 1, match:class dev.deedles.Trayscale
       '';
     };
   };

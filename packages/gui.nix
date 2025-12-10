@@ -8,7 +8,6 @@ with pkgs;
 
 [
   ff2mpv
-  mpv
   neovide
   zed-editor
 ]
