@@ -7,7 +7,7 @@
 
     wifi.backend = "iwd";
 
-    wifi.powersave = true; # TODO: doesn't come back after powersave
+    wifi.powersave = true;
   };
 
   users.users.andrei.extraGroups = ["networkmanager"];
