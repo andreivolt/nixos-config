@@ -5,6 +5,7 @@ let
   inherit (pkgs.stdenv.hostPlatform) isx86_64;
 in
 [
+  andrei.screenoff
   acpi
   alsa-lib.dev
   alsa-utils
