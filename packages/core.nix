@@ -2,6 +2,7 @@
 pkgs:
 with pkgs; [
   age
+  andrei.darkmode
   andrei.flushdns
   andrei.lock
   alejandra
