@@ -13,6 +13,7 @@
     ./users-persist.nix
     ../../linux/lan-mouse.nix
     ../../linux/mpv.nix
+    ../../linux/rclone.nix
   ];
 
   networking.hostName = "riva";
