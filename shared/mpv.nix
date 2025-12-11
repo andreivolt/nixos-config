@@ -26,7 +26,18 @@
     cp ${./mpv/auto-save-state.lua} $out/auto-save-state.lua
     cp ${./mpv/ytsub.lua} $out/ytsub.lua
   '';
+  mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
+    echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket | ${pkgs.jq}/bin/jq -r .data
+  '';
+  mpv-next = pkgs.writeShellScriptBin "mpv-next" ''
+    echo '{ "command": ["playlist-next"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket &>/dev/null
+  '';
+  mpv-prev = pkgs.writeShellScriptBin "mpv-prev" ''
+    echo '{ "command": ["playlist-prev"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket &>/dev/null
+  '';
 in {
+  environment.systemPackages = lib.optionals isDarwin [ mpv-current mpv-next mpv-prev ];
+
   home-manager.sharedModules = [
     {
       programs.mpv = {
