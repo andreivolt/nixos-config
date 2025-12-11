@@ -27,8 +27,19 @@ in {
   ]);
 
   # Use home-manager's hyprland module to load plugins (ensures version match)
-  # Config is in ~/.config/hypr/main.conf, sourced via extraConfig
-  home-manager.users.andrei = { ... }: {
+  # Config files are symlinked from nixos-config repo for live editing
+  home-manager.users.andrei = { config, ... }: {
+    # Symlink config files from repo (out-of-store for live editing)
+    home.file.".config/hypr/hyprlock.conf".source =
+      config.lib.file.mkOutOfStoreSymlink
+        "${config.home.homeDirectory}/dev/nixos-config/linux/hyprland/hyprlock.conf";
+    home.file.".config/hypr/hypridle.conf".source =
+      config.lib.file.mkOutOfStoreSymlink
+        "${config.home.homeDirectory}/dev/nixos-config/linux/hyprland/hypridle.conf";
+    home.file.".config/hypr/scripts".source =
+      config.lib.file.mkOutOfStoreSymlink
+        "${config.home.homeDirectory}/dev/nixos-config/linux/hyprland/scripts";
+
     wayland.windowManager.hyprland = {
       enable = true;
       package = null;  # Use system package
@@ -39,7 +50,7 @@ in {
         # hyprlandPlugins.hyprexpo  # TODO: causing version mismatch issues
       ];
       extraConfig = ''
-        source = ./main.conf
+        source = ${config.home.homeDirectory}/dev/nixos-config/linux/hyprland/hyprland.conf
 
         # Trayscale - float, pinned, centered, no titlebar
         windowrule = float on, match:class dev.deedles.Trayscale
