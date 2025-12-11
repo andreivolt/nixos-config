@@ -1,6 +1,9 @@
 {pkgs, ...}: {
   home-manager.users.andrei = {
-    home.packages = [pkgs.wayvnc pkgs.wlvncc];
+    home.packages = [
+      pkgs.wlvncc
+      (pkgs.callPackage ../pkgs/vnc {})
+    ];
 
     systemd.user.services.wayvnc = {
       Unit = {
