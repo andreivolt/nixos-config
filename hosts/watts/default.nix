@@ -34,6 +34,9 @@
   # Auto-switch power profiles based on AC/battery
   services.power-profiles-daemon.enable = true;
 
+  # Prefer keeping data in RAM over swapping (16GB is plenty)
+  boot.kernel.sysctl."vm.swappiness" = 10;
+
   # Configure the disk device for this machine
   nixos.diskDevice = "/dev/nvme0n1";
 
