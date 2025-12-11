@@ -96,6 +96,9 @@
       "rd.systemd.show_status=false"
       "rd.udev.log_level=3"
       "udev.log_priority=3"
+      # Use TSC for faster timekeeping (Intel has reliable TSC)
+      "clocksource=tsc"
+      "tsc=reliable"
     ];
 
     # BTRFS maintenance
