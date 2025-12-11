@@ -31,6 +31,9 @@
   # https://wiki.archlinux.org/title/Lenovo_ThinkPad_X1_Carbon_(Gen_6)#Throttling_fix
   services.throttled.enable = true;
 
+  # Auto-switch power profiles based on AC/battery
+  services.power-profiles-daemon.enable = true;
+
   # Configure the disk device for this machine
   nixos.diskDevice = "/dev/nvme0n1";
 
