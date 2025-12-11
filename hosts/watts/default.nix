@@ -37,6 +37,9 @@
   # Prefer keeping data in RAM over swapping (16GB is plenty)
   boot.kernel.sysctl."vm.swappiness" = 10;
 
+  # Allow CPU to idle properly (default 1024 prevents low-power states)
+  boot.kernel.sysctl."kernel.sched_util_clamp_min" = 128;
+
   # XanMod kernel - optimized for desktop/low-latency workloads
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
 
