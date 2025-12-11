@@ -10,7 +10,6 @@
     ./disk-config.nix
     ./impermanence.nix
     ./users-persist.nix
-    ./insync.nix
     ../../linux/mpv.nix
     ../../linux/adb.nix
     ./fkey-remap.nix
