@@ -14,6 +14,7 @@
     ../../linux/lan-mouse.nix
     ../../linux/mpv.nix
     ../../linux/rclone.nix
+    ../../pkgs/lifx/lifx.nix
   ];
 
   networking.hostName = "riva";

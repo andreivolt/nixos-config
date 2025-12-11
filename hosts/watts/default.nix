@@ -23,6 +23,7 @@
     ./intel-vaapi.nix
     ../../linux/touchscreen.nix
     ./insync.nix
+    ../../pkgs/lifx/lifx.nix
   ];
 
   networking.hostName = "watts";
