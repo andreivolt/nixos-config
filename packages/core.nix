@@ -5,6 +5,9 @@ with pkgs; [
   andrei.darkmode
   andrei.flushdns
   andrei.lock
+  andrei.mute
+  andrei.tunnel
+  andrei.watchdiff
   alejandra
   ansifilter
   aria2
