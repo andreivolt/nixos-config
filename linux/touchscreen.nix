@@ -30,10 +30,21 @@
         # Monitors accelerometer and rotates eDP-1 display + touch input
 
         INTERNAL_DISPLAY="eDP-1"
-        ACCEL_PATH="/sys/bus/iio/devices/iio:device0"
         THRESHOLD=15000
         POLL_INTERVAL=0.5
 
+        # find accelerometer device dynamically (device order can change between kernels)
+        find_accel_device() {
+          for dev in /sys/bus/iio/devices/iio:device*; do
+            if [[ -f "$dev/name" ]] && grep -q accel "$dev/name" 2>/dev/null; then
+              echo "$dev"
+              return 0
+            fi
+          done
+          return 1
+        }
+
+        ACCEL_PATH=""
         last_orientation=""
 
         get_orientation() {
@@ -73,39 +84,21 @@
           local orientation=$1
           local transform
 
-          # External monitor: 3840x2160 @ 1.6 = 2400x1350 effective
-          # Internal: 2560x1440 @ 1.6 = 1600x900 effective (or 900x1600 when rotated 90°)
-          EXTERNAL="DP-1"
-
           case "$orientation" in
-            normal)
-              # External above, laptop below (centered)
-              transform=0
-              hyprctl --batch "keyword monitor $EXTERNAL,preferred,0x0,1.6 ; keyword monitor $INTERNAL_DISPLAY,preferred,400x1350,1.6,transform,$transform"
-              ;;
-            bottom-up)
-              # Laptop upside down, positioned below external (so mouse moves DOWN to reach it)
-              transform=2
-              hyprctl --batch "keyword monitor $EXTERNAL,preferred,0x0,1.6 ; keyword monitor $INTERNAL_DISPLAY,preferred,400x1350,1.6,transform,$transform"
-              ;;
-            left-up)
-              # Laptop rotated 90° CCW (900x1600), external to the right
-              transform=1
-              hyprctl --batch "keyword monitor $INTERNAL_DISPLAY,preferred,0x0,1.6,transform,$transform ; keyword monitor $EXTERNAL,preferred,900x0,1.6"
-              ;;
-            right-up)
-              # Laptop rotated 90° CW (900x1600), external to the left
-              transform=3
-              hyprctl --batch "keyword monitor $EXTERNAL,preferred,0x0,1.6 ; keyword monitor $INTERNAL_DISPLAY,preferred,2400x0,1.6,transform,$transform"
-              ;;
-            *)
-              return
-              ;;
+            normal)    transform=0 ;;
+            bottom-up) transform=2 ;;
+            left-up)   transform=1 ;;
+            right-up)  transform=3 ;;
+            *)         return ;;
           esac
+
+          # only change transform, don't touch monitor positions
+          hyprctl keyword monitor "$INTERNAL_DISPLAY,transform,$transform"
         }
 
-        # Wait for accelerometer
-        while [[ ! -f "$ACCEL_PATH/in_accel_x_raw" ]]; do
+        # wait for accelerometer device to appear
+        while true; do
+          ACCEL_PATH=$(find_accel_device) && break
           sleep 1
         done
 
