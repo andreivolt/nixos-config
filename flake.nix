@@ -176,5 +176,26 @@
       ];
       extraSpecialArgs = {inherit inputs;};
     };
+
+    # Dev shells for Rust packages
+    devShells = let
+      forAllSystems = nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+    in forAllSystems (system: let
+      pkgs = import nixpkgs-unstable {
+        inherit system;
+        config.allowUnfree = true;
+      };
+    in {
+      rust = pkgs.mkShell {
+        buildInputs = with pkgs; [
+          cargo
+          rustc
+          rust-analyzer
+          pkg-config
+          alsa-lib
+          openssl
+        ];
+      };
+    });
   };
 }
