@@ -1,9 +1,17 @@
 pkgs:
 with pkgs; with pkgs.darwin; [
+  andrei.awake
+  andrei.blackhole-audio
   andrei.cleanup
+  andrei.clipboard
   andrei.dmg-unmount
+  andrei.fileclip
   andrei.impbcopy
+  andrei.proxy-toggle
+  andrei.resolution
+  andrei.shazam
   andrei.videosnap
+  andrei.vision
   asitop
   coreutils
   duti
