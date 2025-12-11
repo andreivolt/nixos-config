@@ -22,6 +22,7 @@
     ./dac-toggle.nix
     ./intel-vaapi.nix
     ../../linux/touchscreen.nix
+    ./insync.nix
   ];
 
   networking.hostName = "watts";
