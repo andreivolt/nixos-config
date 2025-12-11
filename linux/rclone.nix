@@ -21,10 +21,10 @@
             --vfs-cache-max-age 24h \
             --vfs-cache-max-size 2G \
             --vfs-fast-fingerprint \
-            --vfs-read-chunk-size 32M \
+            --vfs-read-chunk-size 64M \
             --vfs-read-chunk-size-limit off \
-            --buffer-size 32M \
-            --poll-interval 1m \
+            --buffer-size 64M \
+            --poll-interval 5m \
             --dir-cache-time 24h \
             --timeout 1h \
             --umask 002 \
