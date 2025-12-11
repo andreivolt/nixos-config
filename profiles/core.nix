@@ -33,7 +33,6 @@
     ../shared/zsh-dirs.nix
     ../shared/zsh-nix-completion.nix
     ../linux/docker.nix
-    ../linux/rclone.nix
   ];
 
   console.keyMap = "fr";
