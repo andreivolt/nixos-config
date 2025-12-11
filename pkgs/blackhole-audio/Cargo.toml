@@ -1,0 +1,12 @@
+[package]
+name = "blackhole-audio"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+coreaudio-sys = "0.2"
+rodio = { version = "0.19", features = ["symphonia-all"] }
+clap = { version = "4", features = ["derive"] }
+anyhow = "1"
+core-foundation = "0.10"
+signal-hook = "0.3"
