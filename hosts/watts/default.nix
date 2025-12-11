@@ -58,6 +58,5 @@
 
   home-manager.users.andrei = import ../../linux/home.nix {
     inherit config inputs;
-    # extraPackagesFile removed - now handled by platform conditionals in main packages.nix
   };
 }

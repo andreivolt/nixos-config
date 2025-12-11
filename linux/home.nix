@@ -1,6 +1,5 @@
 # Shared home-manager config for linux systems
-# extraPackagesFile: optional file with additional packages (e.g. linux/packages-extra.nix)
-{ config, inputs, extraPackagesFile ? null }:
+{ config, inputs }:
 
 {pkgs, ...}: {
   imports = [
@@ -18,8 +17,7 @@
     (import "${inputs.self}/packages/core.nix" pkgs)
     ++ (import "${inputs.self}/packages/linux.nix" pkgs)
     ++ (import "${inputs.self}/packages/workstation.nix" pkgs)
-    ++ (import "${inputs.self}/packages/gui.nix" pkgs)
-    ++ (if extraPackagesFile != null then import extraPackagesFile pkgs else []);
+    ++ (import "${inputs.self}/packages/gui.nix" pkgs);
 
   programs.zsh = {
     enable = true;

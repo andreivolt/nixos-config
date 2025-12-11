@@ -49,6 +49,5 @@
 
   home-manager.users.andrei = import ../../linux/home.nix {
     inherit config inputs;
-    # No extraPackagesFile - uses only base packages.nix (cross-platform)
   };
 }
