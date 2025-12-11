@@ -40,6 +40,9 @@
   # XanMod kernel - optimized for desktop/low-latency workloads
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
 
+  # Update Intel microcode for complete Spectre/Meltdown/GDS mitigations
+  hardware.cpu.intel.updateMicrocode = true;
+
   # Configure the disk device for this machine
   nixos.diskDevice = "/dev/nvme0n1";
 
