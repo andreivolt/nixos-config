@@ -2,10 +2,46 @@
 pkgs:
 with pkgs; [
   age
+  andrei.astext
+  andrei.azure-speech
+  andrei.chromecast-broadcast
+  andrei.claude-command-monitor
+  andrei.claude-files
+  andrei.claude-messages
+  andrei.claude-sessions
+  andrei.correct
   andrei.darkmode
+  andrei.deepgram
+  andrei.deepgram-tts
+  andrei.dpaste
+  andrei.elevenlabs
+  andrei.filebase
   andrei.flushdns
+  andrei.gcloudocr
+  andrei.google-search
+  andrei.hn-search
+  andrei.htmlpaste
+  andrei.json2nix
+  andrei.lifx
   andrei.lock
+  andrei.mute
+  andrei.ocr
+  andrei.paragraphs
+  andrei.pngpaste
   andrei.pngview
+  andrei.reddit-comments
+  andrei.screenshot
+  andrei.semantic-filter
+  andrei.strip-whitespace
+  andrei.tailscale-device-delete
+  andrei.tailscale-exit-node
+  andrei.translate
+  andrei.tree-render
+  andrei.tunnel
+  andrei.unrealspeech
+  andrei.watchdiff
+  andrei.web-search-rs
+  andrei.with-url
   alejandra
   andrei.anypaste
   andrei.nixos-repl

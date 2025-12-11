@@ -1,0 +1,11 @@
+[package]
+name = "correct"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tiktoken-rs = "0.5"
+sha2 = "0.10"
+directories = "5"
+genai = "0.1"
+tokio = { version = "1", features = ["full"] }

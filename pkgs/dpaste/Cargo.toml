@@ -1,0 +1,13 @@
+[package]
+name = "dpaste"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+reqwest = { version = "0.11", features = ["json", "multipart"] }
+tokio = { version = "1.0", features = ["full"] }
+anyhow = "1.0"
+
+[target.'cfg(not(target_os = "android"))'.dependencies]
+arboard = "3.0"
