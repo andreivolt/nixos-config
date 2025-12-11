@@ -37,6 +37,9 @@
   # Prefer keeping data in RAM over swapping (16GB is plenty)
   boot.kernel.sysctl."vm.swappiness" = 10;
 
+  # XanMod kernel - optimized for desktop/low-latency workloads
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+
   # Configure the disk device for this machine
   nixos.diskDevice = "/dev/nvme0n1";
 
