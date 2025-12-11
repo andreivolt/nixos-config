@@ -40,6 +40,10 @@
   # Allow CPU to idle properly (default 1024 prevents low-power states)
   boot.kernel.sysctl."kernel.sched_util_clamp_min" = 128;
 
+  # More responsive I/O writeback (reduces UI stutter during large file ops)
+  boot.kernel.sysctl."vm.dirty_ratio" = 10;
+  boot.kernel.sysctl."vm.dirty_background_ratio" = 5;
+
   # XanMod kernel - optimized for desktop/low-latency workloads
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
 
