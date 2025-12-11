@@ -3,5 +3,5 @@
   hyprland,
 }:
 writeShellScriptBin "screenoff" ''
-  ${hyprland}/bin/hyprctl dispatch dpms off
+  sleep 0.5 && ${hyprland}/bin/hyprctl dispatch dpms off
 ''
