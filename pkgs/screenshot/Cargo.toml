@@ -1,0 +1,11 @@
+[package]
+name = "screenshot"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+tempfile = "3.8"
+is-terminal = "0.4"
+anyhow = "1.0"
+chrono = { version = "0.4", features = ["serde"] }

@@ -1,0 +1,25 @@
+[package]
+name = "chromecast-broadcast"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.0", features = ["full"] }
+clap = { version = "4.0", features = ["derive"] }
+serde_json = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+axum = "0.7"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors"] }
+bytes = "1.0"
+reqwest = { version = "0.11", features = ["json"] }
+uuid = { version = "1.0", features = ["v4"] }
+dirs = "5.0"
+anyhow = "1.0"
+futures = "0.3"
+local-ip-address = "0.6"
+tokio-tungstenite = "0.20"
+futures-util = "0.3"
+rust_cast = "0.19"
+cpal = "0.15"
+tokio-stream = "0.1"

@@ -1,0 +1,20 @@
+[package]
+name = "reddit-comments"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+roux = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+chrono = "0.4"
+url = "2"
+anyhow = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+dirs = "5"
+sha2 = "0.10"
+hex = "0.4"
+html2text = "0.12"
+html-escape = "0.2"
+regex = "1"
