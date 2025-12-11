@@ -27,6 +27,10 @@
   networking.hostName = "watts";
   system.stateVersion = "23.11";
 
+  # Fix ThinkPad BD PROCHOT throttling bug
+  # https://wiki.archlinux.org/title/Lenovo_ThinkPad_X1_Carbon_(Gen_6)#Throttling_fix
+  services.throttled.enable = true;
+
   # Configure the disk device for this machine
   nixos.diskDevice = "/dev/nvme0n1";
 
