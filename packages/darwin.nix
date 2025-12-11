@@ -1,6 +1,10 @@
 pkgs:
 with pkgs; with pkgs.darwin; [
+  andrei.awake
+  andrei.blackhole-audio
   andrei.cleanup
+  andrei.proxy-toggle
+  andrei.resolution
   asitop
   coreutils
   duti
