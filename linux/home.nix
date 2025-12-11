@@ -111,7 +111,7 @@
   '';
   xdg.mimeApps.enable = true;
   xdg.mimeApps.defaultApplications = let
-    browser = "firefox";
+    browser = if pkgs.stdenv.hostPlatform.isAarch64 then "chromium" else "google-chrome";
     image-viewer = "swayimg.desktop";
     text-editor = "sublime_text.desktop";
     video-player = "mpv.desktop";
