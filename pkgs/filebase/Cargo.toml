@@ -1,0 +1,16 @@
+[package]
+name = "filebase"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+aws-config = "1.1"
+aws-sdk-s3 = "1.14"
+tokio = { version = "1", features = ["full"] }
+clap = { version = "4", features = ["derive"] }
+mime_guess = "2"
+rand = "0.8"
+hex = "0.4"
+clipboard = "0.5"
+infer = "0.16"
+indicatif = "0.17"
