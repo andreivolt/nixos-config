@@ -33,6 +33,9 @@
   # Auto-switch power profiles based on AC/battery
   services.power-profiles-daemon.enable = true;
 
+  # Distribute hardware interrupts across CPUs (reduces CPU0 overload)
+  services.irqbalance.enable = true;
+
   # Prefer keeping data in RAM over swapping (16GB is plenty)
   boot.kernel.sysctl."vm.swappiness" = 10;
 
