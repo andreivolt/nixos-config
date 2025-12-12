@@ -1,6 +1,26 @@
-# Aurora color scheme - single source of truth
+# Obsidian Aurora color scheme - single source of truth
 # Import and reference: (import ./colors.nix).aurora.normal.red
 {
+  # Accent colors - clear muted red
+  accent = {
+    primary = "#b85555";      # Muted red - main accent
+    secondary = "#994848";    # Darker red - subtle use
+    dim = "#6a3a3a";          # Dark red - inactive states
+    bright = "#d07070";       # Light red - highlights/hover
+  };
+
+  # UI chrome - refined grays with warmth
+  ui = {
+    bg = "#0a0a0aee";         # Near-black with slight warmth
+    bgAlt = "#1a1816";        # Dark warm gray
+    bgElevated = "#252220";   # Elevated surfaces
+    fg = "#d4d0ca";           # Warm off-white (not pure white)
+    fgDim = "#7a756d";        # Muted warm gray
+    fgMuted = "#4a4540";      # Very dim (timestamps, etc.)
+    border = "#2a2622";       # Subtle warm border
+  };
+
+  # Aurora terminal palette - preserved for syntax highlighting
   aurora = {
     background = "#000000";
     foreground = "#ffffff";
@@ -39,13 +59,5 @@
       color16 = "#8a6e2b";
       color17 = "#a8834a";
     };
-  };
-
-  # UI colors for rofi, etc.
-  ui = {
-    bg = "#000000dd";
-    bgAlt = "#333333";
-    fg = "#cccccc";
-    fgDim = "#888888";
   };
 }
