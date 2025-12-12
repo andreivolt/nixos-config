@@ -21,6 +21,7 @@
 
     # Services
     ../linux/tor.nix
+    ../linux/socks-proxy.nix
 
     ../shared/ghostty.nix
     ../shared/kitty.nix
