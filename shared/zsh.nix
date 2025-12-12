@@ -6,10 +6,17 @@ in {
       programs.zsh = {
         enable = true;
         enableCompletion = false; # handled in completion.zsh
-        shellAliases = lib.mkIf config.programs.kitty.enable {
-          ssh = "kitten ssh";
-        };
         initContent = ''
+          # ssh function: use kitten for interactive, real ssh for non-interactive
+          ${lib.optionalString config.programs.kitty.enable ''
+          ssh() {
+            if [[ -t 0 ]]; then
+              kitten ssh "$@"
+            else
+              command ssh "$@"
+            fi
+          }
+          ''}
           source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
 
           source ~/.config/zsh/rc.zsh
