@@ -10,6 +10,10 @@
 
   # Generate Hyprland touch config to map device to laptop screen
   home-manager.users.andrei = { pkgs, ... }: {
+    wayland.windowManager.hyprland.extraConfig = ''
+      source = ~/.config/hypr/touch.conf
+    '';
+
     xdg.configFile."hypr/touch.conf".text = ''
       # Touchscreen configuration for ThinkPad X1 Yoga
       # Map touch input to the laptop's internal display
