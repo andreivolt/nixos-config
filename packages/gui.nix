@@ -57,7 +57,6 @@ with pkgs;
 ]
 ++ lib.optionals (isLinux && isx86_64) [
   beeper
-  caprine-bin
   discord
   google-chrome
   input-leap
@@ -65,7 +64,6 @@ with pkgs;
 
   slack
   spotify
-  tidal-hifi
   vscode
   waynergy
   ytmdesktop
