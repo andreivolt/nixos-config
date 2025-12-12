@@ -21,6 +21,19 @@
   networking.hostName = "riva";
   system.stateVersion = "24.05";
 
+  # Auto-switch power profiles (works with Asahi's apple-cpufreq driver)
+  services.power-profiles-daemon.enable = true;
+
+  # Prefer keeping data in RAM over swapping (16GB is plenty)
+  boot.kernel.sysctl."vm.swappiness" = 10;
+
+  # Allow CPU to idle properly (default 1024 prevents low-power states)
+  boot.kernel.sysctl."kernel.sched_util_clamp_min" = 128;
+
+  # More responsive I/O writeback (reduces UI stutter during large file ops)
+  boot.kernel.sysctl."vm.dirty_ratio" = 10;
+  boot.kernel.sysctl."vm.dirty_background_ratio" = 5;
+
   # Apple Silicon support
   hardware.asahi.setupAsahiSound = true;
   hardware.asahi.peripheralFirmwareDirectory = ./firmware;
