@@ -17,6 +17,7 @@ with pkgs; [
   backblaze-b2
   bat
   bfg-repo-cleaner
+  biome
   btop
   bun
   cached-nix-shell
@@ -48,6 +49,7 @@ with pkgs; [
   fdupes
   ffmpeg-full
   file
+  files-to-prompt
   firefox_decrypt
   flyctl
   fzf
