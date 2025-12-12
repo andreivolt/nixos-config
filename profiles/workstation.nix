@@ -25,6 +25,8 @@
 
     ../shared/ghostty.nix
     ../shared/kitty.nix
+    ../shared/nushell.nix
+    ../shared/sublime.nix
     ../shared/zed.nix
     ../linux/swayimg.nix
 

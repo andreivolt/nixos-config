@@ -70,11 +70,11 @@
       ANALOGIO: 0
 
       [UNDERVOLT.AC]
-      # Tested stable, +18% perf vs -80mV
-      CORE: -100
-      GPU: -70
-      CACHE: -100
-      UNCORE: -70
+      # -100mV caused freeze during rebuild, -90mV as compromise
+      CORE: -90
+      GPU: -60
+      CACHE: -90
+      UNCORE: -60
       ANALOGIO: 0
     '';
   };
