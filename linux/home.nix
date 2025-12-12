@@ -19,12 +19,6 @@
     ++ (import "${inputs.self}/packages/workstation.nix" pkgs)
     ++ (import "${inputs.self}/packages/gui.nix" pkgs);
 
-  programs.zsh = {
-    enable = true;
-    enableCompletion = false;
-    initContent = "source ~/.config/zsh/rc.zsh";
-  };
-
   services.playerctld.enable = true;
   services.wob = {
     enable = true;

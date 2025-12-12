@@ -31,8 +31,7 @@
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
     ../../shared/wezterm.nix
-    ../../shared/zsh-dirs.nix
-    ../../shared/zsh-nix-completion.nix
+    ../../shared/zsh.nix
     ./activity-monitor.nix
     ./alt-tab.nix
     ./auto-brightness.nix
@@ -95,12 +94,6 @@
     home.enableNixpkgsReleaseCheck = false;
 
     programs.man.generateCaches = true;
-
-    programs.zsh = {
-      enable = true; # TODO
-      enableCompletion = false;
-      initContent = "source ~/.config/zsh/rc.zsh";
-    };
   };
 
   system.activationScripts.postActivation.text = ''
