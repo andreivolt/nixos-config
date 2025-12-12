@@ -9,6 +9,10 @@
 
   # Generate Hyprland touch config to map device to laptop screen
   home-manager.users.andrei = { pkgs, ... }: {
+    wayland.windowManager.hyprland.extraConfig = ''
+      source = ~/.config/hypr/touch.conf
+    '';
+
     xdg.configFile."hypr/touch.conf".text = ''
       device {
         name = wacom-pen-and-multitouch-sensor-finger
