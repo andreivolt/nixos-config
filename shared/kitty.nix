@@ -2,6 +2,8 @@
 let
   colors = import ./colors.nix;
   aurora = colors.aurora;
+  accent = colors.accent;
+  ui = colors.ui;
 in {
   home-manager.sharedModules = [
     ({lib, ...}: {
@@ -64,7 +66,7 @@ in {
           visual_bell_duration = "0.1";
           visual_bell_color = "red";
 
-          # Aurora theme
+          # Aurora terminal colors with Obsidian Aurora chrome
           background = aurora.background;
           foreground = aurora.foreground;
           selection_background = aurora.selection.background;
@@ -72,12 +74,12 @@ in {
           url_color = aurora.normal.blue;
           cursor = aurora.cursor;
           cursor_text_color = aurora.cursorText;
-          active_border_color = aurora.selection.background;
-          inactive_border_color = aurora.cursorText;
-          active_tab_background = aurora.cursorText;
-          active_tab_foreground = aurora.selection.foreground;
+          active_border_color = accent.primary;
+          inactive_border_color = ui.border;
+          active_tab_background = ui.bgAlt;
+          active_tab_foreground = accent.primary;
           inactive_tab_background = aurora.background;
-          inactive_tab_foreground = "#a0a0a0";
+          inactive_tab_foreground = ui.fgDim;
           tab_bar_background = aurora.background;
 
           color0 = aurora.normal.black;
