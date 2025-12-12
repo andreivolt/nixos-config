@@ -20,11 +20,11 @@
  function live_chat_exists_remote(url)
      local result = mp.command_native({
          name = "subprocess",
-@@ -340,7 +353,7 @@ function load_live_chat(filename, interactive)
+@@ -340,7 +353,5 @@ function load_live_chat(filename, interactive)
 
              if not file_exists(filename) then
-                 generating_overlay.data = 'Checking for live chat on remote...'
-                 generating_overlay:update()
+-                generating_overlay.data = 'Checking for live chat on remote...'
+-                generating_overlay:update()
 -                if live_chat_exists_remote(path) then
 +                if live_chat_exists_remote(path) and not is_live_video(path) then
                      generating_overlay.data = 'Downloading live chat replay...'
