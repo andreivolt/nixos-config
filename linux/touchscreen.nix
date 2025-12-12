@@ -33,14 +33,15 @@
         THRESHOLD=15000
         POLL_INTERVAL=0.5
 
-        # find accelerometer device dynamically (device order can change between kernels)
+        # find lid accelerometer (X1 Yoga has base + lid accels, we want lid = last one)
         find_accel_device() {
+          local found=""
           for dev in /sys/bus/iio/devices/iio:device*; do
             if [[ -f "$dev/name" ]] && grep -q accel "$dev/name" 2>/dev/null; then
-              echo "$dev"
-              return 0
+              found="$dev"
             fi
           done
+          [[ -n "$found" ]] && echo "$found" && return 0
           return 1
         }
 
@@ -64,18 +65,18 @@
             return
           fi
 
-          # Determine orientation based on gravity direction
+          # Determine orientation based on gravity direction (lid accelerometer is inverted)
           if (( abs_y > abs_x )); then
             if (( y < -THRESHOLD )); then
-              echo "normal"
-            elif (( y > THRESHOLD )); then
               echo "bottom-up"
+            elif (( y > THRESHOLD )); then
+              echo "normal"
             fi
           else
             if (( x < -THRESHOLD )); then
-              echo "right-up"
-            elif (( x > THRESHOLD )); then
               echo "left-up"
+            elif (( x > THRESHOLD )); then
+              echo "right-up"
             fi
           fi
         }
@@ -105,7 +106,8 @@
         # Main loop
         while true; do
           orientation=$(get_orientation)
-          if [[ -n "$orientation" && "$orientation" != "$last_orientation" ]]; then
+          if [[ -n "$orientation" ]]; then
+            # always apply transform (hyprland config reload can reset it)
             rotate_screen "$orientation"
             last_orientation="$orientation"
           fi
