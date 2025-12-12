@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+file="$1"
+file_type=$(file -b --mime $file)
+
+if echo "$file_type" | grep -q "text"; then
+    bat --color=always "$file"
+elif echo "$file_type" | grep -q "application/octet-stream"; then
+    mediainfo "$file" 2>/dev/null || echo "Cannot preview binary file"
+else
+    (2text "$file" || mediainfo "$file") 2>/dev/null || echo "Cannot preview file"
+fi

@@ -30,8 +30,7 @@
     ../shared/ssh.nix
     ../shared/tmux.nix
     ../shared/wezterm.nix
-    ../shared/zsh-dirs.nix
-    ../shared/zsh-nix-completion.nix
+    ../shared/zsh.nix
     ../linux/docker.nix
   ];
 
