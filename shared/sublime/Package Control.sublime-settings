@@ -1,0 +1,20 @@
+{
+	"bootstrapped": true,
+	"update_check": false,
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"AutoDarkLinux",
+		"Color Scheme - Vintage Terminal",
+		"distractionless",
+		"Moonlight",
+		"NeoVintageous",
+		"Package Control",
+		"SublimeREPL",
+		"Theme - Vim Blackboard",
+		"Tomorrow Color Schemes",
+		"Tomorrow Night Italics Color Scheme",
+	],
+}
