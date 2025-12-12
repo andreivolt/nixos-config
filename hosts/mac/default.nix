@@ -17,6 +17,7 @@
     ../../shared/direnv.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
+    ../../shared/gh.nix
     ../../shared/git.nix
     ../../shared/glab.nix
     ../../shared/gnupg.nix
@@ -31,6 +32,7 @@
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
     ../../shared/wezterm.nix
+    ../../shared/zed.nix
     ../../shared/zsh.nix
     ./activity-monitor.nix
     ./alt-tab.nix
