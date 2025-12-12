@@ -80,8 +80,6 @@ alias vi="nvim"
 alias yt-dlp="yt-dlp --cookies-from-browser chrome"
 (( $+commands[xdg-open] )) && alias open="xdg-open"
 
-source ~/.local/share/zsh/plugins/zsh-defer/zsh-defer.plugin.zsh
-
 [[ $OSTYPE == darwin* ]] && source ~/.config/zsh/darwin.zsh
 [[ -n "$TERMUX_VERSION" ]] && source ~/.config/zsh/termux.zsh
 
@@ -92,12 +90,7 @@ source ~/.config/zsh/prompt.zsh
 [[ -n "$TMUX" ]] && zsh-defer source ~/.config/zsh/tmux.zsh
 # eval "$(dircolors -b ~/.config/dircolors)"
 eval "$(direnv hook zsh)"
-zsh-defer source ~/.config/zsh/autopair.zsh
-zsh-defer source ~/.config/zsh/autosuggestions.zsh
 zsh-defer source ~/.config/zsh/fzf.zsh
 zsh-defer source ~/.config/zsh/history-search.zsh
-zsh-defer source ~/.local/share/zsh/plugins/nix-shell/nix-shell.plugin.zsh
-
-zsh-defer source ~/.local/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 
 bindkey ' ' magic-space # history expansion
