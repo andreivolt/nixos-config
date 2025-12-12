@@ -16,6 +16,7 @@ with pkgs; [
   babashka
   bat
   bfg-repo-cleaner
+  biome
   btop
   bun
   cached-nix-shell
@@ -45,6 +46,7 @@ with pkgs; [
   fdupes
   ffmpeg-full
   file
+  files-to-prompt
   firefox_decrypt
   flyctl
   fzf
