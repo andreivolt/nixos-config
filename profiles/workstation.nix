@@ -24,6 +24,7 @@
 
     ../shared/ghostty.nix
     ../shared/kitty.nix
+    ../shared/zed.nix
     ../linux/swayimg.nix
 
     # GUI components

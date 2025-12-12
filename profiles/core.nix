@@ -18,6 +18,7 @@
     ../shared/gnupg.nix
     ../shared/hushlogin.nix
     ../shared/aria2.nix
+    ../shared/gh.nix
     ../shared/glab.nix
     ../shared/nix.nix
     ../shared/npm.nix

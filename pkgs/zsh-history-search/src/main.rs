@@ -1,14 +1,3 @@
-#!/usr/bin/env rust-script
-//! ```cargo
-//! [dependencies]
-//! clap = { version = "4.0", features = ["derive"] }
-//! chrono = { version = "0.4", features = ["serde"] }
-//! regex = "1.0"
-//! serde = { version = "1.0", features = ["derive"] }
-//! bincode = "1.3"
-//! timeago = "0.4"
-//! ```
-
 use chrono::{Local, TimeZone};
 use clap::Parser;
 use regex::Regex;
@@ -61,7 +50,7 @@ fn format_relative_time(timestamp: i64) -> String {
 
 fn main() {
     let mut args = Args::parse();
-    
+
     // Check if relative dates should be enabled by default via environment variable
     if !args.relative && env::var("ZSH_HISTORY_RELATIVE_DATES").is_ok() {
         args.relative = true;
@@ -146,11 +135,11 @@ fn main() {
 
     if output.status.success() {
         let selected_line = String::from_utf8_lossy(&output.stdout).trim().to_string();
-        
+
         // Extract just the command part (skip the date prefix)
         // When --ansi is used, fzf may strip ANSI codes from output
         // So we need to handle both cases: with and without ANSI codes
-        
+
         let command = if let Some(reset_pos) = selected_line.find("\x1b[0m ") {
             // Found the ANSI reset sequence followed by space
             selected_line[reset_pos + 5..].to_string()
@@ -178,7 +167,7 @@ fn main() {
                 selected_line
             }
         };
-        
+
         println!("{}", command);
     }
 }
