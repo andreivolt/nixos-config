@@ -5,6 +5,8 @@
   ...
 }: {
   imports = [
+    ../../shared/sops.nix
+    ../../shared/sops-home.nix
     ../../profiles/core.nix
     ../../profiles/workstation.nix
     ./disk-config.nix

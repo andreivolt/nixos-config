@@ -46,6 +46,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.home-manager.follows = "home-manager";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -64,6 +68,7 @@
     nixos-apple-silicon,
     lan-mouse,
     nix-on-droid,
+    sops-nix,
   }:
   let
     commonNixpkgsConfig = {
@@ -100,6 +105,7 @@
         "${inputs.self}/hosts/mac"
         home-manager.darwinModules.home-manager
         mac-app-util.darwinModules.default
+        sops-nix.darwinModules.sops
       ];
       specialArgs = {inherit inputs;};
     };
@@ -125,6 +131,7 @@
         "${inputs.self}/hosts/watts"
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
+        sops-nix.nixosModules.sops
       ];
       specialArgs = {inherit inputs;};
     };
@@ -146,6 +153,7 @@
         "${inputs.self}/hosts/riva"
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
+        sops-nix.nixosModules.sops
       ];
       specialArgs = {inherit inputs;};
     };
