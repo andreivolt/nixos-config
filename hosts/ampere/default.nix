@@ -61,12 +61,6 @@
   home-manager.users.andrei = {pkgs, ...}: {
     home.stateVersion = "23.11";
     home.enableNixpkgsReleaseCheck = false;
-
-    programs.zsh = {
-      enable = true;
-      enableCompletion = false;
-      initContent = "source ~/.config/zsh/rc.zsh";
-    };
   };
 
   system.stateVersion = "23.11";
