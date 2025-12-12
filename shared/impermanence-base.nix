@@ -1,12 +1,9 @@
 { lib, inputs, ... }:
 {
-  imports = [ inputs.impermanence.nixosModules.impermanence ];
-
-  fileSystems."/" = {
-    device = "none";
-    fsType = "tmpfs";
-    options = [ "size=2G" "mode=755" ];
-  };
+  imports = [
+    inputs.impermanence.nixosModules.impermanence
+    ./btrfs-wipe.nix
+  ];
 
   fileSystems."/persist".neededForBoot = true;
   fileSystems."/var/log".neededForBoot = true;

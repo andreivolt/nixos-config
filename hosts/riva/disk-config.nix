@@ -36,8 +36,8 @@
             type = "btrfs";
             extraArgs = [ "-L" "nixos" "-f" ];
             subvolumes = {
-              "/@" = {
-                mountpoint = "/btrfs_root";
+              "/@root" = {
+                mountpoint = "/";
                 mountOptions = [ "noatime" "compress=zstd" ];
               };
               "/@nix" = {
@@ -84,7 +84,16 @@
     services.btrfs.autoScrub = {
       enable = true;
       interval = "monthly";
-      fileSystems = [ "/btrfs_root" ];
+      fileSystems = [ "/" ];
     };
+
+    fileSystems."/btrfs_root" = {
+      device = "/dev/disk/by-label/nixos";
+      fsType = "btrfs";
+      options = [ "subvol=/" "noatime" "compress=zstd" ];
+    };
+
+    btrfsWipe.rootSubvolume = "@root";
+    btrfsWipe.oldRootsDirectory = "@old_roots";
   };
 }

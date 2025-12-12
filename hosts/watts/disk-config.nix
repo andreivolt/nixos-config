@@ -47,8 +47,8 @@
                     extraArgs = [ "-L" "nixos" "-f" ];
                     subvolumes = {
                       "/root" = {
-                        mountpoint = "/btrfs_root";
-                        mountOptions = [ "noatime" ];
+                        mountpoint = "/";
+                        mountOptions = [ "noatime" "compress=zstd" ];
                       };
                       "/nix" = {
                         mountpoint = "/nix";
@@ -106,6 +106,12 @@
       enable = true;
       interval = "monthly";
       fileSystems = [ "/" ];
+    };
+
+    fileSystems."/btrfs_root" = {
+      device = "/dev/mapper/cryptroot";
+      fsType = "btrfs";
+      options = [ "subvol=/" "noatime" ];
     };
   };
 }
