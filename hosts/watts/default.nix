@@ -25,6 +25,7 @@
     ./intel-vaapi.nix
     ../../linux/touchscreen.nix
     ./insync.nix
+    ../../linux/zram.nix
   ];
 
   networking.hostName = "watts";
@@ -84,9 +85,6 @@
 
   # Distribute hardware interrupts across CPUs (reduces CPU0 overload)
   services.irqbalance.enable = true;
-
-  # Prefer keeping data in RAM over swapping (16GB is plenty)
-  boot.kernel.sysctl."vm.swappiness" = 10;
 
   # Allow CPU to idle properly (default 1024 prevents low-power states)
   boot.kernel.sysctl."kernel.sched_util_clamp_min" = 128;

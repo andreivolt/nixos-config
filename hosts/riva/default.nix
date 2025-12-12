@@ -16,6 +16,7 @@
     ../../linux/lan-mouse.nix
     ../../linux/mpv.nix
     ../../linux/rclone.nix
+    ../../linux/zram.nix
   ];
 
   networking.hostName = "riva";
@@ -23,9 +24,6 @@
 
   # Auto-switch power profiles (works with Asahi's apple-cpufreq driver)
   services.power-profiles-daemon.enable = true;
-
-  # Prefer keeping data in RAM over swapping (16GB is plenty)
-  boot.kernel.sysctl."vm.swappiness" = 10;
 
   # Allow CPU to idle properly (default 1024 prevents low-power states)
   boot.kernel.sysctl."kernel.sched_util_clamp_min" = 128;
