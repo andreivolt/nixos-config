@@ -97,8 +97,10 @@
             *)         return ;;
           esac
 
-          # only change transform, don't touch monitor positions
+          # rotate display and touchscreen input together
           hyprctl keyword monitor "$INTERNAL_DISPLAY,transform,$transform"
+          hyprctl keyword 'device[wacom-pen-and-multitouch-sensor-finger]:transform' "$transform"
+          hyprctl keyword 'device[wacom-pen-and-multitouch-sensor-pen]:transform' "$transform"
         }
 
         # wait for accelerometer device to appear
