@@ -90,7 +90,7 @@
     fileSystems."/btrfs_root" = {
       device = "/dev/disk/by-label/nixos";
       fsType = "btrfs";
-      options = [ "subvol=/" "noatime" "compress=zstd" ];
+      options = [ "subvol=/" "noatime" "compress=zstd" "nofail" ];
     };
 
     btrfsWipe.rootSubvolume = "@root";

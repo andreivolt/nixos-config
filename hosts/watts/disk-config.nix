@@ -111,7 +111,10 @@
     fileSystems."/btrfs_root" = {
       device = "/dev/mapper/cryptroot";
       fsType = "btrfs";
-      options = [ "subvol=/" "noatime" ];
+      options = [ "subvol=/" "noatime" "nofail" ];
     };
+
+    btrfsWipe.rootSubvolume = "root";
+    btrfsWipe.oldRootsDirectory = "old_roots";
   };
 }
