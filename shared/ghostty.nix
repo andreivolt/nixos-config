@@ -4,6 +4,11 @@ let
 in {
   home-manager.sharedModules = [
     {
+      xdg.configFile = {
+        "ghostty/shaders/cursor_blaze.glsl".source = ./ghostty/cursor_blaze.glsl;
+        "ghostty/shaders/cursor_blaze_no_trail.glsl".source = ./ghostty/cursor_blaze_no_trail.glsl;
+      };
+
       programs.ghostty = {
         enable = true;
         enableZshIntegration = true;
