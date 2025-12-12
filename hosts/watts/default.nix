@@ -62,19 +62,19 @@
       Disable_BDPROCHOT: False
 
       [UNDERVOLT.BATTERY]
-      # Conservative undervolt - reduce if unstable
-      CORE: -60
-      GPU: -40
-      CACHE: -60
-      UNCORE: -40
-      ANALOGIO: 0
-
-      [UNDERVOLT.AC]
-      # Conservative undervolt - can try -100/-70 if stable
+      # Tested stable
       CORE: -80
       GPU: -50
       CACHE: -80
       UNCORE: -50
+      ANALOGIO: 0
+
+      [UNDERVOLT.AC]
+      # Tested stable, +18% perf vs -80mV
+      CORE: -100
+      GPU: -70
+      CACHE: -100
+      UNCORE: -70
       ANALOGIO: 0
     '';
   };
