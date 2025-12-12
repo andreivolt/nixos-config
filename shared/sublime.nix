@@ -19,7 +19,7 @@ in {
     {
       xdg.configFile = {
         "sublime-text/Packages/User/Preferences.sublime-settings".source = ./sublime/Preferences.sublime-settings;
-        "sublime-text/Packages/User/Package Control.sublime-settings".source = ./sublime/Package\ Control.sublime-settings;
+        "sublime-text/Packages/User/Package Control.sublime-settings".source = ./sublime/PackageControl.sublime-settings;
         "sublime-text/Packages/AutoDarkLinux".source = autodark-sublime;
       };
     }
