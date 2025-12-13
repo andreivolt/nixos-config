@@ -112,8 +112,7 @@
         # Main loop
         while true; do
           orientation=$(get_orientation)
-          if [[ -n "$orientation" ]]; then
-            # always apply transform (hyprland config reload can reset it)
+          if [[ -n "$orientation" && "$orientation" != "$last_orientation" ]]; then
             rotate_screen "$orientation"
             last_orientation="$orientation"
           fi
