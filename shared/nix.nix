@@ -1,3 +1,9 @@
+{ config, lib, ... }:
+let
+  hostname = config.networking.hostName;
+  isWatts = hostname == "watts";
+  isRiva = hostname == "riva";
+in
 {
   nix.gc = {
     automatic = true;
@@ -11,14 +17,46 @@
       "https://nix-community.cachix.org"
       "https://hyprland.cachix.org"
       "https://nixos-apple-silicon.cachix.org"
+      "http://watts:5000"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nixos-apple-silicon.cachix.org-1:8psDu5SA5dAD7qA0zMy5UT292TxeEPzIz8VVEr2Js20="
+      "watts:7nACtiD+XDen0/yeHxdcoxF1U215n7W10dQ0tBblJWs="
     ];
+
+    trusted-users = [ "root" "@wheel" ];
   };
 
   nix.optimise.automatic = true;
+
+  services.nix-serve = lib.mkIf isWatts {
+    enable = true;
+    secretKeyFile = "/persist/secrets/nix-serve.key";
+  };
+  networking.firewall.allowedTCPPorts = lib.mkIf isWatts [ 5000 ];
+
+  nix.distributedBuilds = true;
+  nix.extraOptions = "builders-use-substitutes = true";
+
+  nix.buildMachines = lib.mkMerge [
+    (lib.mkIf isWatts [{
+      hostName = "riva";
+      sshUser = "root";
+      sshKey = "/root/.ssh/id_ed25519";
+      system = "aarch64-linux";
+      maxJobs = 8;
+      supportedFeatures = [ "nixos-test" "big-parallel" "kvm" ];
+    }])
+    (lib.mkIf isRiva [{
+      hostName = "watts";
+      sshUser = "root";
+      sshKey = "/root/.ssh/id_ed25519";
+      system = "x86_64-linux";
+      maxJobs = 8;
+      supportedFeatures = [ "nixos-test" "big-parallel" "kvm" ];
+    }])
+  ];
 }
