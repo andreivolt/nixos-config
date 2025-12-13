@@ -25,14 +25,14 @@ prefix() {
 echo "==> Pulling latest changes..."
 git -C "$REPO_DIR" pull
 
-sudo nixos-rebuild switch --flake "$FLAKE#riva" 2>&1 | prefix "$GREEN" "riva" &
+nixos-rebuild switch --flake "$FLAKE#riva" --target-host riva --build-host riva --sudo 2>&1 | prefix "$GREEN" "riva" &
 pid_riva=$!
 
-nixos-rebuild switch --flake "$FLAKE#watts" --target-host watts --build-host watts 2>&1 | prefix "$BLUE" "watts" &
+nixos-rebuild switch --flake "$FLAKE#watts" --target-host watts --build-host watts --sudo 2>&1 | prefix "$BLUE" "watts" &
 pid_watts=$!
 
 wait $pid_watts
-nixos-rebuild switch --flake "$FLAKE#ampere" --target-host ampere --build-host watts 2>&1 | prefix "$RED" "ampere" &
+nixos-rebuild switch --flake "$FLAKE#ampere" --target-host ampere --build-host watts --sudo 2>&1 | prefix "$RED" "ampere" &
 pid_ampere=$!
 
 wait $pid_riva $pid_ampere
