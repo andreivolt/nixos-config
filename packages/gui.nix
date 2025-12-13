@@ -14,6 +14,7 @@ with pkgs;
 ++ lib.optionals isLinux [
   emacs-pgtk
   gcolor3
+  glslviewer
   lan-mouse
   brightnessctl
   dragon-drop
@@ -33,7 +34,6 @@ with pkgs;
   slurp
   swayimg
   swaynotificationcenter
-  tela-icon-theme
   (symlinkJoin {
     name = "telegram-desktop-wrapped";
     paths = [telegram-desktop];

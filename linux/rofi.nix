@@ -1,5 +1,5 @@
 # Rofi launcher configuration
-# Dark theme, green accents, Roboto, with icons
+# Obsidian Aurora theme - warm copper accents
 { pkgs, ... }:
 let
   colors = import ../shared/colors.nix;
@@ -13,7 +13,7 @@ in {
     extraConfig = {
       modi = "drun,run,window";
       show-icons = true;
-      icon-theme = "Tela";
+      icon-theme = "Papirus-Dark";
       display-drun = "";
       display-combi = "›";
       drun-display-format = "{name}";
@@ -31,17 +31,22 @@ in {
   xdg.configFile."rofi/theme.rasi".text = ''
     * {
       bg: ${colors.ui.bg};
-      bg-sel: ${colors.ui.bgAlt};
+      bg-alt: ${colors.ui.bgAlt};
+      bg-sel: ${colors.ui.bgElevated};
       fg: ${colors.ui.fg};
-      fg-alt: ${colors.ui.fgDim};
+      fg-dim: ${colors.ui.fgDim};
+      fg-muted: ${colors.ui.fgMuted};
+      accent: ${colors.accent.primary};
+      accent-dim: ${colors.accent.dim};
     }
 
     window {
       background-color: @bg;
       width: 33%;
-      padding: 12px;
-      border: 0;
-      border-radius: 3px;
+      padding: 16px;
+      border: 1px;
+      border-color: @bg-alt;
+      border-radius: 2px;
       location: north;
       anchor: north;
       y-offset: 50px;
@@ -49,27 +54,28 @@ in {
 
     mainbox {
       background-color: transparent;
-      spacing: 10px;
+      spacing: 12px;
       children: [ inputbar, listview ];
     }
 
     inputbar {
-      background-color: transparent;
-      padding: 10px 0;
+      background-color: @bg-alt;
+      padding: 12px 14px;
       spacing: 10px;
+      border-radius: 2px;
       children: [ prompt, entry ];
     }
 
     prompt {
       background-color: transparent;
-      text-color: @fg-alt;
+      text-color: @accent;
     }
 
     entry {
       background-color: transparent;
       text-color: @fg;
       placeholder: "Search...";
-      placeholder-color: @fg-alt;
+      placeholder-color: @fg-muted;
     }
 
     listview {
@@ -78,25 +84,25 @@ in {
       columns: 1;
       fixed-height: false;
       scrollbar: false;
-      spacing: 4px;
+      spacing: 2px;
     }
 
     element {
       background-color: transparent;
-      text-color: @fg;
-      padding: 5px 10px;
-      spacing: 8px;
-      border-radius: 3px;
+      text-color: @fg-dim;
+      padding: 8px 12px;
+      spacing: 10px;
+      border-radius: 2px;
     }
 
     element selected {
       background-color: @bg-sel;
-      text-color: #ffffff;
+      text-color: @fg;
     }
 
     element-icon {
       background-color: transparent;
-      size: 20px;
+      size: 22px;
     }
 
     element-text {

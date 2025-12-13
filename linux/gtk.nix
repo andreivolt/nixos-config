@@ -15,16 +15,16 @@
 
   home-manager.users.andrei = {
     home.packages = with pkgs; [
-      tela-icon-theme
+      papirus-icon-theme
       noto-fonts
       gsettings-desktop-schemas
     ];
 
     gtk = {
       enable = true;
-      # Use Adwaita - it properly responds to color-scheme (unlike Breeze which has no light/dark variants)
+      # Use Adwaita - color-scheme handles dark/light mode
       theme.name = "Adwaita";
-      iconTheme.name = "Tela-dark";
+      iconTheme.name = "Papirus-Dark";
       font = {
         name = "Roboto";
         size = 10;
@@ -35,6 +35,91 @@
       gtk4.extraConfig = {
         gtk-application-prefer-dark-theme = true;
       };
+      # Custom CSS for warm red accent colors
+      gtk3.extraCss = ''
+        /* Obsidian Aurora accent overrides */
+        @define-color accent_color #b85555;
+        @define-color accent_bg_color #b85555;
+        @define-color accent_fg_color #0a0a0a;
+
+        /* Selection colors */
+        selection, *:selected {
+          background-color: alpha(#b85555, 0.3);
+        }
+
+        /* Focus rings */
+        *:focus-visible {
+          outline-color: #b85555;
+        }
+
+        /* Buttons */
+        button.suggested-action {
+          background-color: #b85555;
+          color: #0a0a0a;
+        }
+
+        /* Links */
+        link, *:link {
+          color: #b85555;
+        }
+
+        /* Switches when checked */
+        switch:checked {
+          background-color: #b85555;
+        }
+
+        /* Progress bars */
+        progressbar > trough > progress {
+          background-color: #b85555;
+        }
+
+        /* Scale/slider highlight */
+        scale > trough > highlight {
+          background-color: #b85555;
+        }
+      '';
+      gtk4.extraCss = ''
+        /* Obsidian Aurora accent overrides */
+        @define-color accent_color #b85555;
+        @define-color accent_bg_color #b85555;
+        @define-color accent_fg_color #0a0a0a;
+
+        /* Selection colors */
+        selection, *:selected {
+          background-color: alpha(#b85555, 0.3);
+        }
+
+        /* Focus rings */
+        *:focus-visible {
+          outline-color: #b85555;
+        }
+
+        /* Buttons */
+        button.suggested-action {
+          background-color: #b85555;
+          color: #0a0a0a;
+        }
+
+        /* Links */
+        link, *:link {
+          color: #b85555;
+        }
+
+        /* Switches when checked */
+        switch:checked {
+          background-color: #b85555;
+        }
+
+        /* Progress bars */
+        progressbar > trough > progress {
+          background-color: #b85555;
+        }
+
+        /* Scale/slider highlight */
+        scale > trough > highlight {
+          background-color: #b85555;
+        }
+      '';
     };
 
     # Set color-scheme for apps that use XDG Settings portal (Chromium, etc.)
