@@ -7,6 +7,25 @@
   # Enable iio-sensor-proxy for accelerometer access
   hardware.sensor.iio.enable = true;
 
+  # Reset Wacom USB device after resume from suspend
+  # The device gets into a zombie state where it appears connected but generates no events
+  # (ISH sensor hub resume timeout leaves USB devices in partially-initialized state)
+  powerManagement.resumeCommands = ''
+    # Find and reset Wacom touchscreen USB device
+    for dev in /sys/bus/usb/devices/*; do
+      if [ -f "$dev/idVendor" ] && [ -f "$dev/idProduct" ]; then
+        vendor=$(cat "$dev/idVendor" 2>/dev/null)
+        product=$(cat "$dev/idProduct" 2>/dev/null)
+        if [ "$vendor" = "056a" ] && [ "$product" = "5087" ]; then
+          echo "Resetting Wacom touchscreen at $dev"
+          echo 0 > "$dev/authorized" 2>/dev/null
+          sleep 0.5
+          echo 1 > "$dev/authorized" 2>/dev/null
+        fi
+      fi
+    done
+  '';
+
   # Generate Hyprland touch config to map device to laptop screen
   home-manager.users.andrei = { pkgs, ... }: {
     wayland.windowManager.hyprland.extraConfig = ''
