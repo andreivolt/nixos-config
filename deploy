@@ -28,11 +28,11 @@ git -C "$REPO_DIR" pull
 sudo nixos-rebuild switch --flake "$FLAKE#riva" 2>&1 | prefix "$GREEN" "riva" &
 pid_riva=$!
 
-ssh watts "cd ~/dev/nixos-config && git pull && sudo nixos-rebuild switch --flake .#watts" 2>&1 | prefix "$BLUE" "watts" &
+nixos-rebuild switch --flake "$FLAKE#watts" --target-host watts --build-host watts 2>&1 | prefix "$BLUE" "watts" &
 pid_watts=$!
 
 wait $pid_watts
-ssh watts "cd ~/dev/nixos-config && nixos-rebuild switch --flake .#ampere --target-host ampere --sudo" 2>&1 | prefix "$RED" "ampere" &
+nixos-rebuild switch --flake "$FLAKE#ampere" --target-host ampere --build-host watts 2>&1 | prefix "$RED" "ampere" &
 pid_ampere=$!
 
 wait $pid_riva $pid_ampere
