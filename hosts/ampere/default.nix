@@ -9,12 +9,10 @@
     ./hardware-configuration.nix
     ./headscale.nix
     ../../profiles/core.nix
+    ../../linux/zram.nix
   ];
 
   boot.tmp.cleanOnBoot = true;
-
-  # Use zram for swap (important for 1GB RAM instances)
-  zramSwap.enable = true;
 
   # Networking - simple DHCP for server (no NetworkManager)
   networking = {
