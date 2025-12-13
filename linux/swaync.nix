@@ -4,7 +4,7 @@
   # Install swaync package
   environment.systemPackages = [ pkgs.swaynotificationcenter ];
 
-  # SwayNotificationCenter service
+  # SwayNotificationCenter service - Obsidian Aurora theme
   home-manager.users.andrei = { config, pkgs, ... }: {
     services.swaync = {
       enable = true;
@@ -14,12 +14,12 @@
       style = ''
         * {
           font-family: Roboto, sans-serif;
-          border-radius: 3px;
+          border-radius: 2px;
         }
 
         .control-center {
           border-radius: 0;
-          background: #000000;
+          background: #0a0a0a;
           border: none;
           padding: 0;
         }
@@ -35,110 +35,126 @@
         }
 
         .notification {
-          border-radius: 3px;
+          border-radius: 2px;
           padding: 0;
         }
 
         .notification-background {
-          border-radius: 3px;
+          border-radius: 2px;
           border: none;
-          padding: 10px;
-          background: #1a1a1a;
-          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.8);
+          padding: 12px;
+          background: #1a1816;
+          box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
         }
 
         .notification-content {
-          border-radius: 3px;
+          border-radius: 2px;
           padding: 0;
           margin: 0;
         }
 
         .control-center .notification-row .notification-background {
-          border-radius: 3px;
-          background: #1a1a1a;
+          border-radius: 2px;
+          background: #1a1816;
           border: none;
         }
 
         .notification-group {
-          border-radius: 3px;
+          border-radius: 2px;
         }
 
         .notification-group-headers {
-          border-radius: 3px;
+          border-radius: 2px;
           background: transparent;
         }
 
         .notification-group-headers > button {
-          border-radius: 3px;
-          background: #1a1a1a;
+          border-radius: 2px;
+          background: #1a1816;
           border: none;
           padding: 4px 8px;
-          color: #888888;
+          color: #7a756d;
         }
 
         .notification-group-collapse-button,
         .notification-group-close-all-button {
-          border-radius: 3px;
-          background: #1a1a1a;
+          border-radius: 2px;
+          background: #1a1816;
           border: none;
         }
 
         .image {
-          border-radius: 3px;
+          border-radius: 2px;
         }
 
         .widget-title {
           border-radius: 0;
           background: transparent;
-          color: #888888;
+          color: #7a756d;
           padding: 4px 8px;
         }
 
         .widget-dnd {
-          border-radius: 3px;
-          background: #1a1a1a;
+          border-radius: 2px;
+          background: #1a1816;
           padding: 4px 8px;
           margin: 4px;
         }
 
         .widget-dnd > switch {
-          border-radius: 3px;
-          background: #333333;
+          border-radius: 2px;
+          background: #252220;
         }
 
         .widget-dnd > switch:checked {
-          background: #444444;
+          background: #b85555;
         }
 
         .widget-dnd > switch slider {
-          border-radius: 3px;
+          border-radius: 2px;
         }
 
         .widget-buttons-grid > button {
-          border-radius: 3px;
-          background: #1a1a1a;
+          border-radius: 2px;
+          background: #1a1816;
           border: none;
+          color: #7a756d;
+        }
+
+        .widget-buttons-grid > button:hover {
+          background: #252220;
+          color: #d4d0ca;
         }
 
         .notification-action {
-          border-radius: 3px;
-          background: #333333;
+          border-radius: 2px;
+          background: #252220;
           border: none;
-          padding: 4px 8px;
+          padding: 6px 10px;
           margin: 2px;
+          color: #d4d0ca;
+        }
+
+        .notification-action:hover {
+          background: #b85555;
+          color: #0a0a0a;
         }
 
         .close-button {
-          border-radius: 3px;
-          background: #333333;
+          border-radius: 2px;
+          background: #252220;
           border: none;
           padding: 2px;
         }
 
-        .summary { color: #cccccc; }
-        .body { color: #999999; }
-        .time { color: #666666; }
-        .app-name { color: #666666; }
+        .close-button:hover {
+          background: #b85555;
+        }
+
+        .summary { color: #d4d0ca; }
+        .body { color: #9a958d; }
+        .time { color: #5a554d; }
+        .app-name { color: #5a554d; }
       '';
     };
   };

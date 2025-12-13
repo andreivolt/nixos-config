@@ -89,6 +89,26 @@
     pyproject-build-systems,
   }:
   let
+    # Helper to build PEP-723 inline scripts using uv2nix
+    # Creates a virtualenv at build time - no uv needed at runtime
+    mkPep723Script = pkgs: scriptPath:
+      let
+        script = uv2nix.lib.scripts.loadScript { script = scriptPath; };
+        baseSet = pkgs.callPackage pyproject-nix.build.packages {
+          python = pkgs.python3;
+        };
+        overlay = script.mkOverlay { sourcePreference = "wheel"; };
+        pythonSet = baseSet.overrideScope (
+          pkgs.lib.composeManyExtensions [
+            pyproject-build-systems.overlays.default
+            overlay
+          ]
+        );
+        venv = script.mkVirtualEnv { inherit pythonSet; };
+      in
+        pkgs.writeScriptBin (pkgs.lib.removeSuffix ".py" (baseNameOf scriptPath))
+          (script.renderScript { inherit venv; });
+
     commonNixpkgsConfig = {
       config.allowUnfree = true;
       overlays = [
@@ -96,6 +116,7 @@
         (final: prev: {
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
           json2nix = inputs.json2nix.packages.${prev.stdenv.hostPlatform.system}.default;
+          mkPep723Script = mkPep723Script final;
         })
         # Use lan-mouse from flake (latest with CLI/daemon support) with pointer speed patch
         (final: prev: {
@@ -103,14 +124,6 @@
             patches = (oldAttrs.patches or []) ++ [
               ./pkgs/lan-mouse-pointer-speed.patch
             ];
-          });
-        })
-        # Python scripts via uv2nix
-        (final: prev: {
-          andrei = prev.andrei // (import "${inputs.self}/scripts" {
-            lib = prev.lib;
-            pkgs = prev;
-            inherit uv2nix pyproject-nix pyproject-build-systems;
           });
         })
       ];
