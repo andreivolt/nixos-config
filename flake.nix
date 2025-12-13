@@ -50,6 +50,21 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    pyproject-nix = {
+      url = "github:pyproject-nix/pyproject.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    uv2nix = {
+      url = "github:pyproject-nix/uv2nix";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    pyproject-build-systems = {
+      url = "github:pyproject-nix/build-system-pkgs";
+      inputs.pyproject-nix.follows = "pyproject-nix";
+      inputs.uv2nix.follows = "uv2nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -69,6 +84,9 @@
     lan-mouse,
     nix-on-droid,
     sops-nix,
+    pyproject-nix,
+    uv2nix,
+    pyproject-build-systems,
   }:
   let
     commonNixpkgsConfig = {
@@ -85,6 +103,14 @@
             patches = (oldAttrs.patches or []) ++ [
               ./pkgs/lan-mouse-pointer-speed.patch
             ];
+          });
+        })
+        # Python scripts via uv2nix
+        (final: prev: {
+          andrei = prev.andrei // (import "${inputs.self}/scripts" {
+            lib = prev.lib;
+            pkgs = prev;
+            inherit uv2nix pyproject-nix pyproject-build-systems;
           });
         })
       ];
