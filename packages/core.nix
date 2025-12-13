@@ -172,6 +172,7 @@ with pkgs; [
   websocat
   weechat
   wget
+  wrangler
   xh
   xmlstarlet
   xurls
