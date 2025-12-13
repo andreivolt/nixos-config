@@ -10,6 +10,7 @@ with pkgs; with pkgs.darwin; [
   andrei.proxy-toggle
   andrei.resolution
   andrei.shazam
+  andrei.transcribe-mlx
   andrei.videosnap
   andrei.vision
   asitop
