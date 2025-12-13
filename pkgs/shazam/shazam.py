@@ -1,6 +1,7 @@
 #!/usr/bin/env -S uv run --script --quiet
 """Identify music using Shazam API from audio input or files."""
 # /// script
+# requires-python = ">=3.11"
 # dependencies = [
 #   "numpy>=2.2",
 #   "pyaudio>=0.2.14",
