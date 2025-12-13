@@ -2,12 +2,22 @@
 pkgs:
 with pkgs; [
   age
+  # andrei.chrome-history-export  # uv2nix symlink issue
+  andrei.claude-api
   andrei.darkmode
+  andrei.file-rename
+  andrei.firefox-addon-delete
   andrei.flushdns
+  andrei.json-schema
   andrei.lock
   andrei.mute
+  andrei.stash
   andrei.tunnel
+  andrei.twscrape
+  andrei.w3space
   andrei.watchdiff
+  andrei.whatismyip
+  andrei.x-space
   alejandra
   ansifilter
   aria2
