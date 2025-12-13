@@ -163,6 +163,7 @@ with pkgs; [
   websocat
   weechat
   wget
+  wrangler
   xh
   xurls
   xxd
