@@ -6,6 +6,7 @@ with pkgs; with pkgs.darwin; [
   andrei.proxy-toggle
   andrei.resolution
   andrei.shazam
+  andrei.transcribe-mlx
   asitop
   coreutils
   duti
