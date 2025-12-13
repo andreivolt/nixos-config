@@ -22,6 +22,8 @@
     ../shared/glab.nix
     ../shared/nix.nix
     ../shared/npm.nix
+    ../shared/npm-tools.nix
+    ../shared/uv-tools.nix
     ../shared/parallel.nix
     ../shared/pry.nix
     ../shared/readline.nix
