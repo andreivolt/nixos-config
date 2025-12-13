@@ -4,23 +4,40 @@ with pkgs; [
   age
   andrei.astext
   andrei.azure-speech
+  # andrei.chrome-history-export  # uv2nix symlink issue
+  andrei.chrome-remote
   andrei.chromecast-broadcast
+  andrei.claude-api
   andrei.claude-command-monitor
   andrei.claude-files
   andrei.claude-messages
   andrei.claude-sessions
+  andrei.content
+  andrei.cookie
   andrei.correct
+  andrei.cssq
+  andrei.curl2cookies
   andrei.darkmode
   andrei.deepgram
   andrei.deepgram-tts
+  andrei.docker-compose-stop
   andrei.dpaste
   andrei.elevenlabs
+  andrei.elevenlabs-dub
+  andrei.file-rename
   andrei.filebase
+  andrei.firecrawl
+  andrei.firefox-addon-delete
   andrei.flushdns
   andrei.gcloudocr
+  andrei.gmail
   andrei.google-search
+  andrei.hackernews
+  andrei.hn
+  andrei.hn-comments
   andrei.hn-search
   andrei.htmlpaste
+  andrei.json-schema
   andrei.json2nix
   andrei.lifx
   andrei.lock
@@ -29,19 +46,36 @@ with pkgs; [
   andrei.paragraphs
   andrei.pngpaste
   andrei.pngview
+  andrei.puremd
   andrei.reddit-comments
   andrei.screenshot
   andrei.semantic-filter
+  andrei.stash
   andrei.strip-whitespace
   andrei.tailscale-device-delete
   andrei.tailscale-exit-node
   andrei.translate
   andrei.tree-render
   andrei.tunnel
+  andrei.tweet-screenshot
+  andrei.twscrape
   andrei.unrealspeech
+  andrei.vi
+  andrei.w3space
   andrei.watchdiff
+  andrei.web-search
   andrei.web-search-rs
+  andrei.whatismyip
+  andrei.with-chunks
   andrei.with-url
+  andrei.x-space
+  andrei.x-thread
+  andrei.yandex-search
+  andrei.youtube-audio
+  andrei.youtube-comments
+  andrei.youtube-list
+  andrei.youtube-search
+  andrei.youtube-transcript
   alejandra
   andrei.anypaste
   andrei.nixos-repl
