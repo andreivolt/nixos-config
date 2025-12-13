@@ -87,7 +87,6 @@ in {
         in {
           "+x" = "chmod +x";
           cdt = "cd $(mktemp -d)";
-          claude = "claude --dangerously-skip-permissions";
           diff = "diff --color";
           edir = "edir -r";
           eza = "eza --icons always";
