@@ -36,7 +36,7 @@
       general="Roboto,12,-1,5,50,0,0,0,0,0"
     '';
 
-    # KDE/Qt font settings for apps like Dolphin
+    # KDE/Qt font settings for apps like KDE Connect
     xdg.configFile."kdeglobals".text = ''
       [General]
       font=Roboto,12,-1,5,50,0,0,0,0,0

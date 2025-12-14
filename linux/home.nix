@@ -145,7 +145,7 @@
   };
   xdg.configFile."mimeapps.list".force = true;
 
-  # Custom desktop files with proper MimeType for Dolphin/KDE
+  # Custom desktop files with proper MimeType
   xdg.desktopEntries = {
     swayimg = {
       name = "Swayimg";

@@ -50,6 +50,7 @@
     ../linux/waybar.nix
     ../linux/xdg-portals.nix
     ../linux/chromium.nix
+    ../linux/thunar.nix
     ../linux/dolphin.nix
     ../linux/kdeconnect.nix
     ../shared/ff2mpv.nix
