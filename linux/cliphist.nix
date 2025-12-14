@@ -1,14 +1,17 @@
-{ config, lib, pkgs, ... }:
-
+# Clipboard history with cliphist
+{ pkgs, ... }:
 {
-  # Install cliphist package
-  environment.systemPackages = [ pkgs.cliphist ];
-
-  # Cliphist clipboard history service
-  home-manager.users.andrei = { config, pkgs, ... }: {
+  home-manager.sharedModules = [{
     services.cliphist = {
       enable = true;
-      allowImages = true;  # Handles both text and images
+      allowImages = true;
     };
-  };
+
+    # Clipboard history menu (rofi UI)
+    home.packages = [
+      (pkgs.writeShellScriptBin "rofi-clip" ''
+        cliphist list | rofi -dmenu -theme ~/.config/rofi/theme.rasi -p "Clipboard" | cliphist decode | wl-copy
+      '')
+    ];
+  }];
 }

@@ -112,39 +112,11 @@ in {
     }
   '';
 
+  # App launcher with combi mode (windows + apps)
+  # Shows running windows first, then apps - selecting a window focuses it
   home.packages = [
-    # App launcher with combi mode (windows + apps)
-    # Shows running windows first, then apps - selecting a window focuses it
     (pkgs.writeShellScriptBin "rofi-launch" ''
       rofi -show combi -combi-modi "window,drun" -modi combi
-    '')
-
-    # Clipboard history
-    (pkgs.writeShellScriptBin "rofi-clip" ''
-      cliphist list | rofi -dmenu -theme ~/.config/rofi/theme.rasi -p "Clipboard" | cliphist decode | wl-copy
-    '')
-
-    # Power menu
-    (pkgs.writeShellScriptBin "rofi-power" ''
-      options="Lock\nLogout\nSuspend\nReboot\nShutdown"
-      selected=$(echo -e "$options" | rofi -dmenu -theme ~/.config/rofi/theme.rasi -p "Power")
-
-      case "$selected" in
-        Lock) hyprlock ;;
-        Logout)
-          confirm=$(echo -e "Yes\nNo" | rofi -dmenu -theme ~/.config/rofi/theme.rasi -p "Logout?")
-          [ "$confirm" = "Yes" ] && hyprctl dispatch exit
-          ;;
-        Suspend) systemctl suspend ;;
-        Reboot)
-          confirm=$(echo -e "Yes\nNo" | rofi -dmenu -theme ~/.config/rofi/theme.rasi -p "Reboot?")
-          [ "$confirm" = "Yes" ] && systemctl reboot
-          ;;
-        Shutdown)
-          confirm=$(echo -e "Yes\nNo" | rofi -dmenu -theme ~/.config/rofi/theme.rasi -p "Shutdown?")
-          [ "$confirm" = "Yes" ] && systemctl poweroff
-          ;;
-      esac
     '')
   ];
 }
