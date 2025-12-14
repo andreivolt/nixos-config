@@ -1,6 +1,10 @@
 # Shared home-manager config for linux systems
 { config, inputs }:
-
+let
+  colors = import ../shared/colors.nix;
+  # Strip # prefix from hex color for wob (expects RRGGBB not #RRGGBB)
+  stripHash = s: builtins.substring 1 6 s;
+in
 {pkgs, ...}: {
   imports = [
     ./hyprland/pin-auto.nix
@@ -31,12 +35,12 @@
         border_size = 1;
         border_offset = 2;
         bar_padding = 2;
-        background_color = "00000088";
-        border_color = "ffffff99";
-        bar_color = "ffffffcc";
-        overflow_background_color = "00000088";
-        overflow_border_color = "ff666699";
-        overflow_bar_color = "ff6666cc";
+        background_color = "${stripHash colors.aurora.background}88";
+        border_color = "${stripHash colors.aurora.foreground}99";
+        bar_color = "${stripHash colors.aurora.foreground}cc";
+        overflow_background_color = "${stripHash colors.aurora.background}88";
+        overflow_border_color = "${stripHash colors.accent.primary}99";
+        overflow_bar_color = "${stripHash colors.accent.primary}cc";
       };
     };
   };
