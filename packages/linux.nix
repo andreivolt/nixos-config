@@ -30,6 +30,7 @@ in
   wev
   xdg-user-dirs
   xdg-utils
+  zenity
 ]
 ++ lib.optionals isx86_64 [
   boot
