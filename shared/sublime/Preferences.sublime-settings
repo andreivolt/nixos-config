@@ -1,5 +1,8 @@
 {
+	"auto_hide_menu": true,
 	"auto_hide_tabs": true,
+	"margin": 16,
+	"word_wrap": true,
 	"font_face": "Roboto",
 	"font_size": 24,
 	"hide_new_tab_button": true,
