@@ -23,6 +23,7 @@ tooltip {
 	background: rgba(26, 24, 22, 0.95);
 	border: 1px solid rgba(184, 85, 85, 0.3);
 	border-radius: 2px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 	padding: 8px 12px;
 }
 
