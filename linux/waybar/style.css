@@ -322,7 +322,7 @@ window#waybar.empty #window {
 }
 
 #tray > widget {
-	margin: 0 20;
+	margin: 0 20px;
 }
 
 #tray > .passive {
