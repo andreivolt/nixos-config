@@ -132,12 +132,20 @@ window#waybar.empty #window {
 }
 
 #battery {
-	min-width: 36px;
-	padding: 0 6px;
-	margin: 4px 0;
-	border-radius: 0;
-	font-size: 14px;
-	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
+	min-width: 22px;
+	min-height: 22px;
+	padding: 2px;
+	margin: 7px 0;
+	border-radius: 50%;
+	border: 2px solid rgba(122, 117, 109, 0.5);
+	background: transparent;
+	font-size: 12px;
+	font-weight: 700;
+	font-family: "IosevkaTerm Nerd Font Mono", monospace;
+}
+
+#battery * {
+	font-family: "IosevkaTerm Nerd Font Mono", monospace;
 }
 
 #clock {
@@ -217,36 +225,66 @@ window#waybar.empty #window {
 	animation: blink-fast 0.5s infinite;
 }
 
-/* Battery: red (critical) -> orange -> copper -> green (full) */
+/* Battery: circle with charge-colored border */
 #battery {
-	color: #6a9a6a;
+	color: rgba(200, 195, 185, 0.9);
 }
 
-#battery.full {
-	color: #5a9a5a;
+/* Critical - red */
+#battery.s10 {
+	border-color: #b05050;
 }
 
-#battery.good {
-	color: #7a9a6a;
+/* Warning - orange/red */
+#battery.s20 {
+	border-color: #b86050;
 }
 
-#battery.low {
-	color: #b8956e;
+/* Low - orange */
+#battery.s30 {
+	border-color: #c08050;
 }
 
-#battery.warning {
-	color: #c08030;
+/* Below half - amber */
+#battery.s40 {
+	border-color: #b89050;
 }
 
-#battery.critical {
-	color: #b03030;
-	animation: blink-slow 2s infinite;
+/* Half - yellow */
+#battery.s50 {
+	border-color: #a09050;
 }
 
-#battery.charging,
+/* Above half - yellow-green */
+#battery.s60 {
+	border-color: #8a9a60;
+}
+
+/* Good - green */
+#battery.s70 {
+	border-color: #7a9a6a;
+}
+
+#battery.s80 {
+	border-color: #6a9a6a;
+}
+
+#battery.s90 {
+	border-color: #609a65;
+}
+
+#battery.s100 {
+	border-color: #5a9a5a;
+}
+
+/* Plugged/charging - fill the circle */
+#battery.charging {
+	background: rgba(122, 154, 170, 0.25);
+	border-color: #7a9aaa;
+}
+
 #battery.plugged {
-	color: #6a9aaa;
-	animation: none;
+	background: rgba(90, 154, 90, 0.2);
 }
 
 @keyframes blink-fast {
