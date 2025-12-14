@@ -26,7 +26,7 @@ in {
         DENO_NO_UPDATE_CHECK = "1";
         EDITOR = "nvim";
         TERMINAL = "kitty --single-instance";
-        LESS = "--RAW-CONTROL-CHARS --LONG-PROMPT --ignore-case --no-init --quit-if-one-screen";
+        LESS = "--RAW-CONTROL-CHARS --ignore-case --no-init --quit-if-one-screen --use-color --color=Sky --color=Er --color=d+c --color=u+g --color=PK --mouse --incsearch --wordwrap --prompt=?f%f .?m(%i/%m) .?lt%lt-%lb?L/%L. .?e(END):?pB%pB\\%..";
         LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p";
         MANPAGER = "nvim +Man!";
         MANWIDTH = "100";
