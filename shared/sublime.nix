@@ -84,6 +84,7 @@ in {
       xdg.configFile = {
         # User settings
         "sublime-text/Packages/User/Preferences.sublime-settings".source = ./sublime/Preferences.sublime-settings;
+        "sublime-text/Packages/User/Distraction Free.sublime-settings".source = ./sublime + "/Distraction Free.sublime-settings";
 
         # Packages from git
         "sublime-text/Packages/AutoDarkLinux".source = autodark-sublime;
