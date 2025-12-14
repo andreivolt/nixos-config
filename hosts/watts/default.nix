@@ -26,6 +26,7 @@
     ../../linux/touchscreen.nix
     ./insync.nix
     ../../linux/zram.nix
+    ../../linux/ddc.nix
   ];
 
   networking.hostName = "watts";
