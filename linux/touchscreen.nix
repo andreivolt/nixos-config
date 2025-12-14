@@ -80,7 +80,8 @@
               ;;
             *"(orientation:"*)
               orientation="''${line##*(orientation: }"
-              orientation="''${orientation%)}"
+              orientation="''${orientation%%,*}"  # strip ", tilt: ..." if present
+              orientation="''${orientation%)}"    # strip trailing ) if no comma
               rotate "$orientation"
               ;;
           esac
