@@ -24,6 +24,7 @@
     ./dac-toggle.nix
     ./intel-vaapi.nix
     ../../linux/touchscreen.nix
+    ../../linux/hypr-autorotate.nix
     ./insync.nix
     ../../pkgs/lifx/lifx.nix
     ../../linux/zram.nix
