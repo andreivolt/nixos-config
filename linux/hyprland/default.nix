@@ -28,7 +28,7 @@ in {
 
   # Use home-manager's hyprland module to load plugins (ensures version match)
   # Config files are symlinked from nixos-config repo for live editing
-  home-manager.users.andrei = { config, ... }: {
+  home-manager.users.andrei = { config, lib, ... }: {
     # Symlink config files from repo (out-of-store for live editing)
     home.file.".config/hypr/hyprlock.conf".source =
       config.lib.file.mkOutOfStoreSymlink
@@ -60,5 +60,32 @@ in {
         windowrule = hyprbars:no_bar 1, match:class dev.deedles.Trayscale
       '';
     };
+
+    # Reload hyprland only when config actually changes (not on every rebuild)
+    # Works with misc.disable_autoreload = true in hyprland.conf
+    home.activation.hyprlandReload = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      HASH_FILE="''${XDG_STATE_HOME:-$HOME/.local/state}/hyprland-config-hash"
+      HYPR_DIR="$HOME/.config/hypr"
+      REPO_CONF="$HOME/dev/nixos-config/linux/hyprland/hyprland.conf"
+
+      # Hash all hyprland config files (follow symlinks to get actual content)
+      # Include: wrapper, repo config, and all sourced configs
+      if [ -d "$HYPR_DIR" ]; then
+        NEW_HASH=$(cat "$HYPR_DIR/hyprland.conf" "$REPO_CONF" "$HYPR_DIR/vars.conf" "$HYPR_DIR/dropdown.conf" "$HYPR_DIR/cursor.conf" "$HYPR_DIR/touch.conf" 2>/dev/null | ${pkgs.coreutils}/bin/sha256sum | cut -d' ' -f1)
+
+        OLD_HASH=""
+        [ -f "$HASH_FILE" ] && OLD_HASH=$(cat "$HASH_FILE")
+
+        if [ "$NEW_HASH" != "$OLD_HASH" ]; then
+          # Only reload if Hyprland is running
+          if [ -d "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/hypr" ]; then
+            echo "Hyprland config changed, reloading..."
+            ${hyprlandPkgs.hyprland}/bin/hyprctl reload || true
+          fi
+          mkdir -p "$(dirname "$HASH_FILE")"
+          echo "$NEW_HASH" > "$HASH_FILE"
+        fi
+      fi
+    '';
   };
 }
