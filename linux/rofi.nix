@@ -7,7 +7,7 @@ in {
   programs.rofi = {
     enable = true;
     package = pkgs.rofi;
-    terminal = "kitty";
+    terminal = "kitty --single-instance";
     font = "Roboto 13";
     theme = "~/.config/rofi/theme.rasi";
     extraConfig = {
