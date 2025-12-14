@@ -15,9 +15,9 @@
   "modules-center": [],
 
   "modules-right": [
+    "tray",
     "custom/caffeine",
     "custom/dictate",
-    "tray",
     "custom/tailscale",
     "pulseaudio",
     "custom/brightness",
