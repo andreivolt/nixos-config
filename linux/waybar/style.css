@@ -50,8 +50,8 @@ window#waybar.empty #window {
 }
 
 #workspaces button {
-	padding: 0 8px;
-	margin: 4px 4px;
+	padding: 2px 14px 0 8px;
+	margin: 10px 4px;
 	background: transparent;
 	color: #7a756d;
 	border-radius: 0;
@@ -65,9 +65,9 @@ window#waybar.empty #window {
 }
 
 #workspaces button.active {
-	background: transparent;
+	background: rgba(184, 85, 85, 0.6);
 	color: #d4d0ca;
-	border-bottom: 2px solid rgba(184, 85, 85, 0.6);
+	border-radius: 2px;
 }
 
 #workspaces button.urgent {
