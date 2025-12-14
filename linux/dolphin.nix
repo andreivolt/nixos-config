@@ -53,5 +53,10 @@ in {
       [Desktop Entry]
       Hidden=true
     '';
+
+    xdg.configFile."kiorc".text = ''
+      [Confirmations]
+      ConfirmEmptyTrash=false
+    '';
   };
 }
