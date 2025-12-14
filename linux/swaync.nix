@@ -1,6 +1,9 @@
 { config, lib, pkgs, ... }:
-
-{
+let
+  colors = import ../shared/colors.nix;
+  # Strip alpha from ui.bg for solid color contexts
+  bgSolid = builtins.substring 0 7 colors.ui.bg;
+in {
   # Install swaync package
   environment.systemPackages = [ pkgs.swaynotificationcenter ];
 
@@ -19,7 +22,7 @@
 
         .control-center {
           border-radius: 0;
-          background: #0a0a0a;
+          background: ${bgSolid};
           border: none;
           padding: 0;
         }
@@ -43,7 +46,7 @@
           border-radius: 2px;
           border: none;
           padding: 12px;
-          background: #1a1816;
+          background: ${colors.ui.bgAlt};
           box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
         }
 
@@ -55,7 +58,7 @@
 
         .control-center .notification-row .notification-background {
           border-radius: 2px;
-          background: #1a1816;
+          background: ${colors.ui.bgAlt};
           border: none;
         }
 
@@ -70,16 +73,16 @@
 
         .notification-group-headers > button {
           border-radius: 2px;
-          background: #1a1816;
+          background: ${colors.ui.bgAlt};
           border: none;
           padding: 4px 8px;
-          color: #7a756d;
+          color: ${colors.ui.fgDim};
         }
 
         .notification-group-collapse-button,
         .notification-group-close-all-button {
           border-radius: 2px;
-          background: #1a1816;
+          background: ${colors.ui.bgAlt};
           border: none;
         }
 
@@ -90,24 +93,24 @@
         .widget-title {
           border-radius: 0;
           background: transparent;
-          color: #7a756d;
+          color: ${colors.ui.fgDim};
           padding: 4px 8px;
         }
 
         .widget-dnd {
           border-radius: 2px;
-          background: #1a1816;
+          background: ${colors.ui.bgAlt};
           padding: 4px 8px;
           margin: 4px;
         }
 
         .widget-dnd > switch {
           border-radius: 2px;
-          background: #252220;
+          background: ${colors.ui.bgElevated};
         }
 
         .widget-dnd > switch:checked {
-          background: #b85555;
+          background: ${colors.accent.primary};
         }
 
         .widget-dnd > switch slider {
@@ -116,42 +119,42 @@
 
         .widget-buttons-grid > button {
           border-radius: 2px;
-          background: #1a1816;
+          background: ${colors.ui.bgAlt};
           border: none;
-          color: #7a756d;
+          color: ${colors.ui.fgDim};
         }
 
         .widget-buttons-grid > button:hover {
-          background: #252220;
-          color: #d4d0ca;
+          background: ${colors.ui.bgElevated};
+          color: ${colors.ui.fg};
         }
 
         .notification-action {
           border-radius: 2px;
-          background: #252220;
+          background: ${colors.ui.bgElevated};
           border: none;
           padding: 6px 10px;
           margin: 2px;
-          color: #d4d0ca;
+          color: ${colors.ui.fg};
         }
 
         .notification-action:hover {
-          background: #b85555;
-          color: #0a0a0a;
+          background: ${colors.accent.primary};
+          color: ${bgSolid};
         }
 
         .close-button {
           border-radius: 2px;
-          background: #252220;
+          background: ${colors.ui.bgElevated};
           border: none;
           padding: 2px;
         }
 
         .close-button:hover {
-          background: #b85555;
+          background: ${colors.accent.primary};
         }
 
-        .summary { color: #d4d0ca; }
+        .summary { color: ${colors.ui.fg}; }
         .body { color: #9a958d; }
         .time { color: #5a554d; }
         .app-name { color: #5a554d; }

@@ -1,4 +1,53 @@
-{pkgs, ...}: {
+{pkgs, ...}:
+let
+  colors = import ../shared/colors.nix;
+  # Strip alpha from ui.bg for solid color contexts
+  bgSolid = builtins.substring 0 7 colors.ui.bg;
+
+  # Shared CSS for GTK accent color overrides (identical for gtk3/gtk4)
+  accentCss = ''
+    /* Obsidian Aurora accent overrides */
+    @define-color accent_color ${colors.accent.primary};
+    @define-color accent_bg_color ${colors.accent.primary};
+    @define-color accent_fg_color ${bgSolid};
+
+    /* Selection colors */
+    selection, *:selected {
+      background-color: alpha(${colors.accent.primary}, 0.3);
+    }
+
+    /* Focus rings */
+    *:focus-visible {
+      outline-color: ${colors.accent.primary};
+    }
+
+    /* Buttons */
+    button.suggested-action {
+      background-color: ${colors.accent.primary};
+      color: ${bgSolid};
+    }
+
+    /* Links */
+    link, *:link {
+      color: ${colors.accent.primary};
+    }
+
+    /* Switches when checked */
+    switch:checked {
+      background-color: ${colors.accent.primary};
+    }
+
+    /* Progress bars */
+    progressbar > trough > progress {
+      background-color: ${colors.accent.primary};
+    }
+
+    /* Scale/slider highlight */
+    scale > trough > highlight {
+      background-color: ${colors.accent.primary};
+    }
+  '';
+in {
   # Ensure gsettings schemas are available system-wide
   environment.systemPackages = with pkgs; [
     gsettings-desktop-schemas
@@ -35,91 +84,8 @@
       gtk4.extraConfig = {
         gtk-application-prefer-dark-theme = true;
       };
-      # Custom CSS for warm red accent colors
-      gtk3.extraCss = ''
-        /* Obsidian Aurora accent overrides */
-        @define-color accent_color #b85555;
-        @define-color accent_bg_color #b85555;
-        @define-color accent_fg_color #0a0a0a;
-
-        /* Selection colors */
-        selection, *:selected {
-          background-color: alpha(#b85555, 0.3);
-        }
-
-        /* Focus rings */
-        *:focus-visible {
-          outline-color: #b85555;
-        }
-
-        /* Buttons */
-        button.suggested-action {
-          background-color: #b85555;
-          color: #0a0a0a;
-        }
-
-        /* Links */
-        link, *:link {
-          color: #b85555;
-        }
-
-        /* Switches when checked */
-        switch:checked {
-          background-color: #b85555;
-        }
-
-        /* Progress bars */
-        progressbar > trough > progress {
-          background-color: #b85555;
-        }
-
-        /* Scale/slider highlight */
-        scale > trough > highlight {
-          background-color: #b85555;
-        }
-      '';
-      gtk4.extraCss = ''
-        /* Obsidian Aurora accent overrides */
-        @define-color accent_color #b85555;
-        @define-color accent_bg_color #b85555;
-        @define-color accent_fg_color #0a0a0a;
-
-        /* Selection colors */
-        selection, *:selected {
-          background-color: alpha(#b85555, 0.3);
-        }
-
-        /* Focus rings */
-        *:focus-visible {
-          outline-color: #b85555;
-        }
-
-        /* Buttons */
-        button.suggested-action {
-          background-color: #b85555;
-          color: #0a0a0a;
-        }
-
-        /* Links */
-        link, *:link {
-          color: #b85555;
-        }
-
-        /* Switches when checked */
-        switch:checked {
-          background-color: #b85555;
-        }
-
-        /* Progress bars */
-        progressbar > trough > progress {
-          background-color: #b85555;
-        }
-
-        /* Scale/slider highlight */
-        scale > trough > highlight {
-          background-color: #b85555;
-        }
-      '';
+      gtk3.extraCss = accentCss;
+      gtk4.extraCss = accentCss;
     };
 
     # Set color-scheme for apps that use XDG Settings portal (Chromium, etc.)
