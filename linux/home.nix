@@ -111,7 +111,7 @@
     "image/svg+xml" = image-viewer;
     "image/tiff" = image-viewer;
     "image/webp" = image-viewer;
-    "inode/directory" = "thunar.desktop";
+    "inode/directory" = "org.kde.dolphin.desktop";
     "text/html" = "${browser}.desktop";
     "text/plain" = text-editor;
     "video/mp4" = video-player;
