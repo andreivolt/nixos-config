@@ -95,6 +95,7 @@ window#waybar.empty #window {
 /* Clock */
 #clock {
 	padding: 0 12px;
+	font-size: 16px;
 	font-weight: 700;
 	color: #b85555;
 	margin: 4px 0;
@@ -140,8 +141,14 @@ window#waybar.empty #window {
 }
 
 #clock {
-	padding: 0 8px;
+	min-width: 64px;
+	padding: 0 6px 0 0;
 	margin: 4px 0;
+	font-family: "IosevkaTerm Nerd Font Mono", monospace;
+}
+
+#clock * {
+	font-family: "IosevkaTerm Nerd Font Mono", monospace;
 }
 
 /* CPU states with colors */
