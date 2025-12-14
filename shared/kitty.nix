@@ -63,6 +63,7 @@ in {
           paste_actions = "quote-urls-at-prompt,replace-dangerous-control-codes";
           notify_on_cmd_finish = "unfocused";
           enable_audio_bell = "no";
+          scrollback_pager = "less -RF +INPUT_LINE_NUMBER";
           visual_bell_duration = "0.1";
           visual_bell_color = "red";
 
