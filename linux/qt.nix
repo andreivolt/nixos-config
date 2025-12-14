@@ -40,6 +40,8 @@
     xdg.configFile."kdeglobals".text = ''
       [General]
       font=Roboto,12,-1,5,50,0,0,0,0,0
+      TerminalApplication=kitty --single-instance
+      TerminalService=kitty.desktop
 
       [WM]
       activeFont=Roboto,11,-1,5,50,0,0,0,0,0
