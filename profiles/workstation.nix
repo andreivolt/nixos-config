@@ -56,6 +56,7 @@
     ../linux/kbd-backlight-idle.nix
     ../linux/hyprsunset-wake.nix
     ../linux/wob.nix
+    ../linux/power-menu.nix
   ];
 
   # GUI-specific hardware
