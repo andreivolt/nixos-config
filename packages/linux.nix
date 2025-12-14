@@ -7,6 +7,7 @@ in
 [
   andrei.dictate
   andrei.screenoff
+  andrei.sysrec
   acpi
   alsa-lib.dev
   alsa-utils
