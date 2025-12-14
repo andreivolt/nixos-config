@@ -27,6 +27,7 @@
     ./insync.nix
     ../../pkgs/lifx/lifx.nix
     ../../linux/zram.nix
+    ../../linux/ddc.nix
   ];
 
   networking.hostName = "watts";
