@@ -9,7 +9,7 @@ export XDG_STATE_HOME=~/.local/state
 
 (( ${+commands[google-chrome-stable]} )) && BROWSER=google-chrome-stable
 [[ -f ~/.local/ca-certificates/combined-ca-bundle.pem ]] && export CURL_CA_BUNDLE=~/.local/ca-certificates/combined-ca-bundle.pem
-export DELTA_PAGER='less -R'
+export DELTA_PAGER=less
 export DENO_NO_UPDATE_CHECK=1
 export EDITOR=nvim
 export TERMINAL="kitty --single-instance"
