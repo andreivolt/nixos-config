@@ -25,7 +25,7 @@ in {
         DELTA_PAGER = "less -R";
         DENO_NO_UPDATE_CHECK = "1";
         EDITOR = "nvim";
-        TERMINAL = "kitty";
+        TERMINAL = "kitty --single-instance";
         LESS = "--RAW-CONTROL-CHARS --LONG-PROMPT --ignore-case --no-init --quit-if-one-screen";
         MANPAGER = "nvim +Man!";
         MANWIDTH = "100";
