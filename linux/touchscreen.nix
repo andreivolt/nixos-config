@@ -73,7 +73,8 @@
 
         # Listen for Hyprland config reload events and re-apply orientation
         watch_hyprland() {
-          socat -u "UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" - 2>/dev/null | while read -r line; do
+          local socket="$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock"
+          socat -u "UNIX-CONNECT:$socket" - 2>/dev/null | while read -r line; do
             if [[ "$line" == "configreloaded>>" ]]; then
               orientation=$(cat "$STATE_FILE" 2>/dev/null)
               [[ -n "$orientation" ]] && rotate "$orientation"
