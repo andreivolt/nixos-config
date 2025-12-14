@@ -47,6 +47,7 @@ with pkgs; [
   andrei.pngpaste
   andrei.pngview
   andrei.puremd
+  andrei.pushover
   andrei.reddit-comments
   andrei.screenshot
   andrei.semantic-filter
