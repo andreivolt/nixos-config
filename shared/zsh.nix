@@ -27,6 +27,7 @@ in {
         EDITOR = "nvim";
         TERMINAL = "kitty --single-instance";
         LESS = "--RAW-CONTROL-CHARS --LONG-PROMPT --ignore-case --no-init --quit-if-one-screen";
+        LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p";
         MANPAGER = "nvim +Man!";
         MANWIDTH = "100";
         PAGER = "nvimpager";
