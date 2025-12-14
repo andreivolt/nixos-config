@@ -13,7 +13,7 @@ export DELTA_PAGER='less -R'
 export DENO_NO_UPDATE_CHECK=1
 export EDITOR=nvim
 export TERMINAL="kitty --single-instance"
-export LESS='--RAW-CONTROL-CHARS --LONG-PROMPT --ignore-case --no-init --quit-if-one-screen'
+export LESS='--RAW-CONTROL-CHARS --ignore-case --no-init --quit-if-one-screen --use-color --color=Sky --color=Er --color=d+c --color=u+g --color=PK --mouse --incsearch --wordwrap --prompt=?f%f .?m(%i/%m) .?lt%lt-%lb?L/%L. .?e(END):?pB%pB\%..'
 export LESSUTFCHARDEF=E000-F8FF:p,F0000-FFFFD:p
 export MANPAGER='nvim +Man!' MANWIDTH=100
 export PAGER=nvimpager
