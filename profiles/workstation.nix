@@ -55,6 +55,7 @@
     ../shared/ff2mpv.nix
     ../linux/kbd-backlight-idle.nix
     ../linux/hyprsunset-wake.nix
+    ../linux/wob.nix
   ];
 
   # GUI-specific hardware
