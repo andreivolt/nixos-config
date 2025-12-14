@@ -1,6 +1,7 @@
 { config, lib, pkgs, ... }:
-
-{
+let
+  colors = import ../shared/colors.nix;
+in {
   # Install swaybg package
   environment.systemPackages = [ pkgs.swaybg ];
 
@@ -14,7 +15,7 @@
       };
       Service = {
         Type = "simple";
-        ExecStart = "${pkgs.swaybg}/bin/swaybg -c '#000000'";
+        ExecStart = "${pkgs.swaybg}/bin/swaybg -c '${colors.aurora.background}'";
         Restart = "on-failure";
         RestartSec = 3;
       };
