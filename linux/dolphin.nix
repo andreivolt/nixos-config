@@ -2,16 +2,31 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  # Remove unwanted context menu plugins from kio-extras
+  kio-extras-clean = pkgs.kdePackages.kio-extras.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      rm -f $out/lib/qt-6/plugins/kf6/kfileitemaction/kactivitymanagerd_fileitem_linking_plugin.so
+      rm -f $out/lib/qt-6/plugins/kf6/kfileitemaction/forgetfileitemaction.so
+    '';
+  });
+
+  # Remove "Set Folder Icon" from dolphin
+  dolphin-clean = pkgs.kdePackages.dolphin.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      rm -f $out/lib/qt-6/plugins/kf6/kfileitemaction/setfoldericonitemaction.so
+    '';
+  });
+in {
   environment.etc."xdg/menus/applications.menu".source =
     "${pkgs.kdePackages.plasma-workspace}/etc/xdg/menus/plasma-applications.menu";
 
   environment.systemPackages = with pkgs;
     [
-      kdePackages.dolphin
+      dolphin-clean
       kdePackages.kservice
       kdePackages.ffmpegthumbs
-      kdePackages.kio-extras
+      kio-extras-clean
       gnome-epub-thumbnailer
       libheif
     ]
