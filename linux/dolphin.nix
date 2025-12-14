@@ -48,6 +48,14 @@ in {
       MenuBar=Disabled
     '';
 
+    # Baloo file info panel configuration (controls what shows in Dolphin info panel)
+    xdg.configFile."baloofileinformationrc".text = ''
+      [Show]
+      rating=false
+      tags=false
+      userComment=false
+    '';
+
     # Disable folder color context menu
     xdg.dataFile."kio/servicemenus/folderscolor.desktop".text = ''
       [Desktop Entry]
