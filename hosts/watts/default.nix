@@ -13,7 +13,6 @@
     ./disk-config.nix
     ./impermanence.nix
     ../../shared/user-persist.nix
-    ../../linux/mpv.nix
     ../../linux/adb.nix
     ./fkey-remap.nix
     ./fingerprint.nix
