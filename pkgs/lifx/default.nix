@@ -1,6 +1,8 @@
 {
   lib,
   rustPlatform,
+  makeWrapper,
+  zenity,
 }:
 
 rustPlatform.buildRustPackage {
@@ -9,7 +11,14 @@ rustPlatform.buildRustPackage {
 
   src = ./.;
 
-  cargoHash = "sha256-AZe2XneeLzWkYYEFMFbp2cezTfO0DNJ/UYqhqRMA3mM=";
+  cargoLock.lockFile = ./Cargo.lock;
+
+  nativeBuildInputs = [ makeWrapper ];
+
+  postInstall = ''
+    wrapProgram $out/bin/lifx \
+      --prefix PATH : ${lib.makeBinPath [ zenity ]}
+  '';
 
   meta = with lib; {
     description = "Control LIFX smart lights";

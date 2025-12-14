@@ -56,72 +56,72 @@ struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
 
-    /// Apply to all lights
-    #[arg(short = 'a', long = "all")]
-    all_lights: bool,
-
-    /// Apply to specific light names
-    #[arg(short = 'n', long = "name")]
-    names: Vec<String>,
-
-    /// Apply to lights in group
-    #[arg(short = 'g', long = "group")]
-    group: Option<String>,
-
     /// Transition duration in seconds
-    #[arg(short = 'd', long = "duration", default_value = "0")]
+    #[arg(short = 'd', long = "duration", default_value = "0", global = true)]
     duration: f32,
 }
 
 #[derive(Subcommand)]
 enum Commands {
     /// List discovered lights
+    #[command(visible_alias = "ls")]
     List {
-        /// Force rescan for devices
-        #[arg(short = 'r', long = "rescan")]
-        rescan: bool,
+        /// Force fresh device discovery (bypass cache)
+        #[arg(long = "scan")]
+        scan: bool,
     },
     /// Turn lights on
-    On,
+    On {
+        /// Light names to target (default: all lights)
+        targets: Vec<String>,
+    },
     /// Turn lights off
-    Off,
-    /// Set light color
-    Color {
-        /// Color specification (HSBK, kelvin, theme, or predefined)
-        color: Option<String>,
+    Off {
+        /// Light names to target (default: all lights)
+        targets: Vec<String>,
     },
-    /// Set brightness (0-100)
-    Brightness {
-        level: u8,
+    /// Set brightness, color, or temperature
+    Set {
+        /// Arguments: [TARGETS...] <VALUE>
+        /// Value can be: brightness (50), relative (+10, -5), kelvin (3500k),
+        /// preset (sunset), color (red), or HSBK (120,80,100,3500)
+        args: Vec<String>,
+        /// Open TUI menu to select preset/color
+        #[arg(short = 'm', long = "menu")]
+        menu: bool,
+        /// Open GTK color wheel dialog (zenity)
+        #[arg(short = 'g', long = "gui")]
+        gui: bool,
     },
-    /// Increase brightness
-    Brighter {
-        #[arg(default_value = "10")]
-        amount: u8,
-    },
-    /// Decrease brightness
-    Dimmer {
-        #[arg(default_value = "10")]
-        amount: u8,
-    },
-    /// Make lights warmer
-    Warmer {
-        #[arg(default_value = "100")]
-        amount: u16,
-    },
-    /// Make lights cooler
-    Cooler {
-        #[arg(default_value = "100")]
-        amount: u16,
-    },
-    /// Clear device cache
-    ClearCache,
     /// Generate shell completion script
     Completion {
         /// Shell to generate completion for
         #[arg(value_enum)]
         shell: Shell,
     },
+}
+
+/// Parsed value from the `set` command
+#[derive(Debug, Clone)]
+enum SetValue {
+    /// Absolute brightness (0-100)
+    Brightness(u8),
+    /// Relative brightness change (+/- percentage)
+    BrightnessRelative(i16),
+    /// Absolute temperature in Kelvin
+    Temperature(u16),
+    /// Relative temperature change (+/- Kelvin)
+    TemperatureRelative(i32),
+    /// Color specification (preset name, color name, or HSBK string)
+    Color(String),
+    /// Hex color (#rrggbb)
+    HexColor(String),
+}
+
+/// Result of parsing the args for the `set` command
+struct ParsedSetArgs {
+    targets: Vec<String>,
+    value: Option<SetValue>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -367,37 +367,6 @@ impl LifxController {
         let data = std::fs::read_to_string(&self.brightness_memory_file).ok()?;
         let memory: HashMap<u64, u16> = serde_json::from_str(&data).ok()?;
         memory.get(&target).copied()
-    }
-
-    async fn get_target_lights(&self, cli: &Cli, discovered: &[CachedLight]) -> Result<Vec<CachedLight>> {
-        let mut target_lights = Vec::new();
-
-        if cli.all_lights {
-            target_lights = discovered.to_vec();
-        } else if !cli.names.is_empty() {
-            for name in &cli.names {
-                if let Some(light) = discovered.iter().find(|l| l.label == *name) {
-                    target_lights.push(light.clone());
-                } else {
-                    eprintln!("Warning: No light found with name '{}'", name);
-                }
-            }
-            if target_lights.is_empty() {
-                return Err(anyhow!("No matching lights found for specified names"));
-            }
-        } else if let Some(_group) = &cli.group {
-            return Err(anyhow!("Group functionality not yet implemented"));
-        } else if let Ok(last_used) = self.load_last_used() {
-            target_lights = last_used;
-        } else {
-            return Err(anyhow!("No target specified and no last used lights found. Use --all, --name, or --group"));
-        }
-
-        for light in &mut target_lights {
-            let _ = self.get_light_info(light).await;
-        }
-
-        Ok(target_lights)
     }
 
     async fn ensure_powered_on(&self, device: &LifxDevice, duration_ms: u32) -> Result<()> {
@@ -750,12 +719,281 @@ impl LifxController {
 
         info
     }
+
+    /// Resolve target names to CachedLight entries
+    /// Resolution order: exact match, then case-insensitive match
+    fn resolve_targets(&self, target_names: &[String], discovered: &[CachedLight]) -> (Vec<CachedLight>, Vec<String>) {
+        let mut matched = Vec::new();
+        let mut unmatched = Vec::new();
+
+        for name in target_names {
+            // Try exact match first
+            if let Some(light) = discovered.iter().find(|l| l.label == *name) {
+                matched.push(light.clone());
+                continue;
+            }
+
+            // Try case-insensitive match
+            if let Some(light) = discovered.iter().find(|l| l.label.eq_ignore_ascii_case(name)) {
+                matched.push(light.clone());
+                continue;
+            }
+
+            unmatched.push(name.clone());
+        }
+
+        (matched, unmatched)
+    }
+
+    /// Try to parse an argument as a SetValue
+    /// Returns Some(SetValue) if it looks like a value, None if it should be treated as a target
+    fn try_parse_value(&self, arg: &str, light_names: &[String]) -> Option<SetValue> {
+        // If arg exactly matches a light name, it's a target, not a value
+        if light_names.iter().any(|name| name == arg) {
+            return None;
+        }
+
+        // Try parsing as relative brightness (+10, -20)
+        if let Some(rest) = arg.strip_prefix('+') {
+            if let Ok(n) = rest.parse::<i16>() {
+                if !rest.ends_with('k') && !rest.ends_with('K') {
+                    return Some(SetValue::BrightnessRelative(n));
+                }
+            }
+        }
+        if let Some(rest) = arg.strip_prefix('-') {
+            if let Ok(n) = rest.parse::<i16>() {
+                if !rest.ends_with('k') && !rest.ends_with('K') {
+                    return Some(SetValue::BrightnessRelative(-n));
+                }
+            }
+        }
+
+        // Try parsing as kelvin temperature (3500k, +500k, -200k)
+        let lower = arg.to_lowercase();
+        if lower.ends_with('k') {
+            let num_part = &arg[..arg.len() - 1];
+            if let Some(rest) = num_part.strip_prefix('+') {
+                if let Ok(n) = rest.parse::<i32>() {
+                    return Some(SetValue::TemperatureRelative(n));
+                }
+            } else if let Some(rest) = num_part.strip_prefix('-') {
+                if let Ok(n) = rest.parse::<i32>() {
+                    return Some(SetValue::TemperatureRelative(-n));
+                }
+            } else if let Ok(n) = num_part.parse::<u16>() {
+                return Some(SetValue::Temperature(n));
+            }
+        }
+
+        // Try parsing as hex color (#rrggbb)
+        if arg.starts_with('#') && (arg.len() == 7 || arg.len() == 4) {
+            return Some(SetValue::HexColor(arg.to_string()));
+        }
+
+        // Check if it's a known preset or color name
+        let is_preset = LIFX_THEMES.iter().any(|(name, _)| name.eq_ignore_ascii_case(arg));
+        let is_color = PREDEFINED_COLORS.iter().any(|(name, _)| name.eq_ignore_ascii_case(arg));
+        if is_preset || is_color {
+            return Some(SetValue::Color(arg.to_string()));
+        }
+
+        // Try parsing as HSBK (hue,sat,bright,kelvin)
+        let parts: Vec<&str> = arg.split(',').collect();
+        if parts.len() == 4 && parts.iter().all(|p| p.parse::<f32>().is_ok()) {
+            return Some(SetValue::Color(arg.to_string()));
+        }
+
+        // Try parsing as absolute brightness (plain integer 0-100)
+        if let Ok(n) = arg.parse::<u8>() {
+            if n <= 100 {
+                return Some(SetValue::Brightness(n));
+            }
+        }
+
+        // Not recognized as a value, treat as target
+        None
+    }
+
+    /// Parse the args for the `set` command
+    /// Separates targets from the value using smart detection
+    fn parse_set_args(&self, args: &[String], discovered: &[CachedLight]) -> ParsedSetArgs {
+        let light_names: Vec<String> = discovered.iter().map(|l| l.label.clone()).collect();
+        let mut targets = Vec::new();
+        let mut value = None;
+
+        for arg in args {
+            if let Some(v) = self.try_parse_value(arg, &light_names) {
+                value = Some(v);
+            } else {
+                targets.push(arg.clone());
+            }
+        }
+
+        ParsedSetArgs { targets, value }
+    }
+
+    /// Apply a SetValue to lights
+    async fn apply_set_value(&self, lights: &[CachedLight], value: &SetValue, duration_ms: u32) -> Result<()> {
+        match value {
+            SetValue::Brightness(level) => {
+                self.set_brightness(lights, *level, duration_ms).await?;
+            }
+            SetValue::BrightnessRelative(amount) => {
+                self.adjust_brightness(lights, *amount, duration_ms).await?;
+            }
+            SetValue::Temperature(kelvin) => {
+                // Set temperature while preserving brightness
+                for light in lights {
+                    let device = LifxDevice::new(light.target, light.ip_addr)?;
+                    self.ensure_powered_on(&device, duration_ms).await?;
+
+                    let current_color = self.get_light_color(&device).await.unwrap_or(HSBK {
+                        hue: 0,
+                        saturation: 0,
+                        brightness: 65535,
+                        kelvin: 3500,
+                    });
+
+                    let new_color = HSBK {
+                        hue: 0,
+                        saturation: 0,
+                        brightness: current_color.brightness,
+                        kelvin: *kelvin,
+                    };
+
+                    let message = Message::LightSetColor {
+                        reserved: 0,
+                        color: new_color,
+                        duration: duration_ms,
+                    };
+
+                    device
+                        .send_message(message)
+                        .with_context(|| format!("Failed to set temperature for {}", light.label))?;
+
+                    println!("{}: {}K", light.label, kelvin);
+                }
+            }
+            SetValue::TemperatureRelative(amount) => {
+                self.adjust_temperature(lights, *amount, duration_ms).await?;
+            }
+            SetValue::Color(color_spec) => {
+                self.set_color(lights, color_spec, duration_ms).await?;
+                for light in lights {
+                    println!("{}: {}", light.label, color_spec);
+                }
+            }
+            SetValue::HexColor(hex) => {
+                let hsbk = self.hex_to_hsbk(hex)?;
+                for light in lights {
+                    let device = LifxDevice::new(light.target, light.ip_addr)?;
+                    self.ensure_powered_on(&device, duration_ms).await?;
+
+                    let message = Message::LightSetColor {
+                        reserved: 0,
+                        color: hsbk,
+                        duration: duration_ms,
+                    };
+
+                    device
+                        .send_message(message)
+                        .with_context(|| format!("Failed to set color for {}", light.label))?;
+
+                    println!("{}: {}", light.label, hex);
+                }
+            }
+        }
+        Ok(())
+    }
+
+    /// Convert hex color (#rrggbb) to HSBK
+    fn hex_to_hsbk(&self, hex: &str) -> Result<HSBK> {
+        let hex = hex.trim_start_matches('#');
+
+        let (r, g, b) = if hex.len() == 6 {
+            let r = u8::from_str_radix(&hex[0..2], 16).context("Invalid red component")?;
+            let g = u8::from_str_radix(&hex[2..4], 16).context("Invalid green component")?;
+            let b = u8::from_str_radix(&hex[4..6], 16).context("Invalid blue component")?;
+            (r, g, b)
+        } else if hex.len() == 3 {
+            let r = u8::from_str_radix(&hex[0..1], 16).context("Invalid red component")? * 17;
+            let g = u8::from_str_radix(&hex[1..2], 16).context("Invalid green component")? * 17;
+            let b = u8::from_str_radix(&hex[2..3], 16).context("Invalid blue component")? * 17;
+            (r, g, b)
+        } else {
+            return Err(anyhow!("Invalid hex color format"));
+        };
+
+        // Convert RGB to HSB
+        let r_f = r as f32 / 255.0;
+        let g_f = g as f32 / 255.0;
+        let b_f = b as f32 / 255.0;
+
+        let max = r_f.max(g_f).max(b_f);
+        let min = r_f.min(g_f).min(b_f);
+        let delta = max - min;
+
+        let brightness = max;
+        let saturation = if max == 0.0 { 0.0 } else { delta / max };
+
+        let hue = if delta == 0.0 {
+            0.0
+        } else if max == r_f {
+            60.0 * (((g_f - b_f) / delta) % 6.0)
+        } else if max == g_f {
+            60.0 * (((b_f - r_f) / delta) + 2.0)
+        } else {
+            60.0 * (((r_f - g_f) / delta) + 4.0)
+        };
+
+        let hue = if hue < 0.0 { hue + 360.0 } else { hue };
+
+        Ok(HSBK {
+            hue: (hue / 360.0 * 65535.0) as u16,
+            saturation: (saturation * 65535.0) as u16,
+            brightness: (brightness * 65535.0) as u16,
+            kelvin: 3500,
+        })
+    }
+
+    /// Launch zenity color picker and return selected color
+    async fn gui_color_picker(&self) -> Result<SetValue> {
+        let output = std::process::Command::new("zenity")
+            .args(["--color-selection", "--show-palette"])
+            .output()
+            .context("Failed to launch zenity. Is it installed?")?;
+
+        if !output.status.success() {
+            return Err(anyhow!("Color selection cancelled"));
+        }
+
+        let color_str = String::from_utf8_lossy(&output.stdout).trim().to_string();
+
+        // zenity outputs either rgb(r,g,b) or #rrggbb depending on version
+        if color_str.starts_with("rgb(") {
+            // Parse rgb(r,g,b) format
+            let inner = color_str.trim_start_matches("rgb(").trim_end_matches(')');
+            let parts: Vec<&str> = inner.split(',').collect();
+            if parts.len() == 3 {
+                let r: u8 = parts[0].trim().parse().context("Invalid red")?;
+                let g: u8 = parts[1].trim().parse().context("Invalid green")?;
+                let b: u8 = parts[2].trim().parse().context("Invalid blue")?;
+                return Ok(SetValue::HexColor(format!("#{:02x}{:02x}{:02x}", r, g, b)));
+            }
+        } else if color_str.starts_with('#') {
+            return Ok(SetValue::HexColor(color_str));
+        }
+
+        Err(anyhow!("Could not parse color from zenity: {}", color_str))
+    }
 }
 
 #[tokio::main]
 async fn main() -> Result<()> {
     let cli = Cli::parse();
     let controller = LifxController::new()?;
+    let duration_ms = (cli.duration * 1000.0) as u32;
 
     // Handle symlink shortcuts for on/off
     if let Some(program_name) = std::env::args().next() {
@@ -766,18 +1004,16 @@ async fn main() -> Result<()> {
 
         if name == "on" || name == "off" {
             let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
-
-            controller.set_power(&target_lights, name == "on", duration_ms).await?;
-            controller.save_last_used(&target_lights)?;
+            // When invoked via symlink, apply to all lights
+            controller.set_power(&discovered, name == "on", duration_ms).await?;
+            controller.save_last_used(&discovered)?;
             return Ok(());
         }
     }
 
     match cli.command {
-        Some(Commands::List { rescan }) => {
-            let mut discovered = controller.discover_lights(!rescan).await?;
+        Some(Commands::List { scan }) => {
+            let mut discovered = controller.discover_lights(!scan).await?;
 
             if discovered.is_empty() {
                 println!("No LIFX lights found on the network.");
@@ -795,110 +1031,104 @@ async fn main() -> Result<()> {
             }
         }
 
-        Some(Commands::On) => {
+        Some(Commands::On { targets }) => {
             let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
+
+            let target_lights = if targets.is_empty() {
+                // No targets = all lights
+                discovered.clone()
+            } else {
+                let (matched, unmatched) = controller.resolve_targets(&targets, &discovered);
+                for name in &unmatched {
+                    eprintln!("warning: no light matching '{}'", name);
+                }
+                if matched.is_empty() {
+                    let available: Vec<_> = discovered.iter().map(|l| l.label.as_str()).collect();
+                    return Err(anyhow!("error: no lights matched\navailable: {}", available.join(", ")));
+                }
+                matched
+            };
 
             controller.set_power(&target_lights, true, duration_ms).await?;
             controller.save_last_used(&target_lights)?;
         }
 
-        Some(Commands::Off) => {
+        Some(Commands::Off { targets }) => {
             let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
+
+            let target_lights = if targets.is_empty() {
+                // No targets = all lights
+                discovered.clone()
+            } else {
+                let (matched, unmatched) = controller.resolve_targets(&targets, &discovered);
+                for name in &unmatched {
+                    eprintln!("warning: no light matching '{}'", name);
+                }
+                if matched.is_empty() {
+                    let available: Vec<_> = discovered.iter().map(|l| l.label.as_str()).collect();
+                    return Err(anyhow!("error: no lights matched\navailable: {}", available.join(", ")));
+                }
+                matched
+            };
 
             controller.set_power(&target_lights, false, duration_ms).await?;
             controller.save_last_used(&target_lights)?;
         }
 
-        Some(Commands::Color { ref color }) => {
+        Some(Commands::Set { args, menu, gui }) => {
             let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
 
-            let color_spec = if let Some(color) = color {
-                color.clone()
+            // Parse arguments into targets and value
+            let parsed = controller.parse_set_args(&args, &discovered);
+
+            // Determine target lights
+            let target_lights = if parsed.targets.is_empty() {
+                // No targets = all lights
+                discovered.clone()
             } else {
-                controller.interactive_color_selection().await?
+                let (matched, unmatched) = controller.resolve_targets(&parsed.targets, &discovered);
+                for name in &unmatched {
+                    eprintln!("warning: no light matching '{}'", name);
+                }
+                if matched.is_empty() {
+                    let available: Vec<_> = discovered.iter().map(|l| l.label.as_str()).collect();
+                    return Err(anyhow!("error: no lights matched\navailable: {}", available.join(", ")));
+                }
+                matched
             };
 
-            controller.set_color(&target_lights, &color_spec, duration_ms).await?;
-            controller.save_last_used(&target_lights)?;
-        }
-
-        Some(Commands::Brightness { level }) => {
-            let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
-
-            controller.set_brightness(&target_lights, level, duration_ms).await?;
-            controller.save_last_used(&target_lights)?;
-        }
-
-        Some(Commands::Brighter { amount }) => {
-            let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
-
-            controller
-                .adjust_brightness(&target_lights, amount as i16, duration_ms)
-                .await?;
-            controller.save_last_used(&target_lights)?;
-        }
-
-        Some(Commands::Dimmer { amount }) => {
-            let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
-
-            controller
-                .adjust_brightness(&target_lights, -(amount as i16), duration_ms)
-                .await?;
-            controller.save_last_used(&target_lights)?;
-        }
-
-        Some(Commands::Warmer { amount }) => {
-            let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
-
-            controller
-                .adjust_temperature(&target_lights, -(amount as i32), duration_ms)
-                .await?;
-            controller.save_last_used(&target_lights)?;
-        }
-
-        Some(Commands::Cooler { amount }) => {
-            let discovered = controller.discover_lights(true).await?;
-            let target_lights = controller.get_target_lights(&cli, &discovered).await?;
-            let duration_ms = (cli.duration * 1000.0) as u32;
-
-            controller
-                .adjust_temperature(&target_lights, amount as i32, duration_ms)
-                .await?;
-            controller.save_last_used(&target_lights)?;
-        }
-
-        Some(Commands::ClearCache) => {
-            let mut removed = Vec::new();
-
-            if controller.cache_file.exists() {
-                std::fs::remove_file(&controller.cache_file)?;
-                removed.push("device cache");
-            }
-
-            if controller.last_used_file.exists() {
-                std::fs::remove_file(&controller.last_used_file)?;
-                removed.push("last used lights");
-            }
-
-            if removed.is_empty() {
-                println!("No cache files found to clear");
+            // Determine the value to set
+            let value = if gui {
+                // Use zenity color picker
+                controller.gui_color_picker().await?
+            } else if menu {
+                // Use TUI menu
+                let color_spec = controller.interactive_color_selection().await?;
+                SetValue::Color(color_spec)
+            } else if let Some(v) = parsed.value {
+                v
             } else {
-                println!("Cleared: {}", removed.join(", "));
-            }
+                return Err(anyhow!(
+                    "error: missing value\n\
+                    usage: lifx set [TARGETS...] <VALUE>\n\
+                    \n\
+                    VALUE can be:\n\
+                    \x20 50        brightness (0-100)\n\
+                    \x20 +10, -5   relative brightness\n\
+                    \x20 3500k     temperature in Kelvin\n\
+                    \x20 +500k     relative temperature\n\
+                    \x20 sunset    preset name\n\
+                    \x20 red       color name\n\
+                    \x20 #ff6b35   hex color\n\
+                    \n\
+                    Or use interactive mode:\n\
+                    \x20 lifx set --menu   TUI preset selector\n\
+                    \x20 lifx set --gui    GTK color wheel"
+                ));
+            };
+
+            controller.apply_set_value(&target_lights, &value, duration_ms).await?;
+            controller.save_last_used(&target_lights)?;
         }
 
         Some(Commands::Completion { shell }) => {
@@ -907,15 +1137,21 @@ async fn main() -> Result<()> {
             generate(shell, &mut cmd, name, &mut std::io::stdout());
         }
 
-        _ => {
-            if cli.all_lights || !cli.names.is_empty() || cli.group.is_some() {
-                eprintln!("No command specified. Use --help for available commands.");
-                std::process::exit(1);
-            } else {
-                let discovered = controller.discover_lights(true).await?;
-                for light in &discovered {
-                    println!("{}", controller.format_light_info(light));
-                }
+        None => {
+            // Default: list lights
+            let mut discovered = controller.discover_lights(true).await?;
+
+            if discovered.is_empty() {
+                println!("No LIFX lights found on the network.");
+                return Ok(());
+            }
+
+            for light in &mut discovered {
+                let _ = controller.get_light_info(light).await;
+            }
+
+            for light in &discovered {
+                println!("{}", controller.format_light_info(light));
             }
         }
     }
