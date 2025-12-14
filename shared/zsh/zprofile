@@ -14,6 +14,7 @@ export DENO_NO_UPDATE_CHECK=1
 export EDITOR=nvim
 export TERMINAL="kitty --single-instance"
 export LESS='--RAW-CONTROL-CHARS --LONG-PROMPT --ignore-case --no-init --quit-if-one-screen'
+export LESSUTFCHARDEF=E000-F8FF:p,F0000-FFFFD:p
 export MANPAGER='nvim +Man!' MANWIDTH=100
 export PAGER=nvimpager
 export PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=ignore
