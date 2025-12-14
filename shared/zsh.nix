@@ -21,8 +21,15 @@ in {
     ({config, lib, pkgs, ...}: {
       xdg.enable = true;
 
-      home.sessionVariables = {
-        DELTA_PAGER = "less -R";
+      home.sessionVariables = let
+        isAsahi = pkgs.stdenv.isLinux && pkgs.stdenv.hostPlatform.isAarch64;
+        browser =
+          if isAsahi then "chromium"
+          else if pkgs.stdenv.isDarwin then "google-chrome"
+          else "google-chrome-stable";
+      in {
+        BROWSER = browser;
+        DELTA_PAGER = "less";
         DENO_NO_UPDATE_CHECK = "1";
         EDITOR = "nvim";
         TERMINAL = "kitty --single-instance";
@@ -123,7 +130,6 @@ in {
 
         profileExtra = ''
           # conditionals that need shell evaluation
-          (( ''${+commands[google-chrome-stable]} )) && export BROWSER=google-chrome-stable
           [[ -f ~/.local/ca-certificates/combined-ca-bundle.pem ]] && export CURL_CA_BUNDLE=~/.local/ca-certificates/combined-ca-bundle.pem
           source ~/.config/env 2>/dev/null || true
         '';
