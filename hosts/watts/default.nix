@@ -7,6 +7,7 @@
   imports = [
     ../../shared/sops.nix
     ../../shared/sops-home.nix
+    ../../shared/ssh-client.nix
     ../../profiles/core.nix
     ../../profiles/workstation.nix
     ../../profiles/laptop.nix
