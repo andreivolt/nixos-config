@@ -28,7 +28,6 @@
     ../shared/nushell.nix
     ../shared/sublime.nix
     ../shared/zed.nix
-    ../linux/swayimg.nix
 
     # GUI components
     ../shared/cursor.nix
