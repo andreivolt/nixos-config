@@ -10,7 +10,7 @@
     ../../shared/sops-home.nix
     ../../shared/ssh-client.nix
     ../../shared/aria2.nix
-    ../../shared/bat.nix
+    ../../shared/bat
     ../../shared/btop.nix
     ../../shared/cargo.nix
     ../../shared/curl.nix
@@ -24,20 +24,20 @@
     ../../shared/glab.nix
     ../../shared/gnupg.nix
     ../../shared/hushlogin.nix
-    ../../shared/mpv.nix
+    ../../shared/mpv
     ../../shared/npm.nix
     ../../shared/npm-tools.nix
     ../../shared/uv-tools.nix
     ../../shared/parallel.nix
-    ../../shared/pry.nix
+    ../../shared/pry
     ../../shared/readline.nix
     ../../shared/ripgrep.nix
     ../../shared/rubocop.nix
     ../../shared/rustfmt.nix
     ../../shared/tmux.nix
-    ../../shared/wezterm.nix
-    ../../shared/zed.nix
-    ../../shared/zsh.nix
+    ../../shared/wezterm
+    ../../shared/zed
+    ../../shared/zsh
     ../../darwin/lan-mouse.nix
     ./activity-monitor.nix
     ./alt-tab.nix

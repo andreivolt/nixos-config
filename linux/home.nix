@@ -5,7 +5,7 @@
   imports = [
     ./hyprland/auto-pin.nix
     ./mime-apps.nix
-    ./rofi.nix
+    ./rofi
     ./swayimg.nix
     ./xdg-places.nix
     ./zathura.nix
