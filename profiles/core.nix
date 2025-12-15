@@ -13,6 +13,7 @@
     ../shared/curl.nix
     ../shared/dircolors.nix
     ../shared/direnv.nix
+    ../shared/delta.nix
     ../shared/dnsmasq.nix
     ../shared/git.nix
     ../shared/gnupg.nix
