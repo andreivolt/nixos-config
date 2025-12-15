@@ -7,6 +7,7 @@ in {
   home-manager.sharedModules = [{
     programs.ssh = {
       enable = true;
+      enableDefaultConfig = false;
       includes = lib.optionals isDarwin [ "~/.orbstack/ssh/config" ];
       matchBlocks = {
         "*" = {
