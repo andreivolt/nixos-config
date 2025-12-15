@@ -1,6 +1,8 @@
 {
   lib,
   rustPlatform,
+  darwin,
+  sqlite,
 }:
 rustPlatform.buildRustPackage {
   pname = "clipboard";
@@ -9,6 +11,13 @@ rustPlatform.buildRustPackage {
   src = ./.;
 
   cargoLock.lockFile = ./Cargo.lock;
+
+  nativeBuildInputs = [ ];
+
+  buildInputs = [
+    darwin.apple_sdk.frameworks.CoreFoundation
+    sqlite
+  ];
 
   meta = {
     description = "Browse and manage Maccy clipboard history";
