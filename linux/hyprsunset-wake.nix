@@ -53,12 +53,14 @@ in
   # trigger user service on wake
   systemd.services.hyprsunset-wake-trigger = {
     description = "Trigger hyprsunset-wake user service on wake";
-    after = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
-    wantedBy = [ "suspend.target" "hibernate.target" "hybrid-sleep.target" ];
+    before = [ "sleep.target" ];
+    wantedBy = [ "sleep.target" ];
 
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl --user -M ${user}@ start hyprsunset-wake.service";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.coreutils}/bin/true";
+      ExecStop = "${pkgs.systemd}/bin/systemctl --user -M ${user}@ start hyprsunset-wake.service";
     };
   };
 }
