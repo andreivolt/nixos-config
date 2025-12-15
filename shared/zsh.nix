@@ -116,6 +116,8 @@ in {
           yt-dlp = "yt-dlp --cookies-from-browser ${browser}";
         } // lib.optionalAttrs pkgs.stdenv.isLinux {
           open = "xdg-open";
+        } // lib.optionalAttrs pkgs.stdenv.isDarwin {
+          tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
         };
 
         shellGlobalAliases = {
