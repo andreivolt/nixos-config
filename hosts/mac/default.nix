@@ -18,6 +18,7 @@
     ../../shared/direnv.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix
+    ../../shared/delta.nix
     ../../shared/gh.nix
     ../../shared/git.nix
     ../../shared/glab.nix
