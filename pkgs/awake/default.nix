@@ -8,7 +8,7 @@ rustPlatform.buildRustPackage {
 
   src = ./.;
 
-  cargoHash = lib.fakeHash;
+  cargoLock.lockFile = ./Cargo.lock;
 
   meta = {
     description = "Control KeepingYouAwake on macOS";
