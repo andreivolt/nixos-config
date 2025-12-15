@@ -7,6 +7,12 @@
   # Enable iio-sensor-proxy for accelerometer access
   hardware.sensor.iio.enable = true;
 
+  # Allow user to reset Wacom USB device without sudo
+  # (needed for hypridle DPMS resume to fix zombie touchscreen)
+  services.udev.extraRules = ''
+    ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="056a", ATTR{idProduct}=="5087", RUN+="${pkgs.coreutils}/bin/chmod 666 %S%p/authorized"
+  '';
+
   # Reset Wacom USB device after resume from suspend
   # The device gets into a zombie state where it appears connected but generates no events
   # (ISH sensor hub resume timeout leaves USB devices in partially-initialized state)
