@@ -241,7 +241,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import { spawn } from 'node:child_process';
 
-if (typeof process !== 'undefined' && process.argv[1] && process.argv[1].endsWith('hn-comments')) {
+if (import.meta.main) {
   const program = new Command();
 
   program
