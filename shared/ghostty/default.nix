@@ -1,12 +1,12 @@
 let
-  colors = import ./colors.nix;
+  colors = import ../colors.nix;
   aurora = colors.aurora;
 in {
   home-manager.sharedModules = [
     {
       xdg.configFile = {
-        "ghostty/shaders/cursor_blaze.glsl".source = ./ghostty/cursor_blaze.glsl;
-        "ghostty/shaders/cursor_blaze_no_trail.glsl".source = ./ghostty/cursor_blaze_no_trail.glsl;
+        "ghostty/shaders/cursor_blaze.glsl".source = ./cursor_blaze.glsl;
+        "ghostty/shaders/cursor_blaze_no_trail.glsl".source = ./cursor_blaze_no_trail.glsl;
       };
 
       programs.ghostty = {

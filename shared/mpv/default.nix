@@ -10,21 +10,21 @@
   # custom seek-to with paste-timestamp functionality
   seek-to-custom = pkgs.runCommand "seek-to-custom" {} ''
     mkdir -p $out/share/mpv/scripts
-    cp ${./mpv/seek-to.lua} $out/share/mpv/scripts/seek-to.lua
+    cp ${./seek-to.lua} $out/share/mpv/scripts/seek-to.lua
   '' // { scriptName = "seek-to.lua"; };
 
   # patched youtube-chat that skips live streams
   youtube-chat-patched = pkgs.mpvScripts.youtube-chat.overrideAttrs (old: {
     patches = (old.patches or []) ++ [
-      ./mpv/youtube-chat-skip-live.patch
+      ./youtube-chat-skip-live.patch
     ];
   });
 
   customScriptsDir = pkgs.runCommand "mpv-custom-scripts" {} ''
     mkdir -p $out
-    cp ${./mpv/fastforward.lua} $out/fastforward.lua
-    cp ${./mpv/auto-save-state.lua} $out/auto-save-state.lua
-    cp ${./mpv/ytsub.lua} $out/ytsub.lua
+    cp ${./fastforward.lua} $out/fastforward.lua
+    cp ${./auto-save-state.lua} $out/auto-save-state.lua
+    cp ${./ytsub.lua} $out/ytsub.lua
   '';
   mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
     echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket | ${pkgs.jq}/bin/jq -r .data
