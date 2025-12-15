@@ -9,8 +9,8 @@ with pkgs; with pkgs.darwin; [
   andrei.impbcopy
   andrei.proxy-toggle
   andrei.resolution
-  andrei.shazam
-  andrei.transcribe-mlx
+  # andrei.shazam  # TODO: pyaudio build fails (missing setuptools in uv2nix)
+  # andrei.transcribe-mlx  # TODO: mlx 0.30.0 has no compatible wheel
   andrei.videosnap
   andrei.vision
   asitop
