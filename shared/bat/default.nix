@@ -10,7 +10,7 @@
         };
         themes = {
           Aurora = {
-            src = ./bat;
+            src = ./.;
             file = "aurora.tmTheme";
           };
         };

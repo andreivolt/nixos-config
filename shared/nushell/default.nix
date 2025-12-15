@@ -3,8 +3,8 @@
     {
       programs.nushell = {
         enable = true;
-        configFile.source = ./nushell/config.nu;
-        envFile.source = ./nushell/env.nu;
+        configFile.source = ./config.nu;
+        envFile.source = ./env.nu;
       };
     }
   ];
