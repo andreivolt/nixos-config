@@ -233,11 +233,11 @@
   },
 
   "custom/caffeine": {
-    "exec": "~/.config/waybar/scripts/caffeine.sh status",
+    "exec": "caffeine waybar",
     "return-type": "json",
     "interval": 5,
     "signal": 9,
     "tooltip": false,
-    "on-click": "~/.config/waybar/scripts/caffeine.sh toggle"
+    "on-click": "caffeine toggle"
   }
 }

@@ -5,6 +5,7 @@ let
   inherit (pkgs.stdenv.hostPlatform) isx86_64;
 in
 [
+  andrei.caffeine
   andrei.dictate
   andrei.screenoff
   andrei.sysrec
