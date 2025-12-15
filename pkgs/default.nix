@@ -6,9 +6,10 @@ with builtins; let
   nixFiles = filter isNixFile currentDirFiles;
 
   # Create a lazy attribute set - packages are only evaluated when accessed
+  # Use self.callPackage so packages can reference andrei.* siblings
   packages = listToAttrs (map (name: {
     name = name;  # Use directory name as-is
-    value = super.callPackage (./. + "/${name}") {};
+    value = self.callPackage (./. + "/${name}") {};
   }) nixFiles);
 in {
   andrei = packages;
