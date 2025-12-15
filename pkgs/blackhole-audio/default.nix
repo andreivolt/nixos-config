@@ -9,7 +9,7 @@ rustPlatform.buildRustPackage {
 
   src = ./.;
 
-  cargoHash = lib.fakeHash;
+  cargoLock.lockFile = ./Cargo.lock;
 
   buildInputs = [
     darwin.apple_sdk.frameworks.CoreAudio
