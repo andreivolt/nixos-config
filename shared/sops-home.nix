@@ -7,9 +7,12 @@ in {
   home-manager.sharedModules = [{
     programs.ssh = {
       enable = true;
-      compression = true;
       includes = lib.optionals isDarwin [ "~/.orbstack/ssh/config" ];
-      matchBlocks = lib.optionalAttrs isLinuxWorkstation {
+      matchBlocks = {
+        "*" = {
+          compression = true;
+        };
+      } // lib.optionalAttrs isLinuxWorkstation {
         phone = {
           hostname = "phone";
           user = "u0_a779";
