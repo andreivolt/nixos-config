@@ -8,6 +8,7 @@
   imports = [
     ../../shared/sops.nix
     ../../shared/sops-home.nix
+    ../../shared/ssh-client.nix
     ../../shared/aria2.nix
     ../../shared/bat.nix
     ../../shared/btop.nix
