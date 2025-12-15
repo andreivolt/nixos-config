@@ -49,6 +49,7 @@
     ../linux/mpv.nix
     ../linux/waybar.nix
     ../linux/xdg-portals.nix
+    ../linux/chrome-history.nix
     ../linux/chromium.nix
     ../linux/dolphin.nix
     ../linux/kdeconnect.nix
