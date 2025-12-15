@@ -18,51 +18,10 @@
   };
 in {
   home-manager.sharedModules = [
+    ./zsh/environment.nix
+    ./zsh/aliases.nix
     ({config, lib, pkgs, ...}: {
       xdg.enable = true;
-
-      home.sessionVariables = let
-        isAsahi = pkgs.stdenv.isLinux && pkgs.stdenv.hostPlatform.isAarch64;
-        browser =
-          if isAsahi then "chromium"
-          else if pkgs.stdenv.isDarwin then "google-chrome"
-          else "google-chrome-stable";
-      in {
-        BROWSER = browser;
-        DELTA_PAGER = "less";
-        DENO_NO_UPDATE_CHECK = "1";
-        EDITOR = "nvim";
-        TERMINAL = "kitty --single-instance";
-        LESS = "--RAW-CONTROL-CHARS --ignore-case --no-init --quit-if-one-screen --use-color --color=Sky --color=Er --color=d+c --color=u+g --color=PK --mouse --incsearch --wordwrap --prompt=?f%f .?m(%i/%m) .?lt%lt-%lb?L/%L. .?e(END):?pB%pB\\%..";
-        LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p";
-        MANPAGER = "nvim +Man!";
-        MANWIDTH = "100";
-        PAGER = "nvimpager";
-        PYTHONDONTWRITEBYTECODE = "1";
-        PYTHONWARNINGS = "ignore";
-        UV_TOOL_BIN_DIR = "~/.local/bin";
-        PKG_CONFIG_PATH = "$HOME/.nix-profile/lib/pkgconfig:/run/current-system/sw/lib/pkgconfig:\${PKG_CONFIG_PATH:-}";
-      } // lib.optionalAttrs pkgs.stdenv.isDarwin {
-        SHELL_SESSIONS_DISABLE = "1";
-        HOMEBREW_CELLAR = "/opt/homebrew/Cellar";
-        HOMEBREW_PREFIX = "/opt/homebrew";
-        HOMEBREW_REPOSITORY = "/opt/homebrew";
-        INFOPATH = "/opt/homebrew/share/info\${INFOPATH:+:$INFOPATH}";
-        MANPATH = "/opt/homebrew/share/man\${MANPATH:+:$MANPATH}:";
-        LIBRARY_PATH = "/opt/homebrew/opt/libiconv/lib\${LIBRARY_PATH:+:$LIBRARY_PATH}";
-      };
-
-      home.sessionPath = [
-        "$HOME/go/bin"
-        "$HOME/.npm/bin"
-        "$HOME/.cargo/bin"
-        "$HOME/.cache/.bun/bin"
-        "$HOME/.local/bin"
-        "$HOME/bin"
-      ] ++ lib.optionals pkgs.stdenv.isDarwin [
-        "/opt/homebrew/bin"
-        "/opt/homebrew/sbin"
-      ];
 
       programs.zsh = {
         enable = true;
@@ -88,51 +47,6 @@ in {
           "null_glob"
           "numeric_glob_sort"
         ];
-
-        shellAliases = let
-          isAsahi = pkgs.stdenv.isLinux && pkgs.stdenv.hostPlatform.isAarch64;
-          browser = if isAsahi then "chromium" else "chrome";
-        in {
-          "+x" = "chmod +x";
-          cdt = "cd $(mktemp -d)";
-          diff = "diff --color";
-          edir = "edir -r";
-          eza = "eza --icons always";
-          gc = "git clone --depth 1";
-          gron = "fastgron";
-          http = "xh";
-          jq = "gojq";
-          l = "ls -1";
-          la = "ls -a";
-          ll = "ls -l --classify=auto --git";
-          lla = "ll -a";
-          ls = "eza --group-directories-first";
-          mpv = "mpv --ytdl-raw-options=cookies-from-browser=${browser}";
-          path = ''printf "%s\n" $path'';
-          rg = "rg --smart-case --colors match:bg:yellow --colors match:fg:black";
-          rm = "rm --verbose";
-          scrcpy = "scrcpy --render-driver opengl";
-          vi = "nvim";
-          yt-dlp = "yt-dlp --cookies-from-browser ${browser}";
-        } // lib.optionalAttrs pkgs.stdenv.isLinux {
-          copy = "wl-copy";
-          open = "xdg-open";
-          paste = "wl-paste";
-        } // lib.optionalAttrs pkgs.stdenv.isDarwin {
-          copy = "pbcopy";
-          paste = "pbpaste";
-          tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
-        };
-
-        shellGlobalAliases = {
-          C = "| wc -l";
-          G = "| rg";
-          H = "| head";
-          L = "| $PAGER";
-          N = "&> /dev/null";
-          NE = "2> /dev/null";
-          X = "| xargs";
-        };
 
         profileExtra = ''
           # conditionals that need shell evaluation
