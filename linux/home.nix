@@ -3,8 +3,11 @@
 
 {pkgs, ...}: {
   imports = [
+    ./desktop-entries.nix
     ./hyprland/pin-auto.nix
+    ./mime-apps.nix
     ./rofi.nix
+    ./xdg-places
     ./zathura.nix
   ];
 
@@ -23,118 +26,4 @@
 
   xdg.enable = true;
   xdg.userDirs.enable = true;
-  xdg.dataFile."user-places.xbel".text = ''
-    <?xml version="1.0" encoding="UTF-8"?>
-    <!DOCTYPE xbel>
-    <xbel xmlns:bookmark="http://www.freedesktop.org/standards/desktop-bookmarks" xmlns:kdepriv="http://www.kde.org/kdepriv" xmlns:mime="http://www.freedesktop.org/standards/shared-mime-info">
-     <info>
-      <metadata owner="http://www.kde.org">
-       <kde_places_version>4</kde_places_version>
-      </metadata>
-     </info>
-     <bookmark href="file:///home/andrei">
-      <title>Home</title>
-      <info>
-       <metadata owner="http://freedesktop.org">
-        <bookmark:icon name="user-home"/>
-       </metadata>
-       <metadata owner="http://www.kde.org">
-        <isSystemItem>true</isSystemItem>
-       </metadata>
-      </info>
-     </bookmark>
-     <bookmark href="file:///home/andrei/drive">
-      <title>drive</title>
-      <info>
-       <metadata owner="http://freedesktop.org">
-        <bookmark:icon name="folder-cloud"/>
-       </metadata>
-      </info>
-     </bookmark>
-     <bookmark href="file:///home/andrei/Downloads">
-      <title>Downloads</title>
-      <info>
-       <metadata owner="http://freedesktop.org">
-        <bookmark:icon name="folder-downloads"/>
-       </metadata>
-      </info>
-     </bookmark>
-     <bookmark href="remote:/">
-      <title>Network</title>
-      <info>
-       <metadata owner="http://freedesktop.org">
-        <bookmark:icon name="folder-network"/>
-       </metadata>
-       <metadata owner="http://www.kde.org">
-        <isSystemItem>true</isSystemItem>
-       </metadata>
-      </info>
-     </bookmark>
-     <bookmark href="trash:/">
-      <title>Trash</title>
-      <info>
-       <metadata owner="http://freedesktop.org">
-        <bookmark:icon name="user-trash"/>
-       </metadata>
-       <metadata owner="http://www.kde.org">
-        <isSystemItem>true</isSystemItem>
-       </metadata>
-      </info>
-     </bookmark>
-    </xbel>
-  '';
-  xdg.mimeApps.enable = true;
-  xdg.mimeApps.defaultApplications = let
-    browser = if pkgs.stdenv.hostPlatform.isAarch64 then "chromium" else "google-chrome";
-    image-viewer = "swayimg.desktop";
-    text-editor = "sublime_text.desktop";
-    video-player = "mpv.desktop";
-    audio-player = "mpv.desktop";
-  in {
-    "application/epub+zip" = "org.pwmt.zathura.desktop";
-    "application/pdf" = "org.pwmt.zathura.desktop";
-    "audio/aac" = audio-player;
-    "audio/flac" = audio-player;
-    "audio/mp4" = audio-player;
-    "audio/mpeg" = audio-player;
-    "audio/ogg" = audio-player;
-    "audio/wav" = audio-player;
-    "audio/webm" = audio-player;
-    "audio/x-wav" = audio-player;
-    "image/avif" = image-viewer;
-    "image/bmp" = image-viewer;
-    "image/gif" = image-viewer;
-    "image/heic" = image-viewer;
-    "image/heif" = image-viewer;
-    "image/jpeg" = image-viewer;
-    "image/png" = image-viewer;
-    "image/svg+xml" = image-viewer;
-    "image/tiff" = image-viewer;
-    "image/webp" = image-viewer;
-    "inode/directory" = "org.kde.dolphin.desktop";
-    "text/html" = "${browser}.desktop";
-    "text/plain" = text-editor;
-    "video/mp4" = video-player;
-    "video/mpeg" = video-player;
-    "video/ogg" = video-player;
-    "video/quicktime" = video-player;
-    "video/webm" = video-player;
-    "video/x-matroska" = video-player;
-    "x-scheme-handler/http" = "${browser}.desktop";
-    "x-scheme-handler/https" = "${browser}.desktop";
-  };
-  xdg.configFile."mimeapps.list".force = true;
-
-  # Custom desktop files with proper MimeType for Dolphin/KDE
-  xdg.desktopEntries = {
-    swayimg = {
-      name = "Swayimg";
-      comment = "Image viewer for Wayland";
-      exec = "swayimg %U";
-      icon = "swayimg";
-      terminal = false;
-      categories = ["Graphics" "Viewer"];
-      mimeType = ["image/jpeg" "image/png" "image/gif" "image/bmp" "image/webp" "image/avif" "image/heic" "image/heif" "image/tiff" "image/svg+xml"];
-    };
-  };
 }
