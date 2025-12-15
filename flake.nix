@@ -65,6 +65,10 @@
       inputs.uv2nix.follows = "uv2nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs @ {
@@ -87,6 +91,7 @@
     pyproject-nix,
     uv2nix,
     pyproject-build-systems,
+    rust-overlay,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
@@ -112,6 +117,7 @@
     commonNixpkgsConfig = {
       config.allowUnfree = true;
       overlays = [
+        rust-overlay.overlays.default
         (import "${inputs.self}/pkgs")
         (final: prev: {
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
