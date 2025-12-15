@@ -30,6 +30,7 @@
     ../../pkgs/lifx/lifx.nix
     ../../linux/zram.nix
     ../../linux/ddc.nix
+    ../../linux/wol.nix
   ];
 
   networking.hostName = "watts";
