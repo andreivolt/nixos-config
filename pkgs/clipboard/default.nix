@@ -8,7 +8,7 @@ rustPlatform.buildRustPackage {
 
   src = ./.;
 
-  cargoHash = "sha256-/D1nRK8vduyZunvO6tR08b/KuRu63S8qA4OUr5Ym8rU=";
+  cargoLock.lockFile = ./Cargo.lock;
 
   meta = {
     description = "Browse and manage Maccy clipboard history";
