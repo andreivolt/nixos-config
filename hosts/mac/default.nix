@@ -36,6 +36,7 @@
     ../../shared/wezterm.nix
     ../../shared/zed.nix
     ../../shared/zsh.nix
+    ../../darwin/lan-mouse.nix
     ./activity-monitor.nix
     ./alt-tab.nix
     ./auto-brightness.nix
