@@ -1,17 +1,25 @@
 {
   lib,
-  rustPlatform,
+  rust-bin,
+  makeRustPlatform,
   pkg-config,
   openssl,
 }:
 
+let
+  rustToolchain = rust-bin.stable.latest.default;
+  rustPlatform = makeRustPlatform {
+    cargo = rustToolchain;
+    rustc = rustToolchain;
+  };
+in
 rustPlatform.buildRustPackage {
   pname = "with-url";
   version = "0.1.0";
 
   src = ./.;
 
-  cargoHash = "sha256-OFL8MkrVsRbOKs/yOrRQEzoDg7zmJxXgru8WeTq6V3s=";
+  cargoLock.lockFile = ./Cargo.lock;
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ openssl ];
