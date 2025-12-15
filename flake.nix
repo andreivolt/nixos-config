@@ -124,6 +124,17 @@
           json2nix = inputs.json2nix.packages.${prev.stdenv.hostPlatform.system}.default;
           mkPep723Script = mkPep723Script final;
         })
+        # Disable E501 line length check in writers.writePython3
+        (final: prev: {
+          writers = prev.writers // {
+            writePython3 = name: attrOrCode:
+              if builtins.isString attrOrCode
+              then prev.writers.writePython3 name { flakeIgnore = ["E501"]; } attrOrCode
+              else code: prev.writers.writePython3 name (attrOrCode // {
+                flakeIgnore = (attrOrCode.flakeIgnore or []) ++ ["E501"];
+              }) code;
+          };
+        })
         # Use lan-mouse from flake (latest with CLI/daemon support) with pointer speed patch
         (final: prev: {
           lan-mouse = inputs.lan-mouse.packages.${prev.stdenv.hostPlatform.system}.default.overrideAttrs (oldAttrs: {
