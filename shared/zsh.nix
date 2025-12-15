@@ -179,21 +179,34 @@ in {
 
           bindkey ' ' magic-space # history expansion
 
-          source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
-
-          zsh-defer source ${pkgs.zsh-autopair}/share/zsh/zsh-autopair/autopair.zsh
-          zsh-defer autopair-init
-
-          export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=244"
-          zsh-defer source ${pkgs.zsh-autosuggestions}/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-          zsh-defer source ${pkgs.zsh-nix-shell}/share/zsh/plugins/zsh-nix-shell/nix-shell.plugin.zsh
-          zsh-defer source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+          zsh-defer source ~/.config/zsh/autopair.zsh
+          zsh-defer source ~/.config/zsh/autosuggestions.zsh
+          zsh-defer source ~/.config/zsh/nix-shell.zsh
+          zsh-defer source ~/.config/zsh/syntax-highlighting.zsh
         '';
       };
 
       xdg.configFile = {
-        "zsh/prompt.zsh".source = ./zsh/prompt.zsh;
+        "zsh/prompt.zsh".text = ''
+          [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]] && \
+            source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
+          source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+          source ~/.config/zsh/p10k.zsh
+        '';
+        "zsh/autopair.zsh".text = ''
+          source ${pkgs.zsh-autopair}/share/zsh/zsh-autopair/autopair.zsh
+          autopair-init
+        '';
+        "zsh/autosuggestions.zsh".text = ''
+          export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=244"
+          source ${pkgs.zsh-autosuggestions}/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+        '';
+        "zsh/nix-shell.zsh".text = ''
+          source ${pkgs.zsh-nix-shell}/share/zsh/plugins/zsh-nix-shell/nix-shell.plugin.zsh
+        '';
+        "zsh/syntax-highlighting.zsh".text = ''
+          source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+        '';
         "zsh/p10k.zsh".source = ./zsh/p10k.zsh;
         "zsh/vi.zsh".source = ./zsh/vi.zsh;
         "zsh/completion.zsh".source = ./zsh/completion.zsh;
