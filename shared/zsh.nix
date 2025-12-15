@@ -137,10 +137,10 @@ in {
         profileExtra = ''
           # conditionals that need shell evaluation
           [[ -f ~/.local/ca-certificates/combined-ca-bundle.pem ]] && export CURL_CA_BUNDLE=~/.local/ca-certificates/combined-ca-bundle.pem
-          source ~/.config/env 2>/dev/null || true
         '';
 
         initContent = ''
+          source ~/.config/env 2>/dev/null || true
           export GPG_TTY="$(tty)"
           READNULLCMD=$PAGER
 
