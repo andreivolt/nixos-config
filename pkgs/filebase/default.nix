@@ -1,22 +1,31 @@
 {
   lib,
-  rustPlatform,
+  stdenv,
+  rust-bin,
+  makeRustPlatform,
   pkg-config,
   openssl,
   python3,
   xorg,
 }:
 
+let
+  rustToolchain = rust-bin.stable.latest.default;
+  rustPlatform = makeRustPlatform {
+    cargo = rustToolchain;
+    rustc = rustToolchain;
+  };
+in
 rustPlatform.buildRustPackage {
   pname = "filebase";
   version = "0.1.0";
 
   src = ./.;
 
-  cargoHash = "sha256-66BPcdbM2Us86Nb8z7rE3/xsXG9UTTY6Os5Noj0+MTQ=";
+  cargoLock.lockFile = ./Cargo.lock;
 
   nativeBuildInputs = [ pkg-config python3 ];
-  buildInputs = [ openssl xorg.libxcb ];
+  buildInputs = [ openssl ] ++ lib.optionals stdenv.hostPlatform.isLinux [ xorg.libxcb ];
 
   meta = with lib; {
     description = "Upload files to Filebase storage service";
