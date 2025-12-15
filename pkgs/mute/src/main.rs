@@ -49,6 +49,9 @@ mod macos {
     use std::mem;
     use std::ptr;
 
+    // kAudioObjectPropertyElementMain is 0 but may not be exported in some SDK versions
+    const AUDIO_OBJECT_PROPERTY_ELEMENT_MAIN: AudioObjectPropertyElement = 0;
+
     #[derive(Debug)]
     pub struct AudioError(String);
 
@@ -80,7 +83,7 @@ mod macos {
         let property_address = AudioObjectPropertyAddress {
             mSelector: kAudioHardwarePropertyDefaultInputDevice,
             mScope: kAudioObjectPropertyScopeGlobal,
-            mElement: kAudioObjectPropertyElementMain,
+            mElement: AUDIO_OBJECT_PROPERTY_ELEMENT_MAIN,
         };
 
         let status = unsafe {
@@ -111,7 +114,7 @@ mod macos {
         let property_address = AudioObjectPropertyAddress {
             mSelector: kAudioDevicePropertyMute,
             mScope: kAudioDevicePropertyScopeInput,
-            mElement: kAudioObjectPropertyElementMain,
+            mElement: AUDIO_OBJECT_PROPERTY_ELEMENT_MAIN,
         };
 
         // Check if mute property exists
@@ -150,7 +153,7 @@ mod macos {
         let property_address = AudioObjectPropertyAddress {
             mSelector: kAudioDevicePropertyMute,
             mScope: kAudioDevicePropertyScopeInput,
-            mElement: kAudioObjectPropertyElementMain,
+            mElement: AUDIO_OBJECT_PROPERTY_ELEMENT_MAIN,
         };
 
         // Check if mute property exists
