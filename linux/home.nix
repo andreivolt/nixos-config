@@ -3,10 +3,10 @@
 
 {pkgs, ...}: {
   imports = [
-    ./desktop-entries.nix
     ./hyprland/auto-pin.nix
     ./mime-apps.nix
     ./rofi.nix
+    ./swayimg.nix
     ./xdg-places.nix
     ./zathura.nix
   ];
