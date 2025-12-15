@@ -15,7 +15,7 @@
       rev = "7365279e61ca437edbfeaa94e44bdb6d8a826500";
       sha256 = "0rb40dw5p2im6grmd0fhmhxly414jhfyj1v9zjsyj4745a48d6rv";
     };
-    patches = [./sublime/autodark-nixos.patch];
+    patches = [./autodark-nixos.patch];
     installPhase = ''
       mkdir -p $out
       cp -r . $out/
@@ -83,8 +83,8 @@ in {
     {
       xdg.configFile = {
         # User settings
-        "sublime-text/Packages/User/Preferences.sublime-settings".source = ./sublime/Preferences.sublime-settings;
-        "sublime-text/Packages/User/Distraction Free.sublime-settings".source = ./sublime + "/Distraction Free.sublime-settings";
+        "sublime-text/Packages/User/Preferences.sublime-settings".source = ./Preferences.sublime-settings;
+        "sublime-text/Packages/User/Distraction Free.sublime-settings".source = ./. + "/Distraction Free.sublime-settings";
 
         # Packages from git
         "sublime-text/Packages/AutoDarkLinux".source = autodark-sublime;
