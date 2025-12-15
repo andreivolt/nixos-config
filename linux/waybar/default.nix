@@ -5,7 +5,7 @@ let
   waybarPopups = pkgs.stdenv.mkDerivation {
     pname = "waybar-popups";
     version = "1.0";
-    src = ./waybar;
+    src = ./.;
     nativeBuildInputs = [ pkgs.wrapGAppsHook3 pkgs.gobject-introspection ];
     buildInputs = [
       pkgs.gtk3
@@ -64,23 +64,23 @@ in
       };
 
       "waybar/scripts/get-brightness.sh" = {
-        source = ./waybar/scripts/get-brightness.sh;
+        source = ./scripts/get-brightness.sh;
         executable = true;
       };
       "waybar/scripts/get-kbd-backlight.sh" = {
-        source = ./waybar/scripts/get-kbd-backlight.sh;
+        source = ./scripts/get-kbd-backlight.sh;
         executable = true;
       };
       "waybar/scripts/tailscale-status.sh" = {
-        source = ./waybar/scripts/tailscale-status.sh;
+        source = ./scripts/tailscale-status.sh;
         executable = true;
       };
       "waybar/scripts/dictate-status.sh" = {
-        source = ./waybar/scripts/dictate-status.sh;
+        source = ./scripts/dictate-status.sh;
         executable = true;
       };
       "waybar/scripts/kbd-backlight-toggle.sh" = {
-        source = ./waybar/scripts/kbd-backlight-toggle.sh;
+        source = ./scripts/kbd-backlight-toggle.sh;
         executable = true;
       };
     };

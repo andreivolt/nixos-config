@@ -1,7 +1,7 @@
 {
   home-manager.sharedModules = [
     {
-      xdg.configFile."pry/pryrc".source = ./pry/pryrc;
+      xdg.configFile."pry/pryrc".source = ./pryrc;
     }
   ];
 }

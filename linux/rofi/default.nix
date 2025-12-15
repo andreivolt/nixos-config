@@ -24,7 +24,7 @@
     };
   };
 
-  xdg.configFile."rofi/theme.rasi".source = ./rofi/theme.rasi;
+  xdg.configFile."rofi/theme.rasi".source = ./theme.rasi;
 
   # App launcher with combi mode (windows + apps)
   # Shows running windows first, then apps - selecting a window focuses it

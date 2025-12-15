@@ -1,7 +1,7 @@
 {
   home-manager.sharedModules = [
     {
-      xdg.configFile."wezterm/wezterm.lua".source = ./wezterm/wezterm.lua;
+      xdg.configFile."wezterm/wezterm.lua".source = ./wezterm.lua;
     }
   ];
 }

@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  zsh-history-search = pkgs.callPackage ../pkgs/zsh-history-search {};
+  zsh-history-search = pkgs.callPackage ../../pkgs/zsh-history-search {};
   preview = pkgs.writeShellApplication {
     name = "preview";
     runtimeInputs = with pkgs; [file bat mediainfo];
@@ -18,8 +18,8 @@
   };
 in {
   home-manager.sharedModules = [
-    ./zsh/environment.nix
-    ./zsh/aliases.nix
+    ./environment.nix
+    ./aliases.nix
     ({config, lib, pkgs, ...}: {
       xdg.enable = true;
 
@@ -125,11 +125,11 @@ in {
         "zsh/syntax-highlighting.zsh".text = ''
           source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
         '';
-        "zsh/p10k.zsh".source = ./zsh/p10k.zsh;
-        "zsh/vi.zsh".source = ./zsh/vi.zsh;
-        "zsh/completion.zsh".source = ./zsh/completion.zsh;
-        "zsh/fzf.zsh".source = ./zsh/fzf.zsh;
-        "zsh/history-search.zsh".source = ./zsh/history-search.zsh;
+        "zsh/p10k.zsh".source = ./p10k.zsh;
+        "zsh/vi.zsh".source = ./vi.zsh;
+        "zsh/completion.zsh".source = ./completion.zsh;
+        "zsh/fzf.zsh".source = ./fzf.zsh;
+        "zsh/history-search.zsh".source = ./history-search.zsh;
         "zsh/history-search/history-search.zsh".text = ''
           (( ! ''${+ZSH_FZF_HISTORY_SEARCH_BIND} )) &&
           typeset -g ZSH_FZF_HISTORY_SEARCH_BIND='^r'
@@ -169,10 +169,10 @@ in {
 
           bindkey $ZSH_FZF_HISTORY_SEARCH_BIND fzf_history_search
         '';
-        "zsh/tmux.zsh".source = ./zsh/tmux.zsh;
+        "zsh/tmux.zsh".source = ./tmux.zsh;
         "zsh/preview".source = "${preview}/bin/preview";
       } // lib.optionalAttrs pkgs.stdenv.isDarwin {
-        "zsh/darwin.zsh".source = ./zsh/darwin.zsh;
+        "zsh/darwin.zsh".source = ./darwin.zsh;
       };
 
       home.activation.createZshDirs = ''
