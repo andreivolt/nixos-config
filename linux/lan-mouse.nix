@@ -6,6 +6,7 @@ let
   # Certificate fingerprints for each host (sha256 of lan-mouse.pem)
   # Must be lowercase - lan-mouse's generate_fingerprint() outputs lowercase hex
   fingerprints = {
+    mac = "ca:34:50:7f:1b:43:20:c8:5a:7b:3e:36:e5:6e:ff:99:6b:43:c0:a5:8c:da:70:fd:d3:9e:b4:57:0a:60:3e:a7";
     riva = "c3:ef:f5:55:e9:d8:05:b5:42:6b:d9:ed:7d:89:f7:b5:8d:6f:a6:db:42:04:04:71:b8:9c:8e:dc:0f:b7:26:f6";
     watts = "ec:5f:c5:b1:cb:69:0a:18:ba:3a:fd:ac:c2:03:58:e2:4b:24:02:09:54:f6:cf:74:ff:c1:9f:58:56:e8:99:06";
   };
