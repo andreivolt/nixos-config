@@ -23,11 +23,11 @@
     ../linux/tor.nix
     ../linux/socks-proxy.nix
 
-    ../shared/ghostty.nix
+    ../shared/ghostty
     ../shared/kitty.nix
-    ../shared/nushell.nix
-    ../shared/sublime.nix
-    ../shared/zed.nix
+    ../shared/nushell
+    ../shared/sublime
+    ../shared/zed
 
     # GUI components
     ../shared/cursor.nix
@@ -42,11 +42,11 @@
     ../linux/pipewire.nix
     ../linux/qt.nix
     ../linux/swaybg.nix
-    ../linux/swaync.nix
+    ../linux/swaync
     ../linux/trayscale.nix
     ../linux/vnc.nix
     ../linux/mpv.nix
-    ../linux/waybar.nix
+    ../linux/waybar
     ../linux/xdg-portals.nix
     ../linux/chrome-history.nix
     ../linux/chromium.nix

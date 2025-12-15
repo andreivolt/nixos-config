@@ -7,7 +7,7 @@
   ...
 }: {
   imports = [
-    ../shared/bat.nix
+    ../shared/bat
     ../shared/btop.nix
     ../shared/cargo.nix
     ../shared/curl.nix
@@ -26,15 +26,15 @@
     ../shared/npm-tools.nix
     ../shared/uv-tools.nix
     ../shared/parallel.nix
-    ../shared/pry.nix
+    ../shared/pry
     ../shared/readline.nix
     ../shared/ripgrep.nix
     ../shared/rubocop.nix
     ../shared/rustfmt.nix
     ../shared/ssh.nix
     ../shared/tmux.nix
-    ../shared/wezterm.nix
-    ../shared/zsh.nix
+    ../shared/wezterm
+    ../shared/zsh
     ../linux/docker.nix
   ];
 
