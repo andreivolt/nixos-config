@@ -47,4 +47,4 @@ local function fastforward_handle(table)
     end
 end
 
-mp.add_forced_key_binding("RIGHT", "fastforward", fastforward_handle, {complex=not inertial_decay, repeatable=inertial_decay})
+mp.add_forced_key_binding("Shift+RIGHT", "fastforward", fastforward_handle, {complex=not inertial_decay, repeatable=inertial_decay})
