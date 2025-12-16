@@ -68,17 +68,8 @@
   services.gvfs.enable = true;
   services.upower.enable = true;
 
-  # Battery monitoring for laptops
   home-manager.sharedModules = [
     {
-      services.batsignal = {
-        enable = true;
-        extraArgs = [
-          "-w" "40"
-          "-c" "20"
-          "-d" "10"
-        ];
-      };
       services.udiskie = {
         enable = true;
         notify = true;
