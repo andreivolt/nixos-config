@@ -61,8 +61,8 @@ in
       }
       {
         hostName = "builder";
-        sshUser = "root";
-        sshKey = "/root/.ssh/id_ed25519";
+        sshUser = "andrei";
+        sshKey = "/home/andrei/.ssh/id_ed25519";
         system = "x86_64-linux";
         maxJobs = 16;
         supportedFeatures = [ "nixos-test" "big-parallel" "kvm" ];

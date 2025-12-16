@@ -1,4 +1,4 @@
-# SSH configuration for NixOS machines (riva, watts, ampere)
+# SSH configuration for NixOS machines (riva, watts, ampere, builder)
 #
 # Keys stored in ~/drive/ssh-keys/:
 #   hosts/<hostname>/ssh_host_ed25519_key[.pub]  -> copy to /persist/etc/ssh/
@@ -11,7 +11,7 @@ let
   allUserKeys = lib.attrValues keys.userKeys;
 
 in {
-  # Known hosts - trust all machines on the Tailnet
+  # Known hosts - trust all machines on the Tailnet + builder
   programs.ssh.knownHosts = {
     riva = {
       hostNames = [ "riva" "riva.${keys.tailDomain}" ];
@@ -32,6 +32,10 @@ in {
     mac = {
       hostNames = [ "mac" "mac.${keys.tailDomain}" ];
       publicKey = keys.hostKeys.mac;
+    };
+    builder = {
+      hostNames = [ "builder" "builder.${keys.tailDomain}" ];
+      publicKey = keys.hostKeys.builder;
     };
   };
 
