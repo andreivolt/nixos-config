@@ -9,10 +9,11 @@ use indicatif::{ProgressBar, ProgressStyle};
 use mime_guess::from_path;
 use reqwest::multipart;
 use serde::{Deserialize, Serialize};
+use sha2::{Sha256, Digest};
 use std::env;
 use std::fs;
 use std::io::{self, IsTerminal, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
@@ -284,6 +285,10 @@ struct Args {
     /// Extra parameters (format: key=value)
     #[arg(long)]
     extra: Vec<String>,
+
+    /// Disable caching (always fetch fresh transcription)
+    #[arg(long)]
+    no_cache: bool,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -805,11 +810,26 @@ fn build_query_params(args: &Args) -> Vec<String> {
 }
 
 async fn process_single_file(client: &reqwest::Client, input_file: &str, args: &Args, api_key: &str) -> Result<()> {
+    // For local files, check cache first
+    if !input_file.starts_with("http") && !args.no_cache {
+        let file_hash = compute_file_hash(input_file)?;
+        let cache_key = compute_cache_key(&file_hash, args);
+        if let Some(cached) = get_cached_response(&cache_key).await {
+            eprintln!("(cached)");
+            if args.json {
+                println!("{}", serde_json::to_string_pretty(&cached)?);
+            } else {
+                format_output(&cached, args);
+            }
+            return Ok(());
+        }
+    }
+
     let params = build_query_params(args);
     let url = format!("https://api.deepgram.com/v1/listen?{}", params.join("&"));
 
     let response = if input_file.starts_with("http") {
-        // URL input
+        // URL input - no caching (URLs can change content)
         let body = serde_json::json!({ "url": input_file });
         client
             .post(&url)
@@ -865,6 +885,15 @@ async fn process_single_file(client: &reqwest::Client, input_file: &str, args: &
     }
 
     let result: DeepgramResponse = response.json().await?;
+
+    // Cache local file results
+    if !input_file.starts_with("http") {
+        let file_hash = compute_file_hash(input_file)?;
+        let cache_key = compute_cache_key(&file_hash, args);
+        if let Err(e) = save_to_cache(&cache_key, &result).await {
+            eprintln!("Warning: Failed to cache response: {}", e);
+        }
+    }
 
     if args.json {
         println!("{}", serde_json::to_string_pretty(&result)?);
@@ -1429,6 +1458,90 @@ fn validate_args(mut args: Args) -> Result<Args> {
     Ok(args)
 }
 
+// ============================================================================
+// Caching
+// ============================================================================
+
+fn get_cache_dir() -> Result<PathBuf> {
+    let cache_dir = if let Ok(xdg_cache) = env::var("XDG_CACHE_HOME") {
+        PathBuf::from(xdg_cache).join("deepgram")
+    } else if let Ok(home) = env::var("HOME") {
+        PathBuf::from(home).join(".cache").join("deepgram")
+    } else {
+        return Err(anyhow::anyhow!("Cannot determine cache directory"));
+    };
+    Ok(cache_dir)
+}
+
+fn compute_file_hash(file_path: &str) -> Result<String> {
+    let file_data = fs::read(file_path).context("Failed to read file for hashing")?;
+    let mut hasher = Sha256::new();
+    hasher.update(&file_data);
+    Ok(format!("{:x}", hasher.finalize()))
+}
+
+/// Build a cache key from file hash and transcription-affecting parameters
+fn compute_cache_key(file_hash: &str, args: &Args) -> String {
+    // Only include parameters that affect the transcription output
+    // Excludes: json (output format), output (file path), live, no_cache, chunk_minutes,
+    //           tag, callback, callback_method, mip_opt_out
+    let cache_params = serde_json::json!({
+        "model": args.model,
+        "language": args.language,
+        "version": args.version,
+        "smart_format": !args.no_smart_format,
+        "diarize": !args.no_diarize,
+        "paragraphs": !args.no_paragraphs,
+        "utterances": !args.no_utterances,
+        "utt_split": args.utt_split,
+        "punctuate": args.punctuate,
+        "numerals": args.numerals,
+        "profanity_filter": args.profanity_filter,
+        "measurements": args.measurements,
+        "dictation": args.dictation,
+        "filler_words": args.filler_words,
+        "detect_language": args.detect_language,
+        "multichannel": args.multichannel,
+        "channels": args.channels,
+        "detect_entities": args.detect_entities,
+        "detect_topics": args.detect_topics,
+        "topics": args.topics,
+        "intents": args.intents,
+        "sentiment": args.sentiment,
+        "summarize": args.summarize,
+        "keywords": args.keywords,
+        "keyterms": args.keyterms,
+        "search": args.search,
+        "replace": args.replace,
+        "redact": args.redact,
+        "custom_topic": args.custom_topic,
+        "custom_topic_mode": args.custom_topic_mode,
+        "tier": args.tier,
+        "alternatives": args.alternatives,
+        "encoding": args.encoding,
+        "sample_rate": args.sample_rate,
+        "extra": args.extra,
+    });
+
+    let params_str = serde_json::to_string(&cache_params).unwrap();
+    let mut hasher = Sha256::new();
+    hasher.update(file_hash.as_bytes());
+    hasher.update(params_str.as_bytes());
+    format!("{:x}", hasher.finalize())
+}
+
+async fn get_cached_response(cache_key: &str) -> Option<DeepgramResponse> {
+    let cache_dir = get_cache_dir().ok()?;
+    let data = cacache::read(&cache_dir, cache_key).await.ok()?;
+    serde_json::from_slice(&data).ok()
+}
+
+async fn save_to_cache(cache_key: &str, response: &DeepgramResponse) -> Result<()> {
+    let cache_dir = get_cache_dir()?;
+    let data = serde_json::to_vec(response)?;
+    cacache::write(&cache_dir, cache_key, data).await?;
+    Ok(())
+}
 
 /// Process a single file with direct output (for single-file mode)
 async fn process_file(client: &reqwest::Client, input_file: &str, args: &Args, api_key: &str) -> Result<()> {
@@ -1509,8 +1622,20 @@ async fn transcribe_url(client: &reqwest::Client, url: &str, args: &Args, api_ke
     response.json().await.context("Failed to parse response")
 }
 
-/// Transcribe a local file and return the response
+/// Transcribe a local file and return the response (with caching)
 async fn transcribe_local_file(client: &reqwest::Client, file_path: &str, args: &Args, api_key: &str) -> Result<DeepgramResponse> {
+    // Compute file hash for cache key
+    let file_hash = compute_file_hash(file_path)?;
+    let cache_key = compute_cache_key(&file_hash, args);
+
+    // Check cache unless --no-cache
+    if !args.no_cache {
+        if let Some(cached) = get_cached_response(&cache_key).await {
+            eprintln!("(cached)");
+            return Ok(cached);
+        }
+    }
+
     let params = build_query_params(args);
     let url = format!("https://api.deepgram.com/v1/listen?{}", params.join("&"));
 
@@ -1531,7 +1656,14 @@ async fn transcribe_local_file(client: &reqwest::Client, file_path: &str, args: 
         return Err(anyhow::anyhow!("Request failed: HTTP {} - {}", status, error_text));
     }
 
-    response.json().await.context("Failed to parse response")
+    let result: DeepgramResponse = response.json().await.context("Failed to parse response")?;
+
+    // Save to cache
+    if let Err(e) = save_to_cache(&cache_key, &result).await {
+        eprintln!("Warning: Failed to cache response: {}", e);
+    }
+
+    Ok(result)
 }
 
 #[tokio::main]
