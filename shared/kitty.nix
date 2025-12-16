@@ -4,9 +4,49 @@ let
   aurora = colors.aurora;
   accent = colors.accent;
   ui = colors.ui;
+
+  kittyScrollbackNvim = pkgs.fetchFromGitHub {
+    owner = "mikesmithgh";
+    repo = "kitty-scrollback.nvim";
+    rev = "v6.2.2";
+    hash = "sha256-0OPNHWR/qCbMKDQE6Pbt0Ew9QCm2ZSeZq4s9OL2rj04=";
+  };
+
+  nvimScrollbackConfig = ''
+    vim.opt.rtp:prepend("${kittyScrollbackNvim}")
+    vim.opt.signcolumn = "no"
+    vim.opt.statuscolumn = ""
+    vim.opt.clipboard = "unnamedplus"
+
+    vim.api.nvim_create_autocmd("TextYankPost", {
+      callback = function()
+        vim.highlight.on_yank({ timeout = 100 })
+      end,
+    })
+
+    vim.api.nvim_create_autocmd("TermClose", {
+      callback = function()
+        vim.api.nvim_echo({}, false, {})
+      end,
+    })
+
+    require("kitty-scrollback").setup({
+      {
+        paste_window = { yank_register_enabled = false },
+        callbacks = {
+          after_ready = function()
+            vim.wo.wrap = true
+          end,
+        },
+      },
+    })
+  '';
 in {
   home-manager.sharedModules = [
     ({lib, ...}: {
+      # nvim-scrollback profile for kitty-scrollback.nvim
+      xdg.configFile."nvim-scrollback/init.lua".text = nvimScrollbackConfig;
+
       programs.kitty = {
         enable = true;
 
@@ -18,6 +58,9 @@ in {
         extraConfig = ''
           modify_font cell_height 110%
           modify_font cell_width 88%
+
+          # kitty-scrollback.nvim (uses separate nvim-scrollback profile)
+          action_alias kitty_scrollback_nvim kitten ${kittyScrollbackNvim}/python/kitty_scrollback_nvim.py --env NVIM_APPNAME=nvim-scrollback
         '';
 
         settings = {
@@ -60,7 +103,6 @@ in {
           paste_actions = "quote-urls-at-prompt,replace-dangerous-control-codes";
           notify_on_cmd_finish = "unfocused";
           enable_audio_bell = "no";
-          scrollback_pager = "bash -c 'cat > /tmp/kitty_scrollback && nvim -u NONE -c \"terminal cat /tmp/kitty_scrollback\" -c \"nnoremap q :qa!<CR>\" -c \"set laststatus=0 signcolumn=no\" -c \"hi Normal guibg=NONE ctermbg=NONE\" -c \"hi TermCursorNC guibg=NONE ctermbg=NONE\" -c \"normal G\"'";
           visual_bell_duration = "0.1";
           visual_bell_color = "red";
 
@@ -101,6 +143,8 @@ in {
         };
 
         keybindings = {
+          "kitty_mod+h" = "kitty_scrollback_nvim";
+          "kitty_mod+g" = "kitty_scrollback_nvim --config ksb_builtin_last_cmd_output";
           "shift+enter" = "send_text all \\n";
           "cmd+left" = "send_text all \\x1b[1;5D";
           "cmd+right" = "send_text all \\x1b[1;5C";
