@@ -12,6 +12,8 @@ in
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
+    fallback = true;
+    connect-timeout = 1;
     substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
