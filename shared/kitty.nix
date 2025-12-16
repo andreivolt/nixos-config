@@ -61,7 +61,7 @@ in {
           paste_actions = "quote-urls-at-prompt,replace-dangerous-control-codes";
           notify_on_cmd_finish = "unfocused";
           enable_audio_bell = "no";
-          scrollback_pager = "nvim --cmd 'set eventignore=FileType' +'nnoremap q ZQ' +'call nvim_open_term(0, {})' +'set nomodified nolist' +'$' -";
+          scrollback_pager = "bash -c 'cat > /tmp/kitty_scrollback && nvim -u NONE -c \"terminal cat /tmp/kitty_scrollback\" -c \"nnoremap q :qa!<CR>\" -c \"set laststatus=0 signcolumn=no\" -c \"hi Normal guibg=NONE ctermbg=NONE\" -c \"hi TermCursorNC guibg=NONE ctermbg=NONE\" -c \"normal G\"'";
           visual_bell_duration = "0.1";
           visual_bell_color = "red";
 
