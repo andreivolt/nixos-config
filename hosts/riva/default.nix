@@ -56,6 +56,14 @@
   # Lid switch behavior
   services.logind.settings.Login.HandleLidSwitchExternalPower = "ignore";
 
+  # Prevent freezes during heavy builds - kill processes before swap thrashing
+  services.earlyoom = {
+    enable = true;
+    freeMemThreshold = 5;
+    freeSwapThreshold = 10;
+    extraArgs = ["-g" "--prefer" "^(nix-daemon|cc1plus|clang|ld)$"];
+  };
+
   home-manager.users.andrei = import ../../linux/home.nix {
     inherit config inputs;
   };
