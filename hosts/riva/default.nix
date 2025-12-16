@@ -19,6 +19,7 @@
     ../../linux/mpv.nix
     ../../linux/rclone.nix
     ../../linux/zram.nix
+    ./battery.nix
   ];
 
   networking.hostName = "riva";
