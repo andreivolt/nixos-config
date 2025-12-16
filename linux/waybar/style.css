@@ -60,12 +60,12 @@ window#waybar.empty #window {
 }
 
 #workspaces button:hover {
-	background: rgba(184, 85, 85, 0.08);
+	background: rgba(212, 208, 202, 0.08);
 	color: #d4d0ca;
 }
 
 #workspaces button.active {
-	background: rgba(184, 85, 85, 0.6);
+	background: rgba(212, 208, 202, 0.15);
 	color: #d4d0ca;
 	border-radius: 2px;
 }
@@ -128,7 +128,7 @@ window#waybar.empty #window {
 	margin: 4px 0;
 	border-radius: 0;
 	font-size: 28px;
-	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
+	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
 #battery {
@@ -141,22 +141,22 @@ window#waybar.empty #window {
 	background: transparent;
 	font-size: 12px;
 	font-weight: 700;
-	font-family: "IosevkaTerm Nerd Font Mono", monospace;
+	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
 #battery * {
-	font-family: "IosevkaTerm Nerd Font Mono", monospace;
+	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
 #clock {
 	min-width: 64px;
 	padding: 0 6px 0 0;
 	margin: 4px 0;
-	font-family: "IosevkaTerm Nerd Font Mono", monospace;
+	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
 #clock * {
-	font-family: "IosevkaTerm Nerd Font Mono", monospace;
+	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
 /* CPU states with colors */
@@ -395,7 +395,7 @@ window#waybar.empty #window {
 	margin: 4px 0;
 	color: #7a756d;
 	font-size: 28px;
-	font-family: "Iosevka Nerd Font Mono", "IosevkaTerm Nerd Font Mono", monospace;
+	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
 #custom-dictate.recording {
