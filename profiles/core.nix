@@ -87,6 +87,7 @@
     enable = true;
     extraUpFlags = ["--operator=andrei" "--login-server=https://hs.avolt.net"];
   };
+  networking.firewall.trustedInterfaces = ["tailscale0"];
 
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
   environment.variables.LC_TIME = "C.UTF-8";
