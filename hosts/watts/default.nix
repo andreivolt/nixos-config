@@ -41,6 +41,14 @@
     monitor = "eDP-1";  # internal display only
   };
 
+  # On-demand screensaver command
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "screensaver" ''
+      exec ${pkgs.callPackage ../../pkgs/screensaver {}}/bin/screensaver \
+        --fps 60 --shader plasma --monitor eDP-1 "$@"
+    '')
+  ];
+
   networking.hostName = "watts";
   system.stateVersion = "23.11";
 
