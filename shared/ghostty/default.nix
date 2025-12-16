@@ -14,10 +14,10 @@ in {
         enableZshIntegration = true;
 
         settings = {
-          font-family = "IosevkaTerm NFM Light";
-          font-family-italic = "IosevkaTerm NFM Light Italic";
-          font-family-bold = "IosevkaTerm NFM";
-          font-family-bold-italic = "IosevkaTerm NFM Italic";
+          font-family = "Pragmasevka Nerd Font Light";
+          font-family-italic = "Pragmasevka Nerd Font Light Italic";
+          font-family-bold = "Pragmasevka Nerd Font";
+          font-family-bold-italic = "Pragmasevka Nerd Font Italic";
           font-thicken = true;
           font-size = 16;
 

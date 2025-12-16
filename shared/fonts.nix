@@ -22,7 +22,7 @@ lib.mkMerge [
   (lib.optionalAttrs (options.fonts ? fontconfig) {
     fonts.fontconfig.defaultFonts = {
       sansSerif = ["Roboto"];
-      monospace = ["IosevkaTerm Nerd Font Mono"];
+      monospace = ["Pragmasevka Nerd Font Light"];
     };
   })
 ]
