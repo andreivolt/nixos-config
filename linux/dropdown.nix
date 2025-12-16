@@ -17,6 +17,7 @@ in {
         ExecStart = "${dropdownScript}";
         Restart = "always";
         RestartSec = 1;
+        Environment = [ "TERM=xterm-kitty" ];
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
