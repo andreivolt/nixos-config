@@ -2,12 +2,12 @@
 {
   home-manager.sharedModules = [{
     home.shellAliases = {
-      jtbl = "uvx jtbl";
-      llm = "uvx --with llm-anthropic,llm-cmd,llm-gemini,llm-grok,llm-openrouter llm";
-      streamdown = "uvx streamdown";
-      strip-tags = "uvx strip-tags";
-      ttok = "uvx ttok";
-      whisperx = "uvx whisperx";
+      jtbl = "uvx --quiet jtbl";
+      llm = "uvx --quiet --with llm-anthropic,llm-cmd,llm-gemini,llm-grok,llm-openrouter llm";
+      streamdown = "uvx --quiet streamdown";
+      strip-tags = "uvx --quiet strip-tags";
+      ttok = "uvx --quiet ttok";
+      whisperx = "uvx --quiet whisperx";
     };
   }];
 }
