@@ -20,12 +20,14 @@ in
       "https://nix-community.cachix.org"
       "https://hyprland.cachix.org"
       "https://nixos-apple-silicon.cachix.org"
-    ] ++ lib.optionals (!isAmpere) [ "http://ampere:5000" ];
+    ] ++ lib.optionals isRiva [ "http://watts:5000" ]  # fast LAN
+      ++ lib.optionals (!isAmpere) [ "http://ampere:5000" ];  # fallback
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
       "nixos-apple-silicon.cachix.org-1:8psDu5SA5dAD7qA0zMy5UT292TxeEPzIz8VVEr2Js20="
+      "watts:rbxE1up0hjCN7Ht2TAuCuisHk3IQ3LWYUR97GEdkxpM="
       "ampere:VemsKe9KxjJHofpyUnMnGC9jHo6v49nAlKVQf/1rseI="
     ];
 
@@ -33,6 +35,13 @@ in
   };
 
   nix.optimise.automatic = true;
+
+  # nix-serve on watts for fast LAN access from riva
+  services.nix-serve = lib.mkIf isWatts {
+    enable = true;
+    secretKeyFile = "/persist/secrets/nix-serve.key";
+  };
+  networking.firewall.allowedTCPPorts = lib.mkIf isWatts [ 5000 ];
 
   nix.distributedBuilds = true;
   nix.extraOptions = "builders-use-substitutes = true";
