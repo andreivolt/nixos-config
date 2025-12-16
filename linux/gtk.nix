@@ -92,7 +92,7 @@ in {
     dconf.settings = {
       "org/gnome/desktop/interface" = {
         color-scheme = "prefer-dark";
-        monospace-font-name = "IosevkaTerm Nerd Font Mono 10";
+        monospace-font-name = "Pragmasevka Nerd Font Light 10";
       };
     };
   };
