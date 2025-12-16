@@ -51,7 +51,7 @@ let
 
       if [ "$BACKEND" = "wgpu" ]; then
         # Rust/wgpu backend - native Vulkan, lowest resource usage
-        ${screensaver}/bin/screensaver --fps "$FPS" --shader "$VISUAL" &
+        ${screensaver}/bin/screensaver --fps "$FPS" --shader "$VISUAL" --monitor "$MONITOR_NAME" &
         echo $! > "$PID_FILE"
       else
         # mpv/lavfi backend - ffmpeg generators
