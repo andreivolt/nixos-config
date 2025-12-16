@@ -815,7 +815,6 @@ async fn process_single_file(client: &reqwest::Client, input_file: &str, args: &
         let file_hash = compute_file_hash(input_file)?;
         let cache_key = compute_cache_key(&file_hash, args);
         if let Some(cached) = get_cached_response(&cache_key).await {
-            eprintln!("(cached)");
             if args.json {
                 println!("{}", serde_json::to_string_pretty(&cached)?);
             } else {
@@ -1631,7 +1630,6 @@ async fn transcribe_local_file(client: &reqwest::Client, file_path: &str, args: 
     // Check cache unless --no-cache
     if !args.no_cache {
         if let Some(cached) = get_cached_response(&cache_key).await {
-            eprintln!("(cached)");
             return Ok(cached);
         }
     }
