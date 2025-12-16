@@ -19,33 +19,30 @@
 }
 
 .notification-row {
-  margin: 4px 0;
+  margin: 0 0 6px 0;
   padding: 0;
+  background: transparent;
 }
 
 .notification {
   border-radius: 2px;
   padding: 0;
+  margin: 0;
+  background: transparent;
 }
 
 .notification-background {
   border-radius: 2px;
   border: none;
-  padding: 12px;
-  background: #1a1816;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .notification-content {
+  background: transparent;
+  padding: 14px 16px;
   border-radius: 2px;
-  padding: 0;
-  margin: 0;
-}
-
-.control-center .notification-row .notification-background {
-  border-radius: 2px;
-  background: #1a1816;
-  border: none;
 }
 
 .notification-group {
@@ -74,6 +71,11 @@
 
 .image {
   border-radius: 2px;
+  margin-right: 12px;
+  min-width: 48px;
+  min-height: 48px;
+  max-width: 48px;
+  max-height: 48px;
 }
 
 .widget-title {
@@ -119,28 +121,65 @@
   border-radius: 2px;
   background: #252220;
   border: none;
-  padding: 6px 10px;
-  margin: 2px;
-  color: #d4d0ca;
+  padding: 8px 14px;
+  margin: 6px 4px 0 0;
+  color: #9a958d;
+  font-size: 13px;
 }
 
 .notification-action:hover {
-  background: #b85555;
-  color: #0a0a0a;
+  background: #353230;
+  color: #d4d0ca;
 }
 
 .close-button {
   border-radius: 2px;
-  background: #252220;
+  background: transparent;
   border: none;
-  padding: 2px;
+  padding: 4px;
+  margin: 8px;
+  min-width: 20px;
+  min-height: 20px;
+  color: #5a554d;
 }
 
 .close-button:hover {
-  background: #b85555;
+  background: #252220;
+  color: #d4d0ca;
 }
 
-.summary { color: #d4d0ca; }
-.body { color: #9a958d; }
-.time { color: #5a554d; }
-.app-name { color: #5a554d; }
+.summary {
+  color: #d4d0ca;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.body {
+  color: #9a958d;
+  font-size: 14px;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+.time {
+  color: #5a554d;
+  font-size: 12px;
+}
+
+.app-name {
+  color: #5a554d;
+  font-size: 12px;
+}
+
+.notification-default-action {
+  border-radius: 2px;
+  background: #1a1816;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.notification-default-action:hover {
+  background: #252220;
+}
