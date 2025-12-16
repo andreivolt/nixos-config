@@ -24,6 +24,7 @@
         22    # SSH
         80    # HTTP (for ACME)
         443   # HTTPS (Headscale)
+        5000  # nix-serve binary cache
       ];
       allowedUDPPorts = [
         3478  # STUN for Headscale
@@ -41,6 +42,12 @@
 
   # Override gc for server (more aggressive cleanup)
   nix.gc.options = lib.mkForce "--delete-older-than 7d";
+
+  # Binary cache for watts/riva
+  services.nix-serve = {
+    enable = true;
+    secretKeyFile = "/etc/nix-serve/cache-priv-key.pem";
+  };
 
   # Trust andrei for remote deployments (accept unsigned paths from nix-copy-closure)
   nix.settings.trusted-users = ["root" "andrei"];
