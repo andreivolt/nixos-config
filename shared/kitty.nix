@@ -18,7 +18,6 @@ in {
         extraConfig = ''
           modify_font cell_height 110%
           modify_font cell_width 88%
-          modify_font underline_thickness 200%
         '';
 
         settings = {
