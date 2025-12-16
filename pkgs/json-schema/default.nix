@@ -6,6 +6,6 @@ writeShellApplication {
   name = "json-schema";
   runtimeInputs = [bun];
   text = ''
-    exec bunx quicktype --lang schema "$@"
+    exec bunx --silent quicktype --lang schema "$@"
   '';
 }
