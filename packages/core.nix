@@ -145,6 +145,7 @@ with pkgs; [
   htop-vim
   hyperfine
   iftop
+  iperf3
   imagemagick
   inetutils
   jet
