@@ -25,6 +25,7 @@
     cp ${./fastforward.lua} $out/fastforward.lua
     cp ${./auto-save-state.lua} $out/auto-save-state.lua
     cp ${./ytsub.lua} $out/ytsub.lua
+    cp ${./auto-quality.lua} $out/auto-quality.lua
   '';
   mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
     echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket | ${pkgs.jq}/bin/jq -r .data
@@ -120,6 +121,7 @@ in {
         "mpv/scripts/fastforward.lua".source = "${customScriptsDir}/fastforward.lua";
         "mpv/scripts/auto-save-state.lua".source = "${customScriptsDir}/auto-save-state.lua";
         "mpv/scripts/ytsub.lua".source = "${customScriptsDir}/ytsub.lua";
+        "mpv/scripts/auto-quality.lua".source = "${customScriptsDir}/auto-quality.lua";
       };
     }
   ];
