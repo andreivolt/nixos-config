@@ -77,8 +77,8 @@ const REDACT_CHOICES: &[&str] = &[
 #[derive(Parser, Debug, Clone)]
 #[command(author, version, about = "Audio transcription using Deepgram API", long_about = None)]
 struct Args {
-    /// Input file path or URL
-    input_file: Option<String>,
+    /// Input file paths or URLs
+    input_files: Vec<String>,
 
     /// Model to use
     /// Available models:
@@ -1430,6 +1430,110 @@ fn validate_args(mut args: Args) -> Result<Args> {
 }
 
 
+/// Process a single file with direct output (for single-file mode)
+async fn process_file(client: &reqwest::Client, input_file: &str, args: &Args, api_key: &str) -> Result<()> {
+    if input_file.starts_with("http") {
+        process_single_file(client, input_file, args, api_key).await
+    } else {
+        check_file_size(input_file)?;
+
+        let processed_file = if is_video_file(input_file) {
+            extract_audio_from_video(input_file).await?
+        } else {
+            input_file.to_string()
+        };
+
+        let should_chunk = match get_audio_duration(&processed_file).await {
+            Ok(duration) => duration > 7200.0,
+            Err(_) => false,
+        };
+
+        let result = if should_chunk {
+            let chunks = chunk_audio(&processed_file, args.chunk_minutes).await?;
+            process_chunks(chunks, args, api_key).await
+        } else {
+            process_single_file(client, &processed_file, args, api_key).await
+        };
+
+        if processed_file != input_file {
+            if let Err(e) = fs::remove_file(&processed_file) {
+                eprintln!("Warning: Failed to clean up extracted audio file: {}", e);
+            }
+        }
+
+        result
+    }
+}
+
+/// Transcribe a file and return the result (for parallel multi-file mode)
+/// Returns (DeepgramResponse, Option<extracted_file_path_to_cleanup>)
+async fn transcribe_file(client: &reqwest::Client, input_file: &str, args: &Args, api_key: &str) -> Result<(DeepgramResponse, Option<String>)> {
+    if input_file.starts_with("http") {
+        let response = transcribe_url(client, input_file, args, api_key).await?;
+        Ok((response, None))
+    } else {
+        check_file_size(input_file)?;
+
+        let (processed_file, extracted) = if is_video_file(input_file) {
+            let extracted = extract_audio_from_video(input_file).await?;
+            (extracted.clone(), Some(extracted))
+        } else {
+            (input_file.to_string(), None)
+        };
+
+        let response = transcribe_local_file(client, &processed_file, args, api_key).await?;
+        Ok((response, extracted))
+    }
+}
+
+/// Transcribe a URL and return the response
+async fn transcribe_url(client: &reqwest::Client, url: &str, args: &Args, api_key: &str) -> Result<DeepgramResponse> {
+    let params = build_query_params(args);
+    let api_url = format!("https://api.deepgram.com/v1/listen?{}", params.join("&"));
+
+    let body = serde_json::json!({ "url": url });
+    let response = client
+        .post(&api_url)
+        .header("Authorization", format!("Token {}", api_key))
+        .header("Content-Type", "application/json")
+        .json(&body)
+        .send()
+        .await?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(anyhow::anyhow!("Request failed: HTTP {} - {}", status, error_text));
+    }
+
+    response.json().await.context("Failed to parse response")
+}
+
+/// Transcribe a local file and return the response
+async fn transcribe_local_file(client: &reqwest::Client, file_path: &str, args: &Args, api_key: &str) -> Result<DeepgramResponse> {
+    let params = build_query_params(args);
+    let url = format!("https://api.deepgram.com/v1/listen?{}", params.join("&"));
+
+    let file_data = fs::read(file_path).context("Failed to read input file")?;
+    let mime_type = from_path(file_path).first_or_octet_stream();
+
+    let response = client
+        .post(&url)
+        .header("Authorization", format!("Token {}", api_key))
+        .header("Content-Type", mime_type.as_ref())
+        .body(file_data)
+        .send()
+        .await?;
+
+    if !response.status().is_success() {
+        let status = response.status();
+        let error_text = response.text().await.unwrap_or_default();
+        return Err(anyhow::anyhow!("Request failed: HTTP {} - {}", status, error_text));
+    }
+
+    response.json().await.context("Failed to parse response")
+}
+
 #[tokio::main]
 async fn main() -> Result<()> {
     let args = Args::parse();
@@ -1445,42 +1549,52 @@ async fn main() -> Result<()> {
         return live_transcription(&validated_args, &api_key).await;
     }
 
-    let input_file = validated_args.input_file.as_ref()
-        .ok_or_else(|| anyhow::anyhow!("Input file is required (or use --live for live transcription)"))?;
+    if validated_args.input_files.is_empty() {
+        return Err(anyhow::anyhow!("Input file is required (or use --live for live transcription)"));
+    }
 
     let client = reqwest::Client::new();
 
-    if input_file.starts_with("http") {
-        // URL - send directly to Deepgram
-        process_single_file(&client, input_file, &validated_args, &api_key).await?;
+    if validated_args.input_files.len() == 1 {
+        // Single file - process directly
+        let input_file = &validated_args.input_files[0];
+        process_file(&client, input_file, &validated_args, &api_key).await?;
     } else {
-        // Local file - check size first
-        check_file_size(input_file)?;
+        // Multiple files - process in parallel, output in order
+        let futures: Vec<_> = validated_args.input_files.iter().enumerate().map(|(i, input_file)| {
+            let client = client.clone();
+            let args = validated_args.clone();
+            let api_key = api_key.clone();
+            let input_file = input_file.clone();
+            async move {
+                let result = transcribe_file(&client, &input_file, &args, &api_key).await;
+                (i, input_file, result)
+            }
+        }).collect();
 
-        // Check if it's a video file and extract audio if needed
-        let processed_file = if is_video_file(input_file) {
-            extract_audio_from_video(input_file).await?
-        } else {
-            input_file.to_string()
-        };
+        let mut results: Vec<_> = futures::future::join_all(futures).await;
+        results.sort_by_key(|(i, _, _)| *i);
 
-        // Check if we should use chunking
-        let should_chunk = match get_audio_duration(&processed_file).await {
-            Ok(duration) => duration > 7200.0,
-            Err(_) => false,
-        };
-
-        if should_chunk {
-            let chunks = chunk_audio(&processed_file, validated_args.chunk_minutes).await?;
-            process_chunks(chunks, &validated_args, &api_key).await?;
-        } else {
-            process_single_file(&client, &processed_file, &validated_args, &api_key).await?;
-        }
-
-        // Clean up extracted audio file if it was created
-        if processed_file != *input_file {
-            if let Err(e) = fs::remove_file(&processed_file) {
-                eprintln!("Warning: Failed to clean up extracted audio file: {}", e);
+        for (_, input_file, result) in results {
+            match result {
+                Ok((response, extracted_file)) => {
+                    eprintln!("\n--- {} ---", input_file);
+                    if validated_args.json {
+                        println!("{}", serde_json::to_string_pretty(&response)?);
+                    } else {
+                        format_output(&response, &validated_args);
+                    }
+                    // Clean up extracted audio file if it was created
+                    if let Some(extracted) = extracted_file {
+                        if let Err(e) = fs::remove_file(&extracted) {
+                            eprintln!("Warning: Failed to clean up extracted audio file: {}", e);
+                        }
+                    }
+                }
+                Err(e) => {
+                    eprintln!("\n--- {} ---", input_file);
+                    eprintln!("Error: {}", e);
+                }
             }
         }
     }
