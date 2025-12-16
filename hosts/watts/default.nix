@@ -44,8 +44,20 @@
   # On-demand screensaver command
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "screensaver" ''
-      exec ${pkgs.callPackage ../../pkgs/screensaver {}}/bin/screensaver \
-        --fps 60 --shader plasma --monitor eDP-1 "$@"
+      # Save current focused monitor
+      PREV_MON=$(${pkgs.hyprland}/bin/hyprctl monitors -j | ${pkgs.jq}/bin/jq -r '.[] | select(.focused) | .name')
+
+      # Launch screensaver in background
+      ${pkgs.callPackage ../../pkgs/screensaver {}}/bin/screensaver \
+        --fps 60 --shader plasma --monitor eDP-1 "$@" &
+      PID=$!
+
+      # Brief delay then restore focus to original monitor
+      sleep 0.1
+      ${pkgs.hyprland}/bin/hyprctl dispatch focusmonitor "$PREV_MON"
+
+      # Wait for screensaver to exit
+      wait $PID
     '')
   ];
 
