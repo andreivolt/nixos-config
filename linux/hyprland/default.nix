@@ -61,14 +61,5 @@ in {
       '';
     };
 
-    # temporarily disable autoreload during rebuild to prevent layout resets
-    # (home-manager recreates symlinks on every activation, triggering hyprland's inotify)
-    home.activation.hyprlandPreReload = lib.hm.dag.entryBefore [ "writeBoundary" ] ''
-      ${hyprlandPkgs.hyprland}/bin/hyprctl keyword misc:disable_autoreload true 2>/dev/null || true
-    '';
-
-    home.activation.hyprlandPostReload = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      ${hyprlandPkgs.hyprland}/bin/hyprctl keyword misc:disable_autoreload false 2>/dev/null || true
-    '';
   };
 }
