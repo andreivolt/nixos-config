@@ -11,20 +11,18 @@ in {
         enable = true;
 
         font = {
-          name = "IosevkaTerm Nerd Font Mono";
-          size = 15.5;
+          name = "Pragmasevka Nerd Font Light";
+          size = 14;
         };
 
         extraConfig = ''
-          font_family family='IosevkaTerm Nerd Font Mono' style=Light
-          modify_font baseline 0
-          modify_font cell_height -3px
-          modify_font cell_width 84%
+          modify_font cell_height 110%
+          modify_font cell_width 88%
           modify_font underline_thickness 200%
         '';
 
         settings = {
-          bold_font = "auto";
+          bold_font = "Pragmasevka Nerd Font SemiBold";
           italic_font = "auto";
           bold_italic_font = "auto";
 
