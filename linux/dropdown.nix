@@ -1,11 +1,7 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
-let
-  dropdownScript = pkgs.writeShellScript "dropdown-terminal" ''
-    exec ${pkgs.kitty}/bin/kitty --class dropdown ${pkgs.tmux}/bin/tmux new-session -A -s dropdown \; set status off
-  '';
-in {
-  home-manager.users.andrei = { config, pkgs, ... }: {
+{
+  home-manager.users.andrei = {
     systemd.user.services.dropdown = {
       Unit = {
         Description = "Dropdown terminal";
@@ -14,10 +10,9 @@ in {
       };
       Service = {
         Type = "simple";
-        ExecStart = "${dropdownScript}";
+        ExecStart = "${pkgs.kitty}/bin/kitty --class dropdown";
         Restart = "always";
         RestartSec = 1;
-        Environment = [ "TERM=xterm-kitty" ];
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
