@@ -11,7 +11,7 @@ use winit::{
 };
 
 #[derive(Parser)]
-#[command(name = "screensaver-wgpu")]
+#[command(name = "screensaver")]
 #[command(about = "Minimal Wayland GLSL screensaver")]
 struct Args {
     /// Target FPS
@@ -21,6 +21,10 @@ struct Args {
     /// Shader type: plasma, sierpinski, mandelbrot
     #[arg(short, long, default_value = "plasma")]
     shader: String,
+
+    /// Monitor name (e.g., eDP-1, DP-1). If not specified, uses primary or first available.
+    #[arg(short, long)]
+    monitor: Option<String>,
 
     /// Don't exit on input (for testing)
     #[arg(long)]
@@ -275,17 +279,19 @@ struct App {
     window: Option<Arc<Window>>,
     fps: u32,
     shader: String,
+    monitor: Option<String>,
     last_frame: std::time::Instant,
     no_input_exit: bool,
 }
 
 impl App {
-    fn new(fps: u32, shader: String, no_input_exit: bool) -> Self {
+    fn new(fps: u32, shader: String, monitor: Option<String>, no_input_exit: bool) -> Self {
         Self {
             state: None,
             window: None,
             fps,
             shader,
+            monitor,
             last_frame: std::time::Instant::now(),
             no_input_exit,
         }
@@ -294,9 +300,19 @@ impl App {
 
 impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
+        // Find the target monitor
+        let target_monitor = if let Some(ref name) = self.monitor {
+            event_loop
+                .available_monitors()
+                .find(|m| m.name().as_deref() == Some(name.as_str()))
+        } else {
+            // Default to primary monitor, or first available
+            event_loop.primary_monitor().or_else(|| event_loop.available_monitors().next())
+        };
+
         let window_attrs = Window::default_attributes()
             .with_title("Screensaver")
-            .with_fullscreen(Some(Fullscreen::Borderless(None)))
+            .with_fullscreen(Some(Fullscreen::Borderless(target_monitor)))
             .with_decorations(false);
 
         let window = Arc::new(event_loop.create_window(window_attrs).unwrap());
@@ -387,6 +403,6 @@ fn main() {
     let event_loop = EventLoop::new().unwrap();
     event_loop.set_control_flow(ControlFlow::Poll);
 
-    let mut app = App::new(args.fps, args.shader, args.no_input_exit);
+    let mut app = App::new(args.fps, args.shader, args.monitor, args.no_input_exit);
     event_loop.run_app(&mut app).unwrap();
 }
