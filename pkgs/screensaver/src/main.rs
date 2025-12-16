@@ -281,6 +281,7 @@ struct App {
     shader: String,
     monitor: Option<String>,
     last_frame: std::time::Instant,
+    start_time: Option<std::time::Instant>,
     no_input_exit: bool,
 }
 
@@ -293,8 +294,13 @@ impl App {
             shader,
             monitor,
             last_frame: std::time::Instant::now(),
+            start_time: None,
             no_input_exit,
         }
+    }
+
+    fn past_grace_period(&self) -> bool {
+        self.start_time.map_or(false, |t| t.elapsed().as_millis() > 500)
     }
 }
 
@@ -321,11 +327,12 @@ impl ApplicationHandler for App {
         let state = pollster::block_on(State::new(window.clone(), &self.shader));
         self.window = Some(window);
         self.state = Some(state);
+        self.start_time = Some(std::time::Instant::now());
     }
 
     fn window_event(&mut self, event_loop: &ActiveEventLoop, _: WindowId, event: WindowEvent) {
         match event {
-            // Exit on any key press (unless --no-input-exit)
+            // Exit on any key press (unless --no-input-exit or in grace period)
             WindowEvent::KeyboardInput {
                 event:
                     KeyEvent {
@@ -335,22 +342,22 @@ impl ApplicationHandler for App {
                     },
                 ..
             } => {
-                if !self.no_input_exit {
+                if !self.no_input_exit && self.past_grace_period() {
                     event_loop.exit();
                 }
             }
-            // Exit on mouse click (unless --no-input-exit)
+            // Exit on mouse click (unless --no-input-exit or in grace period)
             WindowEvent::MouseInput {
                 state: ElementState::Pressed,
                 ..
             } => {
-                if !self.no_input_exit {
+                if !self.no_input_exit && self.past_grace_period() {
                     event_loop.exit();
                 }
             }
-            // Exit on mouse movement (screensaver behavior, unless --no-input-exit)
+            // Exit on mouse movement (screensaver behavior, unless --no-input-exit or in grace period)
             WindowEvent::CursorMoved { .. } => {
-                if !self.no_input_exit {
+                if !self.no_input_exit && self.past_grace_period() {
                     event_loop.exit();
                 }
             }
