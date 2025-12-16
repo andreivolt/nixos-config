@@ -1,6 +1,19 @@
 # Shared laptop optimizations for portable workstations
 # Imported by: hosts/watts, hosts/riva
 {...}: {
+  # Battery monitoring notifications
+  home-manager.sharedModules = [
+    {
+      services.batsignal = {
+        enable = true;
+        extraArgs = [
+          "-w" "40"
+          "-c" "20"
+          "-d" "10"
+        ];
+      };
+    }
+  ];
   # Auto-switch power profiles based on AC/battery
   services.power-profiles-daemon.enable = true;
 
