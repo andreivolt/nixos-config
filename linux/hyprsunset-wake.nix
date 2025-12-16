@@ -59,6 +59,7 @@ in
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
+      StopWhenUnneeded = true;
       ExecStart = "${pkgs.coreutils}/bin/true";
       ExecStop = "${pkgs.systemd}/bin/systemctl --user -M ${user}@ start hyprsunset-wake.service";
     };
