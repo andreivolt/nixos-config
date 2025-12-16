@@ -3,6 +3,7 @@
   systemd,
   procps,
   coreutils,
+  hyprland,
 }:
 writeShellScriptBin "caffeine" ''
   set -euo pipefail
@@ -10,14 +11,26 @@ writeShellScriptBin "caffeine" ''
   # Ensure XDG_RUNTIME_DIR is set for SSH sessions
   export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 
+  # Find Hyprland socket for SSH sessions
+  if [[ -z "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+    HYPRLAND_INSTANCE_SIGNATURE=$(ls "$XDG_RUNTIME_DIR/hypr/" 2>/dev/null | head -1)
+    export HYPRLAND_INSTANCE_SIGNATURE
+  fi
+
   TIMERFILE="/tmp/caffeine-$USER.timer"
+  WAKE=false
 
   is_active() {
     ! ${systemd}/bin/systemctl --user is-active --quiet hypridle
   }
 
+  wake_screen() {
+    ${hyprland}/bin/hyprctl dispatch dpms on 2>/dev/null || true
+  }
+
   start_caffeine() {
     ${systemd}/bin/systemctl --user stop hypridle
+    [[ "$WAKE" == true ]] && wake_screen
     echo "Caffeine enabled"
   }
 
@@ -51,6 +64,16 @@ writeShellScriptBin "caffeine" ''
     ${procps}/bin/pkill -RTMIN+9 waybar 2>/dev/null || true
   }
 
+  # Parse --wake flag
+  args=()
+  for arg in "$@"; do
+    case "$arg" in
+      --wake|-w) WAKE=true ;;
+      *) args+=("$arg") ;;
+    esac
+  done
+  set -- "''${args[@]:-}"
+
   case "''${1:-status}" in
     on)      start_caffeine; signal_waybar ;;
     off)     stop_caffeine; signal_waybar ;;
@@ -72,7 +95,7 @@ writeShellScriptBin "caffeine" ''
       if [[ "$1" =~ ^[0-9]+$ ]]; then
         start_timed "$1"; signal_waybar
       else
-        echo "Usage: caffeine [on|off|toggle|status|waybar|MINUTES]"
+        echo "Usage: caffeine [--wake] [on|off|toggle|status|MINUTES]"
         exit 1
       fi
       ;;
