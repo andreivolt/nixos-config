@@ -18,6 +18,7 @@ in {
     MANPAGER = "nvim +Man!";
     MANWIDTH = "100";
     PAGER = "nvimpager";
+    NIXPKGS_ALLOW_UNFREE = "1";
     PYTHONDONTWRITEBYTECODE = "1";
     PYTHONWARNINGS = "ignore";
     UV_TOOL_BIN_DIR = "~/.local/bin";
