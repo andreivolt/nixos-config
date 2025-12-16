@@ -228,6 +228,22 @@
       specialArgs = {inherit inputs;};
     };
 
+    # OVH EG-16 dedicated server - Remote builder and binary cache
+    nixosConfigurations.builder = nixpkgs-unstable.lib.nixosSystem {
+      modules = [
+        {
+          nixpkgs = commonNixpkgsConfig // {
+            hostPlatform = "x86_64-linux";
+          };
+        }
+        "${inputs.self}/hosts/builder"
+        disko.nixosModules.disko
+        home-manager.nixosModules.home-manager
+        sops-nix.nixosModules.sops
+      ];
+      specialArgs = {inherit inputs;};
+    };
+
     # Android phone via nix-on-droid
     nixOnDroidConfigurations.phone = nix-on-droid.lib.nixOnDroidConfiguration {
       pkgs = import nixpkgs-unstable {
