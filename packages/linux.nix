@@ -7,7 +7,7 @@ in
 [
   andrei.caffeine
   andrei.dictate
-  andrei.screenoff
+  andrei.screen
   andrei.sysrec
   acpi
   alsa-lib.dev
