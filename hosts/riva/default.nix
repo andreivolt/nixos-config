@@ -46,9 +46,10 @@
   # Boot - Apple Silicon uses m1n1 -> U-Boot -> systemd-boot
   boot.loader.efi.canTouchEfiVariables = false;
 
-  # Enable notch area for full display utilization
-  # This allows the bar to sit in the notch area like macOS
-  boot.kernelParams = [ "apple_dcp.show_notch=1" ];
+  boot.kernelParams = [
+    "apple_dcp.show_notch=1"       # show bar in notch area like macOS
+    "nvme_apple.flush_interval=0"  # Apple SSDs are slow at flush, this speeds up writes
+  ];
 
   # Lid switch behavior
   services.logind.settings.Login.HandleLidSwitchExternalPower = "lock";
