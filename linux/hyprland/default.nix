@@ -58,6 +58,7 @@ in {
         windowrule = size 400 500, match:class dev.deedles.Trayscale
         windowrule = center on, match:class dev.deedles.Trayscale
         windowrule = hyprbars:no_bar 1, match:class dev.deedles.Trayscale
+
       '';
     };
 
