@@ -172,6 +172,7 @@ with pkgs; [
   neovim-remote
   netcat
   nix-index
+  nix-output-monitor
   nix-prefetch-git
   nix-top
   nixd
