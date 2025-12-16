@@ -85,15 +85,15 @@ in {
           source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
 
           # platform-specific config
-          ${lib.optionalString pkgs.stdenv.isDarwin "source ~/.config/zsh/darwin.zsh"}
+          ${lib.optionalString pkgs.stdenv.isDarwin "source ${./darwin.zsh}"}
 
           # zsh config files
-          source ~/.config/zsh/vi.zsh
-          zsh-defer source ~/.config/zsh/completion.zsh
+          source ${./vi.zsh}
+          zsh-defer source ${./completion.zsh}
           source ~/.config/zsh/prompt.zsh
-          [[ -n "$TMUX" ]] && zsh-defer source ~/.config/zsh/tmux.zsh
-          zsh-defer source ~/.config/zsh/fzf.zsh
-          zsh-defer source ~/.config/zsh/history-search.zsh
+          [[ -n "$TMUX" ]] && zsh-defer source ${./tmux.zsh}
+          zsh-defer source ${./fzf.zsh}
+          zsh-defer source ${./history-search.zsh}
 
           bindkey ' ' magic-space # history expansion
 
@@ -109,7 +109,7 @@ in {
           [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]] && \
             source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
           source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
-          source ~/.config/zsh/p10k.zsh
+          source ${./p10k.zsh}
         '';
         "zsh/autopair.zsh".text = ''
           source ${pkgs.zsh-autopair}/share/zsh/zsh-autopair/autopair.zsh
@@ -125,11 +125,6 @@ in {
         "zsh/syntax-highlighting.zsh".text = ''
           source ${pkgs.zsh-fast-syntax-highlighting}/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
         '';
-        "zsh/p10k.zsh".source = ./p10k.zsh;
-        "zsh/vi.zsh".source = ./vi.zsh;
-        "zsh/completion.zsh".source = ./completion.zsh;
-        "zsh/fzf.zsh".source = ./fzf.zsh;
-        "zsh/history-search.zsh".source = ./history-search.zsh;
         "zsh/history-search/history-search.zsh".text = ''
           (( ! ''${+ZSH_FZF_HISTORY_SEARCH_BIND} )) &&
           typeset -g ZSH_FZF_HISTORY_SEARCH_BIND='^r'
@@ -169,10 +164,7 @@ in {
 
           bindkey $ZSH_FZF_HISTORY_SEARCH_BIND fzf_history_search
         '';
-        "zsh/tmux.zsh".source = ./tmux.zsh;
         "zsh/preview".source = "${preview}/bin/preview";
-      } // lib.optionalAttrs pkgs.stdenv.isDarwin {
-        "zsh/darwin.zsh".source = ./darwin.zsh;
       };
 
       home.activation.createZshDirs = ''
