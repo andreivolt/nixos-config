@@ -8,6 +8,7 @@ with pkgs; [
   andrei.chrome-remote
   andrei.chromecast-broadcast
   andrei.claude-api
+  andrei.claude-code
   andrei.claude-command-monitor
   andrei.claude-files
   andrei.claude-messages
