@@ -52,11 +52,11 @@ in {
 
         font = {
           name = "Pragmasevka Nerd Font Light";
-          size = 14;
+          size = 15;
         };
 
         extraConfig = ''
-          modify_font cell_height 110%
+          modify_font cell_height 94%
           modify_font cell_width 88%
 
           # kitty-scrollback.nvim (uses separate nvim-scrollback profile)
