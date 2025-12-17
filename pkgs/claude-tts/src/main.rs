@@ -22,7 +22,7 @@ enum Commands {
     Status,
     /// Set or show provider
     Provider {
-        /// Provider name (deepgram-tts, elevenlabs, unrealspeech, cartesia)
+        /// Provider name (deepgram, elevenlabs, unrealspeech, cartesia)
         name: Option<String>,
     },
     /// Set or show default language
@@ -75,7 +75,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             enabled: true,
-            provider: "deepgram-tts".to_string(),
+            provider: "deepgram".to_string(),
             language_check: false,
             language: "en".to_string(),
             audio_format: true,
@@ -326,9 +326,8 @@ fn detect_language(text: &str) -> Option<String> {
 }
 
 fn speak_text(text: &str, config: &Config) -> Result<()> {
-    use rodio::{Decoder, OutputStream, Sink};
-    use std::io::Cursor;
-    use std::process::{Command, Stdio};
+    use portable_pty::{CommandBuilder, PtySize, native_pty_system};
+    use std::io::Write;
 
     let lang = if config.language_check {
         detect_language(text).unwrap_or_else(|| config.language.clone())
@@ -336,17 +335,15 @@ fn speak_text(text: &str, config: &Config) -> Result<()> {
         config.language.clone()
     };
 
-    // Track if provider uses native speed (don't apply rodio speed then)
-    let uses_native_speed = matches!(config.provider.as_str(), "elevenlabs" | "unrealspeech" | "cartesia");
-
-    // Build command with output to stdout (piped)
-    let mut cmd = Command::new(match config.provider.as_str() {
-        "deepgram-tts" => "deepgram-tts",
+    let bin_name = match config.provider.as_str() {
+        "deepgram" => "deepgram-tts",
         "elevenlabs" => "elevenlabs",
         "unrealspeech" => "unrealspeech",
         "cartesia" => "cartesia",
         other => anyhow::bail!("Unknown provider: {}", other),
-    });
+    };
+
+    let mut cmd = CommandBuilder::new(bin_name);
 
     // Add provider-specific args
     match config.provider.as_str() {
@@ -362,7 +359,6 @@ fn speak_text(text: &str, config: &Config) -> Result<()> {
         }
         "unrealspeech" => {
             // UnrealSpeech: -1.0 to 1.0 where 0 is normal
-            // Map user's 1.0x -> 0.0, 1.3x -> 0.3, etc.
             if config.speed != 1.0 {
                 let us_speed = (config.speed - 1.0).clamp(-1.0, 1.0);
                 cmd.args(["-s", &us_speed.to_string()]);
@@ -375,49 +371,37 @@ fn speak_text(text: &str, config: &Config) -> Result<()> {
                 cmd.args(["-s", &cart_speed.to_string()]);
             }
         }
+        "deepgram" => {
+            // Deepgram uses SOX tempo for pitch-correct speed (0.5-2.0)
+            if config.speed != 1.0 {
+                let dg_speed = config.speed.clamp(0.5, 2.0);
+                cmd.args(["--speed", &dg_speed.to_string()]);
+            }
+        }
         _ => {}
     }
 
-    // Pipe text to stdin and capture audio from stdout
-    let mut child = cmd
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::null())
-        .spawn()
+    // Create PTY so the TTS tool thinks it's connected to a terminal and plays audio
+    let pty_system = native_pty_system();
+    let pair = pty_system.openpty(PtySize {
+        rows: 24,
+        cols: 80,
+        pixel_width: 0,
+        pixel_height: 0,
+    }).context("Failed to open PTY")?;
+
+    let mut child = pair.slave.spawn_command(cmd)
         .context("Failed to spawn TTS process")?;
 
-    // Write text to stdin
-    if let Some(mut stdin) = child.stdin.take() {
-        use std::io::Write;
-        stdin.write_all(text.as_bytes())?;
-    }
+    // Write text to PTY master (stdin of child)
+    let mut writer = pair.master.take_writer()
+        .context("Failed to get PTY writer")?;
+    writer.write_all(text.as_bytes())?;
+    drop(writer);  // Close stdin
 
-    // Wait for completion and get audio data
-    let output = child.wait_with_output().context("Failed to get TTS output")?;
-
-    if output.stdout.is_empty() {
-        anyhow::bail!("TTS produced no audio output");
-    }
-
-    // Play audio with rodio
-    let (_stream, stream_handle) = OutputStream::try_default()
-        .context("Failed to get audio output device")?;
-
-    let sink = Sink::try_new(&stream_handle)
-        .context("Failed to create audio sink")?;
-
-    // Set playback speed only for providers without native speed support
-    if !uses_native_speed && config.speed != 1.0 {
-        sink.set_speed(config.speed);
-    }
-
-    // Decode and play
-    let cursor = Cursor::new(output.stdout);
-    let source = Decoder::new(cursor)
-        .context("Failed to decode audio")?;
-
-    sink.append(source);
-    sink.sleep_until_end();
+    // Wait for child to finish
+    let _status = child.wait()
+        .context("Failed to wait for TTS process")?;
 
     Ok(())
 }
@@ -449,14 +433,14 @@ fn main() -> Result<()> {
         Some(Commands::Provider { name }) => {
             if let Some(name) = name {
                 match name.as_str() {
-                    "deepgram-tts" | "elevenlabs" | "unrealspeech" | "cartesia" => {
+                    "deepgram" | "elevenlabs" | "unrealspeech" | "cartesia" => {
                         config.provider = name.clone();
                         save_config(&config)?;
                         println!("Provider set to: {}", name);
                     }
                     _ => {
                         eprintln!("Unknown provider: {}", name);
-                        eprintln!("Valid providers: deepgram-tts, elevenlabs, unrealspeech, cartesia");
+                        eprintln!("Valid providers: deepgram, elevenlabs, unrealspeech, cartesia");
                         std::process::exit(1);
                     }
                 }
@@ -575,11 +559,6 @@ fn main() -> Result<()> {
                 return Ok(());
             }
 
-            // Kill previous TTS if interrupt mode is enabled
-            if config.interrupt {
-                kill_previous_tts();
-            }
-
             let mut input = String::new();
             io::stdin().read_to_string(&mut input)?;
 
@@ -595,22 +574,43 @@ fn main() -> Result<()> {
                         response
                     };
 
-                    // Write response to temp file and spawn background process to speak it
-                    use std::process::Command;
-                    let temp_file = format!("/tmp/claude-tts-{}.txt", std::process::id());
-                    if fs::write(&temp_file, &text_to_speak).is_ok() {
-                        // Spawn shell to pipe file to claude-tts speak
-                        let _ = Command::new("setsid")
-                            .arg("sh")
-                            .arg("-c")
-                            .arg(format!(
-                                "cat '{}' | claude-tts speak; rm -f '{}'",
-                                &temp_file, &temp_file
-                            ))
-                            .stdin(std::process::Stdio::null())
-                            .stdout(std::process::Stdio::null())
-                            .stderr(std::process::Stdio::null())
-                            .spawn();
+                    // Deduplication: hash content to avoid re-speaking same text
+                    use std::collections::hash_map::DefaultHasher;
+                    use std::hash::{Hash, Hasher};
+                    let mut hasher = DefaultHasher::new();
+                    text_to_speak.hash(&mut hasher);
+                    let new_hash = hasher.finish().to_string();
+
+                    let hash_file = "/tmp/claude-tts-last-hash";
+                    let last_hash = fs::read_to_string(hash_file).unwrap_or_default();
+
+                    // Only speak if content is different from last time
+                    if new_hash != last_hash {
+                        // Kill previous TTS only when we have new content
+                        if config.interrupt {
+                            kill_previous_tts();
+                        }
+
+                        // Update hash
+                        let _ = fs::write(hash_file, &new_hash);
+
+                        // Write response to temp file and spawn background process to speak it
+                        use std::process::Command;
+                        let temp_file = format!("/tmp/claude-tts-{}.txt", std::process::id());
+                        if fs::write(&temp_file, &text_to_speak).is_ok() {
+                            // Spawn shell to pipe file to claude-tts speak
+                            let _ = Command::new("setsid")
+                                .arg("sh")
+                                .arg("-c")
+                                .arg(format!(
+                                    "cat '{}' | claude-tts speak; rm -f '{}'",
+                                    &temp_file, &temp_file
+                                ))
+                                .stdin(std::process::Stdio::null())
+                                .stdout(std::process::Stdio::null())
+                                .stderr(std::process::Stdio::null())
+                                .spawn();
+                        }
                     }
                 }
             }

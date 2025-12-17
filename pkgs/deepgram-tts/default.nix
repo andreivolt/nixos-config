@@ -1,11 +1,10 @@
 {
   lib,
-  stdenv,
   rustPlatform,
   pkg-config,
   openssl,
-  alsa-lib,
-  darwin,
+  makeWrapper,
+  sox,
 }:
 
 rustPlatform.buildRustPackage {
@@ -16,16 +15,14 @@ rustPlatform.buildRustPackage {
 
   cargoLock.lockFile = ./Cargo.lock;
 
-  nativeBuildInputs = [ pkg-config ];
+  nativeBuildInputs = [ pkg-config makeWrapper ];
 
-  buildInputs = [
-    openssl
-  ] ++ lib.optionals stdenv.hostPlatform.isLinux [
-    alsa-lib
-  ] ++ lib.optionals stdenv.hostPlatform.isDarwin [
-    darwin.apple_sdk.frameworks.AudioUnit
-    darwin.apple_sdk.frameworks.CoreAudio
-  ];
+  buildInputs = [ openssl ];
+
+  postInstall = ''
+    wrapProgram $out/bin/deepgram-tts \
+      --prefix PATH : ${lib.makeBinPath [ sox ]}
+  '';
 
   meta = with lib; {
     description = "Text-to-speech using Deepgram API";
