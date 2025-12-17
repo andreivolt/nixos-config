@@ -1,0 +1,13 @@
+[package]
+name = "pushover"
+version = "0.1.0"
+edition = "2024"
+description = "CLI for Pushover notifications"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4", features = ["derive", "env"] }
+reqwest = { version = "0.12", features = ["json", "multipart", "blocking"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
