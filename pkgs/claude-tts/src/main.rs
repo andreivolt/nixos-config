@@ -187,10 +187,38 @@ fn kill_previous_tts() {
     let _ = Command::new("pkill").arg("-f").arg("unrealspeech").output();
 }
 
-fn summarize_code_block(code: &str) -> String {
-    let api_key = match std::env::var("OPENROUTER_API_KEY") {
-        Ok(key) => key,
-        Err(_) => return "[code block]".to_string(),
+enum TextSegment {
+    Code(String),
+    Prose(String),
+}
+
+fn process_segment(segment: &TextSegment, api_key: &str) -> String {
+    let (prompt, content) = match segment {
+        TextSegment::Code(code) => {
+            if code.trim().is_empty() {
+                return String::new();
+            }
+            (
+                "Convert this code to a brief spoken description (1-2 sentences). Describe what it accomplishes as if explaining to someone listening. Be natural and conversational. Output only the description.",
+                code.as_str()
+            )
+        }
+        TextSegment::Prose(text) => {
+            if text.trim().is_empty() {
+                return String::new();
+            }
+            (
+                "Convert this text for text-to-speech (will be read verbatim by TTS). Rules:
+- Numbered lists: write \"Number one:\", \"Number two:\", etc.
+- Bullet lists: write \"First,\", \"Next,\", \"Also,\" etc.
+- File paths: convert slashes to words (e.g., src/components/Button.tsx → \"src slash components slash Button dot tsx\")
+- Inline code in backticks: just remove the backticks, keep the text
+- Remove markdown formatting (**, *, #, [], etc.) but keep the words
+- Keep technical terms and variable names exactly as written
+- Output only the converted text, nothing else.",
+                text.as_str()
+            )
+        }
     };
 
     let client = reqwest::blocking::Client::new();
@@ -200,11 +228,11 @@ fn summarize_code_block(code: &str) -> String {
         .header("Content-Type", "application/json")
         .json(&serde_json::json!({
             "model": "anthropic/claude-haiku-4.5",
-            "max_tokens": 100,
+            "max_tokens": 500,
             "messages": [
                 {
                     "role": "user",
-                    "content": format!("Convert this code to a brief spoken description (1-2 sentences). Describe what it accomplishes as if explaining to someone listening. Be natural and conversational. Output only the description.\n\n{}", code)
+                    "content": format!("{}\n\n{}", prompt, content)
                 }
             ]
         }))
@@ -216,12 +244,21 @@ fn summarize_code_block(code: &str) -> String {
                 json["choices"][0]["message"]["content"]
                     .as_str()
                     .map(|s| s.trim().to_string())
-                    .unwrap_or_else(|| "[code block]".to_string())
+                    .unwrap_or_else(|| match segment {
+                        TextSegment::Code(_) => "[code]".to_string(),
+                        TextSegment::Prose(t) => t.clone(),
+                    })
             } else {
-                "[code block]".to_string()
+                match segment {
+                    TextSegment::Code(_) => "[code]".to_string(),
+                    TextSegment::Prose(t) => t.clone(),
+                }
             }
         }
-        Err(_) => "[code block]".to_string(),
+        Err(_) => match segment {
+            TextSegment::Code(_) => "[code]".to_string(),
+            TextSegment::Prose(t) => t.clone(),
+        },
     }
 }
 
@@ -229,58 +266,63 @@ fn format_for_audio(text: &str) -> String {
     use rayon::prelude::*;
     use regex::Regex;
 
-    // Find all code blocks and their positions
+    let api_key = match std::env::var("OPENROUTER_API_KEY") {
+        Ok(key) => key,
+        Err(_) => return text.to_string(), // No API key, return as-is
+    };
+
+    // Split text into code blocks and prose segments
     let code_block_re = Regex::new(r"```(?:\w+)?\n?([\s\S]*?)```").unwrap();
-    let code_blocks: Vec<(usize, usize, String)> = code_block_re
-        .captures_iter(text)
-        .map(|cap| {
-            let m = cap.get(0).unwrap();
-            let code = cap.get(1).map(|c| c.as_str()).unwrap_or("");
-            (m.start(), m.end(), code.to_string())
-        })
-        .collect();
 
-    // Summarize code blocks in parallel (limit to 5 to avoid too many API calls)
-    let summaries: Vec<String> = code_blocks
-        .par_iter()
-        .take(5)
-        .map(|(_, _, code)| summarize_code_block(code))
-        .collect();
+    let mut segments: Vec<TextSegment> = Vec::new();
+    let mut last_end = 0;
 
-    // Replace code blocks with summaries
-    let mut result = text.to_string();
-    for (i, (start, end, _)) in code_blocks.iter().enumerate().rev() {
-        let summary = summaries.get(i).cloned().unwrap_or_else(|| "[code]".to_string());
-        result.replace_range(*start..*end, &format!("({})", summary));
+    for cap in code_block_re.captures_iter(text) {
+        let m = cap.get(0).unwrap();
+        let code = cap.get(1).map(|c| c.as_str()).unwrap_or("");
+
+        // Add prose before this code block
+        if m.start() > last_end {
+            let prose = &text[last_end..m.start()];
+            if !prose.trim().is_empty() {
+                segments.push(TextSegment::Prose(prose.to_string()));
+            }
+        }
+
+        // Add code block
+        if !code.trim().is_empty() {
+            segments.push(TextSegment::Code(code.to_string()));
+        }
+
+        last_end = m.end();
     }
 
-    // Clean up remaining markdown
-    let inline_code_re = Regex::new(r"`([^`]+)`").unwrap();
-    result = inline_code_re.replace_all(&result, "$1").to_string();
+    // Add remaining prose after last code block
+    if last_end < text.len() {
+        let prose = &text[last_end..];
+        if !prose.trim().is_empty() {
+            segments.push(TextSegment::Prose(prose.to_string()));
+        }
+    }
 
-    let header_re = Regex::new(r"(?m)^#{1,6}\s*").unwrap();
-    result = header_re.replace_all(&result, "").to_string();
+    // If no segments (no code blocks), treat entire text as prose
+    if segments.is_empty() {
+        segments.push(TextSegment::Prose(text.to_string()));
+    }
 
-    let bold_re = Regex::new(r"\*\*([^*]+)\*\*").unwrap();
-    result = bold_re.replace_all(&result, "$1").to_string();
+    // Process all segments in parallel (limit to 10 to avoid too many API calls)
+    let processed: Vec<String> = segments
+        .par_iter()
+        .take(10)
+        .map(|seg| process_segment(seg, &api_key))
+        .collect();
 
-    // Simple italic removal (after bold is already removed)
-    let italic_re = Regex::new(r"\*([^*]+)\*").unwrap();
-    result = italic_re.replace_all(&result, "$1").to_string();
+    // Join processed segments
+    let result = processed.join(" ");
 
-    let link_re = Regex::new(r"\[([^\]]+)\]\([^)]+\)").unwrap();
-    result = link_re.replace_all(&result, "$1").to_string();
-
-    let bullet_re = Regex::new(r"(?m)^[\s]*[-*+]\s+").unwrap();
-    result = bullet_re.replace_all(&result, "").to_string();
-
-    let numbered_re = Regex::new(r"(?m)^\s*\d+\.\s+").unwrap();
-    result = numbered_re.replace_all(&result, "").to_string();
-
-    let newlines_re = Regex::new(r"\n{3,}").unwrap();
-    result = newlines_re.replace_all(&result, "\n\n").to_string();
-
-    result.trim().to_string()
+    // Final cleanup: normalize whitespace
+    let whitespace_re = Regex::new(r"\s+").unwrap();
+    whitespace_re.replace_all(&result, " ").trim().to_string()
 }
 
 fn detect_language(text: &str) -> Option<String> {
