@@ -4,6 +4,7 @@ with pkgs; [
   age
   andrei.astext
   andrei.azure-speech
+  andrei.cartesia
   # andrei.chrome-history-export  # uv2nix symlink issue
   andrei.chrome-remote
   andrei.chromecast-broadcast
