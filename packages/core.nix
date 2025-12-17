@@ -4,6 +4,7 @@ with pkgs; [
   age
   # andrei.chrome-history-export  # uv2nix symlink issue
   andrei.claude-api
+  andrei.claude-code
   andrei.darkmode
   andrei.file-rename
   andrei.firefox-addon-delete
