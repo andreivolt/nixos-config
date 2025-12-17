@@ -34,6 +34,8 @@ struct TextToSpeechRequest {
     voice_settings: VoiceSettings,
     model_id: String,
     language_code: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    speed: Option<f32>,
 }
 
 fn get_language_codes() -> HashMap<&'static str, &'static str> {
@@ -218,17 +220,22 @@ async fn text_to_speech(
     language_code: Option<&str>,
     stability: f32,
     similarity_boost: f32,
+    speed: Option<f32>,
 ) -> anyhow::Result<()> {
     let voice_settings = VoiceSettings {
         stability,
         similarity_boost,
     };
 
+    // Clamp speed to API limits (0.7-1.2)
+    let clamped_speed = speed.map(|s| s.clamp(0.7, 1.2));
+
     let mut request = TextToSpeechRequest {
         text: text.to_string(),
         voice_settings,
         model_id: model.to_string(),
         language_code: language_code.map(|s| s.to_string()),
+        speed: clamped_speed,
     };
 
     // Check if model supports language_code
@@ -341,6 +348,10 @@ async fn main() -> anyhow::Result<()> {
             .long("list-models")
             .help("List available models and their capabilities")
             .action(clap::ArgAction::SetTrue))
+        .arg(Arg::new("speed")
+            .long("speed")
+            .help("Playback speed (0.7-1.2, default 1.0)")
+            .value_parser(clap::value_parser!(f32)))
         .get_matches();
 
     if matches.get_flag("list-models") {
@@ -412,6 +423,7 @@ async fn main() -> anyhow::Result<()> {
     let language_code = matches.get_one::<String>("language").map(|s| s.as_str());
     let stability = *matches.get_one::<f32>("stability").unwrap();
     let similarity_boost = *matches.get_one::<f32>("similarity-boost").unwrap();
+    let speed = matches.get_one::<f32>("speed").copied();
 
     if let Some(lang) = language_code {
         let languages = get_language_codes();
@@ -421,7 +433,7 @@ async fn main() -> anyhow::Result<()> {
         eprintln!("Using language code: {}", lang);
     }
 
-    text_to_speech(&client, &api_key, &text, &voice_id, model, language_code, stability, similarity_boost).await?;
+    text_to_speech(&client, &api_key, &text, &voice_id, model, language_code, stability, similarity_boost, speed).await?;
 
     Ok(())
 }
