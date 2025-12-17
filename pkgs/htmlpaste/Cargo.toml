@@ -3,5 +3,8 @@ name = "htmlpaste"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies]
+[target.'cfg(target_os = "linux")'.dependencies]
+wl-clipboard-rs = "0.9"
+
+[target.'cfg(not(target_os = "linux"))'.dependencies]
 clipboard-rs = "0.3"

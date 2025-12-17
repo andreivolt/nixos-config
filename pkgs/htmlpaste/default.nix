@@ -9,7 +9,7 @@ rustPlatform.buildRustPackage {
 
   src = ./.;
 
-  cargoHash = "sha256-E7fu4KFiJgFx5ggDv4bdId+piBokwV3ykwbxUQ7yNag=";
+  cargoLock.lockFile = ./Cargo.lock;
 
   meta = with lib; {
     description = "Paste HTML from clipboard";
