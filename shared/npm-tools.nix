@@ -2,7 +2,7 @@
 {
   home-manager.sharedModules = [{
     home.shellAliases = {
-      claude = "bunx --silent @anthropic-ai/claude-code --dangerously-skip-permissions";
+      claude = "claude --dangerously-skip-permissions";
       gemini = "bunx --silent @google/gemini-cli --yolo";
       codex = "bunx --silent @openai/codex --full-auto";
       amp = "bunx --silent @sourcegraph/amp --dangerously-allow-all";
