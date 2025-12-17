@@ -175,7 +175,6 @@ with pkgs; [
   websocat
   weechat
   wget
-  unstable.wrangler
   xh
   xurls
   xxd
