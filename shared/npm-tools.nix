@@ -8,6 +8,7 @@
       amp = "bunx --silent @sourcegraph/amp --dangerously-allow-all";
       expo = "bunx --silent expo";
       vercel = "bunx --silent vercel";
+      wrangler = "bunx --silent wrangler";
     };
   }];
 }
