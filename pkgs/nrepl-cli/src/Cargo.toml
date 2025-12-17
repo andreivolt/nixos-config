@@ -1,0 +1,11 @@
+[package]
+name = "nrepl-cli"
+version = "0.1.0"
+edition = "2021"
+description = "nREPL client with Unix socket support"
+
+[dependencies]
+
+[profile.release]
+lto = true
+strip = true

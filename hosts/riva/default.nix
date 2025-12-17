@@ -20,6 +20,7 @@
     ../../linux/rclone.nix
     ../../pkgs/lifx/lifx.nix
     ../../linux/zram.nix
+    ../../linux/monolith.nix
     ./battery.nix
   ];
 

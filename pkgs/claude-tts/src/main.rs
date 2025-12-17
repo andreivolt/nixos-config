@@ -199,7 +199,7 @@ fn process_segment(segment: &TextSegment, api_key: &str) -> String {
                 return String::new();
             }
             (
-                "Convert this code to a brief spoken description (1-2 sentences). Describe what it accomplishes as if explaining to someone listening. Be natural and conversational. Output only the description.",
+                "Briefly describe what this code does or what changed (1-2 sentences). Be natural and conversational. Output only the description.",
                 code.as_str()
             )
         }
@@ -266,7 +266,7 @@ fn format_for_audio(text: &str) -> String {
     use rayon::prelude::*;
     use regex::Regex;
 
-    let api_key = match std::env::var("OPENROUTER_API_KEY") {
+    let api_key = match std::env::var("OPENROUTER_KEY") {
         Ok(key) => key,
         Err(_) => return text.to_string(), // No API key, return as-is
     };
@@ -333,7 +333,7 @@ fn detect_language(text: &str) -> Option<String> {
         .collect::<Vec<_>>()
         .join(" ");
 
-    let api_key = std::env::var("OPENROUTER_API_KEY").ok()?;
+    let api_key = std::env::var("OPENROUTER_KEY").ok()?;
 
     let client = reqwest::blocking::Client::new();
     let response = client
