@@ -14,6 +14,7 @@ with pkgs; [
   andrei.claude-files
   andrei.claude-messages
   andrei.claude-sessions
+  andrei.claude-tts
   andrei.content
   andrei.cookie
   andrei.correct
