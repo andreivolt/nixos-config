@@ -71,10 +71,10 @@ in {
             fi
           }
 
-          # ssh function: use kitten for interactive, real ssh for non-interactive
+          # ssh function: use kitten for interactive kitty sessions
           ${lib.optionalString config.programs.kitty.enable ''
           ssh() {
-            if [[ -t 0 ]]; then
+            if [[ -t 0 && -n "$KITTY_WINDOW_ID" ]]; then
               kitten ssh "$@"
             else
               command ssh "$@"
