@@ -39,9 +39,9 @@
     newline                 # \n
     context                 # user@hostname when in SSH/root
     prompt_char             # prompt symbol
-    background_jobs         # presence of background jobs
     direnv                  # direnv status (https://direnv.net/)
     nix_shell_custom        # nix shell with package list
+    background_jobs         # presence of background jobs
   )
 
   # The list of segments shown on the right. Fill it with less important segments.
