@@ -13,6 +13,7 @@ in {
     gc = "git clone --depth 1";
     gron = "fastgron";
     http = "xh";
+    j = "jobs";
     jq = "gojq";
     l = "ls -1";
     la = "ls -a";
