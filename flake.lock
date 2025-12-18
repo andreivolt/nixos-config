@@ -637,8 +637,8 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1766090401,
-        "narHash": "sha256-oxJaVhxAXQc1GXjg9t7Ucqx61ZMCfz8ILj8haSdJWzo=",
+        "lastModified": 1766090501,
+        "narHash": "sha256-TQrpeRZrjDrQa6wzAXRhmB4fYsggHrxW1fO886QNJqs=",
         "path": "/home/andrei/dev/monolith",
         "type": "path"
       },
