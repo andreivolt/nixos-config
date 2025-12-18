@@ -69,6 +69,9 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    monolith = {
+      url = "path:/home/andrei/dev/monolith";
+    };
   };
 
   outputs = inputs @ {
@@ -92,6 +95,7 @@
     uv2nix,
     pyproject-build-systems,
     rust-overlay,
+    monolith,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
