@@ -27,7 +27,6 @@ with pkgs;
   liberation_ttf
   libnotify
   libreoffice-fresh
-  nerd-fonts.iosevka-term
   pavucontrol
   playerctl
   scrcpy
