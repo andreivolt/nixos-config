@@ -27,7 +27,11 @@ in
         PassEnvironment = [ "HYPRLAND_INSTANCE_SIGNATURE" ];
 
         # Runtime deps (mpv, ffmpeg, clojure, jdk, coreutils, etc.)
-        Environment = "PATH=${monolith.runtime-deps}/bin";
+        # TDLib native libs need openssl, zlib, libstdc++
+        Environment = [
+          "PATH=${monolith.runtime-deps}/bin"
+          "LD_LIBRARY_PATH=${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.stdenv.cc.cc.lib}/lib"
+        ];
 
         ExecStart = "${pkgs.clojure}/bin/clojure -M:run";
         Restart = "on-failure";
