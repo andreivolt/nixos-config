@@ -1,14 +1,16 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
   user = "andrei";
   monolithDir = "/home/${user}/dev/monolith";
   envFile = "/home/${user}/.config/env";
-  # Socket in XDG_RUNTIME_DIR (proper place for runtime sockets)
-  # Service creates /run/user/1000/monolith/monolith.sock
+  monolith = inputs.monolith.packages.${pkgs.system};
 in
 {
   home-manager.users.${user} = { config, pkgs, ... }: {
+
+    # User CLI (mono command + aliases)
+    home.packages = [ monolith.commands ];
 
     systemd.user.services.monolith = {
       Unit = {
@@ -23,6 +25,9 @@ in
 
         # Pass through Hyprland socket path
         PassEnvironment = [ "HYPRLAND_INSTANCE_SIGNATURE" ];
+
+        # Runtime deps (mpv, ffmpeg, clojure, jdk, coreutils, etc.)
+        Environment = "PATH=${monolith.runtime-deps}/bin";
 
         ExecStart = "${pkgs.clojure}/bin/clojure -M:run";
         Restart = "on-failure";
