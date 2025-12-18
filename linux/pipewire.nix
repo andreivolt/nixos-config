@@ -9,6 +9,15 @@
 
     pulse.enable = true;
 
+    # Reduce buffer size for lower latency (~20-30ms improvement)
+    extraConfig.pipewire."92-low-latency" = {
+      "context.properties" = {
+        "default.clock.rate" = 48000;
+        "default.clock.quantum" = 256;
+        "default.clock.min-quantum" = 256;
+      };
+    };
+
     # Auto-switch to Bluetooth audio when a device connects
     # Sets high priority (2000) so Bluetooth becomes default sink
     wireplumber.extraConfig."51-bluetooth-auto-switch" = {
