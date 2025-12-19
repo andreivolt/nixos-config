@@ -190,6 +190,7 @@ with pkgs; [
   ouch
   pandoc
   parallel
+  parinfer-rust
   patchelf
   patchutils
   pdftk
