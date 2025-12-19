@@ -31,6 +31,7 @@ in
         Environment = [
           "PATH=${monolith.runtime-deps}/bin"
           "LD_LIBRARY_PATH=${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.stdenv.cc.cc.lib}/lib"
+          "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/%U/bus"
         ];
 
         ExecStart = "${pkgs.clojure}/bin/clojure -M:run";
