@@ -3,8 +3,8 @@
 let
   user = "andrei";
   monolithDir = "/home/${user}/dev/monolith";
-  envFile = "/home/${user}/.config/env";
   monolith = inputs.monolith.packages.${pkgs.system};
+  monolithEnvFile = config.sops.templates."monolith.env".path;
 in
 {
   home-manager.users.${user} = { config, pkgs, ... }: {
@@ -21,7 +21,7 @@ in
       Service = {
         Type = "simple";
         WorkingDirectory = monolithDir;
-        EnvironmentFile = envFile;
+        EnvironmentFile = monolithEnvFile;
 
         # Pass through Hyprland socket path
         PassEnvironment = [ "HYPRLAND_INSTANCE_SIGNATURE" ];
