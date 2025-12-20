@@ -32,16 +32,15 @@
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    # os_icon               # os identifier
     dir                     # current directory
-    docker_context          # docker context (when not default)
     # =========================[ Line #2 ]=========================
     newline                 # \n
     context                 # user@hostname when in SSH/root
-    prompt_char             # prompt symbol
+    docker_context          # docker context (when not default)
     direnv                  # direnv status (https://direnv.net/)
     nix_shell_custom        # nix shell with package list
     background_jobs         # presence of background jobs
+    prompt_char             # prompt symbol
   )
 
   # The list of segments shown on the right. Fill it with less important segments.
@@ -449,8 +448,7 @@
   #######################[ direnv: direnv status (https://direnv.net/) ]########################
   # Direnv color.
   typeset -g POWERLEVEL9K_DIRENV_FOREGROUND=178
-  # Custom icon.
-  # typeset -g POWERLEVEL9K_DIRENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_DIRENV_VISUAL_IDENTIFIER_EXPANSION='▾'
 
   #################[ ranger: ranger shell (https://github.com/ranger/ranger) ]##################
   # Ranger shell color.
@@ -1553,7 +1551,7 @@
 
   # Custom nix_shell segment configuration
   typeset -g POWERLEVEL9K_NIX_SHELL_CUSTOM_FOREGROUND=6
-  typeset -g POWERLEVEL9K_NIX_SHELL_CUSTOM_VISUAL_IDENTIFIER_EXPANSION='❄️'
+  typeset -g POWERLEVEL9K_NIX_SHELL_CUSTOM_VISUAL_IDENTIFIER_EXPANSION='❆'
   typeset -g POWERLEVEL9K_NIX_SHELL_CUSTOM_PREFIX='['
   typeset -g POWERLEVEL9K_NIX_SHELL_CUSTOM_SUFFIX=']'
 
