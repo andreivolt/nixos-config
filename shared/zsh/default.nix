@@ -54,7 +54,6 @@ in {
         '';
 
         initContent = ''
-          source ~/.config/env 2>/dev/null || true
           export GPG_TTY="$(tty)"
           READNULLCMD=$PAGER
 
