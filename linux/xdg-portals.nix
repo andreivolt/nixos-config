@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   xdg.portal = {
     enable = true;
-    xdgOpenUsePortal = true;
+    xdgOpenUsePortal = false;
     # Note: xdg-desktop-portal-hyprland is automatically added by programs.hyprland
     extraPortals = with pkgs; [
       xdg-desktop-portal-gtk
