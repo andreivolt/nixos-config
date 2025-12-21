@@ -7,6 +7,7 @@
   curl,
   jq,
   libnotify,
+  tmux,
   glibc,
 }:
 let
@@ -27,6 +28,7 @@ stdenv.mkDerivation {
     jq = "${jq}/bin/jq";
     curl = "${curl}/bin/curl";
     notify = "${libnotify}/bin/notify-send";
+    tmux = "${tmux}/bin/tmux";
   };
 
   dontUnpack = true;

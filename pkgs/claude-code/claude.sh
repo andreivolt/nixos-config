@@ -7,6 +7,7 @@ DYNAMIC_LINKER="@dynamicLinker@"
 JQ="@jq@"
 CURL="@curl@"
 NOTIFY="@notify@"
+TMUX="@tmux@"
 
 # Runtime paths
 CLAUDE_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/claude"
@@ -165,5 +166,19 @@ fi
 # Check for updates in background
 background_update_check
 
-# Run claude
-exec "$BINARY" "$@"
+# Handle tmux wrapping
+# If already in tmux, just run claude directly
+# Otherwise, wrap in a named tmux session
+if [[ -n "$TMUX" ]] || [[ "$1" == "--no-tmux" ]]; then
+    # Strip --no-tmux if present
+    if [[ "$1" == "--no-tmux" ]]; then
+        shift
+    fi
+    exec "$BINARY" "$@"
+else
+    # Generate unique session name based on pwd
+    SESSION_NAME="claude-$(basename "$PWD" | tr -cd '[:alnum:]-')-$$"
+
+    # Create tmux session that exits when claude exits
+    exec "$TMUX" new-session -s "$SESSION_NAME" "$BINARY" "$@"
+fi
