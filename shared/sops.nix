@@ -78,6 +78,8 @@ let
     "spotify/client_secret"
     "supadata/api_key"
     "tailscale/api_key"
+    "tailscale/auth_key"
+    "tailscale/login_server"
     "tailscale/net"
     "tailscale/org"
     "telegram/api_hash"
@@ -177,6 +179,8 @@ in {
           REPLICATE_API_TOKEN = p."replicate/api_token";
           SERPAPI_API_KEY = p."serpapi/api_key";
           TAILSCALE_API_KEY = p."tailscale/api_key";
+          TAILSCALE_AUTH_KEY = p."tailscale/auth_key";
+          TAILSCALE_LOGIN_SERVER = p."tailscale/login_server";
           TAILSCALE_ORG = p."tailscale/org";
           TELEGRAM_API_HASH = p."telegram/api_hash";
           TELEGRAM_API_ID = p."telegram/api_id";
