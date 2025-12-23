@@ -14,11 +14,12 @@ lib.mkMerge [
       corefonts
       ubuntu-classic
       roboto
+      dejavu_fonts
     ];
   }
   (lib.optionalAttrs (options.fonts ? fontconfig) {
     fonts.fontconfig.defaultFonts = {
-      sansSerif = ["Roboto"];
+      sansSerif = ["DejaVu Sans Condensed"];
       monospace = ["Pragmasevka Nerd Font Light"];
     };
   })

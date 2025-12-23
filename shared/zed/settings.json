@@ -10,7 +10,7 @@
 	"ui_font_features": {
 		"calt": 0
 	},
-	"ui_font_family": "Roboto",
+	"ui_font_family": "DejaVu Sans Condensed",
 	"show_completions_on_input": false,
 	"show_edit_predictions": false,
 	"languages": {
