@@ -18,7 +18,7 @@ in {
         "--enable-features=UseOzonePlatform"
         "--ozone-platform=wayland"
         "--font-render-hinting=none"
-        "--force-font-family-sans-serif=DejaVu Sans Condensed"
+        "--force-font-family-sans-serif=\"DejaVu Sans Condensed\""
       ];
     };
   };
