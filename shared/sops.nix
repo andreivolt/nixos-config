@@ -34,6 +34,7 @@ let
     "filebase/region"
     "filebase/secret_access_key"
     "filebase/token"
+    "fal/api_key"
     "firecrawl/api_key"
     "gdrive/client_id"
     "gdrive/client_secret"
@@ -42,6 +43,8 @@ let
     "google/client_id"
     "google/client_secret"
     "monolith/gcloud_vision_sa_json"
+    "monolith/github_client_id"
+    "monolith/github_client_secret"
     "monolith/google_api_key"
     "monolith/google_client_id"
     "monolith/google_client_secret"
@@ -149,18 +152,20 @@ in {
       "monolith.env" = {
         owner = user;
         content = mkEnvFile {
-          ANTHROPIC_API_KEY = p."anthropic/api_key";
           AZURE_SPEECH_KEY = p."azure_speech/key";
           AZURE_SPEECH_REGION = p."azure_speech/region";
           CARTESIA_API_KEY = p."cartesia/api_key";
           DEEPGRAM_API_KEY = p."deepgram/api_key";
           ELEVENLABS_API_KEY = p."elevenlabs/api_key";
           EXA_API_KEY = p."exa/api_key";
+          FAL_KEY = p."fal/api_key";
           FILEBASE_ACCESS_KEY = p."filebase/access_key";
           FILEBASE_SECRET_KEY = p."filebase/secret_access_key";
           FILEBASE_TOKEN = p."filebase/token";
           FIRECRAWL_API_KEY = p."firecrawl/api_key";
           GEMINI_API_KEY = p."gemini/api_key";
+          GITHUB_CLIENT_ID = p."monolith/github_client_id";
+          GITHUB_CLIENT_SECRET = p."monolith/github_client_secret";
           GOOGLE_API_KEY = p."monolith/google_api_key";
           GOOGLE_APPLICATION_CREDENTIALS = config.sops.templates."gcloud-vision-sa".path;
           GOOGLE_CLIENT_ID = p."monolith/google_client_id";
