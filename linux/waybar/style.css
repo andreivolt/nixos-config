@@ -57,6 +57,7 @@ window#waybar.empty #window {
 	border-radius: 0;
 	border-bottom: 2px solid transparent;
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	font-size: 15px;
 }
 
 #workspaces button:hover {
@@ -357,7 +358,7 @@ window#waybar.empty #window {
 
 /* Tray */
 #tray {
-	padding: 0 15px;
+	padding: 0 8px 0 15px;
 	margin: 4px 0;
 	opacity: 0.55;
 }
