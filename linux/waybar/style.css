@@ -134,12 +134,12 @@ window#waybar.empty #window {
 #battery {
 	min-width: 22px;
 	min-height: 22px;
-	padding: 2px;
+	padding: 0;
 	margin: 7px 0;
-	border-radius: 50%;
-	border: 2px solid rgba(122, 117, 109, 0.5);
+	border-radius: 11px;
+	border: 1px solid rgba(122, 117, 109, 0.5);
 	background: transparent;
-	font-size: 12px;
+	font-size: 9px;
 	font-weight: 700;
 	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
