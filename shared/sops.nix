@@ -28,6 +28,7 @@ let
     "dnsimple/access_token"
     "dnsimple/account_id"
     "elevenlabs/api_key"
+    "elevenlabs/avoltnet_api_key"
     "exa/api_key"
     "filebase/access_key"
     "filebase/endpoint_url"
@@ -157,7 +158,7 @@ in {
           AZURE_SPEECH_REGION = p."azure_speech/region";
           CARTESIA_API_KEY = p."cartesia/api_key";
           DEEPGRAM_API_KEY = p."deepgram/api_key";
-          ELEVENLABS_API_KEY = p."elevenlabs/api_key";
+          ELEVENLABS_API_KEY = p."elevenlabs/avoltnet_api_key";
           EXA_API_KEY = p."exa/api_key";
           FAL_KEY = p."fal/api_key";
           FILEBASE_ACCESS_KEY = p."filebase/access_key";
