@@ -127,7 +127,7 @@ window#waybar.empty #window {
 	padding: 0 4px;
 	margin: 4px 0;
 	border-radius: 0;
-	font-size: 22px;
+	font-size: 18px;
 	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
@@ -394,7 +394,7 @@ window#waybar.empty #window {
 	padding: 0 4px;
 	margin: 4px 0;
 	color: #7a756d;
-	font-size: 22px;
+	font-size: 18px;
 	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
