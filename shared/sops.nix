@@ -171,6 +171,8 @@ in {
           GOOGLE_APPLICATION_CREDENTIALS = config.sops.templates."gcloud-vision-sa".path;
           GOOGLE_CLIENT_ID = p."monolith/google_client_id";
           GOOGLE_CLIENT_SECRET = p."monolith/google_client_secret";
+          LASTFM_API_KEY = p."lastfm/api_key";
+          LASTFM_USERNAME = p."lastfm/username";
           LIFX_TOKEN = p."lifx/token";
           OPENAI_API_KEY = p."openai/api_key";
           OPENROUTER_KEY = p."openrouter/api_key";
