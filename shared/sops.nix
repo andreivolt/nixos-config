@@ -67,6 +67,7 @@ let
     "playht/user_id"
     "poe/token"
     "porcupine/access_key"
+    "puremd/api_key"
     "pushover/token"
     "pushover/user"
     "reddit/client_id"
@@ -174,6 +175,7 @@ in {
           OPENAI_API_KEY = p."openai/api_key";
           OPENROUTER_KEY = p."openrouter/api_key";
           PERPLEXITY_API_KEY = p."perplexity/api_key";
+          PUREMD_API_KEY = p."puremd/api_key";
           PUSHOVER_TOKEN = p."pushover/token";
           PUSHOVER_USER = p."pushover/user";
           REDDIT_CLIENT_ID = p."reddit/client_id";
