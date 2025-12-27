@@ -637,8 +637,8 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1766586090,
-        "narHash": "sha256-zNGMbapzGt+uIjpepJkJfMuaRxShO3oUVV4/vUB5KGU=",
+        "lastModified": 1766797159,
+        "narHash": "sha256-GZPJjnqNPso+l2xO1OElVrlpl25JL1q9t9fB5jAlNwY=",
         "path": "/home/andrei/dev/monolith",
         "type": "path"
       },
@@ -880,11 +880,11 @@
     },
     "nixpkgs_6": {
       "locked": {
-        "lastModified": 1765100908,
-        "narHash": "sha256-TXTImfTZmOYnS+AemOXiM7WDaeniuRHSruw3k+v+BCY=",
+        "lastModified": 1766747673,
+        "narHash": "sha256-RIp/vbXYzoyh6b6MZEKvyZS0s6cw1/NWHD9MYykr8g8=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "9393af3b506fc38ff805cef7baf912e97d1f4ed3",
+        "rev": "22d865d488f95600995c57dda921e16acd37825b",
         "type": "github"
       },
       "original": {
