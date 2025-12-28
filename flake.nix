@@ -26,12 +26,11 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Pinned for hyprland-plugins compatibility (7e1e24f from Nov 27 - last known working)
     hyprland = {
-      url = "github:hyprwm/Hyprland/7e1e24fea615503a3cc05218c12b06c1b6cabdc7";
+      url = "github:hyprwm/Hyprland";
     };
     hyprland-plugins = {
-      url = "github:hyprwm/hyprland-plugins/84659a2502df6b2fd245441c16a8365f5e1cd16d";
+      url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
     nixos-apple-silicon = {
