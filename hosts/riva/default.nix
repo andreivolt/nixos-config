@@ -1,8 +1,8 @@
 {
-  pkgs,
   config,
-  inputs,
   lib,
+  pkgs,
+  inputs,
   ...
 }: {
   imports = [
@@ -61,7 +61,7 @@
     enable = true;
     freeMemThreshold = 5;
     freeSwapThreshold = 10;
-    extraArgs = ["-g" "--prefer" "^(nix-daemon|cc1plus|clang|ld)$"];
+    extraArgs = ["--prefer" "^(nix-daemon|cc1plus|clang|ld)$"];
   };
 
   home-manager.users.andrei = import ../../linux/home.nix {
