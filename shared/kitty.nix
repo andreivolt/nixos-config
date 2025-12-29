@@ -52,7 +52,7 @@ in {
 
         font = {
           name = "Pragmasevka Nerd Font Light";
-          size = 12;
+          size = 13;
         };
 
         extraConfig = ''
