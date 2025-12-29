@@ -3,6 +3,7 @@
 let
   hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
   hyprlandPlugins = inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};
+  hyprsunsetPkg = inputs.hyprsunset.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in {
   imports = [
     ./vars.nix
@@ -22,6 +23,7 @@ in {
 
   environment.systemPackages = with pkgs; [
     hyprshot
+    hyprsunsetPkg
   ] ++ (with hyprlandPkgs; [
     hyprland-qtutils
   ]);

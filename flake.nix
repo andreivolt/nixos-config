@@ -33,6 +33,9 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    hyprsunset = {
+      url = "github:hyprwm/hyprsunset";
+    };
     nixos-apple-silicon = {
       url = "github:nix-community/nixos-apple-silicon";
       # Don't follow our nixpkgs - use their tested version
@@ -86,6 +89,7 @@
     disko,
     hyprland,
     hyprland-plugins,
+    hyprsunset,
     nixos-apple-silicon,
     lan-mouse,
     nix-on-droid,
