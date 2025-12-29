@@ -147,7 +147,10 @@ in {
           "shift+enter" = "send_text all \\n";
           "cmd+left" = "send_text all \\x1b[1;5D";
           "cmd+right" = "send_text all \\x1b[1;5C";
-          # Font size
+          # Font size (override defaults to use consistent 0.25 increments)
+          "kitty_mod+equal" = "change_font_size all +0.25";
+          "kitty_mod+minus" = "change_font_size all -0.25";
+          "kitty_mod+backspace" = "change_font_size all 0";
           "ctrl+plus" = "change_font_size all +0.25";
           "ctrl+minus" = "change_font_size all -0.25";
           "ctrl+0" = "change_font_size all 0";
