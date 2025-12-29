@@ -1,8 +1,9 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
   user = "andrei";
   minSleepHours = 4;
+  hyprsunsetPkg = inputs.hyprsunset.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
   home-manager.users.${user} = { config, pkgs, ... }: {
@@ -31,7 +32,7 @@ in
           hour=$(date +%H)
           if [ "$hour" -ge 5 ] && [ "$hour" -lt 12 ]; then
             ${pkgs.procps}/bin/pkill hyprsunset || true
-            ${pkgs.hyprsunset}/bin/hyprsunset -i
+            ${hyprsunsetPkg}/bin/hyprsunset -i
           fi
         '';
       };

@@ -21,7 +21,6 @@ with pkgs;
   freerdp
   fswebcam
   grim
-  hyprsunset
   imv
   kitty
   liberation_ttf
