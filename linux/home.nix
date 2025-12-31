@@ -18,6 +18,7 @@
 
   home.packages =
     (import "${inputs.self}/packages/core.nix" pkgs)
+    ++ (import "${inputs.self}/packages/lsp.nix" pkgs)
     ++ (import "${inputs.self}/packages/linux.nix" pkgs)
     ++ (import "${inputs.self}/packages/workstation.nix" pkgs)
     ++ (import "${inputs.self}/packages/gui.nix" pkgs);
