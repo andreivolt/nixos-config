@@ -106,7 +106,7 @@
     "separate-outputs": true
   },
   "hyprland/workspaces": {
-    "format": "{name}  <span font='17' rise='-3000'>{windows}</span>",
+    "format": "{name}  <span font='15' rise='-2500'>{windows}</span>",
     "format-window-separator": " ",
     "on-scroll-down": "hyprctl dispatch workspace e-1",
     "on-scroll-up": "hyprctl dispatch workspace e+1",
