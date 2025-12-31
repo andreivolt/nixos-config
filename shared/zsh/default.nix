@@ -8,7 +8,7 @@
       file_type=$(file -b --mime "$file")
 
       if echo "$file_type" | grep -q "text"; then
-          bat --color=always "$file"
+          bat --color=always --style=plain "$file"
       elif echo "$file_type" | grep -q "application/octet-stream"; then
           mediainfo "$file" 2>/dev/null || echo "Cannot preview binary file"
       else
