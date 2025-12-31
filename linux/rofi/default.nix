@@ -7,6 +7,7 @@
     font = "Roboto 13";
     theme = "~/.config/rofi/theme.rasi";
     extraConfig = {
+      case-sensitive = false;
       modi = "drun,run,window";
       show-icons = true;
       icon-theme = "Papirus-Dark";
