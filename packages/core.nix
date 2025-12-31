@@ -27,13 +27,11 @@ with pkgs; [
   babashka
   bat
   bfg-repo-cleaner
-  biome
   btop
   bun
   cached-nix-shell
   cargo
   clojure
-  clojure-lsp
   cloudflared
   cmake
   csvkit
@@ -112,7 +110,6 @@ with pkgs; [
   nix-output-monitor
   nix-prefetch-git
   nix-top
-  nixd
   nixfmt-rfc-style
   nmap
   nodejs
@@ -140,8 +137,6 @@ with pkgs; [
   rsync
   rubocop
   ruby
-  ruby-lsp
-  ruff
   rust-script
   rustc
   rustfmt
@@ -154,7 +149,6 @@ with pkgs; [
   sqlite-utils
   sshpass
   stack
-  stylua
   tabview
   tcpdump
   terminal-colors
