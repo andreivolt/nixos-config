@@ -1,19 +1,172 @@
 {
-  "layer": "top",
-  "position": "top",
-  "height": 36,
-  "spacing": 0,
+  "battery": {
+    "format": "{capacity}",
+    "format-charging": "{capacity}",
+    "format-full": "100",
+    "format-plugged": "{capacity}",
+    "interval": 10,
+    "states": {
+      "s10": 10,
+      "s100": 100,
+      "s20": 20,
+      "s30": 30,
+      "s40": 40,
+      "s50": 50,
+      "s60": 60,
+      "s70": 70,
+      "s80": 80,
+      "s90": 90
+    },
+    "tooltip": true,
+    "tooltip-format": "{capacity}%\n{timeTo}\nPower: {power}W"
+  },
+  "clock": {
+    "calendar": {
+      "format": {
+        "days": "<span color='#ecc6d9'><b>{}</b></span>",
+        "months": "<span color='#ffead3'><b>{}</b></span>",
+        "today": "<span color='#ff6699'><b><u>{}</u></b></span>",
+        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+        "weeks": "<span color='#99ffdd'><b>W{}</b></span>"
+      },
+      "mode": "month",
+      "mode-mon-col": 3,
+      "on-scroll": 1
+    },
+    "format": "{:%H:%M}",
+    "format-alt": "{:%A, %B %d, %Y}",
+    "interval": 60,
+    "tooltip-format": "<tt><small>{calendar}</small></tt>"
+  },
+  "cpu": {
+    "format": "󰻠",
+    "interval": 2,
+    "on-click": "footclient --app-id=btop-float -e btop",
+    "states": {
+      "critical": 90,
+      "warning": 70
+    },
+    "tooltip": true
+  },
+  "custom/brightness": {
+    "exec": "~/.config/waybar/scripts/get-brightness.sh",
+    "interval": 2,
+    "on-click": "waybar-slider-popup brightness",
+    "on-scroll-down": "brightnessctl set 5%-",
+    "on-scroll-up": "brightnessctl set 5%+",
+    "return-type": "json",
+    "tooltip": true
+  },
+  "custom/caffeine": {
+    "exec": "caffeine waybar",
+    "interval": 5,
+    "on-click": "caffeine toggle",
+    "return-type": "json",
+    "signal": 9,
+    "tooltip": false
+  },
+  "custom/dictate": {
+    "exec": "~/.config/waybar/scripts/dictate-status.sh",
+    "interval": 1,
+    "on-click": "~/bin/dictate toggle",
+    "return-type": "json",
+    "signal": 10,
+    "tooltip": true
+  },
+  "custom/kbd-backlight": {
+    "exec": "~/.config/waybar/scripts/get-kbd-backlight.sh",
+    "interval": 2,
+    "on-click": "~/.config/waybar/scripts/kbd-backlight-toggle.sh",
+    "return-type": "json",
+    "tooltip": true
+  },
+  "custom/separator": {
+    "format": "|",
+    "tooltip": false
+  },
+  "custom/tailscale": {
+    "exec": "~/.config/waybar/scripts/tailscale-status.sh",
+    "interval": 10,
+    "on-click": "trayscale",
+    "return-type": "json",
+    "tooltip": true
+  },
   "exclusive": true,
   "gtk-layer-shell": true,
-
+  "height": 38,
+  "hyprland/window": {
+    "format": "{title}",
+    "max-length": 60,
+    "rewrite": {
+      "(.*) - Google Chrome": "󰊯 $1",
+      "(.*) - Sublime Text": "󰷈 $1",
+      "(.*) - Visual Studio Code": "󰨞 $1",
+      "(.*) — Mozilla Firefox": "󰈹 $1"
+    },
+    "separate-outputs": true
+  },
+  "hyprland/workspaces": {
+    "format": "{name}  <span font='17' rise='-3000'>{windows}</span>",
+    "format-window-separator": "",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "sort-by-number": true,
+    "window-rewrite": {
+      "alacritty": "󰆍",
+      "brave": "󰖟",
+      "chromium": "󰊯",
+      "code": "󰨞",
+      "code-url-handler": "󰨞",
+      "discord": "󰙯",
+      "evince": "󰈙",
+      "evolution": "󰇮",
+      "firefox": "󰈹",
+      "foot": "󰆍",
+      "footclient": "󰆍",
+      "ghostty": "󰆍",
+      "gimp": "󱇣",
+      "google-chrome": "󰊯",
+      "inkscape": "󰕙",
+      "kitty": "󰆍",
+      "libreoffice": "󰏆",
+      "mpv": "󰎁",
+      "nautilus": "󰉋",
+      "obsidian": "󰎚",
+      "org.kde.dolphin": "󰉋",
+      "org.telegram.desktop": "󰭹",
+      "slack": "󰒱",
+      "spotify": "󰓇",
+      "sublime_merge": "󰊢",
+      "sublime_text": "󰷈",
+      "thunar": "󰉋",
+      "title<Picture in picture>": "",
+      "vlc": "󰕼",
+      "wezterm": "󰆍",
+      "zathura": "󰈙"
+    },
+    "window-rewrite-default": "○"
+  },
+  "layer": "top",
+  "memory": {
+    "format": "󰘚",
+    "interval": 2,
+    "on-click": "footclient --app-id=btop-float -e btop",
+    "states": {
+      "critical": 95,
+      "high": 70,
+      "low": 30,
+      "medium": 50,
+      "warning": 85
+    },
+    "tooltip": true,
+    "tooltip-format": "RAM: {used:0.1f}GB / {total:0.1f}GB\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB"
+  },
+  "modules-center": [],
   "modules-left": [
     "hyprland/workspaces",
     "custom/separator",
     "hyprland/window"
   ],
-
-  "modules-center": [],
-
   "modules-right": [
     "tray",
     "custom/caffeine",
@@ -27,217 +180,52 @@
     "battery",
     "clock"
   ],
-
-  "hyprland/workspaces": {
-    "format": "{name} {windows}",
-    "format-window-separator": " ",
-    "window-rewrite-default": "○",
-    "window-rewrite": {
-      "title<Picture in picture>": "",
-      "firefox": "󰈹",
-      "chromium": "󰊯",
-      "google-chrome": "󰊯",
-      "brave": "󰖟",
-      "code": "󰨞",
-      "code-url-handler": "󰨞",
-      "footclient": "󰆍",
-      "foot": "󰆍",
-      "ghostty": "󰆍",
-      "kitty": "󰆍",
-      "alacritty": "󰆍",
-      "wezterm": "󰆍",
-      "org.kde.dolphin": "󰉋",
-      "nautilus": "󰉋",
-      "thunar": "󰉋",
-      "spotify": "󰓇",
-      "discord": "󰙯",
-      "slack": "󰒱",
-      "org.telegram.desktop": "󰭹",
-      "evolution": "󰇮",
-      "sublime_text": "󰷈",
-      "sublime_merge": "󰊢",
-      "mpv": "󰎁",
-      "vlc": "󰕼",
-      "gimp": "󱇣",
-      "inkscape": "󰕙",
-      "libreoffice": "󰏆",
-      "obsidian": "󰎚",
-      "zathura": "󰈙",
-      "evince": "󰈙"
-    },
-    "on-scroll-up": "hyprctl dispatch workspace e+1",
-    "on-scroll-down": "hyprctl dispatch workspace e-1",
-    "sort-by-number": true
-  },
-
-  "hyprland/window": {
-    "format": "{title}",
-    "max-length": 60,
-    "separate-outputs": true,
-    "rewrite": {
-      "(.*) — Mozilla Firefox": "󰈹 $1",
-      "(.*) - Google Chrome": "󰊯 $1",
-      "(.*) - Visual Studio Code": "󰨞 $1",
-      "(.*) - Sublime Text": "󰷈 $1"
-    }
-  },
-
-  "tray": {
-    "icon-size": 18,
-    "spacing": 16,
-    "show-passive-items": true
-  },
-
-  "clock": {
-    "interval": 60,
-    "format": "{:%H:%M}",
-    "format-alt": "{:%A, %B %d, %Y}",
-    "tooltip-format": "<tt><small>{calendar}</small></tt>",
-    "calendar": {
-      "mode": "month",
-      "mode-mon-col": 3,
-      "on-scroll": 1,
-      "format": {
-        "months": "<span color='#ffead3'><b>{}</b></span>",
-        "days": "<span color='#ecc6d9'><b>{}</b></span>",
-        "weeks": "<span color='#99ffdd'><b>W{}</b></span>",
-        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
-        "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
-      }
-    }
-  },
-
-  "cpu": {
-    "interval": 2,
-    "format": "󰻠",
-    "states": {
-      "warning": 70,
-      "critical": 90
-    },
-    "tooltip": true,
-    "on-click": "footclient --app-id=btop-float -e btop"
-  },
-
-  "memory": {
-    "interval": 2,
-    "format": "󰘚",
-    "states": {
-      "low": 30,
-      "medium": 50,
-      "high": 70,
-      "warning": 85,
-      "critical": 95
-    },
-    "tooltip": true,
-    "tooltip-format": "RAM: {used:0.1f}GB / {total:0.1f}GB\nSwap: {swapUsed:0.1f}GB / {swapTotal:0.1f}GB",
-    "on-click": "footclient --app-id=btop-float -e btop"
-  },
-
-  "battery": {
-    "interval": 10,
-    "states": {
-      "s10": 10,
-      "s20": 20,
-      "s30": 30,
-      "s40": 40,
-      "s50": 50,
-      "s60": 60,
-      "s70": 70,
-      "s80": 80,
-      "s90": 90,
-      "s100": 100
-    },
-    "format": "{capacity}",
-    "format-charging": "{capacity}",
-    "format-plugged": "{capacity}",
-    "format-full": "100",
-    "tooltip": true,
-    "tooltip-format": "{capacity}%\n{timeTo}\nPower: {power}W"
-  },
-
   "network": {
-    "interval": 2,
-    "format-wifi": "{icon}",
-    "format-icons": ["󰤯", "󰤟", "󰤢", "󰤥", "󰤨"],
-    "format-ethernet": "󰈀",
-    "format-linked": "󰈀",
     "format-disconnected": "󰤭",
+    "format-ethernet": "󰈀",
+    "format-icons": [
+      "󰤯",
+      "󰤟",
+      "󰤢",
+      "󰤥",
+      "󰤨"
+    ],
+    "format-linked": "󰈀",
+    "format-wifi": "{icon}",
+    "interval": 2,
+    "on-click": "nm-connection-editor",
     "tooltip": true,
     "tooltip-format": "{ifname} via {gwaddr}\n{ipaddr}/{cidr}\nUp: {bandwidthUpBytes} Down: {bandwidthDownBytes}",
-    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\nFreq: {frequency}MHz\nUp: {bandwidthUpBytes} Down: {bandwidthDownBytes}",
-    "on-click": "nm-connection-editor"
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\nFreq: {frequency}MHz\nUp: {bandwidthUpBytes} Down: {bandwidthDownBytes}"
   },
-
+  "position": "top",
   "pulseaudio": {
-    "scroll-step": 5,
     "format": "{icon}",
     "format-bluetooth": "󰂯",
     "format-bluetooth-muted": "󰂲",
+    "format-icons": {
+      "car": "󰄋",
+      "default": "󰕾",
+      "hands-free": "󰋎",
+      "headphone": "󰋋",
+      "headset": "󰋎",
+      "phone": "󰏲",
+      "portable": "󰏲"
+    },
     "format-muted": "󰝟",
     "format-source": "󰍬",
     "format-source-muted": "󰍭",
-    "format-icons": {
-      "headphone": "󰋋",
-      "hands-free": "󰋎",
-      "headset": "󰋎",
-      "phone": "󰏲",
-      "portable": "󰏲",
-      "car": "󰄋",
-      "default": "󰕾"
-    },
-    "tooltip": true,
-    "tooltip-format": "{desc}\nVolume: {volume}%",
     "on-click": "waybar-slider-popup volume",
+    "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "on-click-right": "pavucontrol",
-    "on-click-middle": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-  },
-
-  "custom/separator": {
-    "format": "|",
-    "tooltip": false
-  },
-
-  "custom/tailscale": {
-    "exec": "~/.config/waybar/scripts/tailscale-status.sh",
-    "return-type": "json",
-    "interval": 10,
+    "scroll-step": 5,
     "tooltip": true,
-    "on-click": "trayscale"
+    "tooltip-format": "{desc}\nVolume: {volume}%"
   },
-
-  "custom/brightness": {
-    "exec": "~/.config/waybar/scripts/get-brightness.sh",
-    "return-type": "json",
-    "interval": 2,
-    "tooltip": true,
-    "on-click": "waybar-slider-popup brightness",
-    "on-scroll-up": "brightnessctl set 5%+",
-    "on-scroll-down": "brightnessctl set 5%-"
-  },
-
-  "custom/kbd-backlight": {
-    "exec": "~/.config/waybar/scripts/get-kbd-backlight.sh",
-    "return-type": "json",
-    "interval": 2,
-    "tooltip": true,
-    "on-click": "~/.config/waybar/scripts/kbd-backlight-toggle.sh"
-  },
-
-  "custom/dictate": {
-    "exec": "~/.config/waybar/scripts/dictate-status.sh",
-    "return-type": "json",
-    "interval": 1,
-    "signal": 10,
-    "tooltip": true,
-    "on-click": "~/bin/dictate toggle"
-  },
-
-  "custom/caffeine": {
-    "exec": "caffeine waybar",
-    "return-type": "json",
-    "interval": 5,
-    "signal": 9,
-    "tooltip": false,
-    "on-click": "caffeine toggle"
+  "spacing": 0,
+  "tray": {
+    "icon-size": 18,
+    "show-passive-items": true,
+    "spacing": 16
   }
 }

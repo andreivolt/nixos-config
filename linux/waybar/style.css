@@ -3,8 +3,8 @@
 	border: none;
 	border-radius: 0;
 	font-family: "Roboto", "DejaVu Sans", "Liberation Sans", sans-serif;
-	font-size: 14px;
-	font-weight: 500;
+	font-size: 15px;
+	font-weight: 400;
 	min-height: 0;
 }
 
@@ -36,8 +36,7 @@ tooltip label {
 #window {
 	color: #7a756d;
 	padding: 0 16px;
-	font-weight: 400;
-	font-size: 13px;
+	font-size: 16px;
 }
 
 window#waybar.empty #window {
@@ -50,14 +49,15 @@ window#waybar.empty #window {
 }
 
 #workspaces button {
-	padding: 2px 14px 0 8px;
-	margin: 10px 4px;
+	padding: 0 6px 0 8px;
+	margin: 4px 2px;
 	background: transparent;
 	color: #7a756d;
 	border-radius: 0;
 	border-bottom: 2px solid transparent;
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	font-size: 15px;
+	font-size: 16px;
+	font-weight: 900;
 }
 
 #workspaces button:hover {
@@ -93,14 +93,7 @@ window#waybar.empty #window {
 	}
 }
 
-/* Clock */
-#clock {
-	padding: 0 12px;
-	font-size: 16px;
-	font-weight: 700;
-	color: #b0aca4;
-	margin: 4px 0;
-}
+/* Clock - main styling moved below with battery */
 
 /* Default color for all right-side modules */
 #cpu,
@@ -126,38 +119,28 @@ window#waybar.empty #window {
 #custom-kbd-backlight {
 	min-width: 28px;
 	padding: 0 4px;
-	margin: 4px 0;
+	margin: 0;
 	border-radius: 0;
 	font-size: 18px;
 	font-family: "Pragmasevka Nerd Font Light", monospace;
 }
 
 #battery {
-	min-width: 22px;
-	min-height: 22px;
-	padding: 0;
-	margin: 7px 4px;
-	border-radius: 11px;
-	border: 1px solid rgba(122, 117, 109, 0.5);
-	background: transparent;
-	font-size: 11px;
+	min-width: 32px;
+	padding: 0 4px;
+	margin: 0;
 	font-weight: 700;
-	font-family: "Pragmasevka Nerd Font", monospace;
-}
-
-#battery * {
-	font-family: "Pragmasevka Nerd Font", monospace;
+	font-family: "Pragmasevka Nerd Font Light", monospace;
+	color: #b0aca4;
 }
 
 #clock {
-	min-width: 64px;
-	padding: 0 6px 0 4px;
-	margin: 4px 0;
+	min-width: 52px;
+	padding: 0 4px;
+	margin: 0;
+	font-weight: 700;
 	font-family: "Pragmasevka Nerd Font Light", monospace;
-}
-
-#clock * {
-	font-family: "Pragmasevka Nerd Font Light", monospace;
+	color: #b0aca4;
 }
 
 /* CPU states with colors */
@@ -359,7 +342,7 @@ window#waybar.empty #window {
 /* Tray */
 #tray {
 	padding: 0 8px 0 15px;
-	margin: 4px 0;
+	margin: 0;
 	opacity: 0.55;
 }
 
@@ -393,7 +376,7 @@ window#waybar.empty #window {
 #custom-caffeine {
 	min-width: 28px;
 	padding: 0 4px;
-	margin: 4px 0;
+	margin: 0;
 	color: #7a756d;
 	font-size: 18px;
 	font-family: "Pragmasevka Nerd Font Light", monospace;
