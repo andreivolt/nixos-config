@@ -32,7 +32,6 @@ with pkgs; [
   bun
   cached-nix-shell
   carapace
-  cargo
   clojure
   cloudflared
   cmake
@@ -144,8 +143,7 @@ with pkgs; [
   rubocop
   ruby
   rust-script
-  rustc
-  rustfmt
+  rustup
   scc
   scriptisto
   shell-gpt
