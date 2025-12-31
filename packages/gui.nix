@@ -13,7 +13,6 @@ with pkgs;
 ]
 ++ lib.optionals isLinux [
   emacs-pgtk
-  gcolor3
   glslviewer
   lan-mouse
   brightnessctl
