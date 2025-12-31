@@ -18,6 +18,7 @@
     ../../linux/lan-mouse.nix
     ../../linux/mpv.nix
     ../../linux/rclone.nix
+    # ../../linux/rclone-sync.nix
     ../../linux/zram.nix
     ../../linux/monolith.nix
     ./battery.nix

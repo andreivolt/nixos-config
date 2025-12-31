@@ -9,7 +9,7 @@ with pkgs; [
   nixd
   pyright
   ruby-lsp
-  rust-analyzer
+  # rust-analyzer  # provided by rustup
   typescript-language-server
 
   # Formatters
