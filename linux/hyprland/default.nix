@@ -22,6 +22,7 @@ in {
   programs.hyprlock.enable = true;
 
   environment.systemPackages = with pkgs; [
+    hyprpicker
     hyprshot
     hyprsunsetPkg
   ] ++ (with hyprlandPkgs; [
