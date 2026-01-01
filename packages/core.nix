@@ -30,6 +30,7 @@ with pkgs; [
   btop
   bun
   cached-nix-shell
+  cargo
   clojure
   cloudflared
   cmake
@@ -137,7 +138,8 @@ with pkgs; [
   rubocop
   ruby
   rust-script
-  rustup
+  rustc
+  rustfmt
   scc
   shell-gpt
   socat
