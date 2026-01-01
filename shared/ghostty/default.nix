@@ -73,7 +73,7 @@ in {
           gtk-single-instance = true;
 
           keybind = [
-            "shift+enter=text:\n"
+            "shift+enter=text:\\x0a"
           ];
         };
       };
