@@ -21,6 +21,7 @@
     ../../shared/delta.nix
     ../../shared/gh.nix
     ../../shared/git.nix
+    ../../shared/ghostty
     ../../shared/gitlab.nix
     ../../shared/gnupg.nix
     ../../shared/hushlogin.nix
