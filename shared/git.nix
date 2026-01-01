@@ -14,9 +14,11 @@
         ignores = [
           "**/.claude/settings.local.json"
           ".claude/settings.local.json"
+          ".clj-kondo/"
           ".DS_Store"
           ".env"
           ".envrc"
+          ".lsp/"
           ".nrepl-history"
           ".rebel_readline_history"
           ".yarn"
