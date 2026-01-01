@@ -81,4 +81,9 @@
   services.logind.settings.Login.HandlePowerKey = "suspend";
 
   networking.firewall.enable = true;
+
+  boot.kernel.sysctl = {
+    "vm.vfs_cache_pressure" = 50;  # keep more dentries/inodes cached
+    "kernel.nmi_watchdog" = 0;     # disable for power savings
+  };
 }
