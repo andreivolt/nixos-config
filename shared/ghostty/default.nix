@@ -1,9 +1,12 @@
+{pkgs, lib, ...}:
 let
   colors = import ../colors.nix;
   aurora = colors.aurora;
 in {
   home-manager.sharedModules = [
     {
+      programs.ghostty.package =
+        if pkgs.stdenv.isDarwin then null else pkgs.ghostty;
       xdg.configFile = {
         "ghostty/shaders/cursor_blaze.glsl".source = ./cursor_blaze.glsl;
         "ghostty/shaders/cursor_blaze_no_trail.glsl".source = ./cursor_blaze_no_trail.glsl;
