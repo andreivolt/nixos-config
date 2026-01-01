@@ -14,7 +14,11 @@
       };
       Service = {
         Type = "notify";
-        ExecStartPre = "${pkgs.coreutils}/bin/mkdir -p /home/andrei/drive";
+        # Clean up stale mount point before starting
+        ExecStartPre = [
+          "-${pkgs.fuse}/bin/fusermount -uz /home/andrei/drive"
+          "${pkgs.coreutils}/bin/mkdir -p /home/andrei/drive"
+        ];
         ExecStart = ''
           ${pkgs.rclone}/bin/rclone mount gdrive: /home/andrei/drive \
             --vfs-cache-mode full \
@@ -30,9 +34,11 @@
             --umask 002 \
             --allow-non-empty
         '';
-        ExecStop = "${pkgs.fuse}/bin/fusermount -u /home/andrei/drive";
-        Restart = "on-failure";
-        RestartSec = 10;
+        ExecStop = "${pkgs.fuse}/bin/fusermount -uz /home/andrei/drive";
+        # Cleanup even if process was killed
+        ExecStopPost = "-${pkgs.fuse}/bin/fusermount -uz /home/andrei/drive";
+        Restart = "always";
+        RestartSec = 5;
       };
       Install.WantedBy = [ "default.target" ];
     };
