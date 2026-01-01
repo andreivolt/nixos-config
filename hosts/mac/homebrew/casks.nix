@@ -12,7 +12,6 @@
   "insync"
   "keepingyouawake"
   "keycastr"
-  "libreoffice"
   "maccy"
   "middleclick"
   "mimestream"
