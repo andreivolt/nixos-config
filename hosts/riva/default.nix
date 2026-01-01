@@ -71,6 +71,11 @@
     extraArgs = ["--prefer" "^(nix-daemon|cc1plus|clang|ld)$"];
   };
 
+  # NVMe scheduler - use none, hardware handles queueing
+  services.udev.extraRules = ''
+    ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="none"
+  '';
+
   home-manager.users.andrei = import ../../linux/home.nix {
     inherit config inputs;
   };
