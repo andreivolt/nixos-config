@@ -29,7 +29,6 @@ in {
     yt-dlp = "yt-dlp --cookies-from-browser ${browser}";
   } // lib.optionalAttrs pkgs.stdenv.isLinux {
     copy = "wl-copy";
-    open = "xdg-open";
     paste = "wl-paste";
   } // lib.optionalAttrs pkgs.stdenv.isDarwin {
     copy = "pbcopy";

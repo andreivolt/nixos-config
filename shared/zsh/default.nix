@@ -81,6 +81,10 @@ in {
           }
           ''}
 
+          ${lib.optionalString pkgs.stdenv.isLinux ''
+          open() { setsid -f xdg-open "$@" >/dev/null 2>&1; }
+          ''}
+
           source ${pkgs.zsh-defer}/share/zsh-defer/zsh-defer.plugin.zsh
 
           # platform-specific config
