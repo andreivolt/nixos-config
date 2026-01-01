@@ -76,7 +76,6 @@ with pkgs; with lib; [
   google-cloud-sdk
   gum
   htmlq
-  htop-vim
   hyperfine
   iftop
   iperf3
