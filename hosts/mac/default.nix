@@ -24,6 +24,7 @@
     ../../shared/ghostty
     ../../shared/glab.nix
     ../../shared/gnupg.nix
+    ../../shared/htop.nix
     ../../shared/hushlogin.nix
     ../../shared/mpv
     ../../shared/npm.nix
