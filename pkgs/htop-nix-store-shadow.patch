@@ -1,0 +1,16 @@
+diff --git a/Process.c b/Process.c
+--- a/Process.c
++++ b/Process.c
+@@ -293,6 +293,12 @@ void Process_makeCommandStr(Process* this, const Settings* settings) {
+                   }                                                                           \
+                }                                                                              \
+                break;                                                                         \
++            case 'n':                                                                         \
++               CHECK_AND_MARK(str_, "/nix/store/");                                           \
++               break;                                                                         \
++            case 'r':                                                                         \
++               CHECK_AND_MARK(str_, "/run/current-system/");                                  \
++               break;                                                                         \
+          }                                                                                    \
+       } while (0)
+
