@@ -60,6 +60,9 @@
   # Log crashes to journal but don't store dumps - saves disk space
   systemd.coredump.extraConfig = "Storage=none";
 
+  # don't keep .drv files, rarely needed
+  nix.settings.keep-derivations = false;
+
   # Prevent freezes during heavy builds - kill processes before swap thrashing
   services.earlyoom = {
     enable = true;
