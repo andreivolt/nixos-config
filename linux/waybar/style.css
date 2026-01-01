@@ -209,66 +209,52 @@ window#waybar.empty #window {
 	animation: blink-fast 0.5s infinite;
 }
 
-/* Battery: circle with charge-colored border */
-#battery {
-	color: rgba(200, 195, 185, 0.9);
-}
-
+/* Battery: text color by charge level */
 /* Critical - red */
 #battery.s10 {
-	border-color: #b05050;
+	color: #b05050;
 }
 
 /* Warning - orange/red */
 #battery.s20 {
-	border-color: #b86050;
+	color: #b86050;
 }
 
 /* Low - orange */
 #battery.s30 {
-	border-color: #c08050;
+	color: #c08050;
 }
 
 /* Below half - amber */
 #battery.s40 {
-	border-color: #b89050;
+	color: #b89050;
 }
 
 /* Half - yellow */
 #battery.s50 {
-	border-color: #a09050;
+	color: #a09050;
 }
 
 /* Above half - yellow-green */
 #battery.s60 {
-	border-color: #8a9a60;
+	color: #8a9a60;
 }
 
 /* Good - green */
 #battery.s70 {
-	border-color: #7a9a6a;
+	color: #7a9a6a;
 }
 
 #battery.s80 {
-	border-color: #6a9a6a;
+	color: #6a9a6a;
 }
 
 #battery.s90 {
-	border-color: #609a65;
+	color: #609a65;
 }
 
 #battery.s100 {
-	border-color: #5a9a5a;
-}
-
-/* Plugged/charging - fill the circle */
-#battery.charging {
-	background: rgba(122, 154, 170, 0.25);
-	border-color: #7a9aaa;
-}
-
-#battery.plugged {
-	background: rgba(90, 154, 90, 0.2);
+	color: #5a9a5a;
 }
 
 @keyframes blink-fast {
