@@ -2,7 +2,7 @@
   "battery": {
     "format": "{capacity}",
     "format-charging": "󱐋{capacity}",
-    "format-full": "100",
+    "format-full": "󱐋",
     "format-plugged": "{capacity}",
     "interval": 10,
     "states": {
