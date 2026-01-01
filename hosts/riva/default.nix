@@ -57,6 +57,9 @@
   # Lid switch behavior
   services.logind.settings.Login.HandleLidSwitchExternalPower = "lock";
 
+  # Log crashes to journal but don't store dumps - saves disk space
+  systemd.coredump.extraConfig = "Storage=none";
+
   # Prevent freezes during heavy builds - kill processes before swap thrashing
   services.earlyoom = {
     enable = true;
