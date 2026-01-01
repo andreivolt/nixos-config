@@ -1,0 +1,13 @@
+diff --git a/main.c b/main.c
+index 1234567..abcdefg 100644
+--- a/main.c
++++ b/main.c
+@@ -82,7 +82,7 @@ void notify(char *msg, NotifyUrgency urgency)
+     }
+ }
+
+-void signal_handler()
++void signal_handler(int sig)
+ {
+     if (notification != NULL) {
+         notify_notification_close(notification, NULL);
