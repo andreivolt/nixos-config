@@ -1,10 +1,9 @@
 # Core CLI packages - works on all platforms including phone
 pkgs:
-with pkgs; [
+with pkgs; with lib; [
   age
   # andrei.chrome-history-export  # uv2nix symlink issue
   andrei.claude-api
-  andrei.claude-code
   andrei.darkmode
   andrei.file-rename
   andrei.firefox-addon-delete
@@ -177,4 +176,4 @@ with pkgs; [
   yazi
   yt-dlp
   zprint
-]
+] ++ (if stdenv.isLinux then [ andrei.claude-code ] else [])
