@@ -68,6 +68,7 @@ with pkgs;
 ]
 ++ lib.optionals isDarwin [
   emacs
+  google-chrome
   monitorcontrol
   plistwatch
 ]
