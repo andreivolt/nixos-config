@@ -150,6 +150,14 @@
             ];
           });
         })
+        # Fix batsignal signal handler signature for newer gcc
+        (final: prev: {
+          batsignal = prev.batsignal.overrideAttrs (oldAttrs: {
+            patches = (oldAttrs.patches or []) ++ [
+              ./pkgs/batsignal-signal-handler.patch
+            ];
+          });
+        })
       ];
     };
   in {
