@@ -57,6 +57,8 @@ in {
 
         extraConfig = ''
           modify_font cell_width 88%
+          modify_font underline_position 3
+          modify_font underline_thickness 150%
 
           # kitty-scrollback.nvim (uses separate nvim-scrollback profile)
           action_alias kitty_scrollback_nvim kitten ${kittyScrollbackNvim}/python/kitty_scrollback_nvim.py --env NVIM_APPNAME=nvim-scrollback
@@ -110,7 +112,8 @@ in {
           foreground = aurora.foreground;
           selection_background = aurora.selection.background;
           selection_foreground = aurora.selection.foreground;
-          url_color = aurora.normal.blue;
+          url_color = aurora.normal.cyan;
+          url_style = "straight";
           cursor = aurora.cursor;
           cursor_text_color = aurora.cursorText;
           active_border_color = accent.primary;
