@@ -17,6 +17,7 @@
     ../shared/dnsmasq.nix
     ../shared/git.nix
     ../shared/gnupg.nix
+    ../shared/htop.nix
     ../shared/hushlogin.nix
     ../shared/aria2.nix
     ../shared/gh.nix
