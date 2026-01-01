@@ -57,7 +57,7 @@ with pkgs; with lib; [
   files-to-prompt
   firefox_decrypt
   flyctl
-  fzf
+  (if stdenv.isDarwin then unstable.fzf else fzf)  # darwin nixpkgs has older fzf without --gutter
   gcc
   gdrive3
   geoipWithDatabase
