@@ -4,6 +4,11 @@ let
   hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
   hyprlandPlugins = inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};
   hyprsunsetPkg = inputs.hyprsunset.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
+  # Patched hyprbars with horizontal gradient support and per-window gradient colors
+  hyprbarsPatched = hyprlandPlugins.hyprbars.overrideAttrs (oldAttrs: {
+    patches = (oldAttrs.patches or []) ++ [ ./hyprbars-gradient.patch ];
+  });
 in {
   imports = [
     ./vars.nix
@@ -49,7 +54,7 @@ in {
       portalPackage = null;
       systemd.enable = false;  # UWSM handles this
       plugins = [
-        hyprlandPlugins.hyprbars
+        hyprbarsPatched
         # hyprlandPlugins.hyprexpo  # TODO: causing version mismatch issues
       ];
       extraConfig = ''
