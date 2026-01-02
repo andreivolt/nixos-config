@@ -17,11 +17,11 @@
     ../../linux/adb.nix
     ./fkey-remap.nix
     ./fingerprint.nix
-    ../../linux/ipv6-disable.nix
     ../../linux/lan-mouse.nix
     ../../linux/libvirt.nix
     ../../linux/nixos-rebuild-summary.nix
     ./roon-server.nix
+    ./roon-idle-inhibit.nix
     ./dac-toggle.nix
     ./intel-vaapi.nix
     ../../linux/touchscreen.nix
