@@ -21,6 +21,7 @@
     ../../linux/libvirt.nix
     ../../linux/nixos-rebuild-summary.nix
     ./roon-server.nix
+    ./roon-idle-inhibit.nix
     ./dac-toggle.nix
     ./intel-vaapi.nix
     ../../linux/touchscreen.nix
