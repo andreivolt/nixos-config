@@ -86,9 +86,9 @@ writeShellScriptBin "caffeine" ''
       ;;
     waybar)
       if is_active; then
-        echo '{"text": "󰛊", "tooltip": "Caffeine: ON", "class": "active"}'
+        echo '{"text": "󰅶", "tooltip": "Caffeine: ON", "class": "active"}'
       else
-        echo '{"text": "󰛊", "tooltip": "Caffeine: OFF", "class": "inactive"}'
+        echo '{"text": "󰅶", "tooltip": "Caffeine: OFF", "class": "inactive"}'
       fi
       ;;
     *)
