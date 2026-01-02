@@ -9,7 +9,10 @@
     home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     # mac-app-util.url = "github:hraban/mac-app-util";
-    mac-app-util.url = "github:hraban/mac-app-util/link-contents";
+    mac-app-util = {
+      url = "github:hraban/mac-app-util/link-contents";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     hammerspoon-spoons = {
       url = "github:Hammerspoon/Spoons/3f6bb38a4b1d98ec617e1110450cbc53b15513ec";
       flake = false;
@@ -35,13 +38,15 @@
     };
     hyprsunset = {
       url = "github:hyprwm/hyprsunset";
+      inputs.nixpkgs.follows = "hyprland/nixpkgs";
     };
     nixos-apple-silicon = {
       url = "github:nix-community/nixos-apple-silicon";
-      # Don't follow our nixpkgs - use their tested version
+      # Don't follow our nixpkgs - uses specific kernel/mesa versions
     };
     lan-mouse = {
       url = "github:feschber/lan-mouse";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nix-on-droid = {
       url = "github:nix-community/nix-on-droid/release-24.05";
@@ -73,6 +78,7 @@
     };
     monolith = {
       url = "path:/home/andrei/dev/monolith";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
