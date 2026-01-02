@@ -17,7 +17,6 @@
     ../../linux/adb.nix
     ./fkey-remap.nix
     ./fingerprint.nix
-    ../../linux/ipv6-disable.nix
     ../../linux/lan-mouse.nix
     ../../linux/libvirt.nix
     ../../linux/nixos-rebuild-summary.nix
