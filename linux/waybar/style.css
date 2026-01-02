@@ -3,7 +3,7 @@
 	border: none;
 	border-radius: 0;
 	font-family: "Roboto", "DejaVu Sans", "Liberation Sans", sans-serif;
-	font-size: 15px;
+	font-size: 14px;
 	font-weight: 400;
 	min-height: 0;
 }
@@ -21,7 +21,7 @@ window#waybar.hidden {
 /* Tooltips */
 tooltip {
 	background: rgba(26, 24, 22, 0.95);
-	border: 1px solid rgba(184, 85, 85, 0.3);
+	border: none;
 	border-radius: 2px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 	padding: 8px 12px;
@@ -29,14 +29,14 @@ tooltip {
 
 tooltip label {
 	color: #d4d0ca;
-	font-size: 12px;
+	font-size: 13px;
 }
 
 /* Window Title */
 #window {
 	color: #7a756d;
 	padding: 0 16px;
-	font-size: 16px;
+	font-size: 18px;
 }
 
 window#waybar.empty #window {
@@ -49,17 +49,20 @@ window#waybar.empty #window {
 }
 
 #workspaces button {
-	padding: 0;
-	margin: 8px 8px 4px 8px;
+	padding: 0 14px 0 8px;
+	margin: 4px 0;
 	background: transparent;
-	color: #7a756d;
-	border-radius: 0;
-	border: none;
-	border-bottom: 1px solid transparent;
-	border-bottom-width: 1px;
+	color: #5a5650;
+	border-radius: 2px;
+	border: 1px solid transparent;
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	font-family: "Pragmasevka Nerd Font", monospace;
 	font-size: 14px;
+}
+
+#workspaces button label {
+	font-family: "RobotoMono Nerd Font", monospace;
+	font-size: 14px;
+	font-weight: bold;
 }
 
 #workspaces button:hover {
@@ -68,9 +71,9 @@ window#waybar.empty #window {
 }
 
 #workspaces button.active {
-	background: transparent;
-	color: #7aa8d0;
-	border-bottom-color: #7aa8d0;
+	background: rgba(122, 117, 109, 0.2);
+	color: #d4d0ca;
+	border: 1px solid rgba(122, 117, 109, 0.4);
 }
 
 #workspaces button.urgent {
@@ -112,7 +115,14 @@ window#waybar.empty #window {
 }
 
 #cpu,
-#memory,
+#memory {
+	min-width: 32px;
+	padding: 0 4px;
+	margin: 0;
+	font-size: 14px;
+	color: #7a756d;
+}
+
 #disk,
 #temperature,
 #network,
@@ -123,49 +133,47 @@ window#waybar.empty #window {
 	padding: 0 4px;
 	margin: 0;
 	border-radius: 0;
-	font-size: 18px;
-	font-family: "Pragmasevka Nerd Font Light", monospace;
+	font-family: "RobotoMono Nerd Font", monospace;
 }
 
 #battery {
 	min-width: 32px;
 	padding: 0 4px;
 	margin: 0;
+	font-size: 14px;
 	font-weight: 700;
-	font-family: "Pragmasevka Nerd Font Light", monospace;
+	font-family: "RobotoMono Nerd Font", monospace;
 	color: #b0aca4;
 }
 
 #clock {
 	min-width: 52px;
-	padding: 0 4px;
+	padding: 0 8px 0 0;
 	margin: 0;
+	font-size: 14px;
 	font-weight: 700;
-	font-family: "Pragmasevka Nerd Font Light", monospace;
-	color: #b0aca4;
-}
-
-/* CPU states with colors */
-#cpu {
+	font-family: "RobotoMono Nerd Font", monospace;
 	color: #7a756d;
 }
 
-#cpu.warning {
+/* CPU states - text color coded */
+#cpu.low {
+	color: rgba(122, 117, 109, 0.6);
+}
+
+#cpu.medium {
 	color: #b8956e;
-	background: rgba(184, 149, 110, 0.1);
+}
+
+#cpu.high {
+	color: #c87030;
 }
 
 #cpu.critical {
-	color: #a05050;
-	background: rgba(160, 80, 80, 0.15);
-	animation: blink-slow 2s infinite;
+	color: #a03030;
 }
 
-/* Memory states: dim -> warming colors -> red */
-#memory {
-	color: rgba(122, 117, 109, 0.4);
-}
-
+/* Memory states - text color coded */
 #memory.low {
 	color: rgba(122, 117, 109, 0.6);
 }
@@ -184,7 +192,6 @@ window#waybar.empty #window {
 
 #memory.critical {
 	color: #a03030;
-	animation: blink-slow 2s infinite;
 }
 
 #disk {
@@ -354,9 +361,10 @@ window#waybar.empty #window {
 
 /* Custom Modules */
 #custom-separator {
-	color: #4a4540;
-	font-size: 16px;
-	padding: 0;
+	color: #3a3530;
+	font-size: 24px;
+	padding: 0 6px;
+	margin: 0;
 }
 
 #custom-tailscale,
@@ -366,8 +374,8 @@ window#waybar.empty #window {
 	padding: 0 4px;
 	margin: 0;
 	color: #7a756d;
-	font-size: 18px;
-	font-family: "Pragmasevka Nerd Font Light", monospace;
+	font-size: 14px;
+	font-family: "RobotoMono Nerd Font", monospace;
 }
 
 #custom-dictate.recording {
@@ -405,7 +413,7 @@ window#waybar.empty #window {
 	padding: 0 12px;
 	margin: 4px 4px 4px 2px;
 	color: #7a756d;
-	font-size: 16px;
+	font-size: 14px;
 	transition: all 0.3s ease;
 }
 
