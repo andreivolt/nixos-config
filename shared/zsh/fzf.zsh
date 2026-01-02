@@ -1,4 +1,4 @@
-export FZF_DEFAULT_OPTS="--ansi --bind='ctrl-y:execute-silent(pbcopy <<< {})+abort' --cycle --highlight-line --info=inline --preview-window=wrap,border --wrap --tiebreak=index --no-scrollbar --no-separator --border=none --gutter=' ' --color=16,fg:white,bg:-1,hl:bright-yellow,fg+:bright-white,bg+:bright-black,hl+:bright-yellow,info:bright-cyan,prompt:bright-green,pointer:bright-cyan,marker:bright-magenta,spinner:bright-yellow,header:bright-blue,border:bright-black"
+export FZF_DEFAULT_OPTS="--ansi --bind='ctrl-y:execute-silent(pbcopy <<< {})+abort' --cycle --highlight-line --info=inline --preview-window=wrap,border --wrap --tiebreak=index --no-scrollbar --no-separator --border=none --gutter=' ' --color=16,fg:white,bg:-1,hl:bright-yellow,fg+:bright-white,bg+:#232330,hl+:bright-yellow,info:bright-cyan,prompt:bright-green,pointer:bright-cyan,marker:bright-magenta,spinner:bright-yellow,header:bright-blue,border:bright-black"
 
 export FZF_DEFAULT_COMMAND="rg -uu --files -H"
 
