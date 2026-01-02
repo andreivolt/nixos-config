@@ -1,35 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let
-  # Waybar popups as a proper derivation with GTK wrapping
-  waybarPopups = pkgs.stdenv.mkDerivation {
-    pname = "waybar-popups";
-    version = "1.0";
-    src = ./.;
-    nativeBuildInputs = [ pkgs.wrapGAppsHook3 pkgs.gobject-introspection ];
-    buildInputs = [
-      pkgs.gtk3
-      pkgs.gtk-layer-shell
-      (pkgs.python3.withPackages (ps: with ps; [ pygobject3 pycairo ]))
-    ];
-    installPhase = ''
-      mkdir -p $out/bin
-      cp slider-popup.py $out/bin/waybar-slider-popup
-      chmod +x $out/bin/waybar-slider-popup
-    '';
-    postFixup = ''
-      wrapProgram $out/bin/waybar-slider-popup \
-        --prefix PATH : ${pkgs.lib.makeBinPath [ (pkgs.python3.withPackages (ps: with ps; [ pygobject3 pycairo ])) ]}
-    '';
-  };
-in
 {
-  # Required packages
-  environment.systemPackages = with pkgs; [
-    brightnessctl
-    waybarPopups
-  ];
-
   # Waybar configuration via home-manager
   home-manager.users.andrei = { config, pkgs, ... }: {
     programs.waybar = {
@@ -63,26 +34,6 @@ in
         onChange = "${pkgs.systemd}/bin/systemctl --user restart waybar || true";
       };
 
-      "waybar/scripts/get-brightness.sh" = {
-        source = ./scripts/get-brightness.sh;
-        executable = true;
-      };
-      "waybar/scripts/get-kbd-backlight.sh" = {
-        source = ./scripts/get-kbd-backlight.sh;
-        executable = true;
-      };
-      "waybar/scripts/tailscale-status.sh" = {
-        source = ./scripts/tailscale-status.sh;
-        executable = true;
-      };
-      "waybar/scripts/dictate-status.sh" = {
-        source = ./scripts/dictate-status.sh;
-        executable = true;
-      };
-      "waybar/scripts/kbd-backlight-toggle.sh" = {
-        source = ./scripts/kbd-backlight-toggle.sh;
-        executable = true;
-      };
     };
   };
 }
