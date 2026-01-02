@@ -15,6 +15,7 @@
 
       if [ "$PROFILE" = "0" ]; then
         ${pkgs.wireplumber}/bin/wpctl set-profile "$IFI_ID" 1
+        ${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_SINK@ 0
         ${pkgs.libnotify}/bin/notify-send -i audio-card "iFi DAC" "PipeWire mode"
       else
         ${pkgs.wireplumber}/bin/wpctl set-profile "$IFI_ID" 0
