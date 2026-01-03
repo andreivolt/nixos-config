@@ -58,8 +58,8 @@ in {
           READNULLCMD=$PAGER
 
           # terminal title
-          precmd() { print -Pn "\e]0;%~\a" }
-          preexec() { print -Pn "\e]0;$1\a" }
+          precmd() { print -Pn "\e]0;zsh (%~)\a" }
+          preexec() { print -Pn "\e]0;$1 (%~)\a" }
 
           # cat function: use bat for interactive, real cat for pipes
           cat() {
