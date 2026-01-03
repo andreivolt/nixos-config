@@ -17,7 +17,6 @@
     ../linux/brother-printer.nix
     ../linux/brother-scanner.nix
     ../linux/networkmanager.nix
-    ../linux/v4l2loopback.nix
 
     # Services
     ../linux/tor.nix
