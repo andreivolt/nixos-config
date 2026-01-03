@@ -23,6 +23,7 @@
     ../../linux/monolith
     ./battery.nix
     ./distributed-builds.nix
+    ./audio.nix
   ];
 
   networking.hostName = "riva";
@@ -32,13 +33,6 @@
   hardware.asahi.setupAsahiSound = true;
   hardware.asahi.peripheralFirmwareDirectory = ./firmware;
   hardware.asahi.extractPeripheralFirmware = true;
-
-  # Set internal mic as default audio source (not headset jack)
-  services.pipewire.wireplumber.extraConfig."50-asahi-mic-default" = {
-    "wireplumber.settings" = {
-      "default.audio.source" = "effect_output.j413-mic";
-    };
-  };
 
   # Fix firmware symlink for touchpad (tpmtfw) - kernel looks for apple/ but firmware is in vendor/vendorfw/apple/
   system.activationScripts.appleFirmwareSymlink = lib.stringAfter ["etc"] ''
