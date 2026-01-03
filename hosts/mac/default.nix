@@ -20,7 +20,7 @@
     ../../shared/fonts.nix
     ../../shared/delta.nix
     ../../shared/gh.nix
-    ../../shared/git.nix
+    ../../shared/git
     ../../shared/ghostty
     ../../shared/gitlab.nix
     ../../shared/gnupg.nix
