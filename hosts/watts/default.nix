@@ -31,6 +31,7 @@
     ../../linux/glsl-screensaver.nix
     ./ddc.nix
     ./v4l2loopback.nix
+    ./distributed-builds.nix
   ];
 
   # GLSL screensaver - plasma shader, 10min idle, main monitor only

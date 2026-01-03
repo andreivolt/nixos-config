@@ -22,6 +22,7 @@
     ../../linux/zram.nix
     ../../linux/monolith
     ./battery.nix
+    ./distributed-builds.nix
   ];
 
   networking.hostName = "riva";
