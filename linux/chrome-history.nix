@@ -169,6 +169,15 @@ let
             entries = load_existing_entries()
             initial_count = len(entries)
 
+            # Safety check: if file exists and has content but we read nothing, abort
+            # This catches FUSE mount returning empty content despite stat() succeeding
+            if OUTPUT_FILE.exists():
+                file_size = OUTPUT_FILE.stat().st_size
+                if file_size > 0 and initial_count == 0:
+                    print(f"SAFETY ABORT: File is {file_size} bytes but loaded 0 entries")
+                    print("FUSE mount may be returning invalid content. Refusing to overwrite.")
+                    sys.exit(1)
+
             # Merge new entries (only adds if key doesn't exist)
             for key, line in fetch_new_entries(db_path):
                 if key not in entries:
