@@ -1,0 +1,135 @@
+diff -ruN '--exclude=.git' a/barDeco.cpp b/barDeco.cpp
+--- a/barDeco.cpp	2026-01-03 18:21:25.144636407 +0100
++++ b/barDeco.cpp	2026-01-03 18:22:33.946088090 +0100
+@@ -40,6 +40,8 @@
+ 
+     m_pTextTex    = makeShared<CTexture>();
+     m_pButtonsTex = makeShared<CTexture>();
++    m_pBarBgTex   = makeShared<CTexture>();
++    m_bBarBgDirty = true;
+ 
+     g_pAnimationManager->createAnimation(CHyprColor{**PCOLOR}, m_cRealBarColor, g_pConfigManager->getAnimationPropertyConfig("border"), pWindow, AVARDAMAGE_NONE);
+     m_cRealBarColor->setUpdateCallback([&](auto) { damageEntire(); });
+@@ -565,6 +567,32 @@
+     }
+ }
+ 
++void CHyprBar::renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& colorTop, const CHyprColor& colorBottom) {
++    const auto CAIROSURFACE = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, bufferSize.x, bufferSize.y);
++    const auto CAIRO = cairo_create(CAIROSURFACE);
++    cairo_save(CAIRO); cairo_set_operator(CAIRO, CAIRO_OPERATOR_CLEAR); cairo_paint(CAIRO); cairo_restore(CAIRO);
++    cairo_pattern_t* gradient = cairo_pattern_create_linear(0, 0, bufferSize.x, 0);
++    cairo_pattern_add_color_stop_rgba(gradient, 0.0, colorTop.b, colorTop.g, colorTop.r, colorTop.a);
++    cairo_pattern_add_color_stop_rgba(gradient, 1.0, colorBottom.b, colorBottom.g, colorBottom.r, colorBottom.a);
++    cairo_set_source(CAIRO, gradient); cairo_rectangle(CAIRO, 0, 0, bufferSize.x, bufferSize.y); cairo_fill(CAIRO);
++    cairo_pattern_destroy(gradient); cairo_surface_flush(CAIROSURFACE);
++    const auto DATA = cairo_image_surface_get_data(CAIROSURFACE);
++    m_pBarBgTex->allocate(); glBindTexture(GL_TEXTURE_2D, m_pBarBgTex->m_texID);
++    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
++    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferSize.x, bufferSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, DATA);
++    cairo_destroy(CAIRO); cairo_surface_destroy(CAIROSURFACE);
++}
++bool CHyprBar::hasGradient() {
++    if (m_bForcedGradientColor.has_value()) return true;
++    static auto* const P = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:bar_gradient_to")->getDataStaticPtr();
++    return **P != 0;
++}
++CHyprColor CHyprBar::getGradientEndColor() {
++    if (m_bForcedGradientColor.has_value()) return m_bForcedGradientColor.value();
++    static auto* const P = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:bar_gradient_to")->getDataStaticPtr();
++    return CHyprColor(**P);
++}
++
+ void CHyprBar::draw(PHLMONITOR pMonitor, const float& a) {
+     static auto* const PENABLED = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:enabled")->getDataStaticPtr();
+ 
+@@ -670,10 +698,16 @@
+         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+     }
+ 
+-    if (SHOULDBLUR)
+-        g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower(), .blur = true, .blurA = a});
+-    else
+-        g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower()});
++    const bool USE_GRADIENT = hasGradient();
++    if (USE_GRADIENT) {
++        CHyprColor colorTop = color; CHyprColor colorBottom = getGradientEndColor(); colorBottom.a *= a;
++        renderBarBackground(BARBUF, pMonitor->m_scale, colorTop, colorBottom);
++        CBox bgBox = {titleBarBox.x, titleBarBox.y, (int)BARBUF.x, (int)BARBUF.y};
++        g_pHyprOpenGL->renderTexture(m_pBarBgTex, bgBox, {.a = 1.0f, .round = scaledRounding, .roundingPower = m_pWindow->roundingPower()});
++    } else {
++        if (SHOULDBLUR) g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower(), .blur = true, .blurA = a});
++        else g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower()});
++    }
+ 
+     // render title
+     if (**PENABLETITLE && (m_szLastTitle != PWINDOW->m_title || m_bWindowSizeChanged || m_pTextTex->m_texID == 0 || m_bTitleColorChanged)) {
+@@ -770,6 +804,8 @@
+         m_hidden = truthy(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->nobarRuleIdx)->effect);
+     if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->barColorRuleIdx))
+         m_bForcedBarColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->barColorRuleIdx)->effect).value_or(0));
++    if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->barGradientRuleIdx))
++        m_bForcedGradientColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->barGradientRuleIdx)->effect).value_or(0));
+     if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->titleColorRuleIdx))
+         m_bForcedTitleColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->titleColorRuleIdx)->effect).value_or(0));
+ 
+diff -ruN '--exclude=.git' a/barDeco.hpp b/barDeco.hpp
+--- a/barDeco.hpp	2026-01-03 18:21:25.144636407 +0100
++++ b/barDeco.hpp	2026-01-03 18:21:39.466621996 +0100
+@@ -55,6 +55,8 @@
+ 
+     SP<CTexture>              m_pTextTex;
+     SP<CTexture>              m_pButtonsTex;
++    SP<CTexture>              m_pBarBgTex;
++    bool                      m_bBarBgDirty        = true;
+ 
+     bool                      m_bWindowSizeChanged = false;
+     bool                      m_hidden             = false;
+@@ -63,6 +65,7 @@
+     bool                      m_bLastEnabledState  = false;
+     bool                      m_bWindowHasFocus    = false;
+     std::optional<CHyprColor> m_bForcedBarColor;
++    std::optional<CHyprColor> m_bForcedGradientColor;
+     std::optional<CHyprColor> m_bForcedTitleColor;
+ 
+     Time::steady_tp           m_lastMouseDown = Time::steadyNow();
+@@ -76,6 +79,9 @@
+     void                      renderText(SP<CTexture> out, const std::string& text, const CHyprColor& color, const Vector2D& bufferSize, const float scale, const int fontSize);
+     void                      renderBarButtons(const Vector2D& bufferSize, const float scale);
+     void                      renderBarButtonsText(CBox* barBox, const float scale, const float a);
++    void                      renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& colorTop, const CHyprColor& colorBottom);
++    bool                      hasGradient();
++    CHyprColor                getGradientEndColor();
+     void                      damageOnButtonHover();
+ 
+     bool                      inputIsValid();
+diff -ruN '--exclude=.git' a/globals.hpp b/globals.hpp
+--- a/globals.hpp	2026-01-03 18:21:25.144636407 +0100
++++ b/globals.hpp	2026-01-03 18:21:39.463025907 +0100
+@@ -22,6 +22,7 @@
+     std::vector<WP<CHyprBar>> bars;
+     uint32_t                  nobarRuleIdx = 0;
+     uint32_t                  barColorRuleIdx = 0;
++    uint32_t barGradientRuleIdx = 0;
+     uint32_t                  titleColorRuleIdx = 0;
+ };
+ 
+diff -ruN '--exclude=.git' a/main.cpp b/main.cpp
+--- a/main.cpp	2026-01-03 18:21:25.144636407 +0100
++++ b/main.cpp	2026-01-03 18:21:39.462017905 +0100
+@@ -125,6 +125,7 @@
+     g_pGlobalState                    = makeUnique<SGlobalState>();
+     g_pGlobalState->nobarRuleIdx      = Desktop::Rule::windowEffects()->registerEffect("hyprbars:no_bar");
+     g_pGlobalState->barColorRuleIdx   = Desktop::Rule::windowEffects()->registerEffect("hyprbars:bar_color");
++    g_pGlobalState->barGradientRuleIdx = Desktop::Rule::windowEffects()->registerEffect("hyprbars:bar_gradient_to");
+     g_pGlobalState->titleColorRuleIdx = Desktop::Rule::windowEffects()->registerEffect("hyprbars:title_color");
+ 
+     static auto P = HyprlandAPI::registerCallbackDynamic(PHANDLE, "openWindow", [&](void* self, SCallbackInfo& info, std::any data) { onNewWindow(self, data); });
+@@ -132,6 +133,7 @@
+     static auto P3 = HyprlandAPI::registerCallbackDynamic(PHANDLE, "windowUpdateRules",
+                                                           [&](void* self, SCallbackInfo& info, std::any data) { onUpdateWindowRules(std::any_cast<PHLWINDOW>(data)); });
+ 
++    HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_gradient_to", Hyprlang::INT{0});
+     HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_color", Hyprlang::INT{*configStringToInt("rgba(33333388)")});
+     HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_height", Hyprlang::INT{15});
+     HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:col.text", Hyprlang::INT{*configStringToInt("rgba(ffffffff)")});
