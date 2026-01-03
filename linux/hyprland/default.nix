@@ -12,6 +12,7 @@ let
 in {
   imports = [
     ./vars.nix
+    ./cursor.nix
   ];
 
   programs.hyprland = {
