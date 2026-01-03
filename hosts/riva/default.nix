@@ -20,7 +20,7 @@
     ../../linux/rclone.nix
     # ../../linux/rclone-sync.nix
     ../../linux/zram.nix
-    ../../linux/monolith.nix
+    ../../linux/monolith
     ./battery.nix
   ];
 
