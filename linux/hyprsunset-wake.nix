@@ -3,6 +3,8 @@
 let
   user = "andrei";
   minSleepHours = 4;
+  morningStart = 5;
+  morningEnd = 12;
   hyprsunsetPkg = inputs.hyprsunset.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 {
@@ -30,7 +32,7 @@ in
 
           # check if morning
           hour=$(date +%H)
-          if [ "$hour" -ge 5 ] && [ "$hour" -lt 12 ]; then
+          if [ "$hour" -ge ${toString morningStart} ] && [ "$hour" -lt ${toString morningEnd} ]; then
             ${pkgs.procps}/bin/pkill hyprsunset || true
             ${hyprsunsetPkg}/bin/hyprsunset -i
           fi
