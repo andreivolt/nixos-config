@@ -36,14 +36,6 @@
     ./screensaver.nix
   ];
 
-  # GLSL screensaver - plasma shader, 10min idle, main monitor only
-  services.glsl-screensaver = {
-    enable = true;
-    visual = "plasma";
-    timeout = 600;  # 10 minutes
-    monitor = "eDP-1";  # internal display only
-  };
-
   networking.hostName = "watts";
   system.stateVersion = "23.11";
 

@@ -1,5 +1,14 @@
-# On-demand screensaver command (manual trigger, separate from idle screensaver)
+# Screensaver configuration - idle trigger and manual command
 { pkgs, ... }: {
+  # Idle screensaver - plasma shader, 10min idle, internal display only
+  services.glsl-screensaver = {
+    enable = true;
+    visual = "plasma";
+    timeout = 600;
+    monitor = "eDP-1";
+  };
+
+  # Manual trigger command
   environment.systemPackages = [
     (pkgs.writeShellScriptBin "screensaver" ''
       # Save current focused monitor and window
