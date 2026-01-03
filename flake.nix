@@ -48,11 +48,6 @@
       url = "github:feschber/lan-mouse";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    nix-on-droid = {
-      url = "github:nix-community/nix-on-droid/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-      inputs.home-manager.follows = "home-manager";
-    };
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -98,7 +93,6 @@
     hyprsunset,
     nixos-apple-silicon,
     lan-mouse,
-    nix-on-droid,
     sops-nix,
     pyproject-nix,
     uv2nix,
@@ -247,19 +241,6 @@
         home-manager.nixosModules.home-manager
       ];
       specialArgs = {inherit inputs;};
-    };
-
-    # Android phone via nix-on-droid
-    nixOnDroidConfigurations.phone = nix-on-droid.lib.nixOnDroidConfiguration {
-      pkgs = import nixpkgs-unstable {
-        system = "aarch64-linux";
-        config.allowUnfree = true;
-        overlays = commonNixpkgsConfig.overlays;
-      };
-      modules = [
-        "${inputs.self}/hosts/phone"
-      ];
-      extraSpecialArgs = {inherit inputs;};
     };
 
     # Dev shells for Rust packages
