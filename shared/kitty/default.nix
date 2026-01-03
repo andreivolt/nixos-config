@@ -103,6 +103,10 @@ in {
           paste_actions = "quote-urls-at-prompt,replace-dangerous-control-codes";
           notify_on_cmd_finish = "unfocused";
           enable_audio_bell = "no";
+
+          # Scrollbar
+          scrollbar_width = 1.25;
+          scrollbar_hover_width = 2;
           visual_bell_duration = "0.1";
           visual_bell_color = "red";
         } // colorSettings;
