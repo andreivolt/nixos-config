@@ -1,8 +1,10 @@
-{pkgs, ...}: {
+{pkgs, ...}:
+let
+  exportScript = pkgs.writers.writePython3 "chrome-history-export" {}
+    (builtins.readFile ../../shared/scripts/chrome-history-export.py);
+in {
   launchd.user.agents.chrome-history-export = {
-    script = ''
-      ~/bin/chrome-history-export ~/Google\ Drive/My\ Drive/chrome-history.tsv
-    '';
+    script = "${exportScript}";
     serviceConfig = {
       StartCalendarInterval = {
         Hour = 3;
@@ -11,6 +13,5 @@
       StandardOutPath = "/tmp/chrome-history-export.log";
       StandardErrorPath = "/tmp/chrome-history-export.err";
     };
-    path = [pkgs.uv];
   };
 }
