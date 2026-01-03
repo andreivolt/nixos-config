@@ -17,10 +17,6 @@
       url = "github:Hammerspoon/Spoons/3f6bb38a4b1d98ec617e1110450cbc53b15513ec";
       flake = false;
     };
-    json2nix = {
-      url = "github:sempruijs/json2nix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     # Impermanence and disko for NixOS
     impermanence = {
       url = "github:nix-community/impermanence";
@@ -85,7 +81,6 @@
     home-manager,
     mac-app-util,
     hammerspoon-spoons,
-    json2nix,
     impermanence,
     disko,
     hyprland,
@@ -128,7 +123,6 @@
         (import "${inputs.self}/pkgs")
         (final: prev: {
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
-          json2nix = inputs.json2nix.packages.${prev.stdenv.hostPlatform.system}.default;
           mkPep723Script = mkPep723Script final;
         })
         # Disable E501 line length check in writers.writePython3
