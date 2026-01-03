@@ -61,7 +61,7 @@
 
   # NVMe scheduler - use none, hardware handles queueing
   services.udev.extraRules = ''
-    ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ATTR{queue/scheduler}="none"
+    ACTION=="add|change", KERNEL=="nvme[0-9]*n[0-9]*", ENV{DEVTYPE}=="disk", ATTR{queue/scheduler}="none"
   '';
 
   home-manager.users.andrei = import ../../linux/home.nix {
