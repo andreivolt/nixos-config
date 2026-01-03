@@ -8,6 +8,7 @@ with pkgs; with lib; [
   andrei.file-rename
   andrei.firefox-addon-delete
   andrei.flushdns
+  andrei.git-edit-commits
   andrei.json-schema
   andrei.lock
   andrei.mute
