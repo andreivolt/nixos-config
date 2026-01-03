@@ -15,7 +15,7 @@
     ../shared/direnv.nix
     ../shared/delta.nix
     ../shared/dnsmasq.nix
-    ../shared/git.nix
+    ../shared/git
     ../shared/gnupg.nix
     ../shared/htop.nix
     ../shared/hushlogin.nix
