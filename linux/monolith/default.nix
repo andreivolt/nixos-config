@@ -1,7 +1,10 @@
 { config, lib, pkgs, inputs, ... }:
 
 {
-  imports = [ inputs.monolith.nixosModules.default ];
+  imports = [
+    inputs.monolith.nixosModules.default
+    ./sops.nix
+  ];
 
   services.monolith = {
     enable = true;
