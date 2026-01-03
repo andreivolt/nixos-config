@@ -11,7 +11,7 @@
         After = ["graphical-session.target"];
         ConditionEnvironment = ["WAYLAND_DISPLAY"];
       };
-      Service.ExecStart = "${pkgs.wayvnc}/bin/wayvnc -o eDP-1 127.0.0.1";
+      Service.ExecStart = "${pkgs.wayvnc}/bin/wayvnc 127.0.0.1";
       Install.WantedBy = ["graphical-session.target"];
     };
   };
