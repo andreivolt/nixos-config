@@ -28,9 +28,9 @@
     ./hypr-autorotate.nix
     ./insync.nix
     ../../linux/zram.nix
-    ../../linux/ddc.nix
-    ../../linux/wol.nix
     ../../linux/glsl-screensaver.nix
+    ./ddc.nix
+    ./v4l2loopback.nix
   ];
 
   # GLSL screensaver - plasma shader, 10min idle, main monitor only
