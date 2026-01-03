@@ -23,7 +23,7 @@
     ../linux/socks-proxy.nix
 
     ../shared/ghostty
-    ../shared/kitty.nix
+    ../shared/kitty
     ../shared/nushell
     ../shared/sublime
     ../shared/zed
