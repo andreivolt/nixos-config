@@ -19,8 +19,20 @@
         ${pkgs.libnotify}/bin/notify-send -i audio-card "iFi DAC" "PipeWire mode"
       else
         ${pkgs.wireplumber}/bin/wpctl set-profile "$IFI_ID" 0
+        # Signal RAATServer to rescan audio devices so Roon picks up the DAC
+        sleep 1
+        sudo ${pkgs.procps}/bin/pkill -HUP -f RAATServer 2>/dev/null || true
         ${pkgs.libnotify}/bin/notify-send -i audio-card "iFi DAC" "Exclusive mode (ALSA)"
       fi
     '')
   ];
+
+  # Allow user to signal RAATServer without password (for DAC toggle)
+  security.sudo.extraRules = [{
+    users = [ "andrei" ];
+    commands = [{
+      command = "${pkgs.procps}/bin/pkill -HUP -f RAATServer";
+      options = [ "NOPASSWD" ];
+    }];
+  }];
 }
