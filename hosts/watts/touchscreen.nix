@@ -33,7 +33,11 @@
   '';
 
   # Generate Hyprland touch config to map device to laptop screen
-  home-manager.users.andrei = { pkgs, ... }: {
+  home-manager.users.andrei = { pkgs, config, ... }: {
+    # Wacom reset script for hypridle resume (in .local/bin to avoid conflict with hypr/scripts symlink)
+    home.file.".local/bin/wacom-reset.sh".source =
+      config.lib.file.mkOutOfStoreSymlink "/home/andrei/dev/nixos-config/hosts/watts/wacom-reset.sh";
+
     wayland.windowManager.hyprland.extraConfig = ''
       source = ~/.config/hypr/touch.conf
     '';
