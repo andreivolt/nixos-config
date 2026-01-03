@@ -1,7 +1,6 @@
 { config, lib, ... }:
 let
   hostname = config.networking.hostName;
-  isWatts = hostname == "watts";
   isRiva = hostname == "riva";
   isAmpere = hostname == "ampere";
 in
@@ -36,33 +35,6 @@ in
   };
 
   nix.optimise.automatic = true;
-
-  # nix-serve on watts for fast LAN access from riva
-  services.nix-serve = lib.mkIf isWatts {
-    enable = true;
-    secretKeyFile = "/persist/secrets/nix-serve.key";
-  };
-  networking.firewall.allowedTCPPorts = lib.mkIf isWatts [ 5000 ];
-
   nix.distributedBuilds = true;
   nix.extraOptions = "builders-use-substitutes = true";
-
-  nix.buildMachines = lib.mkMerge [
-    (lib.mkIf isWatts [{
-      hostName = "riva";
-      sshUser = "root";
-      sshKey = "/root/.ssh/id_ed25519";
-      system = "aarch64-linux";
-      maxJobs = 8;
-      supportedFeatures = [ "nixos-test" "big-parallel" "kvm" ];
-    }])
-    (lib.mkIf isRiva [{
-      hostName = "watts";
-      sshUser = "root";
-      sshKey = "/root/.ssh/id_ed25519";
-      system = "x86_64-linux";
-      maxJobs = 8;
-      supportedFeatures = [ "nixos-test" "big-parallel" "kvm" ];
-    }])
-  ];
 }
