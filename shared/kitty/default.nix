@@ -1,9 +1,8 @@
 {pkgs, ...}:
 let
-  colors = import ./colors.nix;
-  aurora = colors.aurora;
-  accent = colors.accent;
-  ui = colors.ui;
+  colors = import ../colors.nix;
+  colorSettings = import ./colors.nix { inherit colors; };
+  keybindings = import ./keybindings.nix;
 
   kittyScrollbackNvim = pkgs.fetchFromGitHub {
     owner = "mikesmithgh";
@@ -106,66 +105,9 @@ in {
           enable_audio_bell = "no";
           visual_bell_duration = "0.1";
           visual_bell_color = "red";
+        } // colorSettings;
 
-          # Aurora terminal colors with Obsidian Aurora chrome
-          background = aurora.background;
-          foreground = aurora.foreground;
-          selection_background = aurora.selection.background;
-          selection_foreground = aurora.selection.foreground;
-          url_color = aurora.normal.cyan;
-          url_style = "straight";
-          cursor = aurora.cursor;
-          cursor_text_color = aurora.cursorText;
-          active_border_color = accent.primary;
-          inactive_border_color = ui.border;
-          active_tab_background = ui.bgAlt;
-          active_tab_foreground = accent.primary;
-          inactive_tab_background = aurora.background;
-          inactive_tab_foreground = ui.fgDim;
-          tab_bar_background = aurora.background;
-
-          color0 = aurora.normal.black;
-          color1 = aurora.normal.red;
-          color2 = aurora.normal.green;
-          color3 = aurora.normal.yellow;
-          color4 = aurora.normal.blue;
-          color5 = aurora.normal.magenta;
-          color6 = aurora.normal.cyan;
-          color7 = aurora.normal.white;
-          color8 = aurora.bright.black;
-          color9 = aurora.bright.red;
-          color10 = aurora.bright.green;
-          color11 = aurora.bright.yellow;
-          color12 = aurora.bright.blue;
-          color13 = aurora.bright.magenta;
-          color14 = aurora.bright.cyan;
-          color15 = aurora.bright.white;
-          color16 = aurora.extended.color16;
-          color17 = aurora.extended.color17;
-        };
-
-        keybindings = {
-          "kitty_mod+h" = "kitty_scrollback_nvim";
-          "kitty_mod+g" = "kitty_scrollback_nvim --config ksb_builtin_last_cmd_output";
-          "shift+enter" = "send_text all \\n";
-          "cmd+left" = "send_text all \\x1b[1;5D";
-          "cmd+right" = "send_text all \\x1b[1;5C";
-          # Font size (override defaults to use consistent 0.25 increments)
-          "kitty_mod+equal" = "change_font_size all +0.25";
-          "kitty_mod+minus" = "change_font_size all -0.25";
-          "kitty_mod+backspace" = "change_font_size all 0";
-          "ctrl+plus" = "change_font_size all +0.25";
-          "ctrl+minus" = "change_font_size all -0.25";
-          "ctrl+0" = "change_font_size all 0";
-          # Numpad
-          "kitty_mod+kp_add" = "change_font_size all +0.25";
-          "kitty_mod+kp_subtract" = "change_font_size all -0.25";
-          # macOS
-          "cmd+plus" = "change_font_size all +0.25";
-          "cmd+minus" = "change_font_size all -0.25";
-          "kitty_mod+a>m" = "set_background_opacity +0.1";
-          "kitty_mod+a>l" = "set_background_opacity -0.1";
-        };
+        inherit keybindings;
       };
 
       xdg.configFile."kitty/macos-launch-services-cmdline" = lib.mkIf pkgs.stdenv.isDarwin {
