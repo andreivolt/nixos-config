@@ -2,14 +2,14 @@
 * {
 	border: none;
 	border-radius: 0;
-	font-family: "Roboto", "DejaVu Sans", "Liberation Sans", sans-serif;
+	font-family: "Roboto";
 	font-size: 14px;
 	font-weight: 400;
 	min-height: 0;
 }
 
 window#waybar {
-	background: transparent;
+	background: rgba(20, 20, 20, 0.7);
 	color: #d4d0ca;
 	transition: all 0.3s ease;
 }
@@ -53,27 +53,40 @@ window#waybar.empty #window {
 	margin: 4px 0;
 	background: transparent;
 	color: #5a5650;
-	border-radius: 2px;
-	border: 1px solid transparent;
+	border-radius: 0;
+	border: none;
+	border-bottom: 2px solid transparent;
+	box-shadow: none;
+	outline: none;
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	font-size: 14px;
+	font-size: 16px;
+}
+
+#workspaces button:focus,
+#workspaces button:active {
+	border: none;
+	border-bottom: 2px solid transparent;
+	box-shadow: none;
+	outline: none;
 }
 
 #workspaces button label {
 	font-family: "RobotoMono Nerd Font", monospace;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
 }
 
 #workspaces button:hover {
-	background: rgba(212, 208, 202, 0.08);
-	color: #d4d0ca;
+	background: transparent;
+	color: #8a857d;
 }
 
 #workspaces button.active {
-	background: rgba(122, 117, 109, 0.2);
-	color: #d4d0ca;
-	border: 1px solid rgba(122, 117, 109, 0.4);
+	background: transparent;
+	color: #cc9966;
+	border: none;
+	border-bottom: 2px solid #aa7744;
+	font-size: 16px;
 }
 
 #workspaces button.urgent {
@@ -119,7 +132,7 @@ window#waybar.empty #window {
 	min-width: 32px;
 	padding: 0 4px;
 	margin: 0;
-	font-size: 14px;
+	font-size: 16px;
 	color: #7a756d;
 }
 
@@ -140,7 +153,7 @@ window#waybar.empty #window {
 	min-width: 32px;
 	padding: 0 4px;
 	margin: 0;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: 700;
 	font-family: "RobotoMono Nerd Font", monospace;
 	color: #b0aca4;
@@ -150,7 +163,7 @@ window#waybar.empty #window {
 	min-width: 52px;
 	padding: 0 8px 0 0;
 	margin: 0;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: 700;
 	font-family: "RobotoMono Nerd Font", monospace;
 	color: #7a756d;
