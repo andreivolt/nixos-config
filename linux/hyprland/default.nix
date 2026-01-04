@@ -49,16 +49,24 @@ in {
       config.lib.file.mkOutOfStoreSymlink
         "${config.home.homeDirectory}/dev/nixos-config/linux/hyprland/scripts";
 
+    # Generate plugin load file (loaded synchronously, before windowrules)
+    home.file.".config/hypr/plugins.conf".text = ''
+      plugin = ${hyprbarsPatched}/lib/libhyprbars.so
+    '';
+
     wayland.windowManager.hyprland = {
       enable = true;
       package = null;  # Use system package
       portalPackage = null;
       systemd.enable = false;  # UWSM handles this
       plugins = [
-        hyprbarsPatched
-        # hyprlandPlugins.hyprexpo  # TODO: causing version mismatch issues
+        # Don't use home-manager plugins - it uses exec-once which loads too late
+        # hyprbarsPatched
       ];
       extraConfig = ''
+        # Load plugins first (synchronously) so windowrules work
+        source = ~/.config/hypr/plugins.conf
+
         source = ${config.home.homeDirectory}/dev/nixos-config/linux/hyprland/hyprland.conf
 
         # Trayscale - float, pinned, centered, no titlebar
