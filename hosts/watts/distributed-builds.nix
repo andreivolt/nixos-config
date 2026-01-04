@@ -1,4 +1,4 @@
-{
+{ lib, ... }: {
   # nix-serve cache for fast LAN access from riva
   services.nix-serve = {
     enable = true;
@@ -8,7 +8,7 @@
 
   # LAN binary cache from ampere
   nix.settings = {
-    substituters = [ "http://ampere:5000" ];
+    substituters = lib.mkAfter [ "http://ampere:5000" ];
     trusted-public-keys = [ "ampere:VemsKe9KxjJHofpyUnMnGC9jHo6v49nAlKVQf/1rseI=" ];
   };
 

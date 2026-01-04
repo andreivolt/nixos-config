@@ -8,6 +8,8 @@
     experimental-features = [ "nix-command" "flakes" ];
     fallback = true;
     connect-timeout = 1;
+    stalled-download-timeout = 1;
+    download-attempts = 1;
     substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"

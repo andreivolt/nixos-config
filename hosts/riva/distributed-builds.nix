@@ -1,7 +1,7 @@
-{
+{ lib, ... }: {
   # LAN binary caches (watts has higher priority - faster/closer)
   nix.settings = {
-    substituters = [
+    substituters = lib.mkAfter [
       "http://watts:5000?priority=50"
       "http://ampere:5000"
     ];
