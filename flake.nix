@@ -152,6 +152,14 @@
             ];
           });
         })
+        # Ignore XF86 keys (power button) in hyprlock password input
+        (final: prev: {
+          hyprlock = prev.hyprlock.overrideAttrs (oldAttrs: {
+            patches = (oldAttrs.patches or []) ++ [
+              ./linux/hyprland/hyprlock-ignore-xf86.patch
+            ];
+          });
+        })
       ];
     };
   in {
