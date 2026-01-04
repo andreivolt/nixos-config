@@ -138,18 +138,13 @@
   "modules-center": [],
   "modules-left": [
     "hyprland/workspaces",
-    "custom/separator",
     "hyprland/window"
   ],
   "modules-right": [
     "tray",
-    "custom/separator",
     "cpu",
-    "custom/separator",
     "memory",
-    "custom/separator",
     "battery",
-    "custom/separator",
     "clock"
   ],
   "network": {
