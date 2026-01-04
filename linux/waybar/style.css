@@ -83,9 +83,9 @@ window#waybar.empty #window {
 
 #workspaces button.active {
 	background: transparent;
-	color: #cc9966;
+	color: #e8e4df;
 	border: none;
-	border-bottom: 2px solid #aa7744;
+	border-bottom: 2px solid rgba(255, 255, 255, 0.3);
 	font-size: 16px;
 }
 
