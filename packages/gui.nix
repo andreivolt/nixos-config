@@ -24,7 +24,6 @@ with pkgs;
   kitty
   liberation_ttf
   libnotify
-  libreoffice-fresh
   pavucontrol
   playerctl
   scrcpy
