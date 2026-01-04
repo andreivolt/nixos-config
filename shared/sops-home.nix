@@ -15,9 +15,6 @@ in
       mkdir -p $HOME/.config
       ln -sf ${linodeCli} $HOME/.config/linode-cli
 
-      mkdir -p $HOME/.config/asciinema
-      ln -sf /run/secrets/asciinema_install_id $HOME/.config/asciinema/install-id
-
       mkdir -p $HOME/.config/gdrive3/andrei.volt@gmail.com
       ln -sf ${gdrive3Secret} $HOME/.config/gdrive3/andrei.volt@gmail.com/secret.json
 
