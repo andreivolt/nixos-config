@@ -102,7 +102,6 @@ in {
 
     secrets = secretsFromPaths secretPaths // {
       email = { owner = user; };
-      asciinema_install_id = { owner = user; };
       oci_api_key_pem = { owner = user; };
     };
 
