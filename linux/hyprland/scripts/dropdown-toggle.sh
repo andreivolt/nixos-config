@@ -25,7 +25,7 @@ read -r current_mon addr < <(jq -r '.[] | select(.class=="dropdown") | "\(.monit
 drop_w=$((eff_w * 80 / 100))
 drop_h=$((eff_h * 62 / 100))
 drop_x=$((mon_x + (eff_w - drop_w) / 2))
-drop_y=$((mon_y + bar_h))
+drop_y=$((mon_y + bar_h + 2))
 
 # Switching monitors: resize while hidden, then show (no animation to avoid cross-monitor slide)
 if [[ "$current_mon" != "$focused_mon" && "$current_mon" != "-1" ]]; then
