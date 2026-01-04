@@ -1,0 +1,15 @@
+diff --git a/src/core/hyprlock.cpp b/src/core/hyprlock.cpp
+--- a/src/core/hyprlock.cpp
++++ b/src/core/hyprlock.cpp
+@@ -711,6 +711,11 @@ void CHyprlock::handleKeySym(xkb_keysym_t sym, bool composed) {
+     } else if (SYM == XKB_KEY_Num_Lock) {
+         m_bNumLock = !m_bNumLock;
+     } else {
++        // Ignore XF86 special keys (power button, media keys, etc.)
++        // These are in the range 0x1008FF00 - 0x1008FFFF
++        if (SYM >= 0x1008FF00 && SYM <= 0x1008FFFF)
++            return;
++
+         char buf[16] = {0};
+         int  len     = (composed) ? xkb_compose_state_get_utf8(g_pSeatManager->m_pXKBComposeState, buf, sizeof(buf)) /* nullbyte */ + 1 :
+                                     xkb_keysym_to_utf8(SYM, buf, sizeof(buf)) /* already includes a nullbyte */;
