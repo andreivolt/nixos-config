@@ -88,7 +88,6 @@ with pkgs; with lib; [
   jujutsu
   lastpass-cli
   lazydocker
-  lazygit
   litecli
   lsof
   mediainfo
