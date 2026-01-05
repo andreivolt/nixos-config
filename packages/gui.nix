@@ -30,17 +30,7 @@ with pkgs;
   slurp
   swayimg
   swaynotificationcenter
-  (symlinkJoin {
-    name = "telegram-desktop-wrapped";
-    paths = [telegram-desktop];
-    nativeBuildInputs = [makeWrapper];
-    postBuild = ''
-      rm $out/bin/Telegram
-      makeWrapper ${telegram-desktop}/bin/Telegram $out/bin/Telegram \
-        --set QT_QPA_PLATFORMTHEME xdgdesktopportal
-      ln -sf $out/bin/Telegram $out/bin/telegram-desktop
-    '';
-  })
+  telegram-desktop
   wasistlos
   wayland-pipewire-idle-inhibit
   wf-recorder

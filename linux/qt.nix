@@ -7,10 +7,10 @@
       libsForQt5.qt5ct
     ];
 
-    # Use qt5ct/qt6ct for Qt font configuration
+    # Use xdgdesktopportal for system dark mode detection (built into Qt6)
     qt = {
       enable = true;
-      platformTheme.name = "qtct";
+      platformTheme.name = "xdgdesktopportal";
       style.name = "adwaita-dark";
     };
 
