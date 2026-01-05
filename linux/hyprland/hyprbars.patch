@@ -1,5 +1,5 @@
---- a/barDeco.cpp	2026-01-03 23:38:51.388846015 +0100
-+++ b/barDeco.cpp	2026-01-04 10:21:19.920107075 +0100
+--- a/barDeco.cpp
++++ b/barDeco.cpp
 @@ -40,6 +40,7 @@
  
      m_pTextTex    = makeShared<CTexture>();
@@ -27,11 +27,11 @@
      cairo_move_to(CAIRO, xOffset, yOffset);
      pango_cairo_show_layout(CAIRO, layout);
  
-@@ -565,6 +578,89 @@
+@@ -565,6 +578,65 @@
      }
  }
  
-+void CHyprBar::renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& colorTop, const CHyprColor& colorBottom, bool useGradient, int rounding, const std::optional<CHyprColor>& forcedSepColor) {
++void CHyprBar::renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& color, int rounding, const std::optional<CHyprColor>& forcedSepColor) {
 +    const auto CAIROSURFACE = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, bufferSize.x, bufferSize.y);
 +    const auto CAIRO = cairo_create(CAIROSURFACE);
 +
@@ -55,19 +55,9 @@
 +    cairo_arc(CAIRO, r, r, r, M_PI, 3*M_PI/2);  // top-left
 +    cairo_close_path(CAIRO);
 +
-+    if (useGradient) {
-+        // vertical gradient (top to bottom)
-+        cairo_pattern_t* gradient = cairo_pattern_create_linear(0, 0, 0, bufferSize.y);
-+        cairo_pattern_add_color_stop_rgba(gradient, 0.0, colorTop.b, colorTop.g, colorTop.r, colorTop.a);
-+        cairo_pattern_add_color_stop_rgba(gradient, 1.0, colorBottom.b, colorBottom.g, colorBottom.r, colorBottom.a);
-+        cairo_set_source(CAIRO, gradient);
-+        cairo_fill_preserve(CAIRO);
-+        cairo_pattern_destroy(gradient);
-+    } else {
-+        // solid color
-+        cairo_set_source_rgba(CAIRO, colorTop.b, colorTop.g, colorTop.r, colorTop.a);
-+        cairo_fill_preserve(CAIRO);
-+    }
++    // solid color fill
++    cairo_set_source_rgba(CAIRO, color.b, color.g, color.r, color.a);
++    cairo_fill_preserve(CAIRO);
 +    cairo_new_path(CAIRO);
 +
 +    // draw separator line at bottom
@@ -100,24 +90,10 @@
 +    return **PSEPARATOR > 0;
 +}
 +
-+bool CHyprBar::hasGradient() {
-+    if (m_bForcedGradientColor.has_value())
-+        return true;
-+    static auto* const PGRADIENT = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:bar_gradient_to")->getDataStaticPtr();
-+    return **PGRADIENT != 0;
-+}
-+
-+CHyprColor CHyprBar::getGradientEndColor() {
-+    if (m_bForcedGradientColor.has_value())
-+        return m_bForcedGradientColor.value();
-+    static auto* const PGRADIENT = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:bar_gradient_to")->getDataStaticPtr();
-+    return CHyprColor(**PGRADIENT);
-+}
-+
  void CHyprBar::draw(PHLMONITOR pMonitor, const float& a) {
      static auto* const PENABLED = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:enabled")->getDataStaticPtr();
  
-@@ -670,10 +766,21 @@
+@@ -670,10 +742,16 @@
          glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
      }
  
@@ -133,17 +109,12 @@
 +    }
 +
 +    // render bar background with rounded top corners only (via Cairo texture)
-+    const bool useGradient = hasGradient();
-+    CHyprColor colorTop = color;
-+    CHyprColor colorBottom = useGradient ? getGradientEndColor() : color;
-+    if (useGradient)
-+        colorBottom.a *= a;
-+    renderBarBackground(BARBUF, pMonitor->m_scale, colorTop, colorBottom, useGradient, ROUNDING, m_bForcedSeparatorColor);
++    renderBarBackground(BARBUF, pMonitor->m_scale, color, ROUNDING, m_bForcedSeparatorColor);
 +    g_pHyprOpenGL->renderTexture(m_pBarBgTex, bgBox, {.a = 1.0f});
  
      // render title
      if (**PENABLETITLE && (m_szLastTitle != PWINDOW->m_title || m_bWindowSizeChanged || m_pTextTex->m_texID == 0 || m_bTitleColorChanged)) {
-@@ -762,16 +869,22 @@
+@@ -762,9 +840,10 @@
      auto       prevHidden           = m_hidden;
      auto       prevForcedTitleColor = m_bForcedTitleColor;
  
@@ -151,17 +122,14 @@
 -    m_bForcedTitleColor = std::nullopt;
 -    m_hidden            = false;
 +    m_bForcedBarColor       = std::nullopt;
-+    m_bForcedGradientColor  = std::nullopt;
 +    m_bForcedTitleColor     = std::nullopt;
 +    m_bForcedSeparatorColor = std::nullopt;
 +    m_hidden                = false;
  
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->nobarRuleIdx))
          m_hidden = truthy(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->nobarRuleIdx)->effect);
-     if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->barColorRuleIdx))
+@@ -772,6 +851,8 @@
          m_bForcedBarColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->barColorRuleIdx)->effect).value_or(0));
-+    if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->barGradientRuleIdx))
-+        m_bForcedGradientColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->barGradientRuleIdx)->effect).value_or(0));
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->titleColorRuleIdx))
          m_bForcedTitleColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->titleColorRuleIdx)->effect).value_or(0));
 +    if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->separatorColorRuleIdx))
@@ -169,8 +137,8 @@
  
      if (prevHidden != m_hidden)
          g_pDecorationPositioner->repositionDeco(this);
---- a/barDeco.hpp	2026-01-03 23:38:51.388846015 +0100
-+++ b/barDeco.hpp	2026-01-04 03:28:33.797672096 +0100
+--- a/barDeco.hpp
++++ b/barDeco.hpp
 @@ -55,6 +55,7 @@
  
      SP<CTexture>              m_pTextTex;
@@ -179,42 +147,36 @@
  
      bool                      m_bWindowSizeChanged = false;
      bool                      m_hidden             = false;
-@@ -63,7 +64,9 @@
-     bool                      m_bLastEnabledState  = false;
+@@ -64,6 +65,7 @@
      bool                      m_bWindowHasFocus    = false;
      std::optional<CHyprColor> m_bForcedBarColor;
-+    std::optional<CHyprColor> m_bForcedGradientColor;
      std::optional<CHyprColor> m_bForcedTitleColor;
 +    std::optional<CHyprColor> m_bForcedSeparatorColor;
  
      Time::steady_tp           m_lastMouseDown = Time::steadyNow();
  
-@@ -76,6 +79,10 @@
+@@ -76,6 +78,8 @@
      void                      renderText(SP<CTexture> out, const std::string& text, const CHyprColor& color, const Vector2D& bufferSize, const float scale, const int fontSize);
      void                      renderBarButtons(const Vector2D& bufferSize, const float scale);
      void                      renderBarButtonsText(CBox* barBox, const float scale, const float a);
-+    void                      renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& colorTop, const CHyprColor& colorBottom, bool useGradient, int rounding, const std::optional<CHyprColor>& forcedSepColor);
++    void                      renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& color, int rounding, const std::optional<CHyprColor>& forcedSepColor);
 +    bool                      hasSeparator();
-+    bool                      hasGradient();
-+    CHyprColor                getGradientEndColor();
      void                      damageOnButtonHover();
  
      bool                      inputIsValid();
---- a/globals.hpp	2026-01-03 23:38:51.388846015 +0100
-+++ b/globals.hpp	2026-01-04 03:25:11.892018770 +0100
-@@ -22,7 +22,9 @@
-     std::vector<WP<CHyprBar>> bars;
+--- a/globals.hpp
++++ b/globals.hpp
+@@ -23,6 +23,7 @@
      uint32_t                  nobarRuleIdx = 0;
      uint32_t                  barColorRuleIdx = 0;
-+    uint32_t                  barGradientRuleIdx = 0;
      uint32_t                  titleColorRuleIdx = 0;
 +    uint32_t                  separatorColorRuleIdx = 0;
  };
  
  inline UP<SGlobalState> g_pGlobalState;
---- a/main.cpp	2026-01-03 23:38:51.388846015 +0100
-+++ b/main.cpp	2026-01-04 03:25:01.332079426 +0100
-@@ -122,10 +122,12 @@
+--- a/main.cpp
++++ b/main.cpp
+@@ -122,10 +122,11 @@
          throw std::runtime_error("[hb] Version mismatch");
      }
  
@@ -225,17 +187,15 @@
 +    g_pGlobalState                        = makeUnique<SGlobalState>();
 +    g_pGlobalState->nobarRuleIdx          = Desktop::Rule::windowEffects()->registerEffect("hyprbars:no_bar");
 +    g_pGlobalState->barColorRuleIdx       = Desktop::Rule::windowEffects()->registerEffect("hyprbars:bar_color");
-+    g_pGlobalState->barGradientRuleIdx    = Desktop::Rule::windowEffects()->registerEffect("hyprbars:bar_gradient_to");
 +    g_pGlobalState->titleColorRuleIdx     = Desktop::Rule::windowEffects()->registerEffect("hyprbars:title_color");
 +    g_pGlobalState->separatorColorRuleIdx = Desktop::Rule::windowEffects()->registerEffect("hyprbars:separator_color");
  
      static auto P = HyprlandAPI::registerCallbackDynamic(PHANDLE, "openWindow", [&](void* self, SCallbackInfo& info, std::any data) { onNewWindow(self, data); });
      // static auto P2 = HyprlandAPI::registerCallbackDynamic(PHANDLE, "closeWindow", [&](void* self, SCallbackInfo& info, std::any data) { onCloseWindow(self, data); });
-@@ -133,6 +135,11 @@
+@@ -133,6 +134,10 @@
                                                            [&](void* self, SCallbackInfo& info, std::any data) { onUpdateWindowRules(std::any_cast<PHLWINDOW>(data)); });
  
      HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_color", Hyprlang::INT{*configStringToInt("rgba(33333388)")});
-+    HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_gradient_to", Hyprlang::INT{0});
 +    HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_separator_size", Hyprlang::INT{0});
 +    HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_separator_color", Hyprlang::INT{*configStringToInt("rgba(00000033)")});
 +    HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:text_shadow_size", Hyprlang::INT{0});
@@ -243,11 +203,9 @@
      HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_height", Hyprlang::INT{15});
      HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:col.text", Hyprlang::INT{*configStringToInt("rgba(ffffffff)")});
      HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_text_size", Hyprlang::INT{10});
-@@ -173,6 +180,8 @@
-     g_pHyprRenderer->m_renderPass.removeAllOfType("CBarPassElement");
+@@ -174,5 +179,6 @@
  
      Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->barColorRuleIdx);
-+    Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->barGradientRuleIdx);
      Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->titleColorRuleIdx);
 +    Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->separatorColorRuleIdx);
      Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->nobarRuleIdx);

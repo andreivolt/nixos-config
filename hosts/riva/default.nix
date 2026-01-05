@@ -25,6 +25,7 @@
     ./distributed-builds.nix
     ./audio.nix
     ./earlyoom.nix
+    ./shutdown-sound-fix.nix
   ];
 
   networking.hostName = "riva";
