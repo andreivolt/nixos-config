@@ -114,6 +114,15 @@
  
      // render title
      if (**PENABLETITLE && (m_szLastTitle != PWINDOW->m_title || m_bWindowSizeChanged || m_pTextTex->m_texID == 0 || m_bTitleColorChanged)) {
+@@ -732,7 +810,7 @@
+ }
+ 
+ eDecorationLayer CHyprBar::getDecorationLayer() {
+-    return DECORATION_LAYER_UNDER;
++    return DECORATION_LAYER_OVER;
+ }
+ 
+ uint64_t CHyprBar::getDecorationFlags() {
 @@ -762,9 +840,10 @@
      auto       prevHidden           = m_hidden;
      auto       prevForcedTitleColor = m_bForcedTitleColor;
