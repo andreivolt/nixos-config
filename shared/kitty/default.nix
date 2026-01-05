@@ -76,7 +76,7 @@ in {
 
           dynamic_background_opacity = "yes";
           scrollback_fill_enlarged_window = "yes";
-          # window_padding_width = 8;
+          window_padding_width = 5;
           background_opacity = "0.65";
           background_blur = 25;
 
