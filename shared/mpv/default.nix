@@ -77,7 +77,7 @@ in {
         config = {
           # platform-specific hardware acceleration
           hwdec = if isDarwin then "videotoolbox" else "auto-safe";
-          vo = "gpu-next";
+          vo = "gpu";
           gpu-api = "vulkan";
           scale = "bilinear";
           dscale = "bilinear";
