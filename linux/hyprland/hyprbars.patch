@@ -27,12 +27,15 @@
      cairo_move_to(CAIRO, xOffset, yOffset);
      pango_cairo_show_layout(CAIRO, layout);
  
-@@ -565,6 +578,65 @@
+@@ -565,6 +578,67 @@
      }
  }
  
 +void CHyprBar::renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& color, int rounding, const std::optional<CHyprColor>& forcedSepColor) {
-+    const auto CAIROSURFACE = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, bufferSize.x, bufferSize.y);
++    // use consistent dimensions throughout to avoid clipping artifacts
++    const int surfaceW = (int)std::ceil(bufferSize.x);
++    const int surfaceH = (int)std::ceil(bufferSize.y);
++    const auto CAIROSURFACE = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, surfaceW, surfaceH);
 +    const auto CAIRO = cairo_create(CAIROSURFACE);
 +
 +    cairo_save(CAIRO);
@@ -41,10 +44,9 @@
 +    cairo_restore(CAIRO);
 +
 +    // create path with rounded top corners only
-+    // use ceil to ensure full coverage (avoid sub-pixel gaps at edges)
 +    const double r = rounding * scale;
-+    const double w = std::ceil(bufferSize.x);
-+    const double h = std::ceil(bufferSize.y);
++    const double w = surfaceW;
++    const double h = surfaceH;
 +    cairo_new_path(CAIRO);
 +    cairo_move_to(CAIRO, r, 0);
 +    cairo_line_to(CAIRO, w - r, 0);
@@ -68,7 +70,7 @@
 +        CHyprColor sepColor = forcedSepColor.value_or(CHyprColor(**PSEPARATORCOLOR));
 +        const int scaledSize = std::max(1, (int)(separatorSize * scale));
 +        cairo_set_source_rgba(CAIRO, sepColor.b, sepColor.g, sepColor.r, sepColor.a);
-+        cairo_rectangle(CAIRO, 0, bufferSize.y - scaledSize, bufferSize.x, scaledSize);
++        cairo_rectangle(CAIRO, 0, surfaceH - scaledSize, surfaceW, scaledSize);
 +        cairo_fill(CAIRO);
 +    }
 +
@@ -79,7 +81,7 @@
 +    glBindTexture(GL_TEXTURE_2D, m_pBarBgTex->m_texID);
 +    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 +    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferSize.x, bufferSize.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, DATA);
++    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surfaceW, surfaceH, 0, GL_RGBA, GL_UNSIGNED_BYTE, DATA);
 +
 +    cairo_destroy(CAIRO);
 +    cairo_surface_destroy(CAIROSURFACE);
@@ -93,28 +95,80 @@
  void CHyprBar::draw(PHLMONITOR pMonitor, const float& a) {
      static auto* const PENABLED = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:enabled")->getDataStaticPtr();
  
-@@ -670,10 +742,16 @@
-         glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+@@ -633,8 +707,7 @@
+ 
+     const auto BARBUF = DECOBOX.size() * pMonitor->m_scale;
+ 
+-    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w,
+-                              DECOBOX.h + ROUNDING * 3 /* to fill the bottom cuz we can't disable rounding there */};
++    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w, DECOBOX.h};
+ 
+     titleBarBox.translate(PWINDOW->m_floatingOffset).scale(pMonitor->m_scale).round();
+ 
+@@ -643,37 +716,17 @@
+ 
+     g_pHyprOpenGL->scissor(titleBarBox);
+ 
+-    if (ROUNDING) {
+-        // the +1 is a shit garbage temp fix until renderRect supports an alpha matte
+-        CBox windowBox = {PWINDOW->m_realPosition->value().x + PWINDOW->m_floatingOffset.x - pMonitor->m_position.x + 1,
+-                          PWINDOW->m_realPosition->value().y + PWINDOW->m_floatingOffset.y - pMonitor->m_position.y + 1, PWINDOW->m_realSize->value().x - 2,
+-                          PWINDOW->m_realSize->value().y - 2};
+-
+-        if (windowBox.w < 1 || windowBox.h < 1)
+-            return;
+-
+-        glClearStencil(0);
+-        glClear(GL_STENCIL_BUFFER_BIT);
+-
+-        g_pHyprOpenGL->setCapStatus(GL_STENCIL_TEST, true);
+-
+-        glStencilFunc(GL_ALWAYS, 1, -1);
+-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+-
+-        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+-
+-        windowBox.translate(WORKSPACEOFFSET).scale(pMonitor->m_scale).round();
+-        g_pHyprOpenGL->renderRect(windowBox, CHyprColor(0, 0, 0, 0), {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower()});
+-        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+-
+-        glStencilFunc(GL_NOTEQUAL, 1, -1);
+-        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
++    // render blur pass first if enabled
++    CBox bgBox = {titleBarBox.x, titleBarBox.y, (int)std::ceil(BARBUF.x), (int)std::ceil(BARBUF.y)};
++    if (SHOULDBLUR) {
++        // render transparent rect with blur to get the blur effect behind the bar
++        const auto blurRounding = ROUNDING * pMonitor->m_scale;
++        g_pHyprOpenGL->renderRect(bgBox, CHyprColor(0, 0, 0, 0), {.round = blurRounding, .blur = true, .blurA = a});
      }
  
 -    if (SHOULDBLUR)
 -        g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower(), .blur = true, .blurA = a});
 -    else
 -        g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower()});
-+    // render blur pass first if enabled
-+    CBox bgBox = {titleBarBox.x, titleBarBox.y, (int)std::ceil(BARBUF.x), (int)std::ceil(BARBUF.y)};
-+    if (SHOULDBLUR) {
-+        // render transparent rect with blur to get the blur effect behind the bar
-+        g_pHyprOpenGL->renderRect(bgBox, CHyprColor(0, 0, 0, 0), {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower(), .blur = true, .blurA = a});
-+    }
-+
 +    // render bar background with rounded top corners only (via Cairo texture)
 +    renderBarBackground(BARBUF, pMonitor->m_scale, color, ROUNDING, m_bForcedSeparatorColor);
 +    g_pHyprOpenGL->renderTexture(m_pBarBgTex, bgBox, {.a = 1.0f});
  
      // render title
      if (**PENABLETITLE && (m_szLastTitle != PWINDOW->m_title || m_bWindowSizeChanged || m_pTextTex->m_texID == 0 || m_bTitleColorChanged)) {
-@@ -732,7 +810,7 @@
+@@ -681,15 +734,6 @@
+         renderBarTitle(BARBUF, pMonitor->m_scale);
+     }
+ 
+-    if (ROUNDING) {
+-        // cleanup stencil
+-        glClearStencil(0);
+-        glClear(GL_STENCIL_BUFFER_BIT);
+-        g_pHyprOpenGL->setCapStatus(GL_STENCIL_TEST, false);
+-        glStencilMask(-1);
+-        glStencilFunc(GL_ALWAYS, 1, 0xFF);
+-    }
+-
+     CBox textBox = {titleBarBox.x, titleBarBox.y, (int)BARBUF.x, (int)BARBUF.y};
+     if (**PENABLETITLE)
+         g_pHyprOpenGL->renderTexture(m_pTextTex, textBox, {.a = a});
+@@ -732,7 +776,7 @@
  }
  
  eDecorationLayer CHyprBar::getDecorationLayer() {
@@ -123,7 +177,7 @@
  }
  
  uint64_t CHyprBar::getDecorationFlags() {
-@@ -762,9 +840,10 @@
+@@ -762,9 +806,10 @@
      auto       prevHidden           = m_hidden;
      auto       prevForcedTitleColor = m_bForcedTitleColor;
  
@@ -137,7 +191,7 @@
  
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->nobarRuleIdx))
          m_hidden = truthy(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->nobarRuleIdx)->effect);
-@@ -772,6 +851,8 @@
+@@ -772,6 +817,8 @@
          m_bForcedBarColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->barColorRuleIdx)->effect).value_or(0));
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->titleColorRuleIdx))
          m_bForcedTitleColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->titleColorRuleIdx)->effect).value_or(0));
