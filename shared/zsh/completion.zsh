@@ -72,4 +72,4 @@ zstyle ':completion:*:history-words' list false
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
   reply=(_approximate:-extreme _complete)
 
-zsh-defer eval "$(carapace _carapace zsh)"
+setopt menu_complete
