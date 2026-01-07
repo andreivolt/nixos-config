@@ -92,7 +92,7 @@ in {
 
           # zsh config files
           source ${./vi.zsh}
-          zsh-defer source ${./completion.zsh}
+          source ${./completion.zsh}
           source ~/.config/zsh/prompt.zsh
           [[ -n "$TMUX" ]] && zsh-defer source ${./tmux.zsh}
           zsh-defer source ${./fzf.zsh}
