@@ -115,6 +115,7 @@ with pkgs; with lib; [
   nvimpager
   oci-cli
   openssl
+  oxipng
   ouch
   pandoc
   parallel
