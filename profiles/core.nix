@@ -72,7 +72,11 @@
 
   programs.mosh.enable = true;
   programs.nix-ld.enable = true;
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    enableGlobalCompInit = false; # done in home-manager
+    promptInit = "";              # done in home-manager (p10k)
+  };
 
   security.sudo.wheelNeedsPassword = false;
 
