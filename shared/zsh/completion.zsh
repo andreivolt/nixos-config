@@ -42,6 +42,7 @@ zstyle -e ':completion:*' completer '
       _last_try="$HISTNO$BUFFER${CURSOR}x"
       ;;
     $HISTNO$BUFFER${CURSOR}x)
+      reply=(_approximate:-extreme _complete)
       ;;
     *)
       _last_try="$HISTNO$BUFFER$CURSOR"
@@ -70,6 +71,5 @@ zstyle ':completion:*:expand-alias:*' global true
 zstyle ':completion:*:history-words' list false
 
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
-  reply=(_approximate:-extreme _complete)
 
 setopt menu_complete
