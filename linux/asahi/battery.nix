@@ -1,6 +1,6 @@
-# Battery charge threshold and fullcharge command for Asahi
+# Battery charge threshold for Apple Silicon Macs
+# Limits charging to 80% for battery longevity
 { pkgs, ... }: {
-  # Limit charging to 80% for battery longevity
   systemd.tmpfiles.rules = [
     "w /sys/class/power_supply/macsmc-battery/charge_control_end_threshold - - - - 80"
   ];
