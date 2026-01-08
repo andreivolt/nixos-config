@@ -1,7 +1,7 @@
 # Fix for sound devices triggering sound.target during shutdown on Asahi Linux
 # Causes delays and "Transaction contradicts existing jobs" warnings
 # See: https://github.com/systemd/systemd/issues/38987
-{pkgs, ...}: {
+{ ... }: {
   systemd.settings.Manager = {
     DefaultTimeoutStopSec = "15s";
     ShutdownWatchdogSec = "30s";
