@@ -44,8 +44,13 @@ in {
           "hist_fcntl_lock"
           "hist_reduce_blanks"
           "auto_pushd"
+          "complete_in_word"
           "extended_glob"
+          "glob_complete"
           "interactive_comments"
+          "list_packed"
+          "menu_complete"
+          "no_list_ambiguous"
           "null_glob"
           "numeric_glob_sort"
         ];
@@ -94,7 +99,7 @@ in {
 
           # zsh config files
           source ${./vi.zsh}
-          source ${./completion.zsh}
+          zsh-defer source ${./completion.zsh}
           source ~/.config/zsh/prompt.zsh
           [[ -n "$TMUX" ]] && zsh-defer source ${./tmux.zsh}
           zsh-defer source ${./fzf.zsh}
