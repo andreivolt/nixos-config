@@ -7,11 +7,6 @@ zcompdump=$XDG_CACHE_HOME/zsh/zcompdump
 bindkey -M menuselect '^o' accept-and-menu-complete
 bindkey -M menuselect "+" accept-and-menu-complete
 
-setopt no_list_ambiguous
-setopt glob_complete
-setopt complete_in_word
-setopt list_packed
-
 _comp_options+=(globdots)
 
 zstyle ':completion:*' use-cache on
@@ -68,8 +63,6 @@ zstyle ':completion:*:expand-alias:*' global true
 zstyle ':completion:*:history-words' list false
 
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
-
-setopt menu_complete
 
 zsh-defer -c '
   _carapace_cache="${XDG_CACHE_HOME:-$HOME/.cache}/carapace/init.zsh"
