@@ -63,9 +63,6 @@ zstyle ':completion:*:man:*' menu yes select
 zstyle ':completion:*:manuals' separate-sections true
 zstyle ':completion:*:manuals.*' insert-sections true
 
-zstyle ':completion:*:processes' command 'ps -au $USER'
-zstyle ':completion:*:processes-names' command 'ps c -u ${USER} -o command | uniq'
-
 zstyle ':completion:*:expand:*' tag-order all-expansions
 zstyle ':completion:*:expand-alias:*' global true
 zstyle ':completion:*:history-words' list false
@@ -73,3 +70,12 @@ zstyle ':completion:*:history-words' list false
 zstyle ':completion:*:*:-subscript-:*' tag-order indexes parameters
 
 setopt menu_complete
+
+zsh-defer -c '
+  _carapace_cache="${XDG_CACHE_HOME:-$HOME/.cache}/carapace/init.zsh"
+  if [[ ! -f $_carapace_cache || ${commands[carapace]} -nt $_carapace_cache ]]; then
+    mkdir -p ${_carapace_cache:h}
+    carapace _carapace zsh >$_carapace_cache
+  fi
+  source $_carapace_cache
+'
