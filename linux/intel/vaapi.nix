@@ -1,4 +1,5 @@
-{pkgs, lib, ...}: {
+# Intel VA-API hardware video acceleration
+{ pkgs, lib, ... }: {
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [

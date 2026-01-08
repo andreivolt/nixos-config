@@ -23,7 +23,6 @@
     ./roon-server.nix
     ./roon-idle-inhibit.nix
     ./dac-toggle.nix
-    ./intel-vaapi.nix
     ./touchscreen.nix
     ./hypr-autorotate.nix
     ./insync.nix
@@ -34,19 +33,14 @@
     ./distributed-builds.nix
     ./throttled.nix
     ./screensaver.nix
+    ../../linux/intel
   ];
 
   networking.hostName = "watts";
   system.stateVersion = "23.11";
 
-  # Distribute hardware interrupts across CPUs (reduces CPU0 overload, Intel-specific)
-  services.irqbalance.enable = true;
-
   # XanMod kernel - optimized for desktop/low-latency workloads
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
-
-  # Update Intel microcode for complete Spectre/Meltdown/GDS mitigations
-  hardware.cpu.intel.updateMicrocode = true;
 
   # Configure the disk device for this machine
   nixos.diskDevice = "/dev/nvme0n1";
