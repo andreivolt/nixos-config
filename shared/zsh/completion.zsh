@@ -15,7 +15,8 @@ zstyle ':completion:*' cache-path "$XDG_CACHE_HOME/zsh/zcompcache"
 zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' auto-description 'specify: %d'
 zstyle ':completion:*' file-patterns '%p:globbed-files' '*(-/):directories'
-zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*:descriptions' format '%F{yellow}-- %d --%f'
+zstyle ':completion:*:corrections' format '%F{green}-- %d (errors: %e) --%f'
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
