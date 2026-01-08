@@ -23,6 +23,8 @@ in {
     ({config, lib, pkgs, ...}: {
       xdg.enable = true;
 
+      home.packages = [pkgs.carapace];
+
       programs.zsh = {
         enable = true;
         enableCompletion = false; # handled in completion.zsh
