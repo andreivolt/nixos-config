@@ -33,6 +33,7 @@ let
           "kern-dotty"
           "kern-bars"
           "llggeq"
+          "trig"
         ];
         disables = [ "slash-asterisk" ];
       };
