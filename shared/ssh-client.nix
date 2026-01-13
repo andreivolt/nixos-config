@@ -22,5 +22,12 @@ in {
         };
       };
     };
+
+    home.activation.fixSshConfigPermissions = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      if [ -L "$HOME/.ssh/config" ]; then
+        $DRY_RUN_CMD cp --remove-destination "$(readlink "$HOME/.ssh/config")" "$HOME/.ssh/config"
+        $DRY_RUN_CMD chmod 600 "$HOME/.ssh/config"
+      fi
+    '';
   }];
 }
