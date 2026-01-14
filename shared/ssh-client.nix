@@ -1,5 +1,5 @@
 # SSH client configuration for home-manager
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 let
   isDarwin = pkgs.stdenv.isDarwin;
   hostname = config.networking.hostName or "";
@@ -23,7 +23,7 @@ in {
       };
     };
 
-    home.activation.fixSshConfigPermissions = lib.hm.dag.entryAfter ["writeBoundary"] ''
+    home.activation.fixSshConfigPermissions = inputs.home-manager.lib.hm.dag.entryAfter ["writeBoundary"] ''
       if [ -L "$HOME/.ssh/config" ]; then
         $DRY_RUN_CMD cp --remove-destination "$(readlink "$HOME/.ssh/config")" "$HOME/.ssh/config"
         $DRY_RUN_CMD chmod 600 "$HOME/.ssh/config"
