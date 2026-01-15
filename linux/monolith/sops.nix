@@ -31,6 +31,7 @@ in {
         FILEBASE_TOKEN = p."filebase/token";
         FIRECRAWL_API_KEY = p."firecrawl/api_key";
         GEMINI_API_KEY = p."gemini/api_key";
+        GIPHY_API_KEY = p."giphy/api_key";
         GITHUB_CLIENT_ID = p."monolith/github_client_id";
         GITHUB_CLIENT_SECRET = p."monolith/github_client_secret";
         GOOGLE_API_KEY = p."monolith/google_api_key";
@@ -43,6 +44,7 @@ in {
         OPENAI_API_KEY = p."openai/api_key";
         OPENROUTER_KEY = p."openrouter/api_key";
         PERPLEXITY_API_KEY = p."perplexity/api_key";
+        PIRATEWEATHER_API_KEY = p."pirateweather/api_key";
         PUREMD_API_KEY = p."puremd/api_key";
         PUSHOVER_TOKEN = p."pushover/token";
         PUSHOVER_USER = p."pushover/user";
@@ -52,11 +54,15 @@ in {
         REDDIT_USERNAME = p."reddit/username";
         REPLICATE_API_TOKEN = p."replicate/api_token";
         SERPAPI_API_KEY = p."serpapi/api_key";
+        SPOTIFY_CLIENT_ID = p."spotify/client_id";
+        SPOTIFY_CLIENT_SECRET = p."spotify/client_secret";
         TAILSCALE_API_KEY = p."tailscale/api_key";
         TAILSCALE_LOGIN_SERVER = p."tailscale/login_server";
         TELEGRAM_API_HASH = p."telegram/api_hash";
         TELEGRAM_API_ID = p."telegram/api_id";
         UNREALSPEECH_API_KEY = p."unrealspeech/api_key";
+        WEBSHARE_PROXY_PASSWORD = p."webshare/proxy_password";
+        WEBSHARE_PROXY_USERNAME = p."webshare/proxy_username";
         XAI_API_KEY = p."xai/api_key";
       };
     };
