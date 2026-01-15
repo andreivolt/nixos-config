@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Brightness control with DPMS support
-# Supports both internal displays (brightnessctl) and external monitors (ddcutil)
+# Brightness control with DPMS support and wob OSD
 
 WOB_SOCK="$XDG_RUNTIME_DIR/wob.sock"
 DDC_BUS_CACHE="/tmp/ddc-bus"
@@ -17,7 +16,7 @@ acquire_ddc_lock() {
 }
 
 send_wob() {
-    [[ -p "$WOB_SOCK" ]] && echo "$1" > "$WOB_SOCK"
+    [[ -p "$WOB_SOCK" ]] && echo "$1" > "$WOB_SOCK" &
 }
 
 has_backlight() {
@@ -60,26 +59,22 @@ set_ddc_brightness() {
     ((percent > 100)) && percent=100
 
     ddc_value=${BRIGHTNESS_LEVELS[$((percent / 5))]}
-
-    ddcutil --bus="$bus" --skip-ddc-checks --noverify setvcp 10 "$ddc_value" &>/dev/null
+    ddcutil --bus="$bus" --skip-ddc-checks --noverify setvcp 10 "$ddc_value" &>/dev/null &
 
     echo "$percent" > "$DDC_BRIGHTNESS_CACHE"
     echo "$percent"
 }
 
-get_focused_monitor() {
-    hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .name'
-}
-
-is_internal_focused() {
-    [[ "$(get_focused_monitor)" == eDP* ]]
-}
+MONITOR_INFO=$(hyprctl monitors -j)
+FOCUSED_MONITOR=$(echo "$MONITOR_INFO" | jq -r '.[] | select(.focused == true) | .name')
+DPMS_STATUS=$(echo "$MONITOR_INFO" | jq -r '.[0].dpmsStatus')
+USE_BACKLIGHT=$([[ "$FOCUSED_MONITOR" == eDP* ]] && has_backlight && echo 1)
 
 case "$1" in
     up)
-        if [[ "$(hyprctl monitors -j | jq -r '.[0].dpmsStatus')" == "false" ]]; then
+        if [[ "$DPMS_STATUS" == "false" ]]; then
             hyprctl dispatch dpms on
-            if is_internal_focused && has_backlight; then
+            if [[ -n "$USE_BACKLIGHT" ]]; then
                 send_wob "$(get_backlight_percent)"
             else
                 send_wob "$(get_ddc_brightness)"
@@ -87,27 +82,26 @@ case "$1" in
             exit 0
         fi
 
-        if is_internal_focused && has_backlight; then
-            brightnessctl s "${BACKLIGHT_STEP}%+"
+        if [[ -n "$USE_BACKLIGHT" ]]; then
+            brightnessctl -q s "${BACKLIGHT_STEP}%+"
             send_wob "$(get_backlight_percent)"
         else
             acquire_ddc_lock || exit 0
             current=$(get_ddc_brightness)
             [[ -z "$current" ]] && exit 1
-            new=$((current + DDC_STEP))
-            result=$(set_ddc_brightness "$new")
+            result=$(set_ddc_brightness $((current + DDC_STEP)))
             send_wob "$result"
         fi
         ;;
 
     down)
-        if is_internal_focused && has_backlight; then
+        if [[ -n "$USE_BACKLIGHT" ]]; then
             current=$(get_backlight_percent)
             if [[ "$current" -le "$BACKLIGHT_STEP" ]]; then
-                brightnessctl s 1%
-                sleep 0.2 && hyprctl dispatch dpms off
+                brightnessctl -q s 1%
+                { sleep 0.2 && hyprctl dispatch dpms off; } &
             else
-                brightnessctl s "${BACKLIGHT_STEP}%-"
+                brightnessctl -q s "${BACKLIGHT_STEP}%-"
                 send_wob "$(get_backlight_percent)"
             fi
         else
