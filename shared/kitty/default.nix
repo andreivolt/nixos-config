@@ -11,17 +11,9 @@ let
     hash = "sha256-0OPNHWR/qCbMKDQE6Pbt0Ew9QCm2ZSeZq4s9OL2rj04=";
   };
 
-  nvimScrollbackConfig = ''
+  scrollbackConfig = ''
     vim.opt.rtp:prepend("${kittyScrollbackNvim}")
-    vim.opt.signcolumn = "no"
-    vim.opt.statuscolumn = ""
-    vim.opt.clipboard = "unnamedplus"
-
-    vim.api.nvim_create_autocmd("TextYankPost", {
-      callback = function()
-        vim.highlight.on_yank({ timeout = 100 })
-      end,
-    })
+    dofile(vim.fn.expand("~/.config/nvim-pager.lua"))
 
     vim.api.nvim_create_autocmd("TermClose", {
       callback = function()
@@ -32,19 +24,13 @@ let
     require("kitty-scrollback").setup({
       {
         paste_window = { yank_register_enabled = false },
-        callbacks = {
-          after_ready = function()
-            vim.wo.wrap = true
-          end,
-        },
       },
     })
   '';
 in {
   home-manager.sharedModules = [
     ({lib, ...}: {
-      # nvim-scrollback profile for kitty-scrollback.nvim
-      xdg.configFile."nvim-scrollback/init.lua".text = nvimScrollbackConfig;
+      xdg.configFile."nvim-scrollback/init.lua".text = scrollbackConfig;
 
       programs.kitty = {
         enable = true;

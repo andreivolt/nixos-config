@@ -17,7 +17,7 @@ in {
     LESSUTFCHARDEF = "E000-F8FF:p,F0000-FFFFD:p";
     MANPAGER = "nvim +Man!";
     MANWIDTH = "100";
-    PAGER = "nvimpager";
+    PAGER = "nvim-pager";
     NIXPKGS_ALLOW_UNFREE = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "wayland";
     PYTHONDONTWRITEBYTECODE = "1";

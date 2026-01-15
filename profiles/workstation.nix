@@ -19,11 +19,13 @@
     ../linux/networkmanager.nix
 
     # Services
+    ../linux/mullvad.nix
     ../linux/tor.nix
     ../linux/socks-proxy.nix
 
     ../shared/ghostty
     ../shared/kitty
+    ../shared/nvim-pager.nix
     ../shared/nushell
     ../shared/sublime
     ../shared/zed
