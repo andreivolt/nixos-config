@@ -11,6 +11,9 @@ let
   allUserKeys = lib.attrValues keys.userKeys;
 
 in {
+  # Disable systemd-ssh-proxy - causes permissions errors (file owned by nobody)
+  programs.ssh.systemd-ssh-proxy.enable = false;
+
   # Known hosts - trust all machines on the Tailnet
   programs.ssh.knownHosts = {
     riva = {
