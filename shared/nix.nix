@@ -6,6 +6,7 @@
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];
+    keep-outputs = true; # Prevent build deps from being garbage collected
     fallback = true;
     connect-timeout = 1;
     stalled-download-timeout = 1;
