@@ -9,6 +9,9 @@ let
   hyprbarsPatched = hyprlandPlugins.hyprbars.overrideAttrs (oldAttrs: {
     patches = (oldAttrs.patches or []) ++ [ ./hyprbars.patch ];
   });
+
+  # Blue light filter script (also includes P3 saturation boost for Asahi)
+  bluelight = pkgs.writeShellScriptBin "bluelight" (builtins.readFile ./scripts/bluelight);
 in {
   imports = [
     ./vars.nix
@@ -30,7 +33,7 @@ in {
   environment.systemPackages = with pkgs; [
     hyprpicker
     hyprshot
-    hyprsunsetPkg
+    bluelight
   ] ++ (with hyprlandPkgs; [
     hyprland-qtutils
   ]);
