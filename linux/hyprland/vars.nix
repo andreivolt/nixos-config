@@ -13,6 +13,13 @@ let
   '' + (if !isAsahi then ''
     monitor=,preferred,auto,1.875
   '' else "");
+
+  # P3 display saturation shader (Asahi only - compensates for wide gamut)
+  shaderConfig = if isAsahi then ''
+    decoration {
+        screen_shader = ~/dev/nixos-config/linux/hyprland/shaders/vibrance-p3.glsl
+    }
+  '' else "";
 in {
   # Generate machine-specific Hyprland variables
   home-manager.users.andrei = { pkgs, config, ... }: {
@@ -24,6 +31,7 @@ in {
 
       # Monitor configuration
       ${monitorConfig}
+      ${shaderConfig}
     '';
 
     # Dropdown settings - mutable symlink to repo file
