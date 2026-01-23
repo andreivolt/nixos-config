@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+# Blue light filter with adjustable intensity
+# Usage: bluelight.sh [0-100]  (0=off, 100=max warmth)
+#        bluelight.sh off
+
+SHADER_DIR=~/.config/hypr/shaders
+mkdir -p "$SHADER_DIR"
+
+intensity="${1:-50}"
+
+if [[ "$intensity" == "off" || "$intensity" == "0" ]]; then
+    hyprctl keyword decoration:screen_shader ""
+    notify-send "Blue Light" "Off"
+    exit 0
+fi
+
+# Convert 0-100 to shader values
+# blue: 1.0 (no filter) to 0.15 (extreme filter)
+# green: 1.0 to 0.65
+blue=$(awk "BEGIN {printf \"%.2f\", 1.0 - ($intensity / 100.0 * 0.85)}")
+green=$(awk "BEGIN {printf \"%.2f\", 1.0 - ($intensity / 100.0 * 0.35)}")
+
+cat > "$SHADER_DIR/bluelight-temp.glsl" << EOF
+// Blue light filter (intensity: $intensity%)
+#version 300 es
+
+precision mediump float;
+in vec2 v_texcoord;
+layout(location = 0) out vec4 fragColor;
+uniform sampler2D tex;
+
+void main() {
+    vec4 color = texture(tex, v_texcoord);
+
+    // P3 saturation boost
+    float gray = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
+    vec3 result = mix(vec3(gray), color.rgb, 1.22);
+
+    // Blue light filter
+    result.b *= $blue;
+    result.g *= $green;
+
+    fragColor = vec4(result, color.a);
+}
+EOF
+
+hyprctl keyword decoration:screen_shader "$SHADER_DIR/bluelight-temp.glsl"
+notify-send "Blue Light" "Intensity: $intensity%"
