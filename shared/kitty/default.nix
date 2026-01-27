@@ -34,6 +34,7 @@ in {
 
       programs.kitty = {
         enable = true;
+        shellIntegration.mode = "no-rc no-title";
 
         font = {
           name = "Pragmasevka Nerd Font Light";
