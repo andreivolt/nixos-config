@@ -241,6 +241,7 @@
         }
         "${inputs.self}/hosts/ampere"
         home-manager.nixosModules.home-manager
+        sops-nix.nixosModules.sops
       ];
       specialArgs = {inherit inputs;};
     };

@@ -44,6 +44,8 @@ let
     "lastfm/api_key"
     "lastfm/api_secret"
     "lastfm/username"
+    "livekit/api_key"
+    "livekit/api_secret"
     "lifx/token"
     "linode/token"
     "nextdns/setup_id"

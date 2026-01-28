@@ -3,6 +3,7 @@ keys:
   - &mac age1tljrrk6stmraanxcn580j75vxfrp4d8qpwdc9m4wyhwaght6eguqza0qt0
   - &riva age1qanq2pe3zrf5jxl8c3yctjx0yjd8z6jrcnzell45mfhvfdwc7q8qua5zvv
   - &watts age19g7fqq7ux6dfk9ncf2rkn3glkm4pxueye8md32r9hqe2fraw5qtsxxzt38
+  - &ampere age190t8cy2gpqgn95xttegk65s4s83zwu7spwwv434rmrhhlhryhelsz6u5c0
 
 creation_rules:
   - path_regex: secrets/.*\.yaml$
