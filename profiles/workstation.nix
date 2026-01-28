@@ -58,6 +58,7 @@
     ../linux/kbd-backlight-idle.nix
     ../linux/hyprsunset-wake.nix
     ../linux/wob.nix
+    ../linux/screen-share.nix
   ];
 
   # GUI-specific hardware
