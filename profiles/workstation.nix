@@ -59,6 +59,7 @@
     ../linux/hyprsunset-wake.nix
     ../linux/wob.nix
     ../linux/power-menu.nix
+    ../linux/screen-share.nix
   ];
 
   # GUI-specific hardware
