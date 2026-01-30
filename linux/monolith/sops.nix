@@ -23,6 +23,7 @@ in {
         AZURE_SPEECH_REGION = p."azure_speech/region";
         CARTESIA_API_KEY = p."cartesia/api_key";
         DEEPGRAM_API_KEY = p."deepgram/api_key";
+        DNSIMPLE_API_TOKEN = p."dnsimple/access_token";
         ELEVENLABS_API_KEY = p."elevenlabs/avoltnet_api_key";
         EXA_API_KEY = p."exa/api_key";
         FAL_KEY = p."fal/api_key";
