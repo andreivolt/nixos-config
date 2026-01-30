@@ -26,7 +26,7 @@ in
     home.file.".oci/config".text = lib.generators.toINI {} {
       DEFAULT = {
         user = "ocid1.user.oc1..aaaaaaaazqf7w6jdk7632rqqbpgo6odwcg4olgwasedu3urjztd4vsxnbisq";
-        fingerprint = "31:3b:fe:97:8d:0b:14:36:c6:89:f4:bf:24:aa:0d:a6";
+        fingerprint = "5f:e5:b5:1f:47:a6:e8:2e:c7:42:0f:c9:9d:14:df:45";
         key_file = "~/.oci/oci_api_key.pem";
         tenancy = "ocid1.tenancy.oc1..aaaaaaaaxhpshf4vvz7slwxlpevnxbm3hzrcex7of6aima6uachydzb4rvva";
         region = "eu-amsterdam-1";
