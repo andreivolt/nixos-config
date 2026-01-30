@@ -9,6 +9,8 @@
       "watts:FSqfFsCS8kQ1S38CJeND7hwRgS778f5sM5yy+rdYnN8="
       "ampere:VemsKe9KxjJHofpyUnMnGC9jHo6v49nAlKVQf/1rseI="
     ];
+    connect-timeout = 3;
+    download-attempts = 1;
   };
 
   # Build on watts for x86_64-linux packages
