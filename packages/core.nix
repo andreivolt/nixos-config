@@ -26,6 +26,7 @@ with pkgs; with lib; [
   ast-grep
   babashka
   bat
+  bitwarden-cli
   bfg-repo-cleaner
   btop
   bun
@@ -43,7 +44,7 @@ with pkgs; with lib; [
   direnv
   dnsutils
   doctl
-  dogdns
+  doggo
   duf
   dwdiff
   edir
@@ -108,7 +109,7 @@ with pkgs; with lib; [
   nix-output-monitor
   nix-prefetch-git
   nix-top
-  nixfmt-rfc-style
+  nixfmt
   nmap
   nodejs
   nushell

@@ -6,6 +6,11 @@ keys:
   - &ampere age190t8cy2gpqgn95xttegk65s4s83zwu7spwwv434rmrhhlhryhelsz6u5c0
 
 creation_rules:
+  - path_regex: secrets/vaultwarden\.yaml$
+    key_groups:
+      - age:
+          - *personal
+          - *ampere
   - path_regex: secrets/.*\.yaml$
     key_groups:
       - age:
