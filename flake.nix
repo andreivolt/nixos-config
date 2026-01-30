@@ -71,6 +71,10 @@
       url = "git+file:/home/andrei/dev/monolith";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    launcher = {
+      url = "git+file:/home/andrei/dev/launcher";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {
@@ -94,6 +98,7 @@
     pyproject-build-systems,
     rust-overlay,
     monolith,
+    launcher,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
@@ -227,6 +232,8 @@
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
         sops-nix.nixosModules.sops
+        launcher.nixosModules.default
+        { services.launcher.enable = true; }
       ];
       specialArgs = {inherit inputs;};
     };
