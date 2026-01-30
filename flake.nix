@@ -68,7 +68,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     monolith = {
-      url = "path:/home/andrei/dev/monolith";
+      url = "git+file:/home/andrei/dev/monolith";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
