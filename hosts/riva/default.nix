@@ -18,6 +18,7 @@
     ../../linux/rclone.nix
     # ../../linux/rclone-sync.nix
     ../../linux/zram.nix
+    ../../linux/freebox.nix
     ../../linux/monolith
     ./distributed-builds.nix
     ./earlyoom.nix
