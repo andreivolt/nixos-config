@@ -20,6 +20,9 @@
         nameservers.global = [
           "https://dns.nextdns.io/1c27d6"
         ];
+        extra_records = [
+          { name = "pw.avolt.net"; type = "A"; value = "100.64.0.1"; }
+        ];
       };
 
       # IP prefixes for the tailnet
