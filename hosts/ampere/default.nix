@@ -9,6 +9,7 @@
     ./hardware-configuration.nix
     ./headscale.nix
     ./livekit.nix
+    ./vaultwarden.nix
     ../../profiles/core.nix
     ../../linux/zram.nix
   ];
@@ -19,6 +20,7 @@
   networking = {
     hostName = "ampere";
     domain = "";
+    hosts."100.64.0.1" = ["pw.avolt.net"];
     firewall = {
       enable = true;
       allowedTCPPorts = [
