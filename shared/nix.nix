@@ -8,9 +8,6 @@
     experimental-features = [ "nix-command" "flakes" ];
     keep-outputs = true; # Prevent build deps from being garbage collected
     fallback = true;
-    connect-timeout = 1;
-    stalled-download-timeout = 1;
-    download-attempts = 1;
     substituters = [
       "https://nix-community.cachix.org"
       "https://hyprland.cachix.org"
