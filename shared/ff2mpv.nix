@@ -6,10 +6,14 @@
     description = "ff2mpv's external manifest";
     path = "${pkgs.ff2mpv}/bin/ff2mpv.py";
     type = "stdio";
-    allowed_origins = ["chrome-extension://ephjcajbkgplkjmelpglennepbpmdpjg/"];
+    allowed_origins = ["chrome-extension://icojbfhffjeldomcfhocjagejaklfnnn/"];
   });
 in {
   home-manager.users.andrei = {
+    programs.chromium.commandLineArgs = [
+      "--load-extension=/home/andrei/dev/ff2mpv"
+    ];
+
     home.file = {
       # Linux paths
       ".config/chromium/NativeMessagingHosts/ff2mpv.json" = {
