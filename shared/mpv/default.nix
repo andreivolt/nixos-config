@@ -6,6 +6,8 @@
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
   isLinux = pkgs.stdenv.isLinux;
+  isAsahi = isLinux && pkgs.stdenv.hostPlatform.isAarch64;
+  browser = if isAsahi then "chromium+gnomekeyring" else "chrome";
 
   # custom seek-to with paste-timestamp functionality
   seek-to-custom = pkgs.runCommand "seek-to-custom" {} ''
@@ -95,6 +97,7 @@ in {
           input-ipc-server = "/tmp/mpvsocket";
           watch-later-directory = "~/.local/state/mpv/watch_later";
           ytdl-format = "bestvideo[vcodec^=avc]+bestaudio/best";
+          ytdl-raw-options = "cookies-from-browser=${browser}";
           sub-font-size = 45;
           sub-border-size = 2;
           sub-shadow-offset = 2;
@@ -114,6 +117,8 @@ in {
           "${mod}+Alt+j" = "script-message chat-hidden";
         };
       };
+
+      xdg.configFile."yt-dlp/config".text = "--cookies-from-browser ${browser}";
 
       # custom scripts not in nixpkgs
       xdg.configFile = {
