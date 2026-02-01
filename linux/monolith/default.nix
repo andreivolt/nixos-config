@@ -13,7 +13,7 @@
     environmentFile = config.sops.templates."monolith.env".path;
   };
 
-  home-manager.users.andrei.programs.chromium.commandLineArgs = [
-    "--load-extension=/home/andrei/dev/monolith/apps/chrome-extension/.output/chrome-mv3"
+  chromium.unpackedExtensions = [
+    "/home/andrei/dev/monolith/apps/chrome-extension/.output/chrome-mv3"
   ];
 }

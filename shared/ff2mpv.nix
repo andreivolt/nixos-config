@@ -9,11 +9,11 @@
     allowed_origins = ["chrome-extension://icojbfhffjeldomcfhocjagejaklfnnn/"];
   });
 in {
-  home-manager.users.andrei = {
-    programs.chromium.commandLineArgs = [
-      "--load-extension=/home/andrei/dev/ff2mpv"
-    ];
+  chromium.unpackedExtensions = [
+    "/home/andrei/dev/ff2mpv"
+  ];
 
+  home-manager.users.andrei = {
     home.file = {
       # Linux paths
       ".config/chromium/NativeMessagingHosts/ff2mpv.json" = {
