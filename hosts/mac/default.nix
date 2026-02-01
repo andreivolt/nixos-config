@@ -58,6 +58,7 @@
     ./chrome-history.nix
     ../../shared/chromium-extensions.nix
     ../../shared/ff2mpv.nix
+    ../../shared/dearrow.nix
     ./icloud.nix
     ./iina.nix
     ./interface.nix
