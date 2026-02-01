@@ -52,10 +52,12 @@
     ../linux/xdg-portals.nix
     ../linux/chrome-history.nix
     ../linux/chromium.nix
+    ../linux/chromium-blank-profile.nix
     ../linux/dolphin.nix
     ../linux/kdeconnect.nix
     ../shared/chromium-extensions.nix
     ../shared/ff2mpv.nix
+    ../shared/dearrow.nix
     ../linux/kbd-backlight-idle.nix
     ../linux/hyprsunset-wake.nix
     ../linux/wob.nix
