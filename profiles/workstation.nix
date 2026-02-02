@@ -55,9 +55,7 @@
     ../linux/chromium-blank-profile.nix
     ../linux/dolphin.nix
     ../linux/kdeconnect.nix
-    ../shared/chromium-extensions.nix
-    ../shared/ff2mpv.nix
-    ../shared/dearrow.nix
+    ../shared/chromium
     ../linux/kbd-backlight-idle.nix
     ../linux/hyprsunset-wake.nix
     ../linux/wob.nix
