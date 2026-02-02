@@ -13,7 +13,7 @@
     environmentFile = config.sops.templates."monolith.env".path;
   };
 
-  chromium.unpackedExtensions = [
-    "/home/andrei/dev/monolith/apps/chrome-extension/.output/chrome-mv3"
+  chromium.extensions = [
+    inputs.monolith.packages.${pkgs.system}.chrome-extension
   ];
 }

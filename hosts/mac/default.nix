@@ -56,9 +56,7 @@
     ./homebrew
     ./host-opener.nix
     ./chrome-history.nix
-    ../../shared/chromium-extensions.nix
-    ../../shared/ff2mpv.nix
-    ../../shared/dearrow.nix
+    ../../shared/chromium
     ./icloud.nix
     ./iina.nix
     ./interface.nix
