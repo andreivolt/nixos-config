@@ -75,6 +75,14 @@
       url = "git+file:/home/andrei/dev/launcher";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    ff2mpv = {
+      url = "git+file:/home/andrei/dev/ff2mpv";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    dearrow = {
+      url = "git+file:/home/andrei/dev/DeArrow";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {
@@ -99,6 +107,8 @@
     rust-overlay,
     monolith,
     launcher,
+    ff2mpv,
+    dearrow,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
@@ -155,6 +165,18 @@
             patches = (oldAttrs.patches or []) ++ [
               ./pkgs/batsignal-signal-handler.patch
             ];
+          });
+        })
+        # Fix openssl_1_1 patch after 3.0.19 update (nixpkgs#485055, pending nixos-unstable)
+        (final: prev: {
+          openssl_1_1 = prev.openssl_1_1.overrideAttrs (oldAttrs: {
+            patches = [
+              (builtins.elemAt oldAttrs.patches 0) # nix-ssl-cert-file.patch
+            ];
+            postPatch = (oldAttrs.postPatch or "") + ''
+              substituteInPlace include/internal/cryptlib.h \
+                --replace-fail 'OPENSSLDIR "/cert.pem"' '"/etc/ssl/certs/ca-certificates.crt"'
+            '';
           });
         })
         # Ignore XF86 keys (power button) in hyprlock password input
