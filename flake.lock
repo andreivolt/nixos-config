@@ -839,11 +839,10 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1769617690,
-        "narHash": "sha256-gLrZMNI4Fq+kcSb3rB08HZCgzNXzBuIKJab3Jf/9o2M=",
-        "ref": "refs/heads/main",
-        "rev": "26a0ef905e20edf1a82910c87f152c4fcbe8dd12",
-        "revCount": 43,
+        "dirtyRev": "d4c099f9d40a04f0d6877869ebb78a662a5268e7-dirty",
+        "dirtyShortRev": "d4c099f-dirty",
+        "lastModified": 1770077854,
+        "narHash": "sha256-TCsIR4q2uH5qSPD18zRuDKvNSA83VodPY/ztCPktpo8=",
         "type": "git",
         "url": "file:/home/andrei/dev/launcher"
       },
