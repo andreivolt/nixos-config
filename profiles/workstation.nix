@@ -52,6 +52,7 @@
     ../linux/xdg-portals.nix
     ../linux/chrome-history.nix
     ../linux/chromium.nix
+    ../linux/chromium-block-js.nix
     ../linux/chromium-blank-profile.nix
     ../linux/dolphin.nix
     ../linux/kdeconnect.nix
