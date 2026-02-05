@@ -3,16 +3,15 @@ let
   inherit (pkgs.stdenv) isLinux;
   isAsahi = pkgs.stdenv.hostPlatform.isAarch64 && isLinux;
 in {
-  options.chromium.baseFlags = lib.mkOption {
+  options.chromium.baseArgs = lib.mkOption {
     type = lib.types.listOf lib.types.str;
     default = [];
-    description = "Base Chromium flags shared across all profiles (main and blank).";
+    description = "Base Chromium command-line arguments shared across all profiles.";
   };
 
   config = {
-    chromium.baseFlags =
+    chromium.baseArgs =
       lib.optionals isLinux [
-        "--enable-features=UseOzonePlatform"
         "--ozone-platform=wayland"
       ] ++ lib.optionals isAsahi [
         "--font-render-hinting=none"
@@ -28,7 +27,7 @@ in {
     home-manager.users.andrei = {
       programs.chromium = {
         enable = isLinux;
-        commandLineArgs = config.chromium.baseFlags;
+        commandLineArgs = config.chromium.baseArgs;
       };
     };
   };

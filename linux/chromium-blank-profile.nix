@@ -3,7 +3,7 @@
 { pkgs, config, lib, ... }:
 let
   chromium = "${pkgs.chromium}/bin/chromium";
-  flags = lib.concatStringsSep " " (config.chromium.baseFlags ++ [
+  flags = lib.concatStringsSep " " (config.chromium.baseArgs ++ [
     "--user-data-dir=/tmp/chromium-blank"
     "--no-first-run"
     "--no-default-browser-check"
