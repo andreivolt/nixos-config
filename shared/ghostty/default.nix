@@ -22,9 +22,9 @@ in {
           font-family-bold = "Pragmasevka Nerd Font";
           font-family-bold-italic = "Pragmasevka Nerd Font Italic";
           font-thicken = true;
-          font-size = 16;
+          font-size = 13;
 
-          adjust-cell-height = -8;
+          adjust-cell-height = -4;
           adjust-font-baseline = 0;
           adjust-cell-width = "-12%";
 
