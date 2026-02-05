@@ -1,7 +1,7 @@
 # Default applications for MIME types
 { pkgs, ... }:
 let
-  browser = if pkgs.stdenv.hostPlatform.isAarch64 then "chromium-browser" else "google-chrome";
+  browser = "chromium-browser";
   image-viewer = "swayimg.desktop";
   text-editor = "sublime_text.desktop";
   video-player = "mpv.desktop";

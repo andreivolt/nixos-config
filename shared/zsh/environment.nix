@@ -1,11 +1,9 @@
 # Environment variables and PATH configuration
 { lib, pkgs, ... }:
 let
-  isAsahi = pkgs.stdenv.isLinux && pkgs.stdenv.hostPlatform.isAarch64;
   browser =
-    if isAsahi then "chromium"
-    else if pkgs.stdenv.isDarwin then "google-chrome"
-    else "google-chrome-stable";
+    if pkgs.stdenv.isLinux then "chromium"
+    else "google-chrome";
 in {
   home.sessionVariables = {
     BROWSER = browser;

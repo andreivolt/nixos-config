@@ -81,7 +81,7 @@ $env.NU_PLUGIN_DIRS = [
 # Environment variables from zsh config
 $env.EDITOR = "nvim"
 $env.PAGER = "nvim-pager"
-$env.BROWSER = "google-chrome-stable"
+$env.BROWSER = "chromium"
 
 $env.CURL_CA_BUNDLE = "~/.local/ca-certificates/combined-ca-bundle.pem"
 

@@ -42,7 +42,6 @@ with pkgs;
 ++ lib.optionals (isLinux && isx86_64) [
   beeper
   discord
-  google-chrome
   input-leap
   puppeteer-cli
 
