@@ -919,11 +919,11 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "lastModified": 1770043649,
-        "narHash": "sha256-V/FegExl/FC+7OlmQk5i74IxqfDsw4E7Urd2JA4d+WA=",
+        "lastModified": 1770241218,
+        "narHash": "sha256-h9uHy8k3vlpA1atQzJRUOeHZU0/qnhnAtIngEFk+Bd4=",
         "ref": "refs/heads/main",
-        "rev": "ec9c5a1ad47b8f7f2b5abb34c4acdc780313e98c",
-        "revCount": 1114,
+        "rev": "3892133d1e4d95871146620ab60deb5569b70d78",
+        "revCount": 1116,
         "type": "git",
         "url": "file:/home/andrei/dev/monolith"
       },
