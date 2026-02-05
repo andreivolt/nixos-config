@@ -118,7 +118,10 @@ in {
         };
       };
 
-      xdg.configFile."yt-dlp/config".text = "--cookies-from-browser ${browser}";
+      xdg.configFile."yt-dlp/config".text = ''
+        --cookies-from-browser ${browser}
+        --remote-components ejs:github
+      '';
 
       # custom scripts not in nixpkgs
       xdg.configFile = {

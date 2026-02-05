@@ -140,6 +140,22 @@
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
           mkPep723Script = mkPep723Script final;
         })
+        # Update yt-dlp to fix YouTube live stream HLS 403 errors
+        (final: prev: {
+          yt-dlp = prev.yt-dlp.overrideAttrs (old: {
+            version = "2026.02.04";
+            src = prev.fetchFromGitHub {
+              owner = "yt-dlp";
+              repo = "yt-dlp";
+              rev = "2026.02.04";
+              hash = "sha256-KXnz/ocHBftenDUkCiFoBRBxi6yWt0fNuRX+vKFWDQw=";
+            };
+            postPatch = builtins.replaceStrings
+              [ "if curl_cffi_version != (0, 5, 10) and not (0, 10) <= curl_cffi_version < (0, 14)" ]
+              [ "if curl_cffi_version != (0, 5, 10) and not (0, 10) <= curl_cffi_version < (0, 15)" ]
+              old.postPatch;
+          });
+        })
         # Disable E501 line length check in writers.writePython3
         (final: prev: {
           writers = prev.writers // {
