@@ -6,6 +6,7 @@ let
 in {
   imports = [
     ./extensions.nix
+    ./flags.nix
   ];
 
   options.chromium.extensions = lib.mkOption {
