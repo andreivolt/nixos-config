@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     ff2mpv.url = "git+file:/home/andrei/dev/ff2mpv";
+    ff2mpv.inputs.nixpkgs.follows = "nixpkgs";
     dearrow.url = "git+file:/home/andrei/dev/DeArrow";
   };
 
