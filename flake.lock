@@ -33,8 +33,27 @@
         "type": "github"
       }
     },
+    "block-js": {
+      "inputs": {
+        "nixpkgs": [
+          "chromium-extensions",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1770280209,
+        "narHash": "sha256-rVBveeMhNN8wLjlNc1BkJAhc9vjtBoZSC4djdTTLJIg=",
+        "path": "/home/andrei/dev/chromium-block-js",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/andrei/dev/chromium-block-js",
+        "type": "path"
+      }
+    },
     "chromium-extensions": {
       "inputs": {
+        "block-js": "block-js",
         "dearrow": "dearrow",
         "ff2mpv": "ff2mpv",
         "nixpkgs": [
@@ -130,11 +149,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770252559,
-        "narHash": "sha256-WS56ACbDVI1MX7jrZETkKEQSOZZYvw27r7gK/vVWCYo=",
+        "lastModified": 1770282186,
+        "narHash": "sha256-wRjfDjmRv7OUmlN5wOu0qAAfcTzQY+UlQAZTSL1ZUzk=",
         "ref": "refs/heads/master",
-        "rev": "7e31f2c301406e72a4d16d417bc5f1d082bd6018",
-        "revCount": 98,
+        "rev": "29ee6daedf8aace81fe1fb2665e7cb27b5d9f837",
+        "revCount": 99,
         "type": "git",
         "url": "file:/home/andrei/dev/ff2mpv"
       },
