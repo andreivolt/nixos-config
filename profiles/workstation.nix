@@ -63,6 +63,7 @@
     ../linux/wob.nix
     ../linux/power-menu.nix
     ../linux/screen-share.nix
+    ../linux/wasistlos-clipboard.nix
   ];
 
   # GUI-specific hardware
