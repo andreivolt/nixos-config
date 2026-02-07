@@ -75,15 +75,15 @@
       "locked": {
         "lastModified": 1770043535,
         "narHash": "sha256-eXUXdsn35XYMXpD+dXsOXOFyDxPWmUDxLkpoyn5+WGw=",
-        "ref": "refs/heads/master",
+        "owner": "andreivolt",
+        "repo": "DeArrow",
         "rev": "d14c3a1c6f66d81058e1482a3a56ef02dc41df2b",
-        "revCount": 1129,
-        "type": "git",
-        "url": "file:/home/andrei/dev/DeArrow"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:/home/andrei/dev/DeArrow"
+        "owner": "andreivolt",
+        "repo": "DeArrow",
+        "type": "github"
       }
     },
     "disko": {
@@ -113,16 +113,17 @@
         ]
       },
       "locked": {
-        "dirtyRev": "b802aecf4519cc7b10e1bacafbcbd5e75509d479-dirty",
-        "dirtyShortRev": "b802aec-dirty",
         "lastModified": 1770827945,
-        "narHash": "sha256-CR7LwNPJbJ5lZvHAD9xUrrPX/YMdMl9z5SwckE5sVh4=",
-        "type": "git",
-        "url": "file:/home/andrei/dev/ff2mpv"
+        "narHash": "sha256-esKID3yJ83/VNKv4bLWTzRY8IrA+CNOrlI2qqAT6nnI=",
+        "owner": "andreivolt",
+        "repo": "ff2mpv",
+        "rev": "b802aecf4519cc7b10e1bacafbcbd5e75509d479",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:/home/andrei/dev/ff2mpv"
+        "owner": "andreivolt",
+        "repo": "ff2mpv",
+        "type": "github"
       }
     },
     "flake-compat": {
