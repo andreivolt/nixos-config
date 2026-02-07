@@ -76,11 +76,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     ff2mpv = {
-      url = "git+file:/home/andrei/dev/ff2mpv";
+      url = "github:andreivolt/ff2mpv";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     dearrow = {
-      url = "git+file:/home/andrei/dev/DeArrow";
+      url = "github:andreivolt/DeArrow";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
