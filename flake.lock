@@ -33,27 +33,8 @@
         "type": "github"
       }
     },
-    "block-js": {
-      "inputs": {
-        "nixpkgs": [
-          "chromium-extensions",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1770280209,
-        "narHash": "sha256-rVBveeMhNN8wLjlNc1BkJAhc9vjtBoZSC4djdTTLJIg=",
-        "path": "/home/andrei/dev/chromium-block-js",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/andrei/dev/chromium-block-js",
-        "type": "path"
-      }
-    },
     "chromium-extensions": {
       "inputs": {
-        "block-js": "block-js",
         "dearrow": "dearrow",
         "ff2mpv": "ff2mpv",
         "nixpkgs": [
