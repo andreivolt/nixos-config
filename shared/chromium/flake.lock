@@ -1,22 +1,5 @@
 {
   "nodes": {
-    "block-js": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1770280209,
-        "narHash": "sha256-rVBveeMhNN8wLjlNc1BkJAhc9vjtBoZSC4djdTTLJIg=",
-        "path": "/home/andrei/dev/chromium-block-js",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/andrei/dev/chromium-block-js",
-        "type": "path"
-      }
-    },
     "dearrow": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -142,7 +125,6 @@
     },
     "root": {
       "inputs": {
-        "block-js": "block-js",
         "dearrow": "dearrow",
         "ff2mpv": "ff2mpv",
         "nixpkgs": "nixpkgs_2"
