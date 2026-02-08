@@ -26,7 +26,7 @@
     ./touchscreen.nix
     ./hypr-autorotate.nix
     ./insync.nix
-    ../../linux/zram.nix
+    ../../linux/zswap.nix
     ../../linux/glsl-screensaver.nix
     ./ddc.nix
     ./v4l2loopback.nix
