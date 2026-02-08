@@ -61,6 +61,8 @@ in {
         TAILSCALE_LOGIN_SERVER = p."tailscale/login_server";
         TELEGRAM_API_HASH = p."telegram/api_hash";
         TELEGRAM_API_ID = p."telegram/api_id";
+        TIDAL_CLIENT_ID = p."tidal/client_id";
+        TIDAL_CLIENT_SECRET = p."tidal/client_secret";
         UNREALSPEECH_API_KEY = p."unrealspeech/api_key";
         WEBSHARE_PROXY_PASSWORD = p."webshare/proxy_password";
         WEBSHARE_PROXY_USERNAME = p."webshare/proxy_username";

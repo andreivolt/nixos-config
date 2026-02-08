@@ -81,6 +81,8 @@ let
     "tailscale/net"
     "tailscale/org"
     "telegram/api_hash"
+    "tidal/client_id"
+    "tidal/client_secret"
     "telegram/api_id"
     "unrealspeech/api_key"
     "vocode/api_key"
