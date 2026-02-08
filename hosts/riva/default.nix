@@ -17,7 +17,7 @@
     ../../linux/mpv.nix
     ../../linux/rclone.nix
     # ../../linux/rclone-sync.nix
-    ../../linux/zram.nix
+    ../../linux/zswap.nix
     ../../linux/freebox.nix
     ../../linux/casting.nix
     ../../linux/monolith
