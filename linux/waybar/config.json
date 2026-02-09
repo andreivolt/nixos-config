@@ -52,6 +52,13 @@
     },
     "tooltip": true
   },
+  "custom/lan-mouse": {
+    "exec": "lan-mouse-toggle waybar",
+    "on-click": "lan-mouse-toggle",
+    "return-type": "json",
+    "signal": 10,
+    "interval": "once"
+  },
   "custom/separator": {
     "format": "|",
     "tooltip": false
@@ -142,6 +149,7 @@
   ],
   "modules-right": [
     "tray",
+    "custom/lan-mouse",
     "cpu",
     "memory",
     "battery",
