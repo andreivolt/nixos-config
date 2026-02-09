@@ -11,7 +11,6 @@ intensity="${1:-50}"
 if [[ "$intensity" == "off" || "$intensity" == "0" ]]; then
     hyprctl keyword decoration:screen_shader ""
     rm -f ~/.local/state/bluelight
-    notify-send "Blue Light" "Off"
     exit 0
 fi
 
@@ -47,4 +46,3 @@ EOF
 
 hyprctl keyword decoration:screen_shader "$SHADER_DIR/bluelight-temp.glsl"
 echo "$intensity" > ~/.local/state/bluelight
-notify-send "Blue Light" "Intensity: $intensity%"
