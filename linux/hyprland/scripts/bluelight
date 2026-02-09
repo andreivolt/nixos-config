@@ -6,6 +6,11 @@
 SHADER_DIR=~/.config/hypr/shaders
 mkdir -p "$SHADER_DIR"
 
+if [[ "$1" == "restore" ]]; then
+    [[ -f ~/.local/state/bluelight ]] && exec "$0" "$(cat ~/.local/state/bluelight)"
+    exit 0
+fi
+
 intensity="${1:-50}"
 
 if [[ "$intensity" == "off" || "$intensity" == "0" ]]; then
