@@ -3,27 +3,30 @@
 { pkgs, config, lib, ... }:
 let
   chromium = "${pkgs.chromium}/bin/chromium";
-  flags = lib.concatStringsSep " " (config.chromium.baseArgs ++ [
+  args = config.chromium.baseArgs ++ [
     "--user-data-dir=/tmp/chromium-blank"
     "--no-first-run"
     "--no-default-browser-check"
-  ]);
+  ];
+  wrapper = pkgs.writeShellScript "chromium-blank" ''
+    exec ${chromium} ${lib.escapeShellArgs args} "$@"
+  '';
 in {
   home-manager.users.andrei.xdg.desktopEntries.chromium-blank = {
     name = "Chromium (Blank Profile)";
     genericName = "Web Browser";
-    exec = "${chromium} ${flags} %U";
+    exec = "${wrapper} %U";
     icon = "chromium";
     terminal = false;
     categories = ["Network" "WebBrowser"];
     actions = {
       "new-window" = {
         name = "New Window";
-        exec = "${chromium} ${flags}";
+        exec = "${wrapper}";
       };
       "new-private-window" = {
         name = "New Incognito Window";
-        exec = "${chromium} ${flags} --incognito";
+        exec = "${wrapper} --incognito";
       };
     };
   };
