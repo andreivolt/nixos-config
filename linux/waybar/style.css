@@ -382,7 +382,8 @@ window#waybar.empty #window {
 
 #custom-tailscale,
 #custom-dictate,
-#custom-caffeine {
+#custom-caffeine,
+#custom-lan-mouse {
 	min-width: 28px;
 	padding: 0 4px;
 	margin: 0;
@@ -418,6 +419,14 @@ window#waybar.empty #window {
 }
 
 #custom-caffeine.inactive {
+	color: rgba(122, 117, 109, 0.4);
+}
+
+#custom-lan-mouse.active {
+	color: #7a9aaa;
+}
+
+#custom-lan-mouse.inactive {
 	color: rgba(122, 117, 109, 0.4);
 }
 

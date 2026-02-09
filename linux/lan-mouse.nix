@@ -55,6 +55,7 @@ in {
         Description = "Lan Mouse - mouse/keyboard sharing";
         PartOf = [ "graphical-session.target" ];
         After = [ "graphical-session.target" ];
+        ConditionPathExists = "!%h/.local/state/lan-mouse-disabled";
       };
       Service = {
         Type = "simple";

@@ -7,6 +7,7 @@ in
 [
   andrei.caffeine
   andrei.dictate
+  andrei.lan-mouse-toggle
   andrei.screen
   andrei.sysrec
   acpi
