@@ -15,7 +15,7 @@ in {
         "--ozone-platform=wayland"
       ] ++ lib.optionals isAsahi [
         "--font-render-hinting=none"
-        "--force-font-family-sans-serif=\"DejaVu Sans Condensed\""
+        "--force-font-family-sans-serif=DejaVu Sans Condensed"
       ];
 
     # Google API keys for Chromium sign-in/sync
@@ -27,7 +27,7 @@ in {
     home-manager.users.andrei = {
       programs.chromium = {
         enable = isLinux;
-        commandLineArgs = config.chromium.baseArgs;
+        commandLineArgs = map lib.escapeShellArg config.chromium.baseArgs;
       };
     };
   };
