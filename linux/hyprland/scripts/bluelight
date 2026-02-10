@@ -7,14 +7,22 @@ SHADER_DIR=~/.config/hypr/shaders
 mkdir -p "$SHADER_DIR"
 
 if [[ "$1" == "restore" ]]; then
-    [[ -f ~/.local/state/bluelight ]] && exec "$0" "$(cat ~/.local/state/bluelight)"
-    exit 0
+    if [[ -f ~/.local/state/bluelight ]]; then
+        exec "$0" "$(cat ~/.local/state/bluelight)"
+    else
+        exec "$0" 0
+    fi
 fi
 
 intensity="${1:-50}"
 
 if [[ "$intensity" == "off" || "$intensity" == "0" ]]; then
-    hyprctl keyword decoration:screen_shader ""
+    VIBRANCY_SHADER="$HOME/dev/nixos-config/linux/hyprland/shaders/vibrance-p3.glsl"
+    if [[ -f "$VIBRANCY_SHADER" ]]; then
+        hyprctl keyword decoration:screen_shader "$VIBRANCY_SHADER"
+    else
+        hyprctl keyword decoration:screen_shader ""
+    fi
     rm -f ~/.local/state/bluelight
     exit 0
 fi
