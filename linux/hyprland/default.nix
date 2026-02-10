@@ -12,6 +12,12 @@ let
 
   # Blue light filter script (also includes P3 saturation boost for Asahi)
   bluelight = pkgs.writeShellScriptBin "bluelight" (builtins.readFile ./scripts/bluelight);
+  # Screenshot wrapper - disables blue light filter during capture
+  screenshot = pkgs.writeShellApplication {
+    name = "screenshot";
+    runtimeInputs = with pkgs; [ grim slurp wl-clipboard imagemagick jq libnotify hyprpicker ];
+    text = builtins.readFile ./scripts/screenshot;
+  };
 in {
   imports = [
     ./vars.nix
@@ -34,6 +40,7 @@ in {
     hyprpicker
     hyprshot
     bluelight
+    screenshot
   ] ++ (with hyprlandPkgs; [
     hyprland-qtutils
   ]);

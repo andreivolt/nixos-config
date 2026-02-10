@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# Screenshot tool - captures without blue light shader
+# Uses grim/slurp directly (hyprshot's freeze causes double shader application)
+
+VIBRANCY_SHADER="$HOME/dev/nixos-config/linux/hyprland/shaders/vibrance-p3.glsl"
+SAVEDIR="${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots"
+TMPFILE=$(mktemp /tmp/screenshot-XXXXXX.png)
+
+cleanup() { rm -f "$TMPFILE"; }
+trap cleanup EXIT
+
+swap_shader() {
+    if [[ -f "$VIBRANCY_SHADER" ]]; then
+        hyprctl keyword decoration:screen_shader "$VIBRANCY_SHADER"
+    else
+        hyprctl keyword decoration:screen_shader ""
+    fi
+    sleep 0.3
+}
+
+MODE=""
+FREEZE=0
+COMMAND=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -m) MODE="$2"; shift 2 ;;
+        -z) FREEZE=1; shift ;;
+        --) shift; COMMAND="$*"; break ;;
+        *) shift ;;
+    esac
+done
+
+case "$MODE" in
+    region)
+        if [[ $FREEZE -eq 1 ]]; then
+            # Freeze: swap shader, freeze clean screen, select, capture directly
+            swap_shader
+            hyprpicker -r -z &
+            PICKER_PID=$!
+            sleep 0.2
+            GEOMETRY=$(slurp) || { kill $PICKER_PID 2>/dev/null; bluelight restore; exit 1; }
+            kill $PICKER_PID 2>/dev/null
+            wait $PICKER_PID 2>/dev/null
+            # Capture region directly (grim handles scaling)
+            grim -g "$GEOMETRY" - | tee >(wl-copy -t image/png) > "$TMPFILE"
+            bluelight restore
+        else
+            # No freeze: select first (instant), then capture clean
+            GEOMETRY=$(slurp) || exit 1
+            swap_shader
+            grim -g "$GEOMETRY" - | tee >(wl-copy -t image/png) > "$TMPFILE"
+            bluelight restore
+        fi
+        ;;
+    window)
+        GEOMETRY=$(hyprctl activewindow -j | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')
+        swap_shader
+        grim -g "$GEOMETRY" - | tee >(wl-copy -t image/png) > "$TMPFILE"
+        bluelight restore
+        ;;
+    output)
+        swap_shader
+        grim - | tee >(wl-copy -t image/png) > "$TMPFILE"
+        bluelight restore
+        ;;
+    *)
+        echo "Usage: screenshot [-z] -m region|window|output [-- command]"
+        exit 1
+        ;;
+esac
+
+# Save to file
+mkdir -p "$SAVEDIR"
+SAVEPATH="$SAVEDIR/$(date +%Y-%m-%d_%H%M%S).png"
+cp "$TMPFILE" "$SAVEPATH"
+
+# Run post-command (e.g. swappy)
+if [[ -n "$COMMAND" ]]; then
+    $COMMAND "$SAVEPATH"
+fi
+
+notify-send -i "$SAVEPATH" "Screenshot saved" "Image saved to $SAVEPATH and copied to the clipboard."
