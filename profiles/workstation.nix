@@ -34,6 +34,7 @@
     ../shared/cursor.nix
     ../shared/fonts.nix
     ../linux/cliphist.nix
+    ../linux/clipboard-pgp-fix.nix
     ../linux/dropdown.nix
     ../linux/gnome-keyring.nix
     ../linux/greetd.nix
