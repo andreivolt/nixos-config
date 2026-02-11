@@ -2,11 +2,25 @@
 # Screenshot tool - captures without blue light shader
 # Uses grim/slurp directly (hyprshot's freeze causes double shader application)
 
+LOCKFILE="/tmp/screenshot.lock"
+
+# Kill any previous stuck instance and restore state
+if [[ -f "$LOCKFILE" ]]; then
+    pkill -9 slurp 2>/dev/null
+    pkill -9 hyprpicker 2>/dev/null
+    bluelight restore 2>/dev/null
+    hyprctl keyword animations:enabled true 2>/dev/null
+    rm -f "$LOCKFILE"
+    exit 0
+fi
+
+touch "$LOCKFILE"
+
 VIBRANCY_SHADER="$HOME/dev/nixos-config/linux/hyprland/shaders/vibrance-p3.glsl"
 SAVEDIR="${XDG_PICTURES_DIR:-$HOME/Pictures}/Screenshots"
 TMPFILE=$(mktemp /tmp/screenshot-XXXXXX.png)
 
-cleanup() { rm -f "$TMPFILE"; }
+cleanup() { rm -f "$TMPFILE" "$LOCKFILE"; }
 trap cleanup EXIT
 
 swap_shader() {
