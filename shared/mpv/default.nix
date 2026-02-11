@@ -91,6 +91,7 @@ in {
           border = "no";
           geometry = "-40+50%";
           autofit = "30%x30%";
+          force-window = "immediate";
           osc = "no";
           term-osd-bar = "yes";
           audio-display = "no";
