@@ -9,7 +9,7 @@
       # Example: hyprland-auto-pin "title:Picture in picture"
       #
       # Note: Pinned windows cannot go fullscreen in Hyprland.
-      # Use Super+Y to manually unpin before fullscreening.
+      # mpv-smart-fullscreen.lua handles unpin on entry; this script re-pins on exit.
 
       pattern="$1"
       lockdir="/tmp/hypr-auto-pin-locks"
@@ -25,6 +25,11 @@
               changefloatingmode*)
                   addr="''${line#*>>}"
                   addr="''${addr%%,*}"
+                  ;;
+              fullscreen*) # fullscreen>>STATE — re-pin after fullscreen exit
+                  addr=$(hyprctl activewindow -j | jq -r '.address // empty' | sed 's/^0x//')
+                  [[ -z "$addr" ]] && continue
+                  sleep 0.2  # Let window settle after fullscreen exit
                   ;;
               *) continue ;;
           esac
@@ -58,6 +63,9 @@
     '';
   };
 in {
+  # mpv: handle fullscreen on pinned windows via hyprctl instead of WM request
+  xdg.configFile."mpv/scripts/smart-fullscreen.lua".source = ./mpv-smart-fullscreen.lua;
+
   systemd.user.services = {
     hyprland-auto-pin-pip = {
       Unit = {
