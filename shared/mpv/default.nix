@@ -102,6 +102,7 @@ in {
           sub-font-size = 45;
           sub-border-size = 2;
           sub-shadow-offset = 2;
+          msg-level = "all=warn,ffmpeg=fatal";
         };
 
         bindings = let
