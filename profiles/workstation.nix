@@ -58,6 +58,7 @@
     ../linux/chromium-blank-profile.nix
     ../linux/chromium-tor.nix
     ../linux/mpv-bwrap.nix
+    ../linux/telegram-bwrap.nix
     ../linux/dolphin.nix
     ../linux/kdeconnect.nix
     ../shared/chromium
