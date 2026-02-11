@@ -82,7 +82,7 @@ in {
           vo = "gpu";
           gpu-api = "vulkan";
           scale = "bilinear";
-          dscale = "bilinear";
+          dscale = "mitchell";
           cscale = "bilinear";
           keepaspect = "yes";
           keepaspect-window = "yes";
