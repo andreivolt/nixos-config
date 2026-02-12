@@ -28,6 +28,7 @@
     cp ${./auto-save-state.lua} $out/auto-save-state.lua
     cp ${./ytsub.lua} $out/ytsub.lua
     cp ${./loading-spinner.lua} $out/loading-spinner.lua
+    cp ${./open-in-browser.lua} $out/open-in-browser.lua
   '';
   mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
     echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket | ${pkgs.jq}/bin/jq -r .data
@@ -118,6 +119,7 @@ in {
           "${mod}+j" = "script-message load-chat";
           "${mod}+Shift+j" = "script-message unload-chat";
           "${mod}+Alt+j" = "script-message chat-hidden";
+          "${mod}+b" = "script-binding open_in_browser/open-in-browser";
         };
       };
 
@@ -132,6 +134,7 @@ in {
         "mpv/scripts/auto-save-state.lua".source = "${customScriptsDir}/auto-save-state.lua";
         "mpv/scripts/ytsub.lua".source = "${customScriptsDir}/ytsub.lua";
         "mpv/scripts/loading-spinner.lua".source = "${customScriptsDir}/loading-spinner.lua";
+        "mpv/scripts/open-in-browser.lua".source = "${customScriptsDir}/open-in-browser.lua";
       };
     }
   ];
