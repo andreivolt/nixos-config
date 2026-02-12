@@ -130,6 +130,7 @@ with pkgs; with lib; [
   procs
   pry
   pv
+  python3
   rclone
   redo
   ripgrep
