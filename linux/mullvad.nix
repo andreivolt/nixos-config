@@ -7,6 +7,14 @@
     package = pkgs.mullvad-vpn;
   };
 
+  # zsh completions (mullvad-vpn doesn't propagate them from the mullvad CLI package)
+  environment.systemPackages = [
+    (pkgs.runCommandLocal "mullvad-zsh-completions" {} ''
+      mkdir -p $out/share/zsh/site-functions
+      cp ${pkgs.mullvad}/share/zsh/site-functions/_mullvad $out/share/zsh/site-functions/
+    '')
+  ];
+
   # Allow Tailscale traffic to bypass Mullvad tunnel
   # Marks packets to Tailscale's CGNAT range (100.64.0.0/10) with Mullvad's exclusion marks
   # https://theorangeone.net/posts/tailscale-mullvad/
