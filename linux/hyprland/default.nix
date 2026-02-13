@@ -47,6 +47,17 @@ in {
 
   # Use home-manager's hyprland module to load plugins (ensures version match)
   # Config files are symlinked from nixos-config repo for live editing
+  home-manager.sharedModules = [{
+    systemd.user.targets.hyprland-session = {
+      Unit = {
+        Description = "Hyprland session";
+        BindsTo = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
+  }];
+
   home-manager.users.andrei = { config, lib, ... }: {
     # Symlink config files from repo (out-of-store for live editing)
     home.file.".config/hypr/hyprlock.conf".source =
