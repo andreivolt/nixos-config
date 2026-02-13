@@ -1,4 +1,4 @@
-// P3 saturation boost - compensates for sRGB on wide gamut display
+// Saturation boost for SDR content on P3 display
 #version 300 es
 
 precision mediump float;
@@ -9,9 +9,8 @@ uniform sampler2D tex;
 void main() {
     vec4 color = texture(tex, v_texcoord);
 
-    // Saturation boost (1.22 ≈ P3 compensation)
     float gray = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    vec3 saturated = mix(vec3(gray), color.rgb, 1.22);
+    vec3 saturated = mix(vec3(gray), color.rgb, 1.3);
 
     fragColor = vec4(saturated, color.a);
 }
