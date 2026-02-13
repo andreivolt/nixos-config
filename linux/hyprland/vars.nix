@@ -7,15 +7,12 @@ let
   # Bar height (waybar) - in pixels, fixed per machine
   barHeight = if isAsahi then 40 else 36;
 
-  # Monitor config
+  # Monitor config (riva: native P3 color management, vibrance via screen shader)
   monitorConfig = ''
-    monitor=eDP-1,preferred,auto,1.6
+    monitor=eDP-1,preferred,auto,1.6${if isAsahi then ",cm,dp3" else ""}
   '' + (if !isAsahi then ''
     monitor=,preferred,auto,1.875
   '' else "");
-
-  # P3 vibrancy shader applied via bluelight restore on startup (not here)
-  shaderConfig = "";
 in {
   # Generate machine-specific Hyprland variables
   home-manager.users.andrei = { pkgs, config, ... }: {
@@ -27,7 +24,6 @@ in {
 
       # Monitor configuration
       ${monitorConfig}
-      ${shaderConfig}
     '';
 
     # Dropdown settings - mutable symlink to repo file

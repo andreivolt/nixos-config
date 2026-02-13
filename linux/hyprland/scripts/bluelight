@@ -16,8 +16,9 @@ fi
 
 intensity="${1:-50}"
 
+VIBRANCY_SHADER="$HOME/dev/nixos-config/linux/hyprland/shaders/vibrance-p3.glsl"
+
 if [[ "$intensity" == "off" || "$intensity" == "0" ]]; then
-    VIBRANCY_SHADER="$HOME/dev/nixos-config/linux/hyprland/shaders/vibrance-p3.glsl"
     if [[ -f "$VIBRANCY_SHADER" ]]; then
         hyprctl keyword decoration:screen_shader "$VIBRANCY_SHADER"
     else
