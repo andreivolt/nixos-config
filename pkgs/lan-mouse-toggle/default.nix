@@ -1,7 +1,6 @@
 {
   writeShellScriptBin,
   systemd,
-  procps,
   coreutils,
 }:
 writeShellScriptBin "lan-mouse-toggle" ''
@@ -9,10 +8,6 @@ writeShellScriptBin "lan-mouse-toggle" ''
 
   is_active() {
     ${systemd}/bin/systemctl --user is-active --quiet lan-mouse
-  }
-
-  signal_waybar() {
-    ${procps}/bin/pkill -RTMIN+10 waybar 2>/dev/null || true
   }
 
   enable() {
@@ -27,24 +22,16 @@ writeShellScriptBin "lan-mouse-toggle" ''
   }
 
   case "''${1:-toggle}" in
-    on)      enable; signal_waybar ;;
-    off)     disable; signal_waybar ;;
+    on)      enable ;;
+    off)     disable ;;
     toggle)
       if is_active; then disable; else enable; fi
-      signal_waybar
       ;;
     status)
       if is_active; then echo "ON"; else echo "OFF"; fi
       ;;
-    waybar)
-      if is_active; then
-        echo '{"text": "󰍽", "tooltip": "Lan Mouse: ON", "class": "active"}'
-      else
-        echo '{"text": "󰍽", "tooltip": "Lan Mouse: OFF", "class": "inactive"}'
-      fi
-      ;;
     *)
-      echo "Usage: lan-mouse-toggle [on|off|toggle|status|waybar]"
+      echo "Usage: lan-mouse-toggle [on|off|toggle|status]"
       exit 1
       ;;
   esac

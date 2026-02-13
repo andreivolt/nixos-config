@@ -66,5 +66,21 @@ in {
       };
       Install.WantedBy = [ "graphical-session.target" ];
     };
+
+    # System tray icon for lan-mouse
+    systemd.user.services.lan-mouse-tray = {
+      Unit = {
+        Description = "Lan Mouse system tray icon";
+        PartOf = [ "graphical-session.target" ];
+        After = [ "graphical-session.target" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.andrei.lan-mouse-tray}/bin/lan-mouse-tray";
+        Restart = "on-failure";
+        RestartSec = 3;
+      };
+      Install.WantedBy = [ "graphical-session.target" ];
+    };
   };
 }
