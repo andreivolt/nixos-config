@@ -34,8 +34,8 @@ in
     systemd.user.services.dropdown = {
       Unit = {
         Description = "Dropdown terminal";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
+        PartOf = [ "hyprland-session.target" ];
+        After = [ "hyprland-session.target" ];
       };
       Service = {
         Type = "simple";
@@ -43,12 +43,12 @@ in
         Restart = "always";
         RestartSec = 1;
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "hyprland-session.target" ];
     };
     systemd.user.services.hyprland-dropdown-guard = {
       Unit = {
         Description = "Evict non-dropdown windows from special:dropdown";
-        PartOf = [ "graphical-session.target" ];
+        PartOf = [ "hyprland-session.target" ];
       };
       Service = {
         Type = "simple";
@@ -56,7 +56,7 @@ in
         Restart = "on-failure";
         RestartSec = 1;
       };
-      Install.WantedBy = [ "graphical-session.target" ];
+      Install.WantedBy = [ "hyprland-session.target" ];
     };
   };
 }

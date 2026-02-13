@@ -70,7 +70,7 @@ in {
     hyprland-auto-pin-pip = {
       Unit = {
         Description = "Auto-pin Picture-in-Picture windows";
-        PartOf = ["graphical-session.target"];
+        PartOf = ["hyprland-session.target"];
       };
       Service = {
         Type = "simple";
@@ -78,12 +78,12 @@ in {
         Restart = "on-failure";
         RestartSec = 1;
       };
-      Install.WantedBy = ["graphical-session.target"];
+      Install.WantedBy = ["hyprland-session.target"];
     };
     hyprland-auto-pin-mpv = {
       Unit = {
         Description = "Auto-pin mpv windows";
-        PartOf = ["graphical-session.target"];
+        PartOf = ["hyprland-session.target"];
       };
       Service = {
         Type = "simple";
@@ -91,7 +91,7 @@ in {
         Restart = "on-failure";
         RestartSec = 1;
       };
-      Install.WantedBy = ["graphical-session.target"];
+      Install.WantedBy = ["hyprland-session.target"];
     };
   };
 }
