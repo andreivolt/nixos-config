@@ -116,14 +116,8 @@ window#waybar.empty #window {
 /* Default color for all right-side modules */
 #cpu,
 #memory,
-#disk,
-#temperature,
 #battery,
-#network,
-#pulseaudio,
-#tray,
-#custom-brightness,
-#custom-kbd-backlight {
+#tray {
 	color: #7a756d;
 }
 
@@ -134,19 +128,6 @@ window#waybar.empty #window {
 	margin: 0;
 	font-size: 16px;
 	color: #7a756d;
-}
-
-#disk,
-#temperature,
-#network,
-#pulseaudio,
-#custom-brightness,
-#custom-kbd-backlight {
-	min-width: 28px;
-	padding: 0 4px;
-	margin: 0;
-	border-radius: 0;
-	font-family: "RobotoMono Nerd Font", monospace;
 }
 
 #battery {
@@ -207,30 +188,6 @@ window#waybar.empty #window {
 	color: #a03030;
 }
 
-#disk {
-	color: #7a756d;
-}
-
-#disk.warning {
-	color: #b85555;
-	background: rgba(184, 85, 85, 0.1);
-}
-
-#disk.critical {
-	color: #bf616a;
-	background: rgba(191, 97, 106, 0.15);
-}
-
-#temperature {
-	color: #7a756d;
-}
-
-#temperature.critical {
-	color: #a05050;
-	background: rgba(160, 80, 80, 0.15);
-	animation: blink-fast 0.5s infinite;
-}
-
 /* Battery: text color by charge level */
 /* Critical - red */
 #battery.s10 {
@@ -279,74 +236,6 @@ window#waybar.empty #window {
 	color: #5a9a5a;
 }
 
-@keyframes blink-fast {
-	50% {
-		opacity: 0.5;
-	}
-}
-
-@keyframes blink-slow {
-	50% {
-		opacity: 0.7;
-	}
-}
-
-/* Network */
-#network.disconnected {
-	color: #a05050;
-}
-
-#network.wifi {
-	color: #7a9aaa;
-}
-
-#network.ethernet {
-	color: #7a9aaa;
-}
-
-/* Pulseaudio */
-#pulseaudio.muted {
-	color: #a05050;
-}
-
-#pulseaudio.bluetooth {
-	color: #8a9abc;
-}
-
-/* Brightness: warm gray with opacity levels */
-#custom-brightness {
-	color: #7a756d;
-}
-
-#custom-brightness.dim {
-	color: rgba(122, 117, 109, 0.4);
-}
-
-#custom-brightness.low {
-	color: rgba(122, 117, 109, 0.6);
-}
-
-#custom-brightness.medium {
-	color: rgba(122, 117, 109, 0.8);
-}
-
-#custom-brightness.high {
-	color: #7a756d;
-}
-
-/* Keyboard backlight: on/off only */
-#custom-kbd-backlight {
-	color: #7a756d;
-}
-
-#custom-kbd-backlight.off {
-	color: rgba(122, 117, 109, 0.3);
-}
-
-#custom-kbd-backlight.on {
-	color: #7a756d;
-}
-
 /* Tray */
 #tray {
 	padding: 0 8px 0 15px;
@@ -370,67 +259,4 @@ window#waybar.empty #window {
 #tray > .needs-attention {
 	-gtk-icon-effect: highlight;
 	background-color: rgba(184, 85, 85, 0.2);
-}
-
-/* Custom Modules */
-#custom-separator {
-	color: #3a3530;
-	font-size: 24px;
-	padding: 0 6px;
-	margin: 0;
-}
-
-#custom-tailscale,
-#custom-dictate,
-#custom-caffeine {
-	min-width: 28px;
-	padding: 0 4px;
-	margin: 0;
-	color: #7a756d;
-	font-size: 14px;
-	font-family: "RobotoMono Nerd Font", monospace;
-}
-
-#custom-dictate.recording {
-	color: #ff5874;
-	animation: recording-pulse 1s infinite;
-}
-
-#custom-dictate.idle {
-	color: #7a756d;
-}
-
-@keyframes recording-pulse {
-	0% {
-		opacity: 1;
-	}
-	50% {
-		opacity: 0.5;
-	}
-	100% {
-		opacity: 1;
-	}
-}
-
-/* Caffeine */
-#custom-caffeine.active {
-	color: #b85555;
-}
-
-#custom-caffeine.inactive {
-	color: rgba(122, 117, 109, 0.4);
-}
-
-/* Control center button */
-#custom-control-center {
-	padding: 0 12px;
-	margin: 4px 4px 4px 2px;
-	color: #7a756d;
-	font-size: 14px;
-	transition: all 0.3s ease;
-}
-
-#custom-control-center:hover {
-	color: #d4d0ca;
-	background: rgba(184, 85, 85, 0.1);
 }

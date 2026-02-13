@@ -52,10 +52,6 @@
     },
     "tooltip": true
   },
-  "custom/separator": {
-    "format": "|",
-    "tooltip": false
-  },
   "exclusive": true,
   "gtk-layer-shell": true,
   "height": 38,
@@ -147,24 +143,6 @@
     "battery",
     "clock"
   ],
-  "network": {
-    "format-disconnected": "󰤭",
-    "format-ethernet": "󰈀",
-    "format-icons": [
-      "󰤯",
-      "󰤟",
-      "󰤢",
-      "󰤥",
-      "󰤨"
-    ],
-    "format-linked": "󰈀",
-    "format-wifi": "{icon}",
-    "interval": 2,
-    "on-click": "nm-connection-editor",
-    "tooltip": true,
-    "tooltip-format": "{ifname} via {gwaddr}\n{ipaddr}/{cidr}\nUp: {bandwidthUpBytes} Down: {bandwidthDownBytes}",
-    "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}/{cidr}\nFreq: {frequency}MHz\nUp: {bandwidthUpBytes} Down: {bandwidthDownBytes}"
-  },
   "position": "top",
   "spacing": 0,
   "tray": {
