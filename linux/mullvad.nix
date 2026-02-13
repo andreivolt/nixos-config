@@ -7,6 +7,12 @@
     package = pkgs.mullvad-vpn;
   };
 
+  # Declaratively configure Mullvad settings after daemon starts
+  systemd.services.mullvad-daemon.postStart = ''
+    while ! ${pkgs.mullvad}/bin/mullvad status &>/dev/null; do sleep 1; done
+    ${pkgs.mullvad}/bin/mullvad lan set allow
+  '';
+
   # zsh completions (mullvad-vpn doesn't propagate them from the mullvad CLI package)
   environment.systemPackages = [
     (pkgs.runCommandLocal "mullvad-zsh-completions" {} ''
