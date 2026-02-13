@@ -16,8 +16,8 @@
     systemd.user.services.hypr-autorotate = {
       Unit = {
         Description = "Hyprland auto-rotation for tablet mode";
-        After = [ "graphical-session.target" ];
-        PartOf = [ "graphical-session.target" ];
+        After = [ "hyprland-session.target" ];
+        PartOf = [ "hyprland-session.target" ];
       };
       Service = {
         Type = "simple";
@@ -26,7 +26,7 @@
         RestartSec = 5;
       };
       Install = {
-        WantedBy = [ "graphical-session.target" ];
+        WantedBy = [ "hyprland-session.target" ];
       };
     };
   };

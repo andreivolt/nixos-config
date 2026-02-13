@@ -12,7 +12,7 @@ in
     systemd.user.services.hyprsunset-wake = {
       Unit = {
         Description = "Reset hyprsunset on wake (morning only, after 4h sleep)";
-        After = [ "graphical-session.target" ];
+        After = [ "hyprland-session.target" ];
       };
       Service = {
         Type = "oneshot";
