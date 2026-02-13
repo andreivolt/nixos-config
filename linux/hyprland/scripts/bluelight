@@ -46,9 +46,9 @@ uniform sampler2D tex;
 void main() {
     vec4 color = texture(tex, v_texcoord);
 
-    // P3 saturation boost
+    // Saturation boost
     float gray = dot(color.rgb, vec3(0.2126, 0.7152, 0.0722));
-    vec3 result = mix(vec3(gray), color.rgb, 1.22);
+    vec3 result = mix(vec3(gray), color.rgb, 1.3);
 
     // Blue light filter
     result.b *= $blue;
