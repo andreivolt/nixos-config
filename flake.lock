@@ -961,11 +961,11 @@
         "nixpkgs": "nixpkgs_4"
       },
       "locked": {
-        "lastModified": 1769126487,
-        "narHash": "sha256-OA+Qrrf0FWqARjgJASGrPKMUw237G3gYG+MQn4upABU=",
+        "lastModified": 1770630652,
+        "narHash": "sha256-/fhL3g+Rp16vvsNPijhLgBuZeYCv7VJr6OTJpA0ZRnw=",
         "owner": "nix-community",
         "repo": "nixos-apple-silicon",
-        "rev": "003afbd7b4f90c83497906ba2e9099874c2e3a4f",
+        "rev": "f2936008b132717d7cc4616bbac56f7478bb0a58",
         "type": "github"
       },
       "original": {
