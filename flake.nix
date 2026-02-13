@@ -83,6 +83,14 @@
       url = "github:andreivolt/DeArrow";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    bypass-paywalls = {
+      url = "github:andreivolt/bypass-paywalls";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    sci-hub-now = {
+      url = "github:andreivolt/sci-hub-now";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {
@@ -109,6 +117,8 @@
     launcher,
     ff2mpv,
     dearrow,
+    bypass-paywalls,
+    sci-hub-now,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix

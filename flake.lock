@@ -33,6 +33,26 @@
         "type": "github"
       }
     },
+    "bypass-paywalls": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771022989,
+        "narHash": "sha256-jSUqxFvGbdr7PgwdJswGiskmoTKWfgHZ0Wegl4wHF0k=",
+        "owner": "andreivolt",
+        "repo": "bypass-paywalls",
+        "rev": "fa337eadde9029fa2ee330f993abd4d478fa7ca4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "bypass-paywalls",
+        "type": "github"
+      }
+    },
     "cl-nix-lite": {
       "locked": {
         "lastModified": 1728174978,
@@ -1207,6 +1227,7 @@
     },
     "root": {
       "inputs": {
+        "bypass-paywalls": "bypass-paywalls",
         "dearrow": "dearrow",
         "disko": "disko",
         "ff2mpv": "ff2mpv",
@@ -1227,6 +1248,7 @@
         "pyproject-build-systems": "pyproject-build-systems_2",
         "pyproject-nix": "pyproject-nix_2",
         "rust-overlay": "rust-overlay_3",
+        "sci-hub-now": "sci-hub-now",
         "sops-nix": "sops-nix",
         "uv2nix": "uv2nix_2"
       }
@@ -1287,6 +1309,26 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "sci-hub-now": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771023154,
+        "narHash": "sha256-v93H7QC97uilMD1RT3+Srzuyn2wUJuFFGlqBHU3Yh+I=",
+        "owner": "andreivolt",
+        "repo": "sci-hub-now",
+        "rev": "225873a7d1f5168484665be0db8a0e3e538c18eb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "sci-hub-now",
         "type": "github"
       }
     },
