@@ -17,6 +17,8 @@
     ../../linux/mpv.nix
     ../../linux/rclone.nix
     # ../../linux/rclone-sync.nix
+    ../../linux/backup-claude-projects.nix
+    ../../linux/backup-monolith.nix
     ../../linux/zswap.nix
     ../../linux/freebox.nix
     ../../linux/casting.nix
