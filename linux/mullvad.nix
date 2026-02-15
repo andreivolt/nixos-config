@@ -1,7 +1,15 @@
 # Mullvad VPN with Tailscale coexistence
 # After rebuild: mullvad account login <account-number>
 # SOCKS5 proxy available at 10.64.0.1:1080 when connected
-{pkgs, ...}: {
+{pkgs, config, lib, ...}: let
+  nextdnsStart = pkgs.writeShellScript "nextdns-mullvad-excluded" ''
+    exec ${pkgs.mullvad-vpn}/bin/mullvad-exclude \
+      ${pkgs.nextdns}/bin/nextdns run \
+        -config "$(cat ${config.sops.secrets."nextdns/setup_id".path})" \
+        -listen 127.0.0.1:5354 \
+        -report-client-info
+  '';
+in {
   services.mullvad-vpn = {
     enable = true;
     package = pkgs.mullvad-vpn;
@@ -82,6 +90,30 @@
       ExecStart = "${pkgs.mullvad-vpn}/bin/mullvad-vpn";
       Restart = "on-failure";
       RestartSec = 3;
+    };
+  };
+
+  # Local DoH resolver bypassing Mullvad (so DNS survives VPN state changes)
+  # Tailscale's DoH to NextDNS breaks when Mullvad toggles because the HTTPS
+  # connections get torn down. This runs NextDNS DoH directly, excluded from Mullvad.
+  services.nextdns.enable = true;
+  systemd.services.nextdns = {
+    after = [ "mullvad-daemon.service" ];
+    serviceConfig.ExecStart = lib.mkForce "${nextdnsStart}";
+  };
+
+  # Standalone dnsmasq (NM's internal dnsmasq ignores dnsmasq.d/ conf files)
+  networking.networkmanager.dns = "none";
+  services.dnsmasq = {
+    enable = true;
+    settings = {
+      no-resolv = true;
+      listen-address = "127.0.0.1";
+      bind-interfaces = true;
+      server = [
+        "127.0.0.1#5354"
+        "/tail.avolt.net/100.100.100.100"
+      ];
     };
   };
 
