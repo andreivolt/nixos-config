@@ -99,8 +99,6 @@ in {
           audio-display = "no";
           input-ipc-server = "/tmp/mpvsocket";
           watch-later-directory = "~/.local/state/mpv/watch_later";
-          ytdl-format = "bestvideo[vcodec^=avc]+bestaudio/best";
-          ytdl-raw-options = "cookies-from-browser=${browser}";
           sub-font-size = 45;
           sub-border-size = 2;
           sub-shadow-offset = 2;
@@ -126,6 +124,7 @@ in {
       xdg.configFile."yt-dlp/config".text = ''
         --cookies-from-browser ${browser}
         --remote-components ejs:github
+        --format bestvideo[vcodec^=avc]+bestaudio/best
       '';
 
       # custom scripts not in nixpkgs
