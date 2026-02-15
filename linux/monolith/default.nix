@@ -13,7 +13,7 @@
     environmentFile = config.sops.templates."monolith.env".path;
   };
 
-  chromium.extensions = [
+  chromium.loadExtensions = [
     inputs.monolith.packages.${pkgs.system}.chrome-extension
   ];
 }

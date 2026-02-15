@@ -1,9 +1,9 @@
 { inputs, pkgs, ... }:
 {
   chromium.extensions = [
-    inputs.ff2mpv.packages.${pkgs.system}.default
-    inputs.dearrow.packages.${pkgs.system}.default
-    inputs.bypass-paywalls.packages.${pkgs.system}.default
-    inputs.sci-hub-now.packages.${pkgs.system}.default
+    { package = inputs.ff2mpv.packages.${pkgs.system}.default; key = ./keys/ff2mpv.pem; }
+    { package = inputs.dearrow.packages.${pkgs.system}.default; key = ./keys/dearrow.pem; }
+    { package = inputs.bypass-paywalls.packages.${pkgs.system}.default; key = ./keys/bypass-paywalls.pem; }
+    { package = inputs.sci-hub-now.packages.${pkgs.system}.default; key = ./keys/sci-hub-now.pem; }
   ];
 }
