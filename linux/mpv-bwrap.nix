@@ -13,6 +13,8 @@ let
       case "$arg" in
         -*) ;;
         *)
+          # Strip file:// URI scheme if present (desktop entries may pass URIs)
+          arg="''${arg#file://}"
           real="$(realpath "$arg" 2>/dev/null || echo "$arg")"
           dir="$(dirname "$real")"
           file_bind=(--ro-bind "$dir" "$dir")
@@ -21,7 +23,10 @@ let
       esac
     done
     exec ${bwrap} \
-      --ro-bind / / \
+      --ro-bind /nix /nix \
+      --ro-bind /etc /etc \
+      --ro-bind /run /run \
+      --ro-bind /sys /sys \
       --dev /dev \
       --dev-bind /dev/dri /dev/dri \
       --proc /proc \
@@ -40,7 +45,7 @@ in {
   home-manager.users.andrei.xdg.desktopEntries.mpv = {
     name = "mpv Media Player";
     genericName = "Multimedia player";
-    exec = "${wrapper} -- %U";
+    exec = "${wrapper} -- %f";
     icon = "mpv";
     terminal = false;
     categories = ["AudioVideo" "Audio" "Video" "Player"];
