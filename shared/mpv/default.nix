@@ -9,11 +9,10 @@
   isAsahi = isLinux && pkgs.stdenv.hostPlatform.isAarch64;
   browser = if isAsahi then "chromium+gnomekeyring" else "chrome";
 
-  # custom seek-to with paste-timestamp functionality
-  seek-to-custom = pkgs.runCommand "seek-to-custom" {} ''
+  mkMpvScript = name: src: pkgs.runCommand name {} ''
     mkdir -p $out/share/mpv/scripts
-    cp ${./seek-to.lua} $out/share/mpv/scripts/seek-to.lua
-  '' // { scriptName = "seek-to.lua"; };
+    cp ${src} $out/share/mpv/scripts/${name}
+  '' // { scriptName = name; };
 
   # patched youtube-chat that skips live streams
   youtube-chat-patched = pkgs.mpvScripts.youtube-chat.overrideAttrs (old: {
@@ -21,15 +20,6 @@
       ./youtube-chat-skip-live.patch
     ];
   });
-
-  customScriptsDir = pkgs.runCommand "mpv-custom-scripts" {} ''
-    mkdir -p $out
-    cp ${./fastforward.lua} $out/fastforward.lua
-    cp ${./auto-save-state.lua} $out/auto-save-state.lua
-    cp ${./ytsub.lua} $out/ytsub.lua
-    cp ${./loading-spinner.lua} $out/loading-spinner.lua
-    cp ${./open-in-browser.lua} $out/open-in-browser.lua
-  '';
   mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
     echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket | ${pkgs.jq}/bin/jq -r .data
   '';
@@ -58,7 +48,12 @@ in {
           eisa01.undoredo
         ]) ++ [
           youtube-chat-patched
-          seek-to-custom
+          (mkMpvScript "seek-to.lua" ./seek-to.lua)
+          (mkMpvScript "fastforward.lua" ./fastforward.lua)
+          (mkMpvScript "auto-save-state.lua" ./auto-save-state.lua)
+          (mkMpvScript "ytsub.lua" ./ytsub.lua)
+          (mkMpvScript "loading-spinner.lua" ./loading-spinner.lua)
+          (mkMpvScript "open-in-browser.lua" ./open-in-browser.lua)
         ] ++ lib.optionals isLinux (with pkgs.mpvScripts; [
           mpris
         ]);
@@ -129,14 +124,6 @@ in {
         --proxy http://127.0.0.1:1091
       '';
 
-      # custom scripts not in nixpkgs
-      xdg.configFile = {
-        "mpv/scripts/fastforward.lua".source = "${customScriptsDir}/fastforward.lua";
-        "mpv/scripts/auto-save-state.lua".source = "${customScriptsDir}/auto-save-state.lua";
-        "mpv/scripts/ytsub.lua".source = "${customScriptsDir}/ytsub.lua";
-        "mpv/scripts/loading-spinner.lua".source = "${customScriptsDir}/loading-spinner.lua";
-        "mpv/scripts/open-in-browser.lua".source = "${customScriptsDir}/open-in-browser.lua";
-      };
     }
   ];
 }
