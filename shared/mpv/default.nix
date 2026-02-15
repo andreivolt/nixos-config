@@ -99,6 +99,7 @@ in {
           audio-display = "no";
           input-ipc-server = "/tmp/mpvsocket";
           watch-later-directory = "~/.local/state/mpv/watch_later";
+          http-proxy = "http://127.0.0.1:1091";
           sub-font-size = 45;
           sub-border-size = 2;
           sub-shadow-offset = 2;
@@ -125,6 +126,7 @@ in {
         --cookies-from-browser ${browser}
         --remote-components ejs:github
         --format bestvideo[vcodec^=avc]+bestaudio/best
+        --proxy http://127.0.0.1:1091
       '';
 
       # custom scripts not in nixpkgs
