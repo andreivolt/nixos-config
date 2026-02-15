@@ -42,21 +42,17 @@
   # Required for Tailscale to work properly with Mullvad
   networking.firewall.checkReversePath = "loose";
 
-  # Auto-start Mullvad GUI in tray
-  home-manager.users.andrei = {
-    systemd.user.services.mullvad-gui = {
-      Unit = {
-        Description = "Mullvad VPN GUI";
-        PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" ];
-      };
-      Service = {
-        Type = "simple";
-        ExecStart = "${pkgs.mullvad-vpn}/bin/mullvad-vpn";
-        Restart = "on-failure";
-        RestartSec = 3;
-      };
-      Install.WantedBy = [ "graphical-session.target" ];
+  # Auto-start Mullvad GUI in tray (NixOS user service to avoid restart on rebuild)
+  systemd.user.services.mullvad-gui = {
+    description = "Mullvad VPN GUI";
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${pkgs.mullvad-vpn}/bin/mullvad-vpn";
+      Restart = "on-failure";
+      RestartSec = 3;
     };
   };
 
