@@ -248,15 +248,27 @@ window#waybar.empty #window {
 	background: rgba(26, 24, 22, 0.95);
 }
 
-#tray > widget {
-	margin: 0 20px;
+#tray image {
+	min-width: 32px;
+	padding: 0 6px;
 }
 
 #tray > .passive {
 	-gtk-icon-effect: dim;
 }
 
+#tray > .active {
+	-gtk-icon-effect: none;
+	background: transparent;
+}
+
 #tray > .needs-attention {
-	-gtk-icon-effect: highlight;
-	background-color: rgba(184, 85, 85, 0.2);
+	-gtk-icon-effect: none;
+	background: transparent;
+	opacity: 1;
+}
+
+#tray > .needs-attention image {
+	box-shadow: 0 0 10px rgba(184, 130, 85, 0.4);
+	border-radius: 50%;
 }
