@@ -4,7 +4,8 @@ let
   bwrap = "${pkgs.bubblewrap}/bin/bwrap";
   zathura = "${pkgs.zathura}/bin/zathura";
   wrapper = pkgs.writeShellScript "zathura-bwrap" ''
-    file="$(realpath "$1" 2>/dev/null || echo "$1")"
+    arg="''${1#file://}"
+    file="$(realpath "$arg" 2>/dev/null || echo "$arg")"
     dir="$(dirname "$file")"
     exec ${bwrap} \
       --ro-bind / / \
@@ -23,7 +24,7 @@ in {
   xdg.desktopEntries.zathura = {
     name = "Zathura";
     comment = "A minimalistic document viewer";
-    exec = "${wrapper} %U";
+    exec = "${wrapper} %f";
     icon = "org.pwmt.zathura";
     terminal = false;
     categories = ["Office" "Viewer"];
