@@ -1,9 +1,16 @@
 { pkgs, ... }:
 let
   pacFile = pkgs.writeText "proxy.pac" ''
+    function isDomain(host, d) { return host === d || dnsDomainIs(host, "." + d); }
     function FindProxyForURL(url, host) {
-      if (shExpMatch(host, "*.onion")) return "SOCKS5 127.0.0.1:9050";
-      if (shExpMatch(host, "*.rumble.com")) return "SOCKS5 127.0.0.1:1080";
+      if (dnsDomainIs(host, ".onion")) return "SOCKS5 127.0.0.1:9050";
+      if (isDomain(host, "rumble.com")) return "SOCKS5 127.0.0.1:1080";
+      if (isDomain(host, "youtube.com") ||
+          isDomain(host, "youtube-nocookie.com") ||
+          isDomain(host, "googlevideo.com") ||
+          isDomain(host, "ytimg.com") ||
+          isDomain(host, "ggpht.com"))
+        return "SOCKS5 127.0.0.1:1090";
       return "DIRECT";
     }
   '';
