@@ -1,10 +1,10 @@
 {
   "battery": {
     "format": "{capacity}",
-    "format-charging": "↑{capacity}",
+    "format-charging": "↑ {capacity}",
     "format-full": "↑",
-    "format-plugged": "↑{capacity}",
-    "format-not-charging": "↑{capacity}",
+    "format-plugged": "↑ {capacity}",
+    "format-not-charging": "↑ {capacity}",
     "interval": 10,
     "states": {
       "s10": 10,
