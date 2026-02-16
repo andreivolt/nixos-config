@@ -6,12 +6,5 @@
       enable = true;
       allowImages = true;
     };
-
-    # Clipboard history menu (rofi UI)
-    home.packages = [
-      (pkgs.writeShellScriptBin "rofi-clip" ''
-        cliphist list | rofi -dmenu -i -theme ~/.config/rofi/theme.rasi -p "Clipboard" | cliphist decode | wl-copy
-      '')
-    ];
   }];
 }
