@@ -218,6 +218,14 @@
             ];
           });
         })
+        # Hide pinned windows from waybar workspace icons via IPC event tracking
+        (final: prev: {
+          waybar = prev.waybar.overrideAttrs (oldAttrs: {
+            patches = (oldAttrs.patches or []) ++ [
+              ./linux/waybar/hide-pinned-windows.patch
+            ];
+          });
+        })
       ];
     };
   in {
