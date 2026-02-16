@@ -4,12 +4,11 @@
 let
   chromium = "${pkgs.chromium}/bin/chromium";
   args = config.chromium.baseArgs ++ [
-    "--user-data-dir=/tmp/chromium-blank"
     "--no-first-run"
     "--no-default-browser-check"
   ];
   wrapper = pkgs.writeShellScript "chromium-blank" ''
-    exec ${chromium} ${lib.escapeShellArgs args} "$@"
+    exec ${chromium} ${lib.escapeShellArgs args} "--user-data-dir=$XDG_RUNTIME_DIR/chromium-blank" "$@"
   '';
 in {
   home-manager.users.andrei.xdg.desktopEntries.chromium-blank = {
