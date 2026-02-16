@@ -91,6 +91,10 @@
       url = "github:andreivolt/sci-hub-now";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    nixpak = {
+      url = "github:nixpak/nixpak";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {
@@ -119,6 +123,7 @@
     dearrow,
     bypass-paywalls,
     sci-hub-now,
+    nixpak,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
