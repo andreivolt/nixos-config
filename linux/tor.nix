@@ -5,4 +5,5 @@
     client.dns.enable = true;
     torsocks.enable = true;
   };
+
 }
