@@ -8,5 +8,5 @@
     };
   };
 
-  # Desktop entry is in zathura-bwrap.nix (sandboxed wrapper)
+  # Desktop entry is in nixpak.nix (sandboxed wrapper)
 }

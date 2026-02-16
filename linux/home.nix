@@ -8,7 +8,6 @@
     ./swayimg.nix
     ./xdg-places
     ./zathura.nix
-    ./zathura-bwrap.nix
   ];
 
   home.stateVersion = "24.05";
