@@ -1,0 +1,49 @@
+{
+  "position": "bottom",
+  "height": 38,
+  "start": [
+    {
+      "type": "workspaces",
+      "sort": "index",
+      "all_monitors": false
+    },
+    {
+      "type": "focused",
+      "show_icon": false,
+      "show_title": true,
+      "truncate": {
+        "mode": "end",
+        "length": 60
+      }
+    }
+  ],
+  "end": [
+    {
+      "type": "tray"
+    },
+    {
+      "type": "sys_info",
+      "name": "cpu",
+      "format": ["\u25cf {cpu_percent}%"],
+      "interval": {
+        "cpu": 10
+      }
+    },
+    {
+      "type": "sys_info",
+      "name": "memory",
+      "format": ["\u25cf {memory_percent}%"],
+      "interval": {
+        "memory": 10
+      }
+    },
+    {
+      "type": "upower",
+      "format": "{percentage}%"
+    },
+    {
+      "type": "clock",
+      "format": "%H:%M"
+    }
+  ]
+}

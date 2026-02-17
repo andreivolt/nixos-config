@@ -90,7 +90,11 @@
   };
   services.tailscale = {
     enable = true;
-    extraUpFlags = ["--operator=andrei" "--login-server=https://hs.avolt.net"];
+    extraUpFlags = ["--operator=andrei" "--login-server=https://hs.avolt.net" "--advertise-exit-node"];
+  };
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = true;
+    "net.ipv6.conf.all.forwarding" = true;
   };
   networking.firewall.trustedInterfaces = ["tailscale0"];
 
