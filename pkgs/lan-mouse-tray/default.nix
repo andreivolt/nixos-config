@@ -15,6 +15,13 @@ rustPlatform.buildRustPackage {
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ dbus ];
 
+  env.ICON_THEME_PATH = "${placeholder "out"}/share/icons/hicolor";
+
+  postInstall = ''
+    mkdir -p $out/share/icons/hicolor/scalable/status
+    cp icons/*.svg $out/share/icons/hicolor/scalable/status/
+  '';
+
   meta = {
     description = "System tray icon for lan-mouse service";
     platforms = lib.platforms.linux;
