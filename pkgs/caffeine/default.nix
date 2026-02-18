@@ -5,11 +5,14 @@
   socat,
   writeShellScriptBin,
   symlinkJoin,
+  andrei,
 }:
 let
   python = python3.withPackages (ps: [ ps.dbus-python ps.pygobject3 ]);
+  iconThemePath = "${andrei.phosphor-icon-theme}/share/icons/Phosphor";
 
   caffeine-tray = writeShellScriptBin "caffeine-tray" ''
+    export ICON_THEME_PATH="${iconThemePath}"
     exec ${python}/bin/python3 ${./caffeine-tray.py}
   '';
 
