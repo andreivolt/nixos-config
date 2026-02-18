@@ -4,7 +4,6 @@
     enable = true;
     options = {
       font = "Inter 11";
-      recolor = true;
     };
   };
 
