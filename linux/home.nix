@@ -24,6 +24,21 @@
 
   services.playerctld.enable = true;
 
+  systemd.user.services.caffeine-tray = {
+    Unit = {
+      Description = "Caffeine systray applet";
+      After = ["ironbar.service"];
+      PartOf = ["hyprland-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.andrei.caffeine}/bin/caffeine-tray";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["hyprland-session.target"];
+  };
+
   xdg.enable = true;
   xdg.userDirs.enable = true;
 }
