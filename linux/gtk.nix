@@ -1,6 +1,7 @@
 {pkgs, ...}:
 let
   colors = import ../shared/colors.nix;
+  ui = import ../shared/ui.nix;
   # Strip alpha from ui.bg for solid color contexts
   bgSolid = builtins.substring 0 7 colors.ui.bg;
 
@@ -77,8 +78,8 @@ in {
       theme.name = "Adwaita";
       iconTheme.name = "Phosphor";
       font = {
-        name = "Inter";
-        size = 10;
+        name = ui.fontFamily;
+        size = ui.fontSizePt;
       };
       gtk3.extraConfig = {
         gtk-application-prefer-dark-theme = true;
