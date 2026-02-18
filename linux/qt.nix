@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{pkgs, ...}:
+let
+  ui = import ../shared/ui.nix;
+  qtFont = "${ui.fontFamily},${toString ui.fontSizePt},-1,5,50,0,0,0,0,0";
+in {
   home-manager.users.andrei = {
     home.packages = with pkgs; [
       adwaita-qt
@@ -21,8 +25,8 @@
       standard_dialogs=default
 
       [Fonts]
-      fixed="Inter,12,-1,5,50,0,0,0,0,0"
-      general="Inter,12,-1,5,50,0,0,0,0,0"
+      fixed="${qtFont}"
+      general="${qtFont}"
     '';
 
     # qt6ct configuration
@@ -32,19 +36,19 @@
       standard_dialogs=default
 
       [Fonts]
-      fixed="Inter,12,-1,5,50,0,0,0,0,0"
-      general="Inter,12,-1,5,50,0,0,0,0,0"
+      fixed="${qtFont}"
+      general="${qtFont}"
     '';
 
     # KDE/Qt font settings for apps like Dolphin
     xdg.configFile."kdeglobals".text = ''
       [General]
-      font=Inter,12,-1,5,50,0,0,0,0,0
+      font=${qtFont}
       TerminalApplication=kitty --single-instance
       TerminalService=kitty.desktop
 
       [WM]
-      activeFont=Inter,11,-1,5,50,0,0,0,0,0
+      activeFont=${qtFont}
     '';
   };
 }
