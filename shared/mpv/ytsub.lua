@@ -21,7 +21,7 @@ local options = {
     autoload_autosub_binding = "alt+Y",
     cache_dir = utils.join_path(os.getenv("HOME"), ".cache/ytsub/"),
     filter_sub_single_line = false,
-    auto_load_subs = true,
+    auto_load_subs = false,
 }
 require("mp.options").read_options(options)
 
