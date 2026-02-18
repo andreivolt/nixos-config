@@ -21,8 +21,8 @@
       standard_dialogs=default
 
       [Fonts]
-      fixed="Roboto,12,-1,5,50,0,0,0,0,0"
-      general="Roboto,12,-1,5,50,0,0,0,0,0"
+      fixed="Inter,12,-1,5,50,0,0,0,0,0"
+      general="Inter,12,-1,5,50,0,0,0,0,0"
     '';
 
     # qt6ct configuration
@@ -32,19 +32,19 @@
       standard_dialogs=default
 
       [Fonts]
-      fixed="Roboto,12,-1,5,50,0,0,0,0,0"
-      general="Roboto,12,-1,5,50,0,0,0,0,0"
+      fixed="Inter,12,-1,5,50,0,0,0,0,0"
+      general="Inter,12,-1,5,50,0,0,0,0,0"
     '';
 
     # KDE/Qt font settings for apps like Dolphin
     xdg.configFile."kdeglobals".text = ''
       [General]
-      font=Roboto,12,-1,5,50,0,0,0,0,0
+      font=Inter,12,-1,5,50,0,0,0,0,0
       TerminalApplication=kitty --single-instance
       TerminalService=kitty.desktop
 
       [WM]
-      activeFont=Roboto,11,-1,5,50,0,0,0,0,0
+      activeFont=Inter,11,-1,5,50,0,0,0,0,0
     '';
   };
 }

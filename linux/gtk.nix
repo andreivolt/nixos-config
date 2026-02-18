@@ -77,7 +77,7 @@ in {
       theme.name = "Adwaita";
       iconTheme.name = "Phosphor";
       font = {
-        name = "Roboto";
+        name = "Inter";
         size = 10;
       };
       gtk3.extraConfig = {

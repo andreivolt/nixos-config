@@ -15,7 +15,7 @@ in {
         "--ozone-platform=wayland"
       ] ++ lib.optionals isAsahi [
         "--font-render-hinting=none"
-        "--force-font-family-sans-serif=DejaVu Sans Condensed"
+        "--force-font-family-sans-serif=Inter"
       ];
 
     # Google API keys for Chromium sign-in/sync
