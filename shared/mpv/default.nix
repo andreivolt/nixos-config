@@ -54,6 +54,7 @@ in {
           (mkMpvScript "ytsub.lua" ./ytsub.lua)
           (mkMpvScript "loading-spinner.lua" ./loading-spinner.lua)
           (mkMpvScript "open-in-browser.lua" ./open-in-browser.lua)
+          (mkMpvScript "min-font-size.lua" ./min-font-size.lua)
         ] ++ lib.optionals isLinux (with pkgs.mpvScripts; [
           mpris
         ]);
