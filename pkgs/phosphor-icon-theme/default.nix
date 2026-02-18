@@ -47,6 +47,7 @@ let
     "nvim" = "code";
     "neovide" = "code";
     "sublime-text" = "code";
+    "sublime_text" = "code";
     "zed" = "code";
     # File managers
     "org.kde.dolphin" = "folder-open";
