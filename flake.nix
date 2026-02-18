@@ -281,7 +281,16 @@
         hyprland.nixosModules.default
         sops-nix.nixosModules.sops
         launcher.nixosModules.default
-        { services.launcher.enable = true; }
+        {
+          services.launcher.enable = true;
+          systemd.user.services = let ui = import ./shared/ui.nix; fontEnv = {
+            LAUNCHER_FONT_SIZE = toString ui.fontSizePx;
+            LAUNCHER_FONT_FAMILY = ui.fontFamily;
+          }; in {
+            launcher.environment = fontEnv;
+            clipboard.environment = fontEnv;
+          };
+        }
       ];
       specialArgs = {inherit inputs;};
     };
@@ -305,7 +314,16 @@
         hyprland.nixosModules.default
         sops-nix.nixosModules.sops
         launcher.nixosModules.default
-        { services.launcher.enable = true; }
+        {
+          services.launcher.enable = true;
+          systemd.user.services = let ui = import ./shared/ui.nix; fontEnv = {
+            LAUNCHER_FONT_SIZE = toString ui.fontSizePx;
+            LAUNCHER_FONT_FAMILY = ui.fontFamily;
+          }; in {
+            launcher.environment = fontEnv;
+            clipboard.environment = fontEnv;
+          };
+        }
       ];
       specialArgs = {inherit inputs;};
     };
