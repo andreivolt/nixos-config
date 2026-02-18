@@ -12,8 +12,6 @@ window {
 
 #bar {
 	background-color: rgba(35, 35, 35, 0.55);
-	min-height: 35px;
-	max-height: 35px;
 }
 
 box, button, label {
@@ -90,7 +88,7 @@ button:hover, button:active {
 }
 
 .battery {
-	padding: 0;
+	padding: 0 0.2em;
 }
 
 .battery .contents {
@@ -106,6 +104,11 @@ button:hover, button:active {
 #memory image {
 	min-width: 6px;
 	min-height: 30px;
+}
+
+.battery label {
+	font-feature-settings: "tnum";
+	color: #b0aca4;
 }
 
 .clock label {
