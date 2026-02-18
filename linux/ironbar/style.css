@@ -1,93 +1,111 @@
-/* Obsidian Aurora - warm copper theme (Ironbar GTK4) */
 * {
+	border-radius: 0;
+	border: none;
+	background-image: none;
 	font-family: "Roboto";
 	font-size: 14px;
-	font-weight: 400;
-	border: none;
-	border-radius: 0;
-	min-height: 0;
 }
 
-.bar {
-	background: rgba(20, 20, 20, 0.7);
+window {
+	background-color: transparent;
+}
+
+#bar {
+	background-color: rgba(35, 35, 35, 0.55);
+}
+
+box, button, label {
+	background-color: #0000;
 	color: #d4d0ca;
 }
 
-/* Workspaces */
-.workspaces {
-	padding: 0 4px;
+button {
+	padding-left: 0.5em;
+	padding-right: 0.5em;
 }
+
+button:hover, button:active {
+	background-color: #2d2d2d;
+}
+
+/* Workspace square badges — border on button for full height */
 
 .workspaces .item {
-	padding: 0 14px 0 8px;
-	margin: 4px 0;
-	background: transparent;
-	color: #5a5650;
-	border: none;
-	border-bottom: 2px solid transparent;
-	font-size: 16px;
-	transition: all 300ms;
+	padding: 0 0.9em 0 0.2em;
+	border-right: 1px solid #2a2a2a;
 }
 
-.workspaces .item:hover {
-	background: transparent;
-	color: #8a857d;
+.workspaces .item:last-child {
+	border-right: none;
+}
+
+.workspaces .item label {
+	background-color: transparent;
+	color: #7a756d;
+	min-width: 22px;
+	padding: 0;
+	margin: 0;
 }
 
 .workspaces .item.focused {
-	background: transparent;
-	color: #e8e4df;
-	border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+	background-color: #222222;
 }
 
-.workspaces .item.urgent {
-	background: linear-gradient(
-		135deg,
-		rgba(255, 85, 85, 0.25),
-		rgba(255, 136, 85, 0.25)
-	);
-	color: #d4d0ca;
+.workspaces .item.focused label {
+	color: #999999;
 }
 
-/* Focused window title */
-.focused {
+.workspaces .window-icons {
+	margin-left: 4px;
+}
+
+.widget {
+	padding-left: 0.6em;
+	padding-right: 0.6em;
+}
+
+.focused label {
 	color: #7a756d;
-	padding: 0 16px;
-	font-size: 18px;
 }
 
-/* Right-side modules - default muted color */
-.sys_info,
-.upower,
 .tray {
-	color: #7a756d;
+	opacity: 0.55;
+}
+
+.tray .item {
+	min-width: 26px;
+}
+
+.battery,
+.clock {
+	min-width: 32px;
 }
 
 #cpu,
 #memory {
-	padding: 0 4px;
-	font-size: 14px;
+	padding: 0 0.5em;
+}
+
+
+.battery label,
+.clock label {
+	font-feature-settings: "tnum";
 	color: #7a756d;
 }
 
-.upower {
-	padding: 0 4px;
-	font-size: 16px;
-	font-weight: 700;
-	font-family: "RobotoMono Nerd Font", monospace;
+.battery .contents {
+	margin: 0;
+	padding: 0;
+}
+
+.battery .icon {
+	margin-right: -3px;
+}
+
+.battery label {
 	color: #b0aca4;
 }
 
 .clock {
-	padding: 0 8px 0 0;
-	font-size: 16px;
-	font-weight: 700;
-	font-family: "RobotoMono Nerd Font", monospace;
-	color: #7a756d;
-}
-
-/* Tray */
-.tray {
-	padding: 0 8px 0 15px;
-	opacity: 0.55;
+	font-weight: bold;
 }

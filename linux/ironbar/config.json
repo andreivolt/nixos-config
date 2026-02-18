@@ -1,44 +1,50 @@
 {
-  "position": "bottom",
-  "height": 38,
+  "position": "top",
+  "height": 35,
   "start": [
     {
       "type": "workspaces",
-      "sort": "index",
-      "all_monitors": false
+      "sort": "name",
+      "all_monitors": false,
+      "hidden": ["special:clipboard", "special:dropdown", "special:launcher"],
+      "format": "{label}",
+      "show_window_icons": true,
+      "icon_size": 18
     },
     {
       "type": "focused",
       "show_icon": false,
       "show_title": true,
+      "justify": "left",
       "truncate": {
         "mode": "end",
-        "length": 60
+        "max_length": 60
       }
     }
   ],
   "end": [
     {
-      "type": "tray"
+      "type": "tray",
+      "icon_size": 18
     },
     {
-      "type": "sys_info",
+      "type": "custom",
       "name": "cpu",
-      "format": ["\u25cf {cpu_percent}%"],
-      "interval": {
-        "cpu": 10
-      }
+      "bar": [{
+        "type": "label",
+        "label": "{{5000:/home/andrei/dev/nixos-config/linux/ironbar/cpu-dot.sh}}"
+      }]
     },
     {
-      "type": "sys_info",
+      "type": "custom",
       "name": "memory",
-      "format": ["\u25cf {memory_percent}%"],
-      "interval": {
-        "memory": 10
-      }
+      "bar": [{
+        "type": "label",
+        "label": "{{10000:/home/andrei/dev/nixos-config/linux/ironbar/mem-dot.sh}}"
+      }]
     },
     {
-      "type": "upower",
+      "type": "battery",
       "format": "{percentage}%"
     },
     {
