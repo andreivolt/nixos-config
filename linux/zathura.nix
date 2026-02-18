@@ -3,7 +3,7 @@
   programs.zathura = {
     enable = true;
     options = {
-      font = "Roboto 11";
+      font = "Inter 11";
       recolor = true;
     };
   };

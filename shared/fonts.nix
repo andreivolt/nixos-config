@@ -13,13 +13,14 @@ lib.mkMerge [
       cascadia-code
       corefonts
       ubuntu-classic
+      inter
       roboto
       dejavu_fonts
     ];
   }
   (lib.optionalAttrs (options.fonts ? fontconfig) {
     fonts.fontconfig.defaultFonts = {
-      sansSerif = ["DejaVu Sans Condensed"];
+      sansSerif = ["Inter"];
       monospace = ["Pragmasevka Nerd Font Light"];
     };
   })
