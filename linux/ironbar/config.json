@@ -9,7 +9,7 @@
       "hidden": ["special:clipboard", "special:dropdown", "special:launcher"],
       "format": "{label}",
       "show_window_icons": true,
-      "icon_size": 18
+      "icon_size": 20
     },
     {
       "type": "focused",
@@ -25,7 +25,7 @@
   "end": [
     {
       "type": "tray",
-      "icon_size": 18
+      "icon_size": 20
     },
     {
       "type": "custom",
