@@ -95,6 +95,10 @@
       url = "github:nixpak/nixpak";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    ironbar = {
+      url = "github:andreivolt/ironbar/window-rewrite";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = inputs @ {
@@ -124,6 +128,7 @@
     bypass-paywalls,
     sci-hub-now,
     nixpak,
+    ironbar,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
@@ -218,13 +223,9 @@
             ];
           });
         })
-        # Hide pinned windows from waybar workspace icons via IPC event tracking
+        # Use ironbar fork with window-rewrite support
         (final: prev: {
-          waybar = prev.waybar.overrideAttrs (oldAttrs: {
-            patches = (oldAttrs.patches or []) ++ [
-              ./linux/waybar/hide-pinned-windows.patch
-            ];
-          });
+          ironbar = inputs.ironbar.packages.${prev.stdenv.hostPlatform.system}.default;
         })
       ];
     };

@@ -31,16 +31,18 @@
       "type": "custom",
       "name": "cpu",
       "bar": [{
-        "type": "label",
-        "label": "{{5000:/home/andrei/dev/nixos-config/linux/ironbar/cpu-dot.sh}}"
+        "type": "image",
+        "src": "{{5000:/home/andrei/dev/nixos-config/linux/ironbar/cpu-bar.sh}}",
+        "size": 22
       }]
     },
     {
       "type": "custom",
       "name": "memory",
       "bar": [{
-        "type": "label",
-        "label": "{{10000:/home/andrei/dev/nixos-config/linux/ironbar/mem-dot.sh}}"
+        "type": "image",
+        "src": "{{10000:/home/andrei/dev/nixos-config/linux/ironbar/mem-bar.sh}}",
+        "size": 22
       }]
     },
     {

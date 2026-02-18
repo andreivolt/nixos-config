@@ -11,7 +11,7 @@
         Description = "Trayscale system tray applet for Tailscale";
         Documentation = "https://github.com/DeedleFake/trayscale";
         PartOf = [ "graphical-session.target" ];
-        After = [ "graphical-session.target" "waybar.service" ];
+        After = [ "graphical-session.target" ];
       };
       Service = {
         Type = "simple";
