@@ -24,6 +24,9 @@
     trusted-users = [ "root" "@wheel" ];
   };
 
+  nix.daemonCPUSchedPolicy = "idle";
+  nix.daemonIOSchedClass = "idle";
+
   nix.optimise.automatic = true;
   nix.distributedBuilds = true;
   nix.extraOptions = "builders-use-substitutes = true";
