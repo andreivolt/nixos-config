@@ -5,9 +5,7 @@
   ...
 }: let
   isDarwin = pkgs.stdenv.isDarwin;
-  isLinux = pkgs.stdenv.isLinux;
-  isAsahi = isLinux && pkgs.stdenv.hostPlatform.isAarch64;
-  browser = if isAsahi then "chromium+gnomekeyring" else "chrome";
+  browser = if isDarwin then "chrome" else "chromium+gnomekeyring";
 
   mkMpvScript = name: src: pkgs.runCommand name {} ''
     mkdir -p $out/share/mpv/scripts
@@ -55,7 +53,7 @@ in {
           (mkMpvScript "loading-spinner.lua" ./loading-spinner.lua)
           (mkMpvScript "open-in-browser.lua" ./open-in-browser.lua)
           (mkMpvScript "min-font-size.lua" ./min-font-size.lua)
-        ] ++ lib.optionals isLinux (with pkgs.mpvScripts; [
+        ] ++ lib.optionals pkgs.stdenv.isLinux (with pkgs.mpvScripts; [
           mpris
         ]);
 
