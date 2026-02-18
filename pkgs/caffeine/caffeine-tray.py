@@ -16,19 +16,6 @@ SNI_PATH = "/StatusNotifierItem"
 MENU_INTERFACE = "com.canonical.dbusmenu"
 MENU_PATH = "/MenuBar"
 
-# Icon SVG data (inline to avoid path issues)
-ICON_ON = """<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
-  <path d="M4 7h10v2h2a3 3 0 0 1 0 6h-2v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" fill="#e8e4df"/>
-  <path d="M7 3c0.5-1.5 1.5-1.5 1-0.5s-0.5 2 0.5 2.5M10 3c0.5-1.5 1.5-1.5 1-0.5s-0.5 2 0.5 2.5" stroke="#e8e4df" stroke-width="0.8" fill="none"/>
-  <rect x="3" y="18" width="12" height="1.5" rx="0.75" fill="#e8e4df"/>
-</svg>"""
-
-ICON_OFF = """<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
-  <path d="M4 7h10v2h2a3 3 0 0 1 0 6h-2v1a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V7z" fill="none" stroke="#7a756d" stroke-width="1.2"/>
-  <rect x="3" y="18" width="12" height="1.5" rx="0.75" fill="#7a756d"/>
-</svg>"""
-
-
 class CaffeineState:
     def __init__(self):
         self.active = False
@@ -108,8 +95,7 @@ class StatusNotifierItem(dbus.service.Object):
 
     @dbus.service.method(SNI_INTERFACE, in_signature="ii")
     def SecondaryActivate(self, x, y):
-        self._state.toggle()
-        self._notify()
+        pass
 
     @dbus.service.method(SNI_INTERFACE, in_signature="is")
     def ContextMenu(self, x, y):
@@ -141,7 +127,7 @@ class StatusNotifierItem(dbus.service.Object):
     def GetAll(self, interface):
         props = [
             "Category", "Id", "Title", "Status", "IconName",
-            "IconThemePath", "ToolTip", "ItemIsMenu",
+            "IconThemePath", "ToolTip", "ItemIsMenu", "Menu",
         ]
         return {p: self._get_prop(p) for p in props}
 
@@ -157,7 +143,7 @@ class StatusNotifierItem(dbus.service.Object):
         elif prop == "IconName":
             return self._state.icon_name
         elif prop == "IconThemePath":
-            return ""
+            return os.environ.get("ICON_THEME_PATH", "")
         elif prop == "IconPixmap":
             return dbus.Array([], signature="(iiay)")
         elif prop == "ToolTip":
@@ -170,37 +156,69 @@ class StatusNotifierItem(dbus.service.Object):
         return ""
 
 
-class DbusmenuStub(dbus.service.Object):
-    """Minimal dbusmenu so tray hosts don't complain about missing menu object."""
+class CaffeineMenu(dbus.service.Object):
+    """Dbusmenu with toggle and timer options."""
 
-    def __init__(self, bus):
+    TIMERS = [(2, "15 minutes", 15), (3, "30 minutes", 30),
+              (4, "1 hour", 60), (5, "2 hours", 120)]
+
+    def __init__(self, bus, state, notify_cb):
+        self._state = state
+        self._notify = notify_cb
+        self._revision = 1
         super().__init__(bus, MENU_PATH)
 
-    @dbus.service.method(MENU_INTERFACE, in_signature="i", out_signature="u(ia{sv}av)")
-    def GetLayout(self, parent_id):
-        # Return empty menu
-        return (1, (0, {}, []))
+    def _bump(self):
+        self._revision += 1
+        self.LayoutUpdated(self._revision, 0)
 
-    @dbus.service.method(MENU_INTERFACE, in_signature="ia(si)i", out_signature="a(ia{sv})")
-    def GetGroupProperties(self, ids, property_names, parent_id):
-        return []
+    def _make_item(self, item_id, label, extra=None):
+        props = dbus.Dictionary({
+            "label": dbus.String(label),
+            "visible": dbus.Boolean(True),
+            "enabled": dbus.Boolean(True),
+        }, signature="sv")
+        if extra:
+            props.update(extra)
+        return dbus.Struct(
+            (dbus.Int32(item_id), props, dbus.Array([], signature="v")),
+            signature=None)
+
+    @dbus.service.method(MENU_INTERFACE, in_signature="iias", out_signature="u(ia{sv}av)")
+    def GetLayout(self, parent_id, recursion_depth, property_names):
+        toggle_label = "Disable" if self._state.active else "Enable"
+        toggle = self._make_item(1, toggle_label)
+        sep = self._make_item(10, "", {"type": dbus.String("separator")})
+        timers = [self._make_item(tid, lbl) for tid, lbl, _ in self.TIMERS]
+        children = dbus.Array([toggle, sep] + timers, signature="v")
+        root = dbus.Struct(
+            (dbus.Int32(0), dbus.Dictionary({}, signature="sv"), children),
+            signature=None)
+        return (dbus.UInt32(self._revision), root)
+
+    @dbus.service.method(MENU_INTERFACE, in_signature="aias", out_signature="a(ia{sv})")
+    def GetGroupProperties(self, ids, property_names):
+        return dbus.Array([], signature="(ia{sv})")
 
     @dbus.service.method(MENU_INTERFACE, in_signature="isvu", out_signature="")
-    def Event(self, id, event_id, data, timestamp):
+    def Event(self, item_id, event_id, data, timestamp):
+        if event_id != "clicked":
+            return
+        if item_id == 1:
+            self._state.toggle()
+            self._notify()
+            self._bump()
+        else:
+            for tid, _, mins in self.TIMERS:
+                if item_id == tid:
+                    self._state.timed(mins)
+                    self._notify()
+                    self._bump()
+                    break
+
+    @dbus.service.signal(MENU_INTERFACE, signature="ui")
+    def LayoutUpdated(self, revision, parent):
         pass
-
-
-def write_icons():
-    """Write SVG icons to XDG data dir for icon theme lookup."""
-    icon_dir = os.path.join(
-        os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share")),
-        "icons", "hicolor", "scalable", "status",
-    )
-    os.makedirs(icon_dir, exist_ok=True)
-    for name, data in [("caffeine-on.svg", ICON_ON), ("caffeine-off.svg", ICON_OFF)]:
-        path = os.path.join(icon_dir, name)
-        with open(path, "w") as f:
-            f.write(data)
 
 
 def register_sni(bus_name):
@@ -262,15 +280,23 @@ def main():
     state = CaffeineState()
     state.sync()
 
-    write_icons()
-
     def notify():
         sni.NewIcon()
         sni.NewTooltip()
 
     sni = StatusNotifierItem(bus, state, notify)
-    menu = DbusmenuStub(bus)
+    menu = CaffeineMenu(bus, state, notify)
     register_sni(bus_name.get_name())
+
+    # Re-register when StatusNotifierWatcher reappears (e.g., tray host restart)
+    bus.add_signal_receiver(
+        lambda name, old, new: (
+            register_sni(bus_name.get_name()) if new else None
+        ),
+        signal_name="NameOwnerChanged",
+        dbus_interface="org.freedesktop.DBus",
+        arg0="org.kde.StatusNotifierWatcher",
+    )
 
     # Socket server for CLI
     t = threading.Thread(target=socket_server, args=(state, sni), daemon=True)

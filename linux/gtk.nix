@@ -60,10 +60,12 @@ in {
   # Set GSETTINGS_SCHEMA_DIR so gsettings can find schemas
   environment.sessionVariables = {
     GSETTINGS_SCHEMA_DIR = "${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}/glib-2.0/schemas";
+    GDK_PIXBUF_MODULE_FILE = "${pkgs.librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache";
   };
 
   home-manager.users.andrei = {
     home.packages = with pkgs; [
+      andrei.phosphor-icon-theme
       papirus-icon-theme
       noto-fonts
       gsettings-desktop-schemas
@@ -73,7 +75,7 @@ in {
       enable = true;
       # Use Adwaita - color-scheme handles dark/light mode
       theme.name = "Adwaita";
-      iconTheme.name = "Papirus-Dark";
+      iconTheme.name = "Phosphor";
       font = {
         name = "Roboto";
         size = 10;
