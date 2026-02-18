@@ -94,6 +94,7 @@ in {
           input-ipc-server = "/tmp/mpvsocket";
           watch-later-directory = "~/.local/state/mpv/watch_later";
           http-proxy = "http://127.0.0.1:1091";
+          sid = "no";
           sub-font-size = 45;
           sub-border-size = 2;
           sub-shadow-offset = 2;
