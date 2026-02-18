@@ -109,7 +109,7 @@ button:hover, button:active {
 #cpu image,
 #memory image {
 	min-width: 6px;
-	min-height: 30px;
+	min-height: 14px;
 }
 
 .battery label {
