@@ -3,7 +3,7 @@ index 661baee..61cc493 100644
 --- a/src/ui/MainWindow.cpp
 +++ b/src/ui/MainWindow.cpp
 @@ -284,12 +284,16 @@ namespace wil::ui
- 
+
      void MainWindow::onShow()
      {
 -        if (!is_visible())
@@ -20,17 +20,61 @@ index 661baee..61cc493 100644
 -
 -        present();
      }
- 
+
      void MainWindow::onQuit()
 diff --git a/src/ui/TrayIcon.cpp b/src/ui/TrayIcon.cpp
-index 1b8f6c8..3b7dd9a 100644
+index 1b8f6c8..26bce01 100644
 --- a/src/ui/TrayIcon.cpp
 +++ b/src/ui/TrayIcon.cpp
-@@ -52,6 +52,7 @@ namespace wil::ui
+@@ -1,5 +1,6 @@
+ #include "TrayIcon.hpp"
+ #include <utility>
++#include <gio/gio.h>
+ #include <glibmm/i18n.h>
+ #include <gtkmm/icontheme.h>
+ #include "Config.hpp"
+@@ -8,6 +9,31 @@ namespace wil::ui
+ {
+     namespace
+     {
++        GDBusMessage* activateFilter(
++            GDBusConnection* connection,
++            GDBusMessage* message,
++            gboolean incoming,
++            gpointer userData)
++        {
++            if (!incoming)
++                return message;
++            if (g_dbus_message_get_message_type(message) != G_DBUS_MESSAGE_TYPE_METHOD_CALL)
++                return message;
++            if (g_strcmp0(g_dbus_message_get_interface(message), "org.kde.StatusNotifierItem") != 0
++                || g_strcmp0(g_dbus_message_get_member(message), "Activate") != 0)
++                return message;
++
++            auto* signal = static_cast<sigc::signal<void>*>(userData);
++            signal->emit();
++
++            auto* reply = g_dbus_message_new_method_reply(message);
++            g_dbus_connection_send_message(
++                connection, reply, G_DBUS_SEND_MESSAGE_FLAGS_NONE, nullptr, nullptr);
++            g_object_unref(reply);
++            g_object_unref(message);
++            return nullptr;
++        }
++
+         std::pair<char const*, char const*> getTrayIconNames()
+         {
+             constexpr auto WHATSAPP_TRAY            = "whatsapp-tray";
+@@ -52,6 +78,12 @@ namespace wil::ui
          app_indicator_set_menu(m_appIndicator, m_popupMenu.gobj());
- 
+
          showMenuItem->signal_activate().connect([this] { m_signalShow.emit(); });
 +        app_indicator_set_secondary_activate_target(m_appIndicator, GTK_WIDGET(showMenuItem->gobj()));
++
++        auto* bus = g_bus_get_sync(G_BUS_TYPE_SESSION, nullptr, nullptr);
++        g_dbus_connection_add_filter(bus, activateFilter, &m_signalShow, nullptr);
++        g_object_unref(bus);
++
          aboutMenuItem->signal_activate().connect([this] { m_signalAbout.emit(); });
          quitMenuItem->signal_activate().connect([this] { m_signalQuit.emit(); });
- 
+
