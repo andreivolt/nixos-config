@@ -49,7 +49,7 @@
     ../linux/trayscale.nix
     ../linux/vnc.nix
     ../linux/mpv.nix
-    ../linux/waybar
+    ../linux/ironbar
     ../linux/xdg-portals.nix
     ../linux/chrome-history.nix
     ../linux/chromium.nix

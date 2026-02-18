@@ -30,6 +30,7 @@
       Unit.Description = "Watch ironbar config for changes";
       Path.PathChanged = [
         "/home/andrei/dev/nixos-config/linux/ironbar/config.json"
+        "/home/andrei/dev/nixos-config/linux/ironbar/style.css"
       ];
       Install.WantedBy = [ "default.target" ];
     };
