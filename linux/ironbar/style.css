@@ -61,7 +61,7 @@ button:hover, button:active {
 }
 
 .workspaces .window-icons {
-	margin-left: 4px;
+	margin-left: 0.2em;
 }
 
 .widget {
