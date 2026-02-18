@@ -280,6 +280,8 @@
         home-manager.nixosModules.home-manager
         hyprland.nixosModules.default
         sops-nix.nixosModules.sops
+        launcher.nixosModules.default
+        { services.launcher.enable = true; }
       ];
       specialArgs = {inherit inputs;};
     };
