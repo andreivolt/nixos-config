@@ -1,7 +1,11 @@
 { config, lib, pkgs, inputs, ... }:
 
 let
-  hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
+  hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system} // {
+    hyprland = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland.overrideAttrs (oldAttrs: {
+      patches = (oldAttrs.patches or []) ++ [ ../../pkgs/hyprland-null-format-name.patch ];
+    });
+  };
   hyprlandPlugins = inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};
   hyprsunsetPkg = inputs.hyprsunset.packages.${pkgs.stdenv.hostPlatform.system}.default;
   isAsahi = config.networking.hostName == "riva";
