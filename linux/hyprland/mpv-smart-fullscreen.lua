@@ -22,10 +22,8 @@ mp.observe_property("fullscreen", "bool", function(_, fs)
 
     mp.command_native({
         name = "subprocess",
-        args = {"hyprctl", "dispatch", "pin", "address:" .. info.address},
-    })
-    mp.command_native({
-        name = "subprocess",
-        args = {"hyprctl", "dispatch", "fullscreen", "0"},
+        args = {"hyprctl", "--batch",
+            "dispatch pin address:" .. info.address ..
+            " ; dispatch fullscreen 0"},
     })
 end)
