@@ -26,7 +26,7 @@
                   addr="''${line#*>>}"
                   addr="''${addr%%,*}"
                   ;;
-              fullscreen\>\>0,*) # only re-pin on fullscreen EXIT (state 0), not enter
+              fullscreen*) # fullscreen>>STATE — re-pin after fullscreen exit
                   addr=$(hyprctl activewindow -j | jq -r '.address // empty' | sed 's/^0x//')
                   [[ -z "$addr" ]] && continue
                   sleep 0.2  # Let window settle after fullscreen exit
