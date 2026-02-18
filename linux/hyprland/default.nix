@@ -4,6 +4,7 @@ let
   hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system};
   hyprlandPlugins = inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};
   hyprsunsetPkg = inputs.hyprsunset.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  isAsahi = config.networking.hostName == "riva";
 
   # Patched hyprbars with blur, separator, text shadow, and top-only rounding
   hyprbarsPatched = hyprlandPlugins.hyprbars.overrideAttrs (oldAttrs: {
@@ -39,9 +40,9 @@ in {
   environment.systemPackages = with pkgs; [
     hyprpicker
     hyprshot
-    bluelight
     screenshot
-  ] ++ (with hyprlandPkgs; [
+  ] ++ (if isAsahi then [ bluelight ] else [ hyprsunsetPkg ])
+    ++ (with hyprlandPkgs; [
     hyprland-qtutils
   ]);
 
