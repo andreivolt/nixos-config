@@ -1,0 +1,36 @@
+diff --git a/src/ui/MainWindow.cpp b/src/ui/MainWindow.cpp
+index 661baee..61cc493 100644
+--- a/src/ui/MainWindow.cpp
++++ b/src/ui/MainWindow.cpp
+@@ -284,12 +284,16 @@ namespace wil::ui
+ 
+     void MainWindow::onShow()
+     {
+-        if (!is_visible())
++        if (is_visible())
++        {
++            Application::getInstance().keepAlive();
++            hide();
++        }
++        else
+         {
+             m_trayIcon.setAttention(false);
++            present();
+         }
+-
+-        present();
+     }
+ 
+     void MainWindow::onQuit()
+diff --git a/src/ui/TrayIcon.cpp b/src/ui/TrayIcon.cpp
+index 1b8f6c8..3b7dd9a 100644
+--- a/src/ui/TrayIcon.cpp
++++ b/src/ui/TrayIcon.cpp
+@@ -52,6 +52,7 @@ namespace wil::ui
+         app_indicator_set_menu(m_appIndicator, m_popupMenu.gobj());
+ 
+         showMenuItem->signal_activate().connect([this] { m_signalShow.emit(); });
++        app_indicator_set_secondary_activate_target(m_appIndicator, GTK_WIDGET(showMenuItem->gobj()));
+         aboutMenuItem->signal_activate().connect([this] { m_signalAbout.emit(); });
+         quitMenuItem->signal_activate().connect([this] { m_signalQuit.emit(); });
+ 
