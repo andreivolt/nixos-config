@@ -203,6 +203,14 @@
             ];
           });
         })
+        # WasIstLos: tray icon click toggles window visibility
+        (final: prev: {
+          wasistlos = prev.wasistlos.overrideAttrs (oldAttrs: {
+            patches = (oldAttrs.patches or []) ++ [
+              ./pkgs/wasistlos-tray-toggle.patch
+            ];
+          });
+        })
         # Fix openssl_1_1 patch after 3.0.19 update (nixpkgs#485055, pending nixos-unstable)
         (final: prev: {
           openssl_1_1 = prev.openssl_1_1.overrideAttrs (oldAttrs: {
