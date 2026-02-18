@@ -1,103 +1,58 @@
 {
-  writeShellScriptBin,
+  lib,
+  python3,
   systemd,
-  procps,
-  coreutils,
-  hyprland,
+  socat,
+  writeShellScriptBin,
+  symlinkJoin,
 }:
-writeShellScriptBin "caffeine" ''
-  set -euo pipefail
+let
+  python = python3.withPackages (ps: [ ps.dbus-python ps.pygobject3 ]);
 
-  # Ensure XDG_RUNTIME_DIR is set for SSH sessions
-  export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+  caffeine-tray = writeShellScriptBin "caffeine-tray" ''
+    exec ${python}/bin/python3 ${./caffeine-tray.py}
+  '';
 
-  # Find Hyprland socket for SSH sessions
-  if [[ -z "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
-    HYPRLAND_INSTANCE_SIGNATURE=$(ls "$XDG_RUNTIME_DIR/hypr/" 2>/dev/null | head -1)
-    export HYPRLAND_INSTANCE_SIGNATURE
-  fi
+  caffeine-cli = writeShellScriptBin "caffeine" ''
+    SOCK="/run/user/$(id -u)/caffeine.sock"
 
-  TIMERFILE="/tmp/caffeine-$USER.timer"
-  WAKE=false
-
-  is_active() {
-    ! ${systemd}/bin/systemctl --user is-active --quiet hypridle
-  }
-
-  wake_screen() {
-    ${hyprland}/bin/hyprctl dispatch dpms on 2>/dev/null || true
-  }
-
-  start_caffeine() {
-    ${systemd}/bin/systemctl --user stop hypridle
-    [[ "$WAKE" == true ]] && wake_screen
-    echo "Caffeine enabled"
-  }
-
-  stop_caffeine() {
-    if [[ -f "$TIMERFILE" ]]; then
-      ${procps}/bin/pkill -F "$TIMERFILE" 2>/dev/null || true
-      ${coreutils}/bin/rm -f "$TIMERFILE"
+    if [ ! -S "$SOCK" ]; then
+      # fallback: direct systemctl control
+      case "''${1:-status}" in
+        on)     ${systemd}/bin/systemctl --user stop hypridle; echo "OK" ;;
+        off)    ${systemd}/bin/systemctl --user start hypridle; echo "OK" ;;
+        toggle)
+          if ! ${systemd}/bin/systemctl --user is-active --quiet hypridle; then
+            ${systemd}/bin/systemctl --user start hypridle; echo "OFF"
+          else
+            ${systemd}/bin/systemctl --user stop hypridle; echo "ON"
+          fi
+          ;;
+        status)
+          if ! ${systemd}/bin/systemctl --user is-active --quiet hypridle; then
+            echo "ON"
+          else
+            echo "OFF"
+          fi
+          ;;
+        *)
+          echo "Usage: caffeine [on|off|toggle|status|MINUTES]"
+          exit 1
+          ;;
+      esac
+      exit 0
     fi
-    ${systemd}/bin/systemctl --user start hypridle
-    echo "Caffeine disabled"
-  }
 
-  start_timed() {
-    local minutes="$1"
-    start_caffeine
-    if [[ -f "$TIMERFILE" ]]; then
-      ${procps}/bin/pkill -F "$TIMERFILE" 2>/dev/null || true
-    fi
-    (
-      ${coreutils}/bin/sleep "''${minutes}m"
-      ${systemd}/bin/systemctl --user start hypridle
-      ${coreutils}/bin/rm -f "$TIMERFILE"
-      ${procps}/bin/pkill -RTMIN+9 waybar 2>/dev/null || true
-    ) &
-    echo $! > "$TIMERFILE"
-    disown
-    echo "Auto-disable in $minutes minutes"
-  }
+    CMD="''${1:-status}"
+    echo "$CMD" | ${socat}/bin/socat - UNIX-CONNECT:"$SOCK"
+  '';
 
-  signal_waybar() {
-    ${procps}/bin/pkill -RTMIN+9 waybar 2>/dev/null || true
-  }
-
-  # Parse --wake flag
-  args=()
-  for arg in "$@"; do
-    case "$arg" in
-      --wake|-w) WAKE=true ;;
-      *) args+=("$arg") ;;
-    esac
-  done
-  set -- "''${args[@]:-}"
-
-  case "''${1:-status}" in
-    on)      start_caffeine; signal_waybar ;;
-    off)     stop_caffeine; signal_waybar ;;
-    toggle)
-      if is_active; then stop_caffeine; else start_caffeine; fi
-      signal_waybar
-      ;;
-    status)
-      if is_active; then echo "ON"; else echo "OFF"; fi
-      ;;
-    waybar)
-      if is_active; then
-        echo '{"text": "󰅶", "tooltip": "Caffeine: ON", "class": "active"}'
-      else
-        echo '{"text": "󰅶", "tooltip": "Caffeine: OFF", "class": "inactive"}'
-      fi
-      ;;
-    *)
-      if [[ "$1" =~ ^[0-9]+$ ]]; then
-        start_timed "$1"; signal_waybar
-      else
-        echo "Usage: caffeine [--wake] [on|off|toggle|status|MINUTES]"
-        exit 1
-      fi
-      ;;
-  esac
-''
+in
+symlinkJoin {
+  name = "caffeine";
+  paths = [ caffeine-tray caffeine-cli ];
+  meta = {
+    description = "Caffeine systray app and CLI for toggling hypridle";
+    platforms = lib.platforms.linux;
+  };
+}
