@@ -39,6 +39,21 @@
     Install.WantedBy = ["hyprland-session.target"];
   };
 
+  systemd.user.services.battery-tray = {
+    Unit = {
+      Description = "Battery systray applet";
+      After = ["ironbar.service"];
+      PartOf = ["hyprland-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.andrei.battery-tray}/bin/battery-tray";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["hyprland-session.target"];
+  };
+
   xdg.enable = true;
   xdg.userDirs.enable = true;
 }
