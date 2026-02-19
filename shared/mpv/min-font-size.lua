@@ -25,4 +25,4 @@ local function update(_, h)
     end
 end
 
-mp.observe_property("osd-dimensions/h", "number", update)
+mp.observe_property("osd-height", "number", update)
