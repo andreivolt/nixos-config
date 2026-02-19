@@ -4,7 +4,7 @@
 
 local base_sub_size = mp.get_property_number("sub-font-size", 45)
 local base_osd_size = mp.get_property_number("osd-font-size", 55)
-local min_px = 20
+local min_px = 30
 local ref_height = 720
 
 local function update(_, h)
