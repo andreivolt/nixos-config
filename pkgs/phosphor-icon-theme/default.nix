@@ -108,6 +108,18 @@ let
     "nm-no-connection" = { icon = "wifi-slash"; color = "#c45050"; };
     # Telegram tray
     "org.telegram.desktop-symbolic" = { icon = "telegram-logo"; color = "#e8e4df"; };
+    # Battery (upower icon names for ironbar battery widget)
+    "battery-full-charged-symbolic" = { icon = "battery-full"; color = "#b0aca4"; };
+    "battery-full-symbolic" = { icon = "battery-full"; color = "#b0aca4"; };
+    "battery-full-charging-symbolic" = { icon = "battery-charging"; color = "#b0aca4"; };
+    "battery-good-symbolic" = { icon = "battery-high"; color = "#b0aca4"; };
+    "battery-good-charging-symbolic" = { icon = "battery-charging"; color = "#b0aca4"; };
+    "battery-low-symbolic" = { icon = "battery-medium"; color = "#b09a6d"; };
+    "battery-low-charging-symbolic" = { icon = "battery-charging"; color = "#b09a6d"; };
+    "battery-caution-symbolic" = { icon = "battery-low"; color = "#cc6666"; };
+    "battery-caution-charging-symbolic" = { icon = "battery-charging"; color = "#cc6666"; };
+    "battery-empty-symbolic" = { icon = "battery-empty"; color = "#cc6666"; };
+    "battery-missing-symbolic" = { icon = "battery-warning"; color = "#cc6666"; };
   };
 
   # App mappings: colorized copies (not symlinks) so currentColor becomes visible
