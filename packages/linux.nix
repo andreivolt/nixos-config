@@ -5,6 +5,7 @@ let
   inherit (pkgs.stdenv.hostPlatform) isx86_64;
 in
 [
+  andrei.battery-tray
   andrei.caffeine
   andrei.dictate
   andrei.lan-mouse-toggle
