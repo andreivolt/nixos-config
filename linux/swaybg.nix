@@ -15,7 +15,7 @@ in {
       };
       Service = {
         Type = "simple";
-        ExecStart = "${pkgs.swaybg}/bin/swaybg -c '${colors.aurora.background}'";
+        ExecStart = "${pkgs.swaybg}/bin/swaybg -c '${colors.ui.bgAlt}'";
         Restart = "on-failure";
         RestartSec = 3;
       };
