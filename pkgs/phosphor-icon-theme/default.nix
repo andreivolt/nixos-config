@@ -130,7 +130,7 @@ let
 
   mkStatusIcons = lib.concatStringsSep "\n" (lib.mapAttrsToList (name: { icon, color }: ''
     sed 's/fill="currentColor"/fill="${color}"/g' \
-      ${src}/assets/light/${icon}-light.svg \
+      ${src}/assets/bold/${icon}-bold.svg \
       > $out/share/icons/Phosphor/scalable/status/${name}.svg
   '') statusIcons);
 
