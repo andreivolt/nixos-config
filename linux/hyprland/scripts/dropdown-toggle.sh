@@ -1,11 +1,32 @@
 #!/usr/bin/env bash
 # Toggle dropdown visibility; restores terminal if empty
 
+unpinned_file="/tmp/hypr-dropdown-unpinned"
+
+repin() {
+    if [[ -f "$unpinned_file" ]]; then
+        local batch=""
+        while read -r addr; do
+            batch+="${batch:+;}dispatch pin address:${addr}"
+        done < "$unpinned_file"
+        rm -f "$unpinned_file"
+        [[ -n "$batch" ]] && hyprctl --batch "$batch"
+    fi
+}
+
 mon_json=$(hyprctl monitors -j)
 dropdown_visible=$(jq -r '.[] | select(.focused) | .specialWorkspace.name' <<< "$mon_json")
 
 if [[ "$dropdown_visible" == "special:dropdown" ]]; then
-    exec hyprctl dispatch togglespecialworkspace dropdown
+    # Hiding dropdown → re-pin previously unpinned windows
+    batch="dispatch togglespecialworkspace dropdown"
+    if [[ -f /tmp/hypr-dropdown-unpinned ]]; then
+        while read -r addr; do
+            batch+=";dispatch pin address:${addr}"
+        done < /tmp/hypr-dropdown-unpinned
+        rm -f /tmp/hypr-dropdown-unpinned
+    fi
+    exec hyprctl --batch "$batch"
 fi
 
 # Dropdown is hidden → show it
@@ -19,6 +40,19 @@ read -r occupant_addr occupant_mon < <(
 )
 
 batch=""
+
+# Re-pin leftovers from a previous toggle dismissed without the keybind
+repin
+
+# Unpin all pinned windows so dropdown renders on top
+pinned_addrs=$(jq -r '.[] | select(.pinned) | .address' <<< "$clients_json")
+if [[ -n "$pinned_addrs" ]]; then
+    > /tmp/hypr-dropdown-unpinned
+    while read -r addr; do
+        batch+="dispatch pin address:${addr};"
+        echo "$addr" >> /tmp/hypr-dropdown-unpinned
+    done <<< "$pinned_addrs"
+fi
 
 if [[ -z "$occupant_addr" ]]; then
     # Empty → reclaim the dropdown terminal from wherever it landed
@@ -50,6 +84,20 @@ drop_w=$((eff_w * 80 / 100))
 drop_h=$((eff_h * 62 / 100))
 drop_x=$((mon_x + (eff_w - drop_w) / 2))
 drop_y=$((mon_y + bar_h + 2))
+
+# Background watcher: re-pin when dropdown hides (covers all dismiss paths)
+(
+    socat -t 999999 - UNIX-CONNECT:"$XDG_RUNTIME_DIR/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock" | while read -r line; do
+        if [[ "$line" == activespecial\>\>* ]]; then
+            ws_name="${line#activespecial>>}"
+            ws_name="${ws_name%%,*}"
+            if [[ "$ws_name" != "special:dropdown" ]]; then
+                repin
+                break
+            fi
+        fi
+    done
+) &
 
 # Cross-monitor: resize while hidden to avoid slide artifact
 if [[ "$occupant_mon" != "$focused_mon" && "$occupant_mon" != "-1" && -n "$occupant_addr" ]]; then
