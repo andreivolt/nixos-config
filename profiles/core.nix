@@ -23,6 +23,7 @@
     ../shared/gh.nix
     ../shared/glab.nix
     ../shared/nix.nix
+    ../shared/nixbuild-net.nix
     ../shared/npm.nix
     ../shared/npm-tools.nix
     ../shared/uv-tools.nix
