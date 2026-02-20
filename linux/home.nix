@@ -39,6 +39,21 @@
     Install.WantedBy = ["hyprland-session.target"];
   };
 
+  systemd.user.services.system-monitor-tray = {
+    Unit = {
+      Description = "CPU/memory system tray icon";
+      After = ["ironbar.service"];
+      PartOf = ["hyprland-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["hyprland-session.target"];
+  };
+
   systemd.user.services.battery-tray = {
     Unit = {
       Description = "Battery systray applet";
