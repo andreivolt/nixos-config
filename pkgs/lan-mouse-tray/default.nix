@@ -3,6 +3,7 @@
   rustPlatform,
   pkg-config,
   dbus,
+  lan-mouse,
   andrei,
 }:
 rustPlatform.buildRustPackage {
@@ -17,6 +18,7 @@ rustPlatform.buildRustPackage {
   buildInputs = [ dbus ];
 
   env.ICON_THEME_PATH = "${andrei.phosphor-icon-theme}/share/icons/Phosphor";
+  env.LAN_MOUSE_BIN = "${lan-mouse}/bin/lan-mouse";
 
   meta = {
     description = "System tray icon for lan-mouse service";

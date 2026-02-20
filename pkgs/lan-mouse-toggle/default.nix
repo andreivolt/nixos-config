@@ -1,31 +1,23 @@
 {
   writeShellScriptBin,
+  lan-mouse,
+  gnugrep,
   systemd,
-  coreutils,
 }:
 writeShellScriptBin "lan-mouse-toggle" ''
-  STATE_FILE="''${HOME}/.local/state/lan-mouse-disabled"
+  LAN_MOUSE="${lan-mouse}/bin/lan-mouse"
 
   is_active() {
-    ${systemd}/bin/systemctl --user is-active --quiet lan-mouse
-  }
-
-  enable() {
-    ${coreutils}/bin/rm -f "$STATE_FILE"
-    ${systemd}/bin/systemctl --user start lan-mouse
-  }
-
-  disable() {
-    ${coreutils}/bin/mkdir -p "$(${coreutils}/bin/dirname "$STATE_FILE")"
-    ${coreutils}/bin/touch "$STATE_FILE"
-    ${systemd}/bin/systemctl --user stop lan-mouse
+    $LAN_MOUSE cli list 2>/dev/null | ${gnugrep}/bin/grep -q "active: true"
   }
 
   case "''${1:-toggle}" in
-    on)      enable ;;
-    off)     disable ;;
+    on)      $LAN_MOUSE cli activate 0 ;;
+    off)     $LAN_MOUSE cli deactivate 0 ;;
     toggle)
-      if is_active; then disable; else enable; fi
+      # Route through tray so icon updates instantly
+      ${systemd}/bin/busctl --user call org.kde.StatusNotifierItem-lan-mouse /StatusNotifierItem org.kde.StatusNotifierItem Activate ii 0 0 2>/dev/null \
+        || if is_active; then $LAN_MOUSE cli deactivate 0; else $LAN_MOUSE cli activate 0; fi
       ;;
     status)
       if is_active; then echo "ON"; else echo "OFF"; fi
