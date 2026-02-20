@@ -7,10 +7,13 @@ let
     SAVED=$(cat "$LED")
     USER_DISABLED=/tmp/kbd-backlight-user-disabled
 
-    exec < <(${pkgs.libinput}/bin/libinput debug-events 2>/dev/null)
+    exec < <(${pkgs.libinput}/bin/libinput debug-events 2>/dev/null | grep --line-buffered KEYBOARD)
 
     while true; do
       if read -t $TIMEOUT -r _; then
+        # Drain all pending events to avoid per-event sysfs reads
+        while read -t 0.01 -r _; do :; done
+
         # Input detected - restore if off AND not user-disabled
         if [ "$(cat "$LED")" = "0" ] && [ "$SAVED" != "0" ]; then
           if [ ! -f "$USER_DISABLED" ]; then
