@@ -106,17 +106,19 @@
  void CHyprBar::draw(PHLMONITOR pMonitor, const float& a) {
      static auto* const PENABLED = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:enabled")->getDataStaticPtr();
  
-@@ -633,8 +718,7 @@
+@@ -633,8 +718,9 @@
  
      const auto BARBUF = DECOBOX.size() * pMonitor->m_scale;
  
 -    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w,
 -                              DECOBOX.h + ROUNDING * 3 /* to fill the bottom cuz we can't disable rounding there */};
-+    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w, DECOBOX.h + ROUNDING};
++    const auto BORDEROVERLAP = PWINDOW->getRealBorderSize();
++    const auto OVERLAP = std::max(0, (int)ROUNDING - (int)BORDEROVERLAP);
++    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w, DECOBOX.h + OVERLAP};
  
      titleBarBox.translate(PWINDOW->m_floatingOffset).scale(pMonitor->m_scale).round();
  
-@@ -643,37 +727,19 @@
+@@ -643,37 +729,19 @@
  
      g_pHyprOpenGL->scissor(titleBarBox);
  
@@ -146,7 +148,7 @@
 -        glStencilFunc(GL_NOTEQUAL, 1, -1);
 -        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 +    // render blur pass first if enabled
-+    const auto scaledOverlap = (int)(ROUNDING * pMonitor->m_scale);
++    const auto scaledOverlap = (int)(OVERLAP * pMonitor->m_scale);
 +    CBox bgBox = {titleBarBox.x, titleBarBox.y, (int)std::ceil(BARBUF.x), (int)std::ceil(BARBUF.y) + scaledOverlap};
 +    if (SHOULDBLUR) {
 +        // use a taller box so bottom rounding gets clipped by scissor
@@ -160,12 +162,12 @@
 -    else
 -        g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower()});
 +    // render bar background with rounded top corners only (via Cairo texture)
-+    renderBarBackground(BARBUF, pMonitor->m_scale, color, ROUNDING, m_bForcedSeparatorColor);
++    renderBarBackground(BARBUF, pMonitor->m_scale, color, OVERLAP, m_bForcedSeparatorColor);
 +    g_pHyprOpenGL->renderTexture(m_pBarBgTex, bgBox, {.a = 1.0f});
  
      // render title
      if (**PENABLETITLE && (m_szLastTitle != PWINDOW->m_title || m_bWindowSizeChanged || m_pTextTex->m_texID == 0 || m_bTitleColorChanged)) {
-@@ -681,15 +747,6 @@
+@@ -681,15 +749,6 @@
          renderBarTitle(BARBUF, pMonitor->m_scale);
      }
  
@@ -181,7 +183,7 @@
      CBox textBox = {titleBarBox.x, titleBarBox.y, (int)BARBUF.x, (int)BARBUF.y};
      if (**PENABLETITLE)
          g_pHyprOpenGL->renderTexture(m_pTextTex, textBox, {.a = a});
-@@ -732,7 +789,7 @@
+@@ -732,7 +791,7 @@
  }
  
  eDecorationLayer CHyprBar::getDecorationLayer() {
@@ -190,7 +192,7 @@
  }
  
  uint64_t CHyprBar::getDecorationFlags() {
-@@ -762,9 +819,10 @@
+@@ -762,9 +821,10 @@
      auto       prevHidden           = m_hidden;
      auto       prevForcedTitleColor = m_bForcedTitleColor;
  
@@ -204,7 +206,7 @@
  
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->nobarRuleIdx))
          m_hidden = truthy(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->nobarRuleIdx)->effect);
-@@ -772,6 +830,8 @@
+@@ -772,6 +832,8 @@
          m_bForcedBarColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->barColorRuleIdx)->effect).value_or(0));
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->titleColorRuleIdx))
          m_bForcedTitleColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->titleColorRuleIdx)->effect).value_or(0));
