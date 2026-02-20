@@ -75,7 +75,7 @@ in {
       Service = {
         Type = "simple";
         ExecStart = "${script}/bin/hyprland-auto-pin \"title:Picture in picture\"";
-        Restart = "on-failure";
+        Restart = "always";
         RestartSec = 1;
       };
       Install.WantedBy = ["hyprland-session.target"];
@@ -88,7 +88,7 @@ in {
       Service = {
         Type = "simple";
         ExecStart = "${script}/bin/hyprland-auto-pin mpv";
-        Restart = "on-failure";
+        Restart = "always";
         RestartSec = 1;
       };
       Install.WantedBy = ["hyprland-session.target"];
