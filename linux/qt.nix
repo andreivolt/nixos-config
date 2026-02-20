@@ -11,7 +11,6 @@ in {
       libsForQt5.qt5ct
     ];
 
-    # Use xdgdesktopportal for system dark mode detection (built into Qt6)
     qt = {
       enable = true;
       platformTheme.name = "xdgdesktopportal";
@@ -40,7 +39,7 @@ in {
       general="${qtFont}"
     '';
 
-    # KDE/Qt font settings for apps like Dolphin
+    # KDE/Qt font settings
     xdg.configFile."kdeglobals".text = ''
       [General]
       font=${qtFont}

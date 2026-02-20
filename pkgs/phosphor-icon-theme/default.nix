@@ -50,8 +50,7 @@ let
     "sublime_text" = "code";
     "zed" = "code";
     # File managers
-    "org.kde.dolphin" = "folder-open";
-    "dolphin" = "folder-open";
+    "pcmanfm" = "folder-open";
     "yazi" = "folder-open";
     # Document viewers
     "org.pwmt.zathura" = "book-open";
