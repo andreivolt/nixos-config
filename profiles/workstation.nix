@@ -55,7 +55,7 @@
     ../linux/chromium.nix
     ../linux/chromium-proxy.nix
     ../linux/chromium-blank-profile.nix
-    ../linux/nixpak.nix
+    ../linux/nixpak
     ../linux/pcmanfm.nix
     ../linux/kdeconnect.nix
     ../shared/chromium
