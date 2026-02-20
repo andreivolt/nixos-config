@@ -28,24 +28,6 @@
       "icon_size": 20
     },
     {
-      "type": "custom",
-      "name": "cpu",
-      "bar": [{
-        "type": "image",
-        "src": "{{5000:/home/andrei/dev/nixos-config/linux/ironbar/cpu-bar.sh}}",
-        "size": 14
-      }]
-    },
-    {
-      "type": "custom",
-      "name": "memory",
-      "bar": [{
-        "type": "image",
-        "src": "{{10000:/home/andrei/dev/nixos-config/linux/ironbar/mem-bar.sh}}",
-        "size": 14
-      }]
-    },
-    {
       "type": "battery",
       "format": "{percentage}%"
     },
