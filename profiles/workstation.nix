@@ -57,7 +57,7 @@
     ../linux/chromium-proxy.nix
     ../linux/chromium-blank-profile.nix
     ../linux/nixpak.nix
-    ../linux/dolphin.nix
+    ../linux/pcmanfm.nix
     ../linux/kdeconnect.nix
     ../shared/chromium
     ../linux/kbd-backlight-idle.nix

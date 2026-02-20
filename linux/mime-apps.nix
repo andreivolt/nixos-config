@@ -29,7 +29,7 @@ in {
     "image/svg+xml" = image-viewer;
     "image/tiff" = image-viewer;
     "image/webp" = image-viewer;
-    "inode/directory" = "org.kde.dolphin.desktop";
+    "inode/directory" = "pcmanfm.desktop";
     "text/html" = "${browser}.desktop";
     "text/plain" = text-editor;
     "video/mp4" = video-player;
