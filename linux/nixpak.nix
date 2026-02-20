@@ -129,6 +129,36 @@ let
     "--no-default-browser-check"
   ];
 
+  torExtensionIds = [
+    "ddkjiahejlhfcafbddmgiahcphecmpfh" # uBlock Origin Lite
+    "edibdbjcniadpccecjdfdjjppcpchdlm" # I still don't care about cookies
+    "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+    "kehjfphhkfppnnjhdfhanmehkegdppho" # YouTube Row Fixer
+    "fpnmgdkabkmnadcjpehmlllkndpkmiak" # Wayback Machine
+    "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
+    "dhdgffkkebhmkfjojejmpbldmpobfkfo" # Tampermonkey
+    "clngdbkpkpeebahjckkjfobafhncgmne" # Stylus
+    "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
+    "mpiodijhokgodhhofbcjdecpffjipkle" # SingleFile
+    "oahiolknhkbpcolgnpljehalnhblolkm" # ShortsBlocker
+    "gebbhagfogifgggkldgodflihgfeippi" # Return YouTube Dislike
+    "dneaehbmnbhcippjikoajpoabadpodje" # Old Reddit Redirect
+    "kbmfpngjjgdllneeigpgjifpgocmfgmb" # Reddit Enhancement Suite
+    "gneobebnilffgkejpfhlgkmpkipgbcno" # No New Tabs
+    "pbnndmlekkboofhnbonilimejonapojg" # Midnight Lizard
+    "gdnpnkfophbmbpcjdlbiajpkgdndlino" # Infy Scroll
+    "omkfmpieigblcllmkgbflkikinpkodlk" # enhanced-h264ify
+    "iipjdmnoigaobkamfhnojmglcdbnfaaf" # Clutter Free
+    "bbeaicapbccfllodepmimpkgecanonai" # BlockTube
+  ];
+
+  torPolicy = pkgs.writeTextDir "managed/policy.json" (builtins.toJSON {
+    JavaScriptBlockedForUrls = [ "[*.]onion" ];
+    ExtensionInstallForcelist = map
+      (id: "${id};https://clients2.google.com/service/update2/crx")
+      torExtensionIds;
+  });
+
   chromiumTorInner = pkgs.writeShellScriptBin "chromium-tor" ''
     datadir="$XDG_RUNTIME_DIR/chromium-tor"
     mkdir -p "$datadir"
@@ -149,7 +179,9 @@ let
           (sloth.concat' (sloth.env "XDG_RUNTIME_DIR") "/chromium-tor")
           "/dev/shm"
         ];
-        bind.ro = guiRoBinds sloth ++ commonRoBinds;
+        bind.ro = [
+          ["${torPolicy}" "/etc/chromium/policies"]
+        ] ++ guiRoBinds sloth ++ commonRoBinds;
         bind.dev = [ "/dev/dri" ];
         tmpfs = [ "/tmp" ];
       };
