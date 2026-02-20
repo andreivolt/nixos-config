@@ -1,21 +1,18 @@
 {pkgs, ...}:
 let
   exportScript = pkgs.writers.writePython3 "chrome-history-export" {} ''
-    import fcntl
     import os
     import shutil
-    import socket
     import sqlite3
+    import subprocess
     import sys
     import tempfile
-    import time
     from pathlib import Path
 
     WEBKIT_EPOCH_OFFSET = 11644473600
-    DRIVE_DIR = Path.home() / "drive"
-    OUTPUT_FILE = DRIVE_DIR / "chrome-history.tsv"
-    LOCK_FILE = DRIVE_DIR / ".chrome-history.lock"
-    LOCK_TIMEOUT = 120  # Consider lock stale after 2 minutes
+    RCLONE = "${pkgs.rclone}/bin/rclone"
+    REMOTE = "gdrive:chrome-history.tsv"
+    LOCAL_WORK = Path(tempfile.gettempdir()) / "chrome-history-work.tsv"
 
 
     def webkit_to_unix(webkit_time):
@@ -31,7 +28,6 @@ let
 
 
     def parse_timestamp(ts_str):
-        # Parse "U1750610491522.123" -> 1750610491.522123
         if ts_str.startswith("U"):
             ts_str = ts_str[1:]
         parts = ts_str.split(".")
@@ -40,56 +36,7 @@ let
         return ms / 1000 + frac / 1_000_000
 
 
-    def check_drive_available():
-        """Verify drive is accessible (catches broken FUSE mounts)"""
-        try:
-            # stat() fails on broken FUSE mounts ("Transport endpoint is not connected")
-            (OUTPUT_FILE if OUTPUT_FILE.exists() else DRIVE_DIR).stat()
-            return True, None
-        except OSError as e:
-            return False, f"Drive not accessible: {e}"
-
-
-    def acquire_lock():
-        """Acquire cross-machine lock. Returns (success, lock_file_handle)"""
-        hostname = socket.gethostname()
-        now = time.time()
-
-        # Check for existing lock from another machine
-        if LOCK_FILE.exists():
-            try:
-                content = LOCK_FILE.read_text().strip()
-                lock_host, lock_time = content.split(":")
-                lock_age = now - float(lock_time)
-                if lock_host != hostname and lock_age < LOCK_TIMEOUT:
-                    return False, None, f"Locked by {lock_host} ({int(lock_age)}s ago)"
-            except (ValueError, OSError):
-                pass  # Corrupted lock file, proceed to overwrite
-
-        # Write our lock
-        try:
-            LOCK_FILE.write_text(f"{hostname}:{now}")
-            # Also use flock for same-machine protection
-            lock_fh = open(LOCK_FILE, "r+")
-            fcntl.flock(lock_fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-            return True, lock_fh, None
-        except (BlockingIOError, OSError) as e:
-            return False, None, f"Could not acquire lock: {e}"
-
-
-    def release_lock(lock_fh):
-        """Release the lock"""
-        try:
-            if lock_fh:
-                fcntl.flock(lock_fh.fileno(), fcntl.LOCK_UN)
-                lock_fh.close()
-            LOCK_FILE.unlink(missing_ok=True)
-        except OSError:
-            pass
-
-
     def find_history_db():
-        """Find Chrome or Chromium history database"""
         candidates = [
             Path.home() / ".config" / "google-chrome" / "Default" / "History",
             Path.home() / ".config" / "chromium" / "Default" / "History",
@@ -100,13 +47,11 @@ let
         return None
 
 
-    def load_existing_entries():
-        """Load existing entries from TSV file, returns dict of (url, webkit_time) -> line"""
+    def load_tsv(path):
         entries = {}
-        if not OUTPUT_FILE.exists():
+        if not path.exists():
             return entries
-
-        with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
+        with open(path, "r", encoding="utf-8") as f:
             for line in f:
                 line = line.rstrip("\n")
                 if not line:
@@ -121,7 +66,6 @@ let
 
 
     def fetch_new_entries(db_path):
-        """Fetch all entries from the history database"""
         with tempfile.NamedTemporaryFile(suffix=".db", delete=False) as tmp:
             tmp_path = tmp.name
         try:
@@ -137,7 +81,6 @@ let
             for webkit_time, url, visit_count, title in cursor:
                 unix_time = webkit_to_unix(webkit_time)
                 ts_str = format_timestamp(unix_time)
-                # Escape tabs/newlines in title
                 safe_title = (title or "").replace("\t", " ").replace("\n", " ")
                 line = f"{url}\t{ts_str}\t{visit_count}\t{safe_title}"
                 yield (url, webkit_time), line
@@ -147,61 +90,45 @@ let
 
 
     def main():
-        # Check drive is available
-        available, error = check_drive_available()
-        if not available:
-            print(f"Drive not available: {error}")
-            sys.exit(1)
-
         db_path = find_history_db()
         if not db_path:
             print("No Chrome/Chromium history database found")
             return
 
-        # Acquire lock
-        locked, lock_fh, error = acquire_lock()
-        if not locked:
-            print(f"Skipping: {error}")
+        # Download latest from Drive directly (bypasses FUSE cache)
+        subprocess.run(
+            [RCLONE, "copyto", REMOTE, str(LOCAL_WORK)],
+            capture_output=True,
+        )
+
+        entries = load_tsv(LOCAL_WORK)
+        initial_count = len(entries)
+
+        for key, line in fetch_new_entries(db_path):
+            if key not in entries:
+                entries[key] = line
+
+        new_count = len(entries) - initial_count
+        print(f"Found {new_count} new entries (total: {len(entries)})")
+
+        if new_count == 0:
             return
 
-        try:
-            # Load existing entries
-            entries = load_existing_entries()
-            initial_count = len(entries)
+        sorted_entries = sorted(entries.items(), key=lambda x: x[0][1])
+        with open(LOCAL_WORK, "w", encoding="utf-8") as f:
+            for _, line in sorted_entries:
+                f.write(line + "\n")
 
-            # Safety check: if file exists and has content but we read nothing, abort
-            # This catches FUSE mount returning empty content despite stat() succeeding
-            if OUTPUT_FILE.exists():
-                file_size = OUTPUT_FILE.stat().st_size
-                if file_size > 0 and initial_count == 0:
-                    print(f"SAFETY ABORT: File is {file_size} bytes but loaded 0 entries")
-                    print("FUSE mount may be returning invalid content. Refusing to overwrite.")
-                    sys.exit(1)
+        # Upload back to Drive directly
+        result = subprocess.run(
+            [RCLONE, "copyto", str(LOCAL_WORK), REMOTE],
+            capture_output=True, text=True,
+        )
+        if result.returncode != 0:
+            print(f"Upload failed: {result.stderr}")
+            sys.exit(1)
 
-            # Merge new entries (only adds if key doesn't exist)
-            for key, line in fetch_new_entries(db_path):
-                if key not in entries:
-                    entries[key] = line
-
-            new_count = len(entries) - initial_count
-            print(f"Found {new_count} new entries (total: {len(entries)})")
-
-            if new_count == 0:
-                return
-
-            # Sort by webkit_time (second element of key tuple) and write atomically
-            sorted_entries = sorted(entries.items(), key=lambda x: x[0][1])
-
-            # Write to temp file first, then rename for atomicity
-            tmp_output = OUTPUT_FILE.with_suffix(".tmp")
-            with open(tmp_output, "w", encoding="utf-8") as f:
-                for _, line in sorted_entries:
-                    f.write(line + "\n")
-            tmp_output.rename(OUTPUT_FILE)
-
-            print(f"Wrote {len(entries)} entries to {OUTPUT_FILE}")
-        finally:
-            release_lock(lock_fh)
+        print(f"Wrote {len(entries)} entries to {REMOTE}")
 
 
     if __name__ == "__main__":
