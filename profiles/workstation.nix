@@ -53,7 +53,6 @@
     ../linux/xdg-portals.nix
     ../linux/chrome-history.nix
     ../linux/chromium.nix
-    ../linux/chromium-block-js.nix
     ../linux/chromium-proxy.nix
     ../linux/chromium-blank-profile.nix
     ../linux/nixpak.nix
