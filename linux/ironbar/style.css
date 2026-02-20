@@ -6,6 +6,12 @@
 	font-size: 14px;
 }
 
+button, .item, .widget, .tray .item, .workspaces .item, .clock, .battery {
+	box-shadow: none;
+	text-shadow: none;
+	-gtk-icon-shadow: none;
+}
+
 window {
 	background-color: transparent;
 }
@@ -23,7 +29,6 @@ button {
 	padding-left: 0.5em;
 	padding-right: 0.5em;
 	margin: 3px 0;
-	border-radius: 12px;
 }
 
 button:hover, button:active {
@@ -47,12 +52,10 @@ button:hover, button:active {
 
 .workspaces .item:hover {
 	background-color: #1a1a1a;
-	border-radius: 12px;
 }
 
 .workspaces .item.focused {
 	background-color: #2a2a2a;
-	border-radius: 12px;
 }
 
 .workspaces .item.focused label {
@@ -80,7 +83,7 @@ button:hover, button:active {
 	min-width: 24px;
 	padding: 0 3px;
 	margin: 3px 0;
-	border-radius: 12px;
+	border-radius: 0;
 }
 
 .clock {
