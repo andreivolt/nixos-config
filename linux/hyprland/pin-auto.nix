@@ -2,7 +2,7 @@
 {pkgs, ...}: let
   script = pkgs.writeShellApplication {
     name = "hyprland-auto-pin";
-    runtimeInputs = with pkgs; [hyprland jq socat findutils];
+    runtimeInputs = with pkgs; [coreutils gnused hyprland jq socat findutils];
     text = ''
       # Usage: hyprland-auto-pin [class|title:pattern]
       # Example: hyprland-auto-pin mpv
