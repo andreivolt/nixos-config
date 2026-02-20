@@ -70,12 +70,13 @@ in {
       papirus-icon-theme
       noto-fonts
       gsettings-desktop-schemas
+      materia-theme
     ];
 
     gtk = {
       enable = true;
-      # Use Adwaita - color-scheme handles dark/light mode
-      theme.name = "Adwaita";
+      theme.name = "Materia-dark-compact";
+      theme.package = pkgs.materia-theme;
       iconTheme.name = "Phosphor";
       font = {
         name = ui.fontFamily;
