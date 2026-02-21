@@ -77,16 +77,6 @@ in {
             fi
           }
 
-          # ssh function: use kitten for interactive kitty sessions
-          ${lib.optionalString config.programs.kitty.enable ''
-          ssh() {
-            if [[ -t 0 && -n "$KITTY_WINDOW_ID" ]]; then
-              kitten ssh "$@"
-            else
-              command ssh "$@"
-            fi
-          }
-          ''}
 
           ${lib.optionalString pkgs.stdenv.isLinux ''
           open() { setsid -f xdg-open "$@" >/dev/null 2>&1; }
