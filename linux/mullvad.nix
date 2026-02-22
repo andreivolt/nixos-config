@@ -126,7 +126,8 @@ in {
   systemd.user.services.mullvad-gui = {
     description = "Mullvad VPN GUI";
     partOf = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" "tray.target" ];
+    requires = [ "tray.target" ];
     wantedBy = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "simple";

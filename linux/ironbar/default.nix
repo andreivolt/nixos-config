@@ -12,7 +12,7 @@
     systemd.user.services.ironbar = {
       Unit = {
         Description = "Ironbar status bar";
-        PartOf = [ "graphical-session.target" ];
+        PartOf = [ "graphical-session.target" "tray.target" ];
         After = [ "graphical-session.target" ];
       };
       Service = {
@@ -21,7 +21,7 @@
         RestartSec = 1;
       };
       Install = {
-        WantedBy = [ "graphical-session.target" ];
+        WantedBy = [ "graphical-session.target" "tray.target" ];
       };
     };
 
