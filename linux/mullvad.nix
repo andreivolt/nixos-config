@@ -7,7 +7,8 @@
       ${pkgs.nextdns}/bin/nextdns run \
         -config "$(cat ${config.sops.secrets."nextdns/setup_id".path})" \
         -listen 127.0.0.1:5354 \
-        -report-client-info
+        -report-client-info \
+        -detect-captive-portals
   '';
 in {
   services.mullvad-vpn = {
