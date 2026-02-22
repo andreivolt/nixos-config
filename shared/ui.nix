@@ -2,6 +2,6 @@ let
   fontSizePx = 14;
 in {
   inherit fontSizePx;
-  fontSizePt = builtins.ceil (fontSizePx * 0.75);
-  fontFamily = "Inter";
+  fontSizePt = builtins.floor (fontSizePx * 0.75);
+  fontFamily = "Inter Tight";
 }
