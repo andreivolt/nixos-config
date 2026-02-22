@@ -142,6 +142,10 @@ let
     "battery-caution-charging-symbolic" = { icon = "battery-charging"; color = "#cc6666"; };
     "battery-empty-symbolic" = { icon = "battery-empty"; color = "#cc6666"; };
     "battery-missing-symbolic" = { icon = "battery-warning"; color = "#cc6666"; };
+    # Mullvad VPN tray
+    "mullvad-connected" = { icon = "shield-check"; color = fgColor; };
+    "mullvad-disconnected" = { icon = "shield"; color = "#4d4a46"; };
+    "mullvad-connecting" = { icon = "shield"; color = "#7a756d"; };
   };
 
   # App mappings: colorized copies (not symlinks) so currentColor becomes visible
