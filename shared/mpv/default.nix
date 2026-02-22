@@ -22,6 +22,7 @@
   sponsorblock-minimal-patched = pkgs.mpvScripts.sponsorblock-minimal.overrideAttrs (old: {
     patches = (old.patches or []) ++ [
       ./sponsorblock-minimal-no-osd.patch
+      ./sponsorblock-minimal-no-keybind.patch
     ];
   });
   mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
