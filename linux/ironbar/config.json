@@ -25,7 +25,8 @@
   "end": [
     {
       "type": "tray",
-      "icon_size": 20
+      "icon_size": 20,
+      "sort": ["system-monitor", "caffeine", "mullvad-tray", "nm-applet", "blueman"]
     },
     {
       "type": "battery",

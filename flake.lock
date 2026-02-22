@@ -923,11 +923,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771659577,
-        "narHash": "sha256-JWfhECxbHUMDvF8owEzMjZ4WxNRxO2hzrHVB5H8YW5o=",
+        "lastModified": 1771791028,
+        "narHash": "sha256-ic7++D9UInx7s1uWZGFmtS4UBqmOB6PuvJb4ZJdm30s=",
         "owner": "andreivolt",
         "repo": "ironbar",
-        "rev": "cefad63faff3b805b48e78e017177becf395a425",
+        "rev": "505725c0ac894b6e10c4f98f31b071df998681c2",
         "type": "github"
       },
       "original": {
