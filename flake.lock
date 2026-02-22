@@ -923,11 +923,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771630303,
-        "narHash": "sha256-Ys6q8c5myL0rrS6QvcGSluNGxgXH8Ui9FAPMaLRlZzE=",
+        "lastModified": 1771659577,
+        "narHash": "sha256-JWfhECxbHUMDvF8owEzMjZ4WxNRxO2hzrHVB5H8YW5o=",
         "owner": "andreivolt",
         "repo": "ironbar",
-        "rev": "270f60c0196df7800d6c924001550e68c21ff870",
+        "rev": "cefad63faff3b805b48e78e017177becf395a425",
         "type": "github"
       },
       "original": {
@@ -968,11 +968,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1771430869,
-        "narHash": "sha256-35kJgw06v91VXunVQE2x7eomaV0yqlYIfEg/6COwN9c=",
+        "lastModified": 1771634023,
+        "narHash": "sha256-2nax20DahyFqKFmj5DV3yz84b3eYGjzH/TWaHL7oZh8=",
         "ref": "refs/heads/main",
-        "rev": "7c9eb066c94fe421dd51a0e2fb7c48c2b88c66e5",
-        "revCount": 63,
+        "rev": "a4027ab57cc75bf6da3c6e862200426584602e3b",
+        "revCount": 66,
         "type": "git",
         "url": "file:/home/andrei/dev/launcher"
       },
@@ -1052,7 +1052,7 @@
         "dirtyRev": "ff7c2cd7f6e1bb849f28bd92fbe7b6c1c89b717d-dirty",
         "dirtyShortRev": "ff7c2cd-dirty",
         "lastModified": 1771451005,
-        "narHash": "sha256-RSGtiW6uCOVkfW6HBL/yZINv2QNlkHSQURZ+lsyoo58=",
+        "narHash": "sha256-B6rwklNAN6lri+3dw90/iE7HaQsK53Poa4wSK6RSTA8=",
         "type": "git",
         "url": "file:/home/andrei/dev/monolith"
       },
