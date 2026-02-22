@@ -84,18 +84,18 @@ let
 
   # Systray status icons: name → { src, color }
   statusIcons = {
-    "caffeine-on" = { icon = "eye"; color = "#e8e4df"; };
+    "caffeine-on" = { icon = "eye"; color = fgColor; };
     "caffeine-off" = { icon = "eye-slash"; color = "#7a756d"; };
     "lan-mouse-on" = { icon = "mouse"; color = "#7a9aaa"; };
     "lan-mouse-off" = { icon = "mouse"; color = "#4d4a46"; };
-    "com.github.xeco23.WasIstLos-tray" = { icon = "whatsapp-logo"; color = "#e8e4df"; };
+    "com.github.xeco23.WasIstLos-tray" = { icon = "whatsapp-logo"; color = fgColor; };
     "com.github.xeco23.WasIstLos-tray-attention" = { icon = "whatsapp-logo"; color = "#d07070"; };
     # KDE Connect indicator
-    "kdeconnectindicatordark" = { icon = "device-mobile"; color = "#e8e4df"; };
+    "kdeconnectindicatordark" = { icon = "device-mobile"; color = fgColor; };
     "kdeconnect-tray-off" = { icon = "device-mobile"; color = "#4d4a46"; };
     # NetworkManager signal icons
-    "nm-signal-100" = { icon = "wifi-high"; color = "#e8e4df"; };
-    "nm-signal-100-secure" = { icon = "wifi-high"; color = "#e8e4df"; };
+    "nm-signal-100" = { icon = "wifi-high"; color = fgColor; };
+    "nm-signal-100-secure" = { icon = "wifi-high"; color = fgColor; };
     "nm-signal-75" = { icon = "wifi-high"; color = "#b0aca4"; };
     "nm-signal-75-secure" = { icon = "wifi-high"; color = "#b0aca4"; };
     "nm-signal-50" = { icon = "wifi-medium"; color = "#7a756d"; };
@@ -106,7 +106,7 @@ let
     "nm-signal-0-secure" = { icon = "wifi-none"; color = "#4d4a46"; };
     "nm-no-connection" = { icon = "wifi-slash"; color = "#c45050"; };
     # Telegram tray
-    "org.telegram.desktop-symbolic" = { icon = "telegram-logo"; color = "#e8e4df"; };
+    "org.telegram.desktop-symbolic" = { icon = "telegram-logo"; color = fgColor; };
     # Battery (upower icon names for ironbar battery widget)
     "battery-full-charged-symbolic" = { icon = "battery-full"; color = "#b0aca4"; };
     "battery-full-symbolic" = { icon = "battery-full"; color = "#b0aca4"; };
