@@ -184,11 +184,20 @@ class CaffeineMenu(dbus.service.Object):
             (dbus.Int32(item_id), props, dbus.Array([], signature="v")),
             signature=None)
 
+    def _make_separator(self, item_id):
+        props = dbus.Dictionary({
+            "type": dbus.String("separator"),
+            "enabled": dbus.Boolean(True),
+        }, signature="sv")
+        return dbus.Struct(
+            (dbus.Int32(item_id), props, dbus.Array([], signature="v")),
+            signature=None)
+
     @dbus.service.method(MENU_INTERFACE, in_signature="iias", out_signature="u(ia{sv}av)")
     def GetLayout(self, parent_id, recursion_depth, property_names):
         toggle_label = "Disable" if self._state.active else "Enable"
         toggle = self._make_item(1, toggle_label)
-        sep = self._make_item(10, "", {"type": dbus.String("separator")})
+        sep = self._make_separator(10)
         timers = [self._make_item(tid, lbl) for tid, lbl, _ in self.TIMERS]
         children = dbus.Array([toggle, sep] + timers, signature="v")
         root = dbus.Struct(
