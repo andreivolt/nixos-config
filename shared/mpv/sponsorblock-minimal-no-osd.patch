@@ -1,0 +1,14 @@
+diff --git a/sponsorblock_minimal.lua b/sponsorblock_minimal.lua
+index befc686..23e5236 100644
+--- a/sponsorblock_minimal.lua
++++ b/sponsorblock_minimal.lua
+@@ -44,9 +44,6 @@ function skip_ads(name,pos)
+ 		for _, i in pairs(ranges) do
+ 			v = i.segment[2]
+ 			if i.segment[1] <= pos and v > pos then
+-				--this message may sometimes be wrong
+-				--it only seems to be a visual thing though
+-				mp.osd_message(("[sponsorblock] skipping forward %ds"):format(math.floor(v-mp.get_property("time-pos"))))
+ 				--need to do the +0.01 otherwise mpv will start spamming skip sometimes
+ 				--example: https://www.youtube.com/watch?v=4ypMJzeNooo
+ 				mp.set_property("time-pos",v+0.01)

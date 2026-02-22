@@ -18,6 +18,12 @@
       ./youtube-chat-skip-live.patch
     ];
   });
+
+  sponsorblock-minimal-patched = pkgs.mpvScripts.sponsorblock-minimal.overrideAttrs (old: {
+    patches = (old.patches or []) ++ [
+      ./sponsorblock-minimal-no-osd.patch
+    ];
+  });
   mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
     echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket | ${pkgs.jq}/bin/jq -r .data
   '';
@@ -41,7 +47,7 @@ in {
           uosc
           thumbfast
           quality-menu
-          sponsorblock-minimal
+          sponsorblock-minimal-patched
           autosubsync-mpv
           eisa01.undoredo
         ]) ++ [
