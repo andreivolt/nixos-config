@@ -93,18 +93,35 @@ let
     # KDE Connect indicator
     "kdeconnectindicatordark" = { icon = "device-mobile"; color = fgColor; };
     "kdeconnect-tray-off" = { icon = "device-mobile"; color = "#4d4a46"; };
-    # NetworkManager signal icons
+    # NetworkManager signal icons (outline = open, fill = secure)
     "nm-signal-100" = { icon = "wifi-high"; color = fgColor; };
-    "nm-signal-100-secure" = { icon = "wifi-high"; color = fgColor; };
+    "nm-signal-100-secure" = { icon = "wifi-high"; color = fgColor; variant = "fill"; };
     "nm-signal-75" = { icon = "wifi-high"; color = "#b0aca4"; };
-    "nm-signal-75-secure" = { icon = "wifi-high"; color = "#b0aca4"; };
+    "nm-signal-75-secure" = { icon = "wifi-high"; color = "#b0aca4"; variant = "fill"; };
     "nm-signal-50" = { icon = "wifi-medium"; color = "#7a756d"; };
-    "nm-signal-50-secure" = { icon = "wifi-medium"; color = "#7a756d"; };
+    "nm-signal-50-secure" = { icon = "wifi-medium"; color = "#7a756d"; variant = "fill"; };
     "nm-signal-25" = { icon = "wifi-low"; color = "#7a756d"; };
-    "nm-signal-25-secure" = { icon = "wifi-low"; color = "#7a756d"; };
+    "nm-signal-25-secure" = { icon = "wifi-low"; color = "#7a756d"; variant = "fill"; };
     "nm-signal-0" = { icon = "wifi-none"; color = "#4d4a46"; };
-    "nm-signal-0-secure" = { icon = "wifi-none"; color = "#4d4a46"; };
+    "nm-signal-0-secure" = { icon = "wifi-none"; color = "#4d4a46"; variant = "fill"; };
     "nm-no-connection" = { icon = "wifi-slash"; color = "#c45050"; };
+    # NetworkManager signal + VPN icons (green tint = VPN active)
+    "nm-signal-100-vpn" = { icon = "wifi-high"; color = "#8aaa8a"; };
+    "nm-signal-100-secure-vpn" = { icon = "wifi-high"; color = "#8aaa8a"; variant = "fill"; };
+    "nm-signal-75-vpn" = { icon = "wifi-high"; color = "#7a9a7a"; };
+    "nm-signal-75-secure-vpn" = { icon = "wifi-high"; color = "#7a9a7a"; variant = "fill"; };
+    "nm-signal-50-vpn" = { icon = "wifi-medium"; color = "#5a7a5a"; };
+    "nm-signal-50-secure-vpn" = { icon = "wifi-medium"; color = "#5a7a5a"; variant = "fill"; };
+    "nm-signal-25-vpn" = { icon = "wifi-low"; color = "#5a7a5a"; };
+    "nm-signal-25-secure-vpn" = { icon = "wifi-low"; color = "#5a7a5a"; variant = "fill"; };
+    "nm-signal-0-vpn" = { icon = "wifi-none"; color = "#3a5a3a"; };
+    "nm-signal-0-secure-vpn" = { icon = "wifi-none"; color = "#3a5a3a"; variant = "fill"; };
+    # VPN standalone icons
+    "nm-vpn-connecting01" = { icon = "shield"; color = "#5a7a5a"; };
+    "nm-vpn-connecting02" = { icon = "shield"; color = "#7a9a7a"; };
+    "nm-vpn-connecting03" = { icon = "shield"; color = "#8aaa8a"; };
+    "nm-vpn-active-lock" = { icon = "shield-check"; color = "#8aaa8a"; };
+    "nm-vpn-standalone-lock" = { icon = "shield-check"; color = "#8aaa8a"; };
     # Telegram tray
     "org.telegram.desktop-symbolic" = { icon = "telegram-logo"; color = fgColor; };
     # Battery (upower icon names for ironbar battery widget)
@@ -128,11 +145,14 @@ let
       > $out/share/icons/Phosphor/scalable/apps/${dest}.svg
   '') appMappings);
 
-  mkStatusIcons = lib.concatStringsSep "\n" (lib.mapAttrsToList (name: { icon, color }: ''
-    sed 's/fill="currentColor"/fill="${color}"/g' \
-      ${src}/assets/regular/${icon}.svg \
-      > $out/share/icons/Phosphor/scalable/status/${name}.svg
-  '') statusIcons);
+  mkStatusIcons = lib.concatStringsSep "\n" (lib.mapAttrsToList (name: { icon, color, variant ? "regular" }:
+    let
+      fileName = if variant == "fill" then "${icon}-fill" else icon;
+    in ''
+      sed 's/fill="currentColor"/fill="${color}"/g' \
+        ${src}/assets/${variant}/${fileName}.svg \
+        > $out/share/icons/Phosphor/scalable/status/${name}.svg
+    '') statusIcons);
 
 in
 stdenvNoCC.mkDerivation {
