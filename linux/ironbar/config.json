@@ -43,6 +43,23 @@
     {
       "type": "clock",
       "format": "%H:%M"
+    },
+    {
+      "type": "custom",
+      "class": "power-menu",
+      "bar": [{ "type": "button", "name": "power-button", "on_click": "popup:toggle", "widgets": [{ "type": "image", "src": "icon:power", "size": 20 }] }],
+      "popup": [
+        {
+          "type": "box",
+          "orientation": "vertical",
+          "widgets": [
+            { "type": "button", "label": "Lock", "on_click": "!hyprlock", "name": "power-lock" },
+            { "type": "button", "label": "Suspend", "on_click": "!systemctl suspend", "name": "power-suspend" },
+            { "type": "button", "label": "Reboot", "on_click": "!systemctl reboot", "name": "power-reboot" },
+            { "type": "button", "label": "Shutdown", "on_click": "!systemctl poweroff", "name": "power-shutdown" }
+          ]
+        }
+      ]
     }
   ]
 }

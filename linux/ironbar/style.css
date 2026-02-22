@@ -157,3 +157,35 @@ button:hover, button:active {
 .clock {
 	font-weight: bold;
 }
+
+.widget.custom.power-menu {
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.power-menu #power-button {
+	padding: 0 0.4em;
+}
+
+popover, popover > contents {
+	border: none;
+	box-shadow: none;
+	background-color: #1a1a1a;
+	padding: 0;
+	margin: 0;
+}
+
+.popup button {
+	padding: 6px 16px;
+	margin: 0;
+	border-radius: 0;
+	background-color: transparent;
+}
+
+.popup button label {
+	margin-right: auto;
+}
+
+.popup button:hover {
+	background-color: #2a2a2a;
+}
