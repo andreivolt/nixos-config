@@ -122,6 +122,12 @@ let
     "nm-vpn-connecting03" = { icon = "shield"; color = "#8aaa8a"; };
     "nm-vpn-active-lock" = { icon = "shield-check"; color = "#8aaa8a"; };
     "nm-vpn-standalone-lock" = { icon = "shield-check"; color = "#8aaa8a"; };
+    # Blueman / Bluetooth tray
+    "blueman-active" = { icon = "bluetooth"; color = fgColor; };
+    "blueman-disabled" = { icon = "bluetooth-slash"; color = "#4d4a46"; };
+    "blueman-tray" = { icon = "bluetooth"; color = fgColor; };
+    "bluetooth-active" = { icon = "bluetooth"; color = fgColor; };
+    "bluetooth-disabled" = { icon = "bluetooth-slash"; color = "#4d4a46"; };
     # Telegram tray
     "org.telegram.desktop-symbolic" = { icon = "telegram-logo"; color = fgColor; };
     # Battery (upower icon names for ironbar battery widget)
