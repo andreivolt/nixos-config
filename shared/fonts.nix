@@ -14,6 +14,7 @@ lib.mkMerge [
       corefonts
       ubuntu-classic
       inter
+      andrei.inter-tight
       roboto
       dejavu_fonts
     ];
