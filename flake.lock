@@ -1049,10 +1049,10 @@
         "uv2nix": "uv2nix"
       },
       "locked": {
-        "dirtyRev": "ff7c2cd7f6e1bb849f28bd92fbe7b6c1c89b717d-dirty",
-        "dirtyShortRev": "ff7c2cd-dirty",
-        "lastModified": 1771451005,
-        "narHash": "sha256-B6rwklNAN6lri+3dw90/iE7HaQsK53Poa4wSK6RSTA8=",
+        "dirtyRev": "05a0050f2b3afa4e06b6db42d21f4206906c0c32-dirty",
+        "dirtyShortRev": "05a0050-dirty",
+        "lastModified": 1771701163,
+        "narHash": "sha256-yKeBMrFXYut4hjIqui4OUKe1ZXxUXHgMfsZ/uqgxTp0=",
         "type": "git",
         "url": "file:/home/andrei/dev/monolith"
       },
