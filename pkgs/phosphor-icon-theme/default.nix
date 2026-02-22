@@ -124,13 +124,13 @@ let
   # App mappings: colorized copies (not symlinks) so currentColor becomes visible
   mkAppIcons = lib.concatStringsSep "\n" (lib.mapAttrsToList (dest: srcName: ''
     sed 's/fill="currentColor"/fill="${fgColor}"/g' \
-      ${src}/assets/light/${srcName}-light.svg \
+      ${src}/assets/regular/${srcName}.svg \
       > $out/share/icons/Phosphor/scalable/apps/${dest}.svg
   '') appMappings);
 
   mkStatusIcons = lib.concatStringsSep "\n" (lib.mapAttrsToList (name: { icon, color }: ''
     sed 's/fill="currentColor"/fill="${color}"/g' \
-      ${src}/assets/bold/${icon}-bold.svg \
+      ${src}/assets/regular/${icon}.svg \
       > $out/share/icons/Phosphor/scalable/status/${name}.svg
   '') statusIcons);
 
@@ -148,9 +148,9 @@ stdenvNoCC.mkDerivation {
 
     mkdir -p $out/share/icons/Phosphor/scalable/{apps,status}
 
-    # Install all light icons with foreground color (strip -light suffix)
-    for f in ${src}/assets/light/*-light.svg; do
-      name=$(basename "$f" | sed 's/-light\.svg$/.svg/')
+    # Install all regular icons with foreground color
+    for f in ${src}/assets/regular/*.svg; do
+      name=$(basename "$f")
       sed 's/fill="currentColor"/fill="${fgColor}"/g' "$f" \
         > "$out/share/icons/Phosphor/scalable/apps/$name"
     done
@@ -165,7 +165,7 @@ stdenvNoCC.mkDerivation {
     cat > $out/share/icons/Phosphor/index.theme << 'EOF'
     [Icon Theme]
     Name=Phosphor
-    Comment=Phosphor Icons (light) with Papirus-Dark fallback
+    Comment=Phosphor Icons with Papirus-Dark fallback
     Inherits=Papirus-Dark
     Directories=scalable/apps,scalable/status
 
