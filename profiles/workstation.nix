@@ -23,6 +23,7 @@
     ../linux/tor.nix
     ../linux/socks-proxy.nix
 
+    ../shared/foot
     ../shared/ghostty
     ../shared/kitty
     ../shared/nvim-pager.nix
