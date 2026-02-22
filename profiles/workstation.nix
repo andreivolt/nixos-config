@@ -44,6 +44,7 @@
     ../linux/nm-applet.nix
     ../linux/pipewire.nix
     ../linux/bluetooth-audio.nix
+    ../linux/blueman.nix
     ../linux/qt.nix
     ../linux/swaybg.nix
     ../linux/swaync
