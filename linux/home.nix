@@ -27,7 +27,8 @@
   systemd.user.services.caffeine-tray = {
     Unit = {
       Description = "Caffeine systray applet";
-      After = ["ironbar.service"];
+      After = ["tray.target"];
+      Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
@@ -42,7 +43,8 @@
   systemd.user.services.system-monitor-tray = {
     Unit = {
       Description = "CPU/memory system tray icon";
-      After = ["ironbar.service"];
+      After = ["tray.target"];
+      Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
@@ -57,7 +59,8 @@
   systemd.user.services.battery-tray = {
     Unit = {
       Description = "Battery systray applet";
-      After = ["ironbar.service"];
+      After = ["tray.target"];
+      Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
