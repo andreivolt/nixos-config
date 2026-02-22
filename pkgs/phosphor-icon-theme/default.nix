@@ -93,29 +93,29 @@ let
     # KDE Connect indicator
     "kdeconnectindicatordark" = { icon = "device-mobile"; color = fgColor; };
     "kdeconnect-tray-off" = { icon = "device-mobile"; color = "#4d4a46"; };
-    # NetworkManager signal icons (outline = open, fill = secure)
+    # NetworkManager signal icons (secure variants get lock overlay)
     "nm-signal-100" = { icon = "wifi-high"; color = fgColor; };
-    "nm-signal-100-secure" = { icon = "wifi-high"; color = fgColor; variant = "fill"; };
+    "nm-signal-100-secure" = { icon = "wifi-high"; color = fgColor; overlay = "lock-simple"; };
     "nm-signal-75" = { icon = "wifi-high"; color = "#b0aca4"; };
-    "nm-signal-75-secure" = { icon = "wifi-high"; color = "#b0aca4"; variant = "fill"; };
+    "nm-signal-75-secure" = { icon = "wifi-high"; color = "#b0aca4"; overlay = "lock-simple"; };
     "nm-signal-50" = { icon = "wifi-medium"; color = "#7a756d"; };
-    "nm-signal-50-secure" = { icon = "wifi-medium"; color = "#7a756d"; variant = "fill"; };
+    "nm-signal-50-secure" = { icon = "wifi-medium"; color = "#7a756d"; overlay = "lock-simple"; };
     "nm-signal-25" = { icon = "wifi-low"; color = "#7a756d"; };
-    "nm-signal-25-secure" = { icon = "wifi-low"; color = "#7a756d"; variant = "fill"; };
+    "nm-signal-25-secure" = { icon = "wifi-low"; color = "#7a756d"; overlay = "lock-simple"; };
     "nm-signal-0" = { icon = "wifi-none"; color = "#4d4a46"; };
-    "nm-signal-0-secure" = { icon = "wifi-none"; color = "#4d4a46"; variant = "fill"; };
+    "nm-signal-0-secure" = { icon = "wifi-none"; color = "#4d4a46"; overlay = "lock-simple"; };
     "nm-no-connection" = { icon = "wifi-slash"; color = "#c45050"; };
     # NetworkManager signal + VPN icons (green tint = VPN active)
     "nm-signal-100-vpn" = { icon = "wifi-high"; color = "#8aaa8a"; };
-    "nm-signal-100-secure-vpn" = { icon = "wifi-high"; color = "#8aaa8a"; variant = "fill"; };
+    "nm-signal-100-secure-vpn" = { icon = "wifi-high"; color = "#8aaa8a"; overlay = "lock-simple"; };
     "nm-signal-75-vpn" = { icon = "wifi-high"; color = "#7a9a7a"; };
-    "nm-signal-75-secure-vpn" = { icon = "wifi-high"; color = "#7a9a7a"; variant = "fill"; };
+    "nm-signal-75-secure-vpn" = { icon = "wifi-high"; color = "#7a9a7a"; overlay = "lock-simple"; };
     "nm-signal-50-vpn" = { icon = "wifi-medium"; color = "#5a7a5a"; };
-    "nm-signal-50-secure-vpn" = { icon = "wifi-medium"; color = "#5a7a5a"; variant = "fill"; };
+    "nm-signal-50-secure-vpn" = { icon = "wifi-medium"; color = "#5a7a5a"; overlay = "lock-simple"; };
     "nm-signal-25-vpn" = { icon = "wifi-low"; color = "#5a7a5a"; };
-    "nm-signal-25-secure-vpn" = { icon = "wifi-low"; color = "#5a7a5a"; variant = "fill"; };
+    "nm-signal-25-secure-vpn" = { icon = "wifi-low"; color = "#5a7a5a"; overlay = "lock-simple"; };
     "nm-signal-0-vpn" = { icon = "wifi-none"; color = "#3a5a3a"; };
-    "nm-signal-0-secure-vpn" = { icon = "wifi-none"; color = "#3a5a3a"; variant = "fill"; };
+    "nm-signal-0-secure-vpn" = { icon = "wifi-none"; color = "#3a5a3a"; overlay = "lock-simple"; };
     # VPN standalone icons
     "nm-vpn-connecting01" = { icon = "shield"; color = "#5a7a5a"; };
     "nm-vpn-connecting02" = { icon = "shield"; color = "#7a9a7a"; };
@@ -145,13 +145,17 @@ let
       > $out/share/icons/Phosphor/scalable/apps/${dest}.svg
   '') appMappings);
 
-  mkStatusIcons = lib.concatStringsSep "\n" (lib.mapAttrsToList (name: { icon, color, variant ? "regular" }:
-    let
-      fileName = if variant == "fill" then "${icon}-fill" else icon;
-    in ''
+  mkStatusIcons = lib.concatStringsSep "\n" (lib.mapAttrsToList (name: { icon, color, overlay ? null }:
+    if overlay == null then ''
       sed 's/fill="currentColor"/fill="${color}"/g' \
-        ${src}/assets/${variant}/${fileName}.svg \
+        ${src}/assets/regular/${icon}.svg \
         > $out/share/icons/Phosphor/scalable/status/${name}.svg
+    '' else ''
+      base_path=$(sed -n 's/.*<path d="\([^"]*\)".*/\1/p' ${src}/assets/regular/${icon}.svg)
+      overlay_path=$(sed -n 's/.*<path d="\([^"]*\)".*/\1/p' ${src}/assets/fill/${overlay}-fill.svg)
+      cat > $out/share/icons/Phosphor/scalable/status/${name}.svg << SVGEOF
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="${color}"><path d="$base_path"/><g transform="translate(156,150) scale(0.4)"><path d="$overlay_path"/></g></svg>
+      SVGEOF
     '') statusIcons);
 
 in
