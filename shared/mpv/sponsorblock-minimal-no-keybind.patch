@@ -1,0 +1,30 @@
+diff --git a/sponsorblock_minimal.lua b/sponsorblock_minimal.lua
+index 23e5236..e16db58 100644
+--- a/sponsorblock_minimal.lua
++++ b/sponsorblock_minimal.lua
+@@ -162,7 +162,6 @@ function file_loaded()
+ 
+ 	if ranges then
+ 		ON = true
+-		mp.add_key_binding("b","sponsorblock",toggle)
+ 		mp.observe_property("time-pos", "native", skip_ads)
+ 	end
+ end
+@@ -174,17 +173,5 @@ function end_file()
+ 	ON = false
+ end
+ 
+-function toggle()
+-	if ON then
+-		mp.unobserve_property(skip_ads)
+-		mp.osd_message("[sponsorblock] off")
+-		ON = false
+-	else
+-		mp.observe_property("time-pos", "native", skip_ads)
+-		mp.osd_message("[sponsorblock] on")
+-		ON = true
+-	end
+-end
+-
+ mp.register_event("file-loaded", file_loaded)
+ mp.register_event("end-file", end_file)
