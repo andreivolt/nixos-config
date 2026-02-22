@@ -145,6 +145,16 @@ in {
     serviceConfig.ExecStart = lib.mkForce "${nextdnsStart}";
   };
 
+  # NextDNS DoH connections go stale when Mullvad toggles (wg0-mullvad add/remove).
+  # It detects the network change but never recovers. Restart via NM dispatcher.
+  networking.networkmanager.dispatcherScripts = [{
+    source = pkgs.writeShellScript "restart-nextdns" ''
+      if [ "$1" = "wg0-mullvad" ]; then
+        systemctl restart nextdns
+      fi
+    '';
+  }];
+
   # Standalone dnsmasq (NM's internal dnsmasq ignores dnsmasq.d/ conf files)
   networking.networkmanager.dns = "none";
   services.dnsmasq = {
