@@ -111,14 +111,14 @@ button:hover, button:active {
 }
 
 .battery .progress-bar {
-	min-width: 40px;
-	min-height: 8px;
+	min-width: 30px;
+	min-height: 2px;
 	border-radius: 0;
 	background-color: #3c3a36;
 }
 
 .battery .progress-fill {
-	min-height: 8px;
+	min-height: 2px;
 	border-radius: 0;
 	background-color: #78be78;
 }
