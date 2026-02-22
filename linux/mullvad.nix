@@ -122,21 +122,6 @@ in {
     };
   };
 
-  # Auto-start Mullvad GUI in tray (NixOS user service to avoid restart on rebuild)
-  systemd.user.services.mullvad-gui = {
-    description = "Mullvad VPN GUI";
-    partOf = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" "tray.target" ];
-    requires = [ "tray.target" ];
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.mullvad-vpn}/bin/mullvad-vpn";
-      Restart = "on-failure";
-      RestartSec = 3;
-    };
-  };
-
   # Local DoH resolver bypassing Mullvad (so DNS survives VPN state changes)
   # Tailscale's DoH to NextDNS breaks when Mullvad toggles because the HTTPS
   # connections get torn down. This runs NextDNS DoH directly, excluded from Mullvad.

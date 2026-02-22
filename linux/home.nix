@@ -56,16 +56,16 @@
     Install.WantedBy = ["hyprland-session.target"];
   };
 
-  systemd.user.services.battery-tray = {
+  systemd.user.services.mullvad-tray = {
     Unit = {
-      Description = "Battery systray applet";
+      Description = "Mullvad VPN systray applet";
       After = ["tray.target"];
       Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.andrei.battery-tray}/bin/battery-tray";
+      ExecStart = "${pkgs.andrei.mullvad-tray}/bin/mullvad-tray";
       Restart = "on-failure";
       RestartSec = 1;
     };
