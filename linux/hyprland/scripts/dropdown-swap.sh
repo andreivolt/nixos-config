@@ -31,10 +31,10 @@ if [[ "$active_ws" == "special:dropdown" ]]; then
         # Resize terminal to dropdown position
         bar_h=$(hyprctl layers -j | jq -r --arg mon "$mon_name" '.[$mon].levels | to_entries | .[] | .value[] | select(.namespace=="waybar") | .h' 2>/dev/null)
         bar_h=${bar_h:-40}
-        drop_w=$((eff_w * 80 / 100))
+        drop_w=$eff_w
         drop_h=$((eff_h * 62 / 100))
-        drop_x=$((mon_x + (eff_w - drop_w) / 2))
-        drop_y=$((mon_y + bar_h + 2))
+        drop_x=$mon_x
+        drop_y=$((mon_y + bar_h))
         batch+=";dispatch resizewindowpixel exact ${drop_w} ${drop_h},address:${term_addr}"
         batch+=";dispatch movewindowpixel exact ${drop_x} ${drop_y},address:${term_addr}"
     fi
@@ -58,13 +58,13 @@ else
         [[ "$floating" == "true" ]] && batch+="dispatch togglefloating address:${addr};"
     done < <(jq -r '.[] | select(.workspace.name == "special:dropdown") | [.address, .floating] | @tsv' <<< "$clients_json")
 
-    # Size/position (80% × 62%, centered below waybar)
+    # Size/position (full-width, 42% height, flush below bar)
     bar_h=$(hyprctl layers -j | jq -r --arg mon "$mon_name" '.[$mon].levels | to_entries | .[] | .value[] | select(.namespace=="waybar") | .h' 2>/dev/null)
     bar_h=${bar_h:-40}
-    drop_w=$((eff_w * 80 / 100))
+    drop_w=$eff_w
     drop_h=$((eff_h * 62 / 100))
-    drop_x=$((mon_x + (eff_w - drop_w) / 2))
-    drop_y=$((mon_y + bar_h + 2))
+    drop_x=$mon_x
+    drop_y=$((mon_y + bar_h))
 
     # Move in, float, resize, show
     batch+="dispatch movetoworkspacesilent special:dropdown,address:${active_addr};"
