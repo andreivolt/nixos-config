@@ -31,12 +31,10 @@
     {
       "type": "battery",
       "format": "{percentage}%",
-      "show_icon": false,
-      "show_progress": true,
+      "icon_size": 20,
+      "show_icon": true,
+      "show_progress": false,
       "profiles": {
-        "low": { "when": { "percent": 20 } },
-        "medium": { "when": { "percent": 50 } },
-        "good": { "when": { "percent": 100 } },
         "charging": { "when": { "percent": 100, "charging": true } }
       }
     },
