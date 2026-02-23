@@ -77,13 +77,13 @@ if [[ -z "$occupant_addr" ]]; then
     fi
 fi
 
-# Size/position (80% × 62%, centered below waybar)
+# Size/position (full-width, 42% height, flush below bar)
 bar_h=$(hyprctl layers -j | jq -r --arg mon "$mon_name" '.[$mon].levels | to_entries | .[] | .value[] | select(.namespace=="waybar") | .h' 2>/dev/null)
 bar_h=${bar_h:-40}
-drop_w=$((eff_w * 80 / 100))
+drop_w=$eff_w
 drop_h=$((eff_h * 62 / 100))
-drop_x=$((mon_x + (eff_w - drop_w) / 2))
-drop_y=$((mon_y + bar_h + 2))
+drop_x=$mon_x
+drop_y=$((mon_y + bar_h))
 
 # Background watcher: re-pin when dropdown hides (covers all dismiss paths)
 (
