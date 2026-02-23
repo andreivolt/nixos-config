@@ -115,33 +115,12 @@ button:hover, button:active {
 	min-height: 14px;
 }
 
-.battery .progress-bar {
-	min-width: 30px;
-	min-height: 2px;
-	border-radius: 0;
-	background-color: #3c3a36;
-}
 
-.battery .progress-fill {
-	min-height: 2px;
-	border-radius: 0;
-	background-color: #78be78;
-}
-
-.battery.profile-low .progress-fill {
-	background-color: #dc3c3c;
-}
-
-.battery.profile-medium .progress-fill {
-	background-color: #dcaa32;
-}
-
-.battery.profile-good .progress-fill {
-	background-color: #78be78;
-}
-
-.battery.profile-charging .progress-fill {
-	background-color: #64b4ff;
+.battery:not(.profile-charging) image {
+	opacity: 0;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
 }
 
 .battery label {

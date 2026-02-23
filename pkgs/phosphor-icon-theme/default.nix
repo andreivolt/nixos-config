@@ -130,18 +130,18 @@ let
     "bluetooth-disabled" = { icon = "bluetooth-slash"; color = "#4d4a46"; };
     # Telegram tray
     "org.telegram.desktop-symbolic" = { icon = "telegram-logo"; color = fgColor; };
-    # Battery (upower icon names for ironbar battery widget)
-    "battery-full-charged-symbolic" = { icon = "battery-full"; color = "#b0aca4"; };
-    "battery-full-symbolic" = { icon = "battery-full"; color = "#b0aca4"; };
-    "battery-full-charging-symbolic" = { icon = "battery-charging"; color = "#b0aca4"; };
-    "battery-good-symbolic" = { icon = "battery-high"; color = "#b0aca4"; };
-    "battery-good-charging-symbolic" = { icon = "battery-charging"; color = "#b0aca4"; };
-    "battery-low-symbolic" = { icon = "battery-medium"; color = "#b09a6d"; };
-    "battery-low-charging-symbolic" = { icon = "battery-charging"; color = "#b09a6d"; };
-    "battery-caution-symbolic" = { icon = "battery-low"; color = "#cc6666"; };
-    "battery-caution-charging-symbolic" = { icon = "battery-charging"; color = "#cc6666"; };
-    "battery-empty-symbolic" = { icon = "battery-empty"; color = "#cc6666"; };
-    "battery-missing-symbolic" = { icon = "battery-warning"; color = "#cc6666"; };
+    # Battery (upower icon names) — lightning when charging, hidden otherwise via CSS
+    "battery-full-charged-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-full-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-full-charging-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-good-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-good-charging-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-low-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-low-charging-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-caution-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-caution-charging-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-empty-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
+    "battery-missing-symbolic" = { icon = "plug-charging"; color = "#b0aca4"; };
     # Mullvad VPN tray
     "mullvad-connected" = { icon = "shield-check"; color = fgColor; };
     "mullvad-disconnected" = { icon = "shield"; color = "#4d4a46"; };
