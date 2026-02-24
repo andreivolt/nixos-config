@@ -16,10 +16,10 @@ const MARGIN_Y: i32 = 2;
 const BAR_H: i32 = ICON_SIZE - MARGIN_Y * 2; // 18
 
 // Colors (R, G, B)
-const COLOR_HIGH: (u8, u8, u8) = (0xcc, 0x66, 0x66);
-const COLOR_WARN: (u8, u8, u8) = (0xcc, 0x88, 0x44);
-const COLOR_MED: (u8, u8, u8) = (0xb0, 0x9a, 0x6d);
-const COLOR_LOW: (u8, u8, u8) = (0x7a, 0x75, 0x6d);
+const COLOR_HIGH: (u8, u8, u8) = (0xd6, 0x50, 0x50);
+const COLOR_WARN: (u8, u8, u8) = (0xd4, 0x9a, 0x4e);
+const COLOR_MED: (u8, u8, u8) = (0x9a, 0x8e, 0x6a);
+const COLOR_LOW: (u8, u8, u8) = (0x58, 0x58, 0x56);
 const COLOR_BG: (u8, u8, u8) = (0x3c, 0x3a, 0x36);
 
 fn level_color(pct: u32) -> (u8, u8, u8) {
