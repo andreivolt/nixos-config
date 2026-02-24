@@ -968,11 +968,11 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1771634023,
-        "narHash": "sha256-2nax20DahyFqKFmj5DV3yz84b3eYGjzH/TWaHL7oZh8=",
+        "lastModified": 1771848964,
+        "narHash": "sha256-NtxJSZrf2IZS519nlElQfSxajvxFXaZeTScZZJAJ9vQ=",
         "ref": "refs/heads/main",
-        "rev": "a4027ab57cc75bf6da3c6e862200426584602e3b",
-        "revCount": 66,
+        "rev": "0f47c8e22169dd62a493b6e6dd755d751ff21ac0",
+        "revCount": 67,
         "type": "git",
         "url": "file:/home/andrei/dev/launcher"
       },
