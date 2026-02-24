@@ -4,6 +4,7 @@ let
   awsCredentials = config.sops.templates."aws-credentials".path;
   linodeCli = config.sops.templates."linode-cli".path;
   gdrive3Secret = config.sops.templates."gdrive3-secret".path;
+  sessionEnv = config.sops.templates."session-env".path;
 in
 {
   home-manager.sharedModules = [{
@@ -17,6 +18,9 @@ in
 
       mkdir -p $HOME/.config/gdrive3/andrei.volt@gmail.com
       ln -sf ${gdrive3Secret} $HOME/.config/gdrive3/andrei.volt@gmail.com/secret.json
+
+      mkdir -p $HOME/.config/environment.d
+      ln -sf ${sessionEnv} $HOME/.config/environment.d/sops.conf
 
       mkdir -p $HOME/.oci
       ln -sf /run/secrets/oci_api_key_pem $HOME/.oci/oci_api_key.pem

@@ -113,6 +113,13 @@ in {
     };
 
     templates = {
+      "session-env" = {
+        owner = user;
+        content = ''
+          OPENROUTER_KEY=${p."openrouter/api_key"}
+        '';
+      };
+
       "aws-credentials" = {
         owner = user;
         content = lib.generators.toINI {} {
