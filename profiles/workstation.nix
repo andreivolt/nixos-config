@@ -63,6 +63,7 @@
     ../shared/chromium
     ../linux/kbd-backlight-idle.nix
     ../linux/hyprsunset-wake.nix
+    ../linux/volume.nix
     ../linux/wob.nix
     ../linux/screen-share.nix
     ../linux/wasistlos-clipboard.nix

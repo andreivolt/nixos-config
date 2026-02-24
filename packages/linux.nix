@@ -11,6 +11,7 @@ in
   andrei.lan-mouse-toggle
   andrei.screen
   andrei.sysrec
+  andrei.volume
   acpi
   alsa-lib.dev
   alsa-utils
