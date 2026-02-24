@@ -6,7 +6,7 @@
       "type": "workspaces",
       "sort": "name",
       "all_monitors": false,
-      "hidden": ["special:clipboard", "special:dropdown", "special:launcher"],
+      "hidden": ["special:clipboard", "special:dropdown", "special:launcher", "special:minimized"],
       "format": "{label}",
       "show_window_icons": true,
       "icon_size": 20
@@ -27,6 +27,14 @@
       "type": "tray",
       "icon_size": 20,
       "sort": ["system-monitor", "caffeine", "mullvad-tray", "nm-applet", "blueman"]
+    },
+    {
+      "type": "label",
+      "class": "minimized",
+      "name": "minimized",
+      "label": "#minimized_count",
+      "show_if": "#minimized_visible",
+      "on_click_left": "/home/andrei/dev/nixos-config/linux/hyprland/scripts/restore-minimized.sh"
     },
     {
       "type": "battery",
