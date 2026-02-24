@@ -2,7 +2,7 @@
 	border-radius: 0;
 	border: none;
 	background-image: none;
-	font-family: "Inter Tight", "Inter", sans-serif;
+	font-family: "Inter Tight", "Inter", "Pragmasevka Nerd Font", sans-serif;
 	font-size: 14px;
 }
 
@@ -76,6 +76,11 @@ button:hover, button:active {
 	padding-right: 0.6em;
 }
 
+#minimized {
+	padding: 0 0.2em;
+	color: #b0aca4;
+}
+
 .focused label {
 	color: #7a756d;
 }
@@ -136,6 +141,7 @@ button:hover, button:active {
 .clock {
 	font-weight: bold;
 }
+
 
 .widget.custom.power-menu {
 	padding-left: 0;
