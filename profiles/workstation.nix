@@ -34,6 +34,7 @@
     # GUI components
     ../shared/cursor.nix
     ../shared/fonts.nix
+    ../shared/font-rendering.nix
     ../linux/cliphist.nix
     ../linux/clipboard-pgp-fix.nix
     ../linux/dropdown.nix
