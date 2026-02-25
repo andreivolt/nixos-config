@@ -1,21 +1,14 @@
+use std::collections::VecDeque;
+use std::env;
 use std::sync::{Arc, Mutex};
 use tokio::time::{interval, Duration};
 use zbus::object_server::SignalEmitter;
 use zbus::{interface, Connection};
 
-const BUS_NAME: &str = "org.kde.StatusNotifierItem-system-monitor";
 const SNI_PATH: &str = "/StatusNotifierItem";
 const ICON_SIZE: i32 = 20;
-const UPDATE_SECS: u64 = 3;
+const HISTORY_LEN: usize = ICON_SIZE as usize;
 
-// Layout: two bars centered in 22x22
-const BAR_W: i32 = 8;
-const GAP: i32 = 2;
-const MARGIN_X: i32 = 2; // (22 - 8 - 2 - 8) / 2
-const MARGIN_Y: i32 = 2;
-const BAR_H: i32 = ICON_SIZE - MARGIN_Y * 2; // 18
-
-// Colors (R, G, B)
 const COLOR_HIGH: (u8, u8, u8) = (0xd6, 0x50, 0x50);
 const COLOR_WARN: (u8, u8, u8) = (0xd4, 0x9a, 0x4e);
 const COLOR_MED: (u8, u8, u8) = (0x9a, 0x8e, 0x6a);
@@ -34,19 +27,56 @@ fn level_color(pct: u32) -> (u8, u8, u8) {
     }
 }
 
+fn render_sparkline(history: &VecDeque<u32>) -> Vec<(i32, i32, Vec<u8>)> {
+    let w = ICON_SIZE as usize;
+    let h = ICON_SIZE as usize;
+    let mut buf = vec![0u8; w * h * 4];
+
+    let set_pixel = |buf: &mut Vec<u8>, x: usize, y: usize, a: u8, r: u8, g: u8, b: u8| {
+        let off = (y * w + x) * 4;
+        buf[off] = a;
+        buf[off + 1] = r;
+        buf[off + 2] = g;
+        buf[off + 3] = b;
+    };
+
+    // Draw connected sparkline, newest on right
+    let offset = HISTORY_LEN.saturating_sub(history.len());
+    let mut prev_y: Option<usize> = None;
+    for (i, &pct) in history.iter().enumerate() {
+        let x = offset + i;
+        if x >= w {
+            break;
+        }
+        let fill_h = ((h as u32 * pct) / 100).max(if pct > 0 { 1 } else { 0 }) as usize;
+        let cur_y = h - fill_h;
+        let (r, g, b) = level_color(pct);
+        if let Some(py) = prev_y {
+            let y_min = cur_y.min(py);
+            let y_max = cur_y.max(py);
+            for y in y_min..=y_max {
+                set_pixel(&mut buf, x, y, 255, r, g, b);
+            }
+        } else {
+            set_pixel(&mut buf, x, cur_y, 255, r, g, b);
+        }
+        prev_y = Some(cur_y);
+    }
+
+    vec![(ICON_SIZE, ICON_SIZE, buf)]
+}
+
 #[derive(Clone, Default)]
-struct Stats {
-    cpu_pct: u32,
-    mem_pct: u32,
+struct CpuState {
     prev_user: u64,
     prev_nice: u64,
     prev_sys: u64,
     prev_idle: u64,
 }
 
-fn read_cpu(stats: &mut Stats) {
-    let Ok(data) = std::fs::read_to_string("/proc/stat") else { return };
-    let Some(line) = data.lines().next() else { return };
+fn read_cpu(state: &mut CpuState) -> u32 {
+    let Ok(data) = std::fs::read_to_string("/proc/stat") else { return 0 };
+    let Some(line) = data.lines().next() else { return 0 };
     let vals: Vec<u64> = line
         .split_whitespace()
         .skip(1)
@@ -54,26 +84,29 @@ fn read_cpu(stats: &mut Stats) {
         .filter_map(|s| s.parse().ok())
         .collect();
     if vals.len() < 4 {
-        return;
+        return 0;
     }
     let (u, n, s, i) = (vals[0], vals[1], vals[2], vals[3]);
 
-    if stats.prev_user > 0 || stats.prev_idle > 0 {
-        let t1 = stats.prev_user + stats.prev_nice + stats.prev_sys + stats.prev_idle;
+    let pct = if state.prev_user > 0 || state.prev_idle > 0 {
+        let t1 = state.prev_user + state.prev_nice + state.prev_sys + state.prev_idle;
         let t2 = u + n + s + i;
         let dt = t2.saturating_sub(t1).max(1);
-        let di = i.saturating_sub(stats.prev_idle);
-        stats.cpu_pct = ((100 * (dt - di)) / dt).min(100) as u32;
-    }
+        let di = i.saturating_sub(state.prev_idle);
+        ((100 * (dt - di)) / dt).min(100) as u32
+    } else {
+        0
+    };
 
-    stats.prev_user = u;
-    stats.prev_nice = n;
-    stats.prev_sys = s;
-    stats.prev_idle = i;
+    state.prev_user = u;
+    state.prev_nice = n;
+    state.prev_sys = s;
+    state.prev_idle = i;
+    pct
 }
 
-fn read_mem(stats: &mut Stats) {
-    let Ok(data) = std::fs::read_to_string("/proc/meminfo") else { return };
+fn read_mem() -> u32 {
+    let Ok(data) = std::fs::read_to_string("/proc/meminfo") else { return 0 };
     let mut total = 0u64;
     let mut avail = 0u64;
     for line in data.lines() {
@@ -87,93 +120,104 @@ fn read_mem(stats: &mut Stats) {
         }
     }
     if total > 0 {
-        stats.mem_pct = ((100 * (total - avail)) / total).min(100) as u32;
+        ((100 * (total - avail)) / total).min(100) as u32
+    } else {
+        0
     }
 }
 
-fn render_icon(cpu_pct: u32, mem_pct: u32) -> Vec<(i32, i32, Vec<u8>)> {
-    let w = ICON_SIZE as usize;
-    let h = ICON_SIZE as usize;
-    let mut buf = vec![0u8; w * h * 4]; // ARGB, network byte order (big-endian)
+enum Metric {
+    Cpu,
+    Mem,
+}
 
-    let mut fill_rect = |x1: i32, y1: i32, x2: i32, y2: i32, a: u8, r: u8, g: u8, b: u8| {
-        for y in y1.max(0)..=y2.min(ICON_SIZE - 1) {
-            for x in x1.max(0)..=x2.min(ICON_SIZE - 1) {
-                let off = (y as usize * w + x as usize) * 4;
-                buf[off] = a;
-                buf[off + 1] = r;
-                buf[off + 2] = g;
-                buf[off + 3] = b;
-            }
+impl Metric {
+    fn from_arg(s: &str) -> Option<Self> {
+        match s {
+            "cpu" => Some(Self::Cpu),
+            "mem" => Some(Self::Mem),
+            _ => None,
         }
-    };
-
-    let bar_x1 = MARGIN_X; // left bar at x=2
-    let bar_x2 = MARGIN_X + BAR_W - 1; // x=9
-    let bar2_x1 = MARGIN_X + BAR_W + GAP; // right bar at x=12
-    let bar2_x2 = bar2_x1 + BAR_W - 1; // x=19
-    let bar_top = MARGIN_Y;
-    let bar_bot = MARGIN_Y + BAR_H - 1;
-
-    // Bar backgrounds
-    let (br, bg, bb) = COLOR_BG;
-    fill_rect(bar_x1, bar_top, bar_x2, bar_bot, 255, br, bg, bb);
-    fill_rect(bar2_x1, bar_top, bar2_x2, bar_bot, 255, br, bg, bb);
-
-    // CPU fill (left bar, fills from bottom)
-    let cpu_fill = ((BAR_H as u32 * cpu_pct) / 100).max(if cpu_pct > 0 { 1 } else { 0 }) as i32;
-    if cpu_fill > 0 {
-        let (r, g, b) = level_color(cpu_pct);
-        fill_rect(bar_x1, bar_bot - cpu_fill + 1, bar_x2, bar_bot, 255, r, g, b);
     }
 
-    // Memory fill (right bar, fills from bottom)
-    let mem_fill = ((BAR_H as u32 * mem_pct) / 100).max(if mem_pct > 0 { 1 } else { 0 }) as i32;
-    if mem_fill > 0 {
-        let (r, g, b) = level_color(mem_pct);
-        fill_rect(bar2_x1, bar_bot - mem_fill + 1, bar2_x2, bar_bot, 255, r, g, b);
+    fn bus_name(&self) -> &'static str {
+        match self {
+            Self::Cpu => "org.kde.StatusNotifierItem-cpu-monitor",
+            Self::Mem => "org.kde.StatusNotifierItem-mem-monitor",
+        }
     }
 
-    vec![(ICON_SIZE, ICON_SIZE, buf)]
+    fn id(&self) -> &'static str {
+        match self {
+            Self::Cpu => "cpu-monitor",
+            Self::Mem => "mem-monitor",
+        }
+    }
+
+    fn title(&self) -> &'static str {
+        match self {
+            Self::Cpu => "CPU",
+            Self::Mem => "Memory",
+        }
+    }
+
+    fn interval_secs(&self) -> u64 {
+        match self {
+            Self::Cpu => 2,
+            Self::Mem => 10,
+        }
+    }
 }
 
 #[derive(Clone)]
 struct MonitorState {
-    inner: Arc<Mutex<Stats>>,
+    history: Arc<Mutex<VecDeque<u32>>>,
+    cpu_state: Arc<Mutex<CpuState>>,
 }
 
 impl MonitorState {
     fn new() -> Self {
-        let mut stats = Stats::default();
-        read_cpu(&mut stats); // prime CPU delta
-        read_mem(&mut stats);
         Self {
-            inner: Arc::new(Mutex::new(stats)),
+            history: Arc::new(Mutex::new(VecDeque::with_capacity(HISTORY_LEN))),
+            cpu_state: Arc::new(Mutex::new(CpuState::default())),
         }
     }
 
-    fn update(&self) {
-        let mut stats = self.inner.lock().unwrap();
-        read_cpu(&mut stats);
-        read_mem(&mut stats);
+    fn push_cpu(&self) {
+        let pct = read_cpu(&mut self.cpu_state.lock().unwrap());
+        let mut h = self.history.lock().unwrap();
+        if h.len() >= HISTORY_LEN {
+            h.pop_front();
+        }
+        h.push_back(pct);
     }
 
-    fn cpu_pct(&self) -> u32 {
-        self.inner.lock().unwrap().cpu_pct
+    fn push_mem(&self) {
+        let pct = read_mem();
+        let mut h = self.history.lock().unwrap();
+        if h.len() >= HISTORY_LEN {
+            h.pop_front();
+        }
+        h.push_back(pct);
     }
 
-    fn mem_pct(&self) -> u32 {
-        self.inner.lock().unwrap().mem_pct
+    fn current(&self) -> u32 {
+        self.history.lock().unwrap().back().copied().unwrap_or(0)
     }
 
-    fn tooltip(&self) -> String {
-        let s = self.inner.lock().unwrap();
-        format!("CPU: {}%  Mem: {}%", s.cpu_pct, s.mem_pct)
+    fn icon(&self) -> Vec<(i32, i32, Vec<u8>)> {
+        render_sparkline(&self.history.lock().unwrap())
+    }
+
+    fn tooltip(&self, label: &str) -> String {
+        format!("{}: {}%", label, self.current())
     }
 }
 
 struct StatusNotifierItem {
     state: MonitorState,
+    id: &'static str,
+    title: &'static str,
 }
 
 #[interface(name = "org.kde.StatusNotifierItem")]
@@ -184,23 +228,19 @@ impl StatusNotifierItem {
     }
     #[zbus(property)]
     fn id(&self) -> &str {
-        "system-monitor"
+        self.id
     }
     #[zbus(property)]
     fn title(&self) -> &str {
-        "System Monitor"
+        self.title
     }
     #[zbus(property)]
     fn status(&self) -> &str {
         "Active"
     }
     #[zbus(property)]
-    fn icon_name(&self) -> &str {
-        ""
-    }
-    #[zbus(property)]
     fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> {
-        render_icon(self.state.cpu_pct(), self.state.mem_pct())
+        self.state.icon()
     }
     #[zbus(property)]
     fn item_is_menu(&self) -> bool {
@@ -208,7 +248,7 @@ impl StatusNotifierItem {
     }
     #[zbus(property)]
     fn tool_tip(&self) -> (String, Vec<(i32, i32, Vec<u8>)>, String, String) {
-        (String::new(), vec![], self.state.tooltip(), String::new())
+        (String::new(), vec![], self.state.tooltip(self.title), String::new())
     }
 
     fn activate(&self, _x: i32, _y: i32) {}
@@ -216,37 +256,54 @@ impl StatusNotifierItem {
     fn context_menu(&self, _x: i32, _y: i32) {}
     fn scroll(&self, _delta: i32, _orientation: &str) {}
 
+    #[zbus(signal, name = "NewIcon")]
+    async fn new_icon(emitter: &SignalEmitter<'_>) -> zbus::Result<()>;
+
     #[zbus(signal, name = "NewToolTip")]
     async fn new_tool_tip(emitter: &SignalEmitter<'_>) -> zbus::Result<()>;
 }
 
-async fn register_sni(conn: &Connection) {
+async fn register_sni(conn: &Connection, bus_name: &str) {
     let _ = conn
         .call_method(
             Some("org.kde.StatusNotifierWatcher"),
             "/StatusNotifierWatcher",
             Some("org.kde.StatusNotifierWatcher"),
             "RegisterStatusNotifierItem",
-            &BUS_NAME,
+            &bus_name,
         )
         .await;
 }
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let metric = env::args()
+        .nth(1)
+        .and_then(|s| Metric::from_arg(&s))
+        .expect("usage: system-monitor-tray <cpu|mem>");
+
     let conn = Connection::session().await?;
     let state = MonitorState::new();
 
+    // Prime initial reading
+    match &metric {
+        Metric::Cpu => { state.push_cpu(); }
+        Metric::Mem => { state.push_mem(); }
+    }
+
     let sni = StatusNotifierItem {
         state: state.clone(),
+        id: metric.id(),
+        title: metric.title(),
     };
 
+    let bus_name = metric.bus_name();
     conn.object_server().at(SNI_PATH, sni).await?;
-    conn.request_name(BUS_NAME).await?;
-    register_sni(&conn).await;
+    conn.request_name(bus_name).await?;
+    register_sni(&conn, bus_name).await;
 
-    // Re-register when StatusNotifierWatcher reappears
     let conn2 = conn.clone();
+    let bus_name2 = bus_name;
     let rule = zbus::MatchRule::builder()
         .msg_type(zbus::message::Type::Signal)
         .interface("org.freedesktop.DBus")?
@@ -261,19 +318,23 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .interface::<_, StatusNotifierItem>(SNI_PATH)
         .await?;
 
-    let mut tick = interval(Duration::from_secs(UPDATE_SECS));
+    let mut tick = interval(Duration::from_secs(metric.interval_secs()));
 
     loop {
         tokio::select! {
             _ = tick.tick() => {
-                state.update();
+                match &metric {
+                    Metric::Cpu => state.push_cpu(),
+                    Metric::Mem => state.push_mem(),
+                }
                 let emitter = iface_ref.signal_emitter();
+                let _ = StatusNotifierItem::new_icon(&emitter).await;
                 let _ = StatusNotifierItem::new_tool_tip(&emitter).await;
             }
             Some(Ok(msg)) = futures_util::StreamExt::next(&mut watcher_stream) => {
                 if let Ok(body) = msg.body().deserialize::<(String, String, String)>() {
                     if body.0 == "org.kde.StatusNotifierWatcher" && !body.2.is_empty() {
-                        register_sni(&conn2).await;
+                        register_sni(&conn2, bus_name2).await;
                     }
                 }
             }
