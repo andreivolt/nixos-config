@@ -4,6 +4,7 @@
 { config, lib, pkgs, ... }:
 let
   cfg = config.chromium;
+  chromeExtensionIds = import ./chrome-extensions.nix;
 
   packCrx = { package, key }:
     let
@@ -61,6 +62,11 @@ in {
       home-manager.users.andrei.programs.chromium.nativeMessagingHosts =
         map (ext: ext.package) cfg.extensions;
     })
+
+    {
+      programs.chromium.enable = true;
+      programs.chromium.extensions = chromeExtensionIds;
+    }
 
     (lib.mkIf (cfg.loadExtensions != []) {
       home-manager.users.andrei.programs.chromium = {
