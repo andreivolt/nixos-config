@@ -31,6 +31,7 @@
     ../shared/pry
     ../shared/readline.nix
     ../shared/ripgrep.nix
+    ../linux/reptyr.nix
     ../shared/rubocop.nix
     ../shared/rustfmt.nix
     ../shared/ssh.nix
