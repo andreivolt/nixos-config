@@ -1052,7 +1052,7 @@
         "dirtyRev": "05a0050f2b3afa4e06b6db42d21f4206906c0c32-dirty",
         "dirtyShortRev": "05a0050-dirty",
         "lastModified": 1771701163,
-        "narHash": "sha256-yKeBMrFXYut4hjIqui4OUKe1ZXxUXHgMfsZ/uqgxTp0=",
+        "narHash": "sha256-uhSSaFGn3SVbiu3Y8yNJdrfJsItAKC27470Krajwy8M=",
         "type": "git",
         "url": "file:/home/andrei/dev/monolith"
       },
