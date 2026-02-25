@@ -116,6 +116,8 @@ in {
       "session-env" = {
         owner = user;
         content = ''
+          GITHUB_TOKEN=${p."github/token"}
+          NIX_CONFIG=access-tokens = github.com=${p."github/token"}
           OPENROUTER_KEY=${p."openrouter/api_key"}
         '';
       };
