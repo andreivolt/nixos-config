@@ -40,16 +40,32 @@
     Install.WantedBy = ["hyprland-session.target"];
   };
 
-  systemd.user.services.system-monitor-tray = {
+  systemd.user.services.cpu-monitor-tray = {
     Unit = {
-      Description = "CPU/memory system tray icon";
+      Description = "CPU sparkline tray icon";
       After = ["tray.target"];
       Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray";
+      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray cpu";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["hyprland-session.target"];
+  };
+
+  systemd.user.services.mem-monitor-tray = {
+    Unit = {
+      Description = "Memory sparkline tray icon";
+      After = ["tray.target"];
+      Requires = ["tray.target"];
+      PartOf = ["hyprland-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray mem";
       Restart = "on-failure";
       RestartSec = 1;
     };
