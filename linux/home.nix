@@ -72,6 +72,22 @@
     Install.WantedBy = ["hyprland-session.target"];
   };
 
+  systemd.user.services.battery-tray = {
+    Unit = {
+      Description = "Battery circular progress tray icon";
+      After = ["tray.target"];
+      Requires = ["tray.target"];
+      PartOf = ["hyprland-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.andrei.battery-tray}/bin/battery-tray";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["hyprland-session.target"];
+  };
+
   systemd.user.services.mullvad-tray = {
     Unit = {
       Description = "Mullvad VPN systray applet";

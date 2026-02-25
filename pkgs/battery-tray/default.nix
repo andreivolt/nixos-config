@@ -1,11 +1,23 @@
 {
   lib,
-  python3,
-  writeShellScriptBin,
+  rustPlatform,
+  pkg-config,
+  dbus,
 }:
-let
-  python = python3.withPackages (ps: [ ps.dbus-python ps.pygobject3 ]);
-in
-writeShellScriptBin "battery-tray" ''
-  exec ${python}/bin/python3 ${./battery-tray.py}
-''
+rustPlatform.buildRustPackage {
+  pname = "battery-tray";
+  version = "0.1.0";
+
+  src = ./.;
+
+  cargoLock.lockFile = ./Cargo.lock;
+
+  nativeBuildInputs = [ pkg-config ];
+  buildInputs = [ dbus ];
+
+  meta = {
+    description = "Battery tray icon with circular progress indicator";
+    platforms = lib.platforms.linux;
+    mainProgram = "battery-tray";
+  };
+}
