@@ -1,9 +1,8 @@
-# Font rendering module - lucidglyph-style configuration
-# Enables stem darkening and good hinting for better font visibility
-{ pkgs, ... }:
+# Font rendering — stem darkening + grayscale AA for Wayland HiDPI
+{ ... }:
 
 {
-  # FreeType stem darkening (like lucidglyph)
+  # FreeType stem darkening (macOS-like weight for light fonts)
   environment.variables.FREETYPE_PROPERTIES = builtins.concatStringsSep " " [
     "autofitter:no-stem-darkening=0"
     "autofitter:darkening-parameters=500,0,1000,500,2500,500,4000,0"
@@ -15,12 +14,12 @@
   fonts.fontconfig = {
     antialias = true;
     hinting = {
-      enable = true;
-      style = "slight";
+      enable = false;
+      style = "none";
     };
     subpixel = {
-      rgba = "rgb";
-      lcdfilter = "default";
+      rgba = "none";
+      lcdfilter = "none";
     };
   };
 }
