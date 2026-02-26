@@ -23,6 +23,7 @@ let
     };
   };
 in {
+  home-manager.users.andrei.home.packages = [ sandboxed.config.env ];
   home-manager.users.andrei.xdg.desktopEntries.telegram = {
     name = "Telegram";
     genericName = "Messaging";

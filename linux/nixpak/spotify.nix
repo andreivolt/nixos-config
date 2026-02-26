@@ -27,6 +27,7 @@ let
     };
   };
 in lib.mkIf isx86 {
+  home-manager.users.andrei.home.packages = [ sandboxed.config.env ];
   home-manager.users.andrei.xdg.desktopEntries.spotify = {
     name = "Spotify";
     exec = "${sandboxed.config.env}/bin/spotify %U";

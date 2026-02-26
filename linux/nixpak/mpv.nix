@@ -1,4 +1,4 @@
-{ pkgs, config, inputs, ... }:
+{ pkgs, lib, config, inputs, ... }:
 let
   np = import ./lib.nix { inherit pkgs inputs; inherit (pkgs) lib; };
   inherit (np) mkNixPak guiRoBinds commonRoBinds;
@@ -26,7 +26,7 @@ let
     };
   };
 
-  wrapper = pkgs.writeShellScript "mpv-sandboxed" ''
+  wrapperBin = pkgs.writeShellScriptBin "mpv" ''
     mkdir -p ~/.local/state/mpv
     export MEDIA_DIR="/tmp"
     for arg in "$@"; do
@@ -42,11 +42,23 @@ let
     done
     exec ${sandboxed.config.env}/bin/mpv "$@"
   '';
+
+  wrapper = pkgs.symlinkJoin {
+    name = "mpv-sandboxed";
+    paths = [ wrapperBin ];
+    postBuild = ''
+      mkdir -p $out/share
+      for dir in zsh bash-completion fish man; do
+        [ -d ${pkgs.mpv}/share/$dir ] && ln -s ${pkgs.mpv}/share/$dir $out/share/$dir
+      done
+    '';
+  };
 in {
+  home-manager.users.andrei.home.packages = [ (lib.hiPrio wrapper) ];
   home-manager.users.andrei.xdg.desktopEntries.mpv = {
     name = "mpv Media Player";
     genericName = "Multimedia player";
-    exec = "${wrapper} -- %f";
+    exec = "${wrapperBin}/bin/mpv -- %f";
     icon = "mpv";
     terminal = false;
     categories = ["AudioVideo" "Audio" "Video" "Player"];
