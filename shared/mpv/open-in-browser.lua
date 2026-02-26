@@ -20,7 +20,11 @@ local function open_in_browser()
     local timestamp = math.floor(pos or 0)
 
     local url = "https://www.youtube.com/watch?v=" .. video_id .. "&t=" .. timestamp .. "s"
-    mp.commandv("run", "xdg-open", url)
+    mp.commandv("run", "busctl", "--user", "call",
+        "org.freedesktop.portal.Desktop",
+        "/org/freedesktop/portal/desktop",
+        "org.freedesktop.portal.OpenURI", "OpenURI",
+        "ssa{sv}", "", url, "0")
     mp.command("quit")
 end
 
