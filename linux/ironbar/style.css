@@ -87,6 +87,8 @@ button:hover, button:active {
 
 .tray {
 	opacity: 1;
+	padding: 0;
+	margin: 0;
 }
 
 .tray .item {
@@ -98,6 +100,8 @@ button:hover, button:active {
 
 .clock {
 	min-width: 32px;
+	border-left: 1px solid #3c3a36;
+	border-right: 1px solid #3c3a36;
 }
 
 #cpu,
@@ -116,13 +120,11 @@ button:hover, button:active {
 	min-height: 14px;
 }
 
+.battery label,
 .clock label {
 	font-feature-settings: "tnum";
-	color: #7a756d;
-}
-
-.clock {
 	font-weight: bold;
+	color: #7a756d;
 }
 
 
@@ -133,6 +135,18 @@ button:hover, button:active {
 
 .power-menu #power-button {
 	padding: 0 0.4em;
+}
+
+tooltip {
+	background-color: #1a1a1a;
+	border: none;
+	box-shadow: none;
+	padding: 4px 8px;
+}
+
+tooltip label {
+	color: #d4d0ca;
+	font-size: 13px;
 }
 
 popover, popover > contents {
