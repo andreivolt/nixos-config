@@ -51,11 +51,12 @@ button:hover, button:active {
 }
 
 .workspaces .item:hover {
-	background-color: #1a1a1a;
+	background-color: transparent;
+	box-shadow: inset 0 -2px 0 #7a756d;
 }
 
 .workspaces .item.focused {
-	background-color: #2a2a2a;
+	box-shadow: inset 0 -2px 0 #d4d0ca;
 }
 
 .workspaces .item.focused label {
@@ -81,6 +82,11 @@ button:hover, button:active {
 	color: #b0aca4;
 }
 
+#minimized button:hover,
+#minimized button:active {
+	background-color: transparent;
+}
+
 .focused label {
 	color: #7a756d;
 }
@@ -98,10 +104,18 @@ button:hover, button:active {
 	border-radius: 0;
 }
 
-.clock {
+.tray .item:hover,
+.tray .item:active {
+	background-color: transparent;
+}
+
+.clock,
+.clock:hover,
+.clock:active {
 	min-width: 32px;
-	border-left: 1px solid #3c3a36;
-	border-right: 1px solid #3c3a36;
+	margin-left: 4px;
+	margin-right: 4px;
+	background-color: transparent;
 }
 
 #cpu,
@@ -109,9 +123,12 @@ button:hover, button:active {
 	padding: 0 0.2em;
 }
 
-.battery {
+.battery,
+.battery:hover,
+.battery:active {
 	padding: 0 0.2em 0 0;
 	margin: 0;
+	background-color: transparent;
 }
 
 #cpu image,
@@ -135,6 +152,11 @@ button:hover, button:active {
 
 .power-menu #power-button {
 	padding: 0 0.4em;
+}
+
+.power-menu #power-button:hover,
+.power-menu #power-button:active {
+	background-color: transparent;
 }
 
 tooltip {
