@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 use std::env;
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 use tokio::time::{interval, Duration};
 use zbus::object_server::SignalEmitter;
 use zbus::{interface, Connection};
@@ -13,7 +14,6 @@ const COLOR_HIGH: (u8, u8, u8) = (0xd6, 0x50, 0x50);
 const COLOR_WARN: (u8, u8, u8) = (0xd4, 0x9a, 0x4e);
 const COLOR_MED: (u8, u8, u8) = (0x9a, 0x8e, 0x6a);
 const COLOR_LOW: (u8, u8, u8) = (0x58, 0x58, 0x56);
-const COLOR_BG: (u8, u8, u8) = (0x3c, 0x3a, 0x36);
 
 fn level_color(pct: u32) -> (u8, u8, u8) {
     if pct >= 80 {
@@ -27,20 +27,42 @@ fn level_color(pct: u32) -> (u8, u8, u8) {
     }
 }
 
+fn set_pixel(buf: &mut [u8], w: usize, x: usize, y: usize, r: u8, g: u8, b: u8) {
+    let off = (y * w + x) * 4;
+    buf[off] = 255;
+    buf[off + 1] = r;
+    buf[off + 2] = g;
+    buf[off + 3] = b;
+}
+
+fn pct_to_y(h: usize, pct: u32) -> usize {
+    let fill_h = ((h as u32 * pct) / 100).max(1) as usize;
+    h - fill_h
+}
+
+fn draw_connected_line(
+    buf: &mut [u8],
+    w: usize,
+    _h: usize,
+    x: usize,
+    cur_y: usize,
+    prev_y: Option<usize>,
+    r: u8,
+    g: u8,
+    b: u8,
+) {
+    let y_min = if let Some(py) = prev_y { cur_y.min(py) } else { cur_y };
+    let y_max = if let Some(py) = prev_y { cur_y.max(py) } else { cur_y };
+    for y in y_min..=y_max {
+        set_pixel(buf, w, x, y, r, g, b);
+    }
+}
+
 fn render_sparkline(history: &VecDeque<u32>) -> Vec<(i32, i32, Vec<u8>)> {
     let w = ICON_SIZE as usize;
     let h = ICON_SIZE as usize;
     let mut buf = vec![0u8; w * h * 4];
 
-    let set_pixel = |buf: &mut Vec<u8>, x: usize, y: usize, a: u8, r: u8, g: u8, b: u8| {
-        let off = (y * w + x) * 4;
-        buf[off] = a;
-        buf[off + 1] = r;
-        buf[off + 2] = g;
-        buf[off + 3] = b;
-    };
-
-    // Draw connected sparkline, newest on right
     let offset = HISTORY_LEN.saturating_sub(history.len());
     let mut prev_y: Option<usize> = None;
     for (i, &pct) in history.iter().enumerate() {
@@ -48,22 +70,25 @@ fn render_sparkline(history: &VecDeque<u32>) -> Vec<(i32, i32, Vec<u8>)> {
         if x >= w {
             break;
         }
-        let fill_h = ((h as u32 * pct) / 100).max(if pct > 0 { 1 } else { 0 }) as usize;
-        let cur_y = h - fill_h;
+        let cur_y = pct_to_y(h, pct);
         let (r, g, b) = level_color(pct);
-        if let Some(py) = prev_y {
-            let y_min = cur_y.min(py);
-            let y_max = cur_y.max(py);
-            for y in y_min..=y_max {
-                set_pixel(&mut buf, x, y, 255, r, g, b);
-            }
-        } else {
-            set_pixel(&mut buf, x, cur_y, 255, r, g, b);
-        }
+        draw_connected_line(&mut buf, w, h, x, cur_y, prev_y, r, g, b);
         prev_y = Some(cur_y);
     }
 
     vec![(ICON_SIZE, ICON_SIZE, buf)]
+}
+
+fn format_rate(bps: u64) -> String {
+    if bps >= 1_000_000_000 {
+        format!("{:.1} GB/s", bps as f64 / 1_000_000_000.0)
+    } else if bps >= 1_000_000 {
+        format!("{:.1} MB/s", bps as f64 / 1_000_000.0)
+    } else if bps >= 1_000 {
+        format!("{:.0} KB/s", bps as f64 / 1_000.0)
+    } else {
+        format!("{} B/s", bps)
+    }
 }
 
 #[derive(Clone, Default)]
@@ -126,9 +151,40 @@ fn read_mem() -> u32 {
     }
 }
 
+struct NetBytesState {
+    prev_rx: u64,
+    prev_tx: u64,
+    last_read: Instant,
+    initialized: bool,
+}
+
+fn read_net_bytes() -> (u64, u64) {
+    let Ok(data) = std::fs::read_to_string("/proc/net/dev") else { return (0, 0) };
+    let mut total_rx = 0u64;
+    let mut total_tx = 0u64;
+    for line in data.lines().skip(2) {
+        let Some((iface, rest)) = line.split_once(':') else { continue };
+        if iface.trim() == "lo" {
+            continue;
+        }
+        let vals: Vec<u64> = rest
+            .split_whitespace()
+            .filter_map(|s| s.parse().ok())
+            .collect();
+        if vals.len() >= 10 {
+            total_rx += vals[0];
+            total_tx += vals[8];
+        }
+    }
+    (total_rx, total_tx)
+}
+
+#[derive(Clone, Copy)]
 enum Metric {
     Cpu,
     Mem,
+    NetRx,
+    NetTx,
 }
 
 impl Metric {
@@ -136,6 +192,8 @@ impl Metric {
         match s {
             "cpu" => Some(Self::Cpu),
             "mem" => Some(Self::Mem),
+            "net-rx" => Some(Self::NetRx),
+            "net-tx" => Some(Self::NetTx),
             _ => None,
         }
     }
@@ -144,6 +202,8 @@ impl Metric {
         match self {
             Self::Cpu => "org.kde.StatusNotifierItem-cpu-monitor",
             Self::Mem => "org.kde.StatusNotifierItem-mem-monitor",
+            Self::NetRx => "org.kde.StatusNotifierItem-net-rx-monitor",
+            Self::NetTx => "org.kde.StatusNotifierItem-net-tx-monitor",
         }
     }
 
@@ -151,6 +211,8 @@ impl Metric {
         match self {
             Self::Cpu => "cpu-monitor",
             Self::Mem => "mem-monitor",
+            Self::NetRx => "net-rx-monitor",
+            Self::NetTx => "net-tx-monitor",
         }
     }
 
@@ -158,6 +220,8 @@ impl Metric {
         match self {
             Self::Cpu => "CPU",
             Self::Mem => "Memory",
+            Self::NetRx => "Network ↓",
+            Self::NetTx => "Network ↑",
         }
     }
 
@@ -165,7 +229,12 @@ impl Metric {
         match self {
             Self::Cpu => 2,
             Self::Mem => 10,
+            Self::NetRx | Self::NetTx => 2,
         }
+    }
+
+    fn is_net(&self) -> bool {
+        matches!(self, Self::NetRx | Self::NetTx)
     }
 }
 
@@ -173,6 +242,10 @@ impl Metric {
 struct MonitorState {
     history: Arc<Mutex<VecDeque<u32>>>,
     cpu_state: Arc<Mutex<CpuState>>,
+    net_bytes: Arc<Mutex<NetBytesState>>,
+    net_rates: Arc<Mutex<VecDeque<u64>>>,
+    current_rate: Arc<Mutex<u64>>,
+    peak_rate: Arc<Mutex<u64>>,
 }
 
 impl MonitorState {
@@ -180,6 +253,15 @@ impl MonitorState {
         Self {
             history: Arc::new(Mutex::new(VecDeque::with_capacity(HISTORY_LEN))),
             cpu_state: Arc::new(Mutex::new(CpuState::default())),
+            net_bytes: Arc::new(Mutex::new(NetBytesState {
+                prev_rx: 0,
+                prev_tx: 0,
+                last_read: Instant::now(),
+                initialized: false,
+            })),
+            net_rates: Arc::new(Mutex::new(VecDeque::with_capacity(HISTORY_LEN))),
+            current_rate: Arc::new(Mutex::new(0)),
+            peak_rate: Arc::new(Mutex::new(0)),
         }
     }
 
@@ -201,6 +283,44 @@ impl MonitorState {
         h.push_back(pct);
     }
 
+    fn push_net(&self, metric: Metric) {
+        let (rx_total, tx_total) = read_net_bytes();
+        let mut nb = self.net_bytes.lock().unwrap();
+
+        // Counter reset = network change (new interface, reconnect) — reset scale
+        if nb.initialized && (rx_total < nb.prev_rx || tx_total < nb.prev_tx) {
+            *self.peak_rate.lock().unwrap() = 0;
+            self.net_rates.lock().unwrap().clear();
+        }
+
+        if nb.initialized {
+            let elapsed = nb.last_read.elapsed().as_secs_f64().max(0.1);
+            let rx = (rx_total.saturating_sub(nb.prev_rx) as f64 / elapsed) as u64;
+            let tx = (tx_total.saturating_sub(nb.prev_tx) as f64 / elapsed) as u64;
+            let rate = match metric {
+                Metric::NetRx => rx,
+                Metric::NetTx => tx,
+                _ => 0,
+            };
+
+            *self.current_rate.lock().unwrap() = rate;
+
+            let mut peak = self.peak_rate.lock().unwrap();
+            *peak = (*peak).max(rate);
+            drop(peak);
+
+            let mut rates = self.net_rates.lock().unwrap();
+            if rates.len() >= HISTORY_LEN {
+                rates.pop_front();
+            }
+            rates.push_back(rate);
+        }
+        nb.prev_rx = rx_total;
+        nb.prev_tx = tx_total;
+        nb.last_read = Instant::now();
+        nb.initialized = true;
+    }
+
     fn current(&self) -> u32 {
         self.history.lock().unwrap().back().copied().unwrap_or(0)
     }
@@ -209,8 +329,31 @@ impl MonitorState {
         render_sparkline(&self.history.lock().unwrap())
     }
 
-    fn tooltip(&self, label: &str) -> String {
+    fn net_icon(&self) -> Vec<(i32, i32, Vec<u8>)> {
+        let rates = self.net_rates.lock().unwrap();
+        let peak = *self.peak_rate.lock().unwrap();
+        let pcts: VecDeque<u32> = if peak == 0 {
+            rates.iter().map(|_| 0u32).collect()
+        } else {
+            rates
+                .iter()
+                .map(|&r| ((r as f64 / peak as f64).sqrt() * 100.0).round().min(100.0) as u32)
+                .collect()
+        };
+        render_sparkline(&pcts)
+    }
+
+    fn tooltip_pct(&self, label: &str) -> String {
         format!("{}: {}%", label, self.current())
+    }
+
+    fn tooltip_net(&self, metric: Metric) -> String {
+        let arrow = match metric {
+            Metric::NetRx => "↓",
+            Metric::NetTx => "↑",
+            _ => "",
+        };
+        format!("{} {}", arrow, format_rate(*self.current_rate.lock().unwrap()))
     }
 }
 
@@ -218,6 +361,7 @@ struct StatusNotifierItem {
     state: MonitorState,
     id: &'static str,
     title: &'static str,
+    metric: Metric,
 }
 
 #[interface(name = "org.kde.StatusNotifierItem")]
@@ -240,7 +384,11 @@ impl StatusNotifierItem {
     }
     #[zbus(property)]
     fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> {
-        self.state.icon()
+        if self.metric.is_net() {
+            self.state.net_icon()
+        } else {
+            self.state.icon()
+        }
     }
     #[zbus(property)]
     fn item_is_menu(&self) -> bool {
@@ -248,7 +396,11 @@ impl StatusNotifierItem {
     }
     #[zbus(property)]
     fn tool_tip(&self) -> (String, Vec<(i32, i32, Vec<u8>)>, String, String) {
-        (String::new(), vec![], self.state.tooltip(self.title), String::new())
+        let tip = match self.metric {
+            Metric::Cpu | Metric::Mem => self.state.tooltip_pct(self.title),
+            m @ (Metric::NetRx | Metric::NetTx) => self.state.tooltip_net(m),
+        };
+        (String::new(), vec![], tip, String::new())
     }
 
     fn activate(&self, _x: i32, _y: i32) {}
@@ -280,21 +432,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let metric = env::args()
         .nth(1)
         .and_then(|s| Metric::from_arg(&s))
-        .expect("usage: system-monitor-tray <cpu|mem>");
+        .expect("usage: system-monitor-tray <cpu|mem|net-rx|net-tx>");
 
     let conn = Connection::session().await?;
     let state = MonitorState::new();
 
     // Prime initial reading
-    match &metric {
-        Metric::Cpu => { state.push_cpu(); }
-        Metric::Mem => { state.push_mem(); }
+    match metric {
+        Metric::Cpu => state.push_cpu(),
+        Metric::Mem => state.push_mem(),
+        m if m.is_net() => state.push_net(m),
+        _ => {}
     }
 
     let sni = StatusNotifierItem {
         state: state.clone(),
         id: metric.id(),
         title: metric.title(),
+        metric,
     };
 
     let bus_name = metric.bus_name();
@@ -323,9 +478,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     loop {
         tokio::select! {
             _ = tick.tick() => {
-                match &metric {
+                match metric {
                     Metric::Cpu => state.push_cpu(),
                     Metric::Mem => state.push_mem(),
+                    m if m.is_net() => state.push_net(m),
+                    _ => {}
                 }
                 let emitter = iface_ref.signal_emitter();
                 let _ = StatusNotifierItem::new_icon(&emitter).await;

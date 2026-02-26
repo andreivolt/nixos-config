@@ -72,6 +72,38 @@
     Install.WantedBy = ["hyprland-session.target"];
   };
 
+  systemd.user.services.net-rx-monitor-tray = {
+    Unit = {
+      Description = "Network download sparkline tray icon";
+      After = ["tray.target"];
+      Requires = ["tray.target"];
+      PartOf = ["hyprland-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray net-rx";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["hyprland-session.target"];
+  };
+
+  systemd.user.services.net-tx-monitor-tray = {
+    Unit = {
+      Description = "Network upload sparkline tray icon";
+      After = ["tray.target"];
+      Requires = ["tray.target"];
+      PartOf = ["hyprland-session.target"];
+    };
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray net-tx";
+      Restart = "on-failure";
+      RestartSec = 1;
+    };
+    Install.WantedBy = ["hyprland-session.target"];
+  };
+
   systemd.user.services.battery-tray = {
     Unit = {
       Description = "Battery circular progress tray icon";
