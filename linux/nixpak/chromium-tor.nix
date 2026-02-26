@@ -50,26 +50,27 @@ let
     };
   };
 
-  wrapper = pkgs.writeShellScript "chromium-tor-sandboxed" ''
+  wrapper = pkgs.writeShellScriptBin "chromium-tor" ''
     mkdir -p "$XDG_RUNTIME_DIR/chromium-tor"
     exec ${sandboxed.config.env}/bin/chromium-tor "$@"
   '';
 in {
+  home-manager.users.andrei.home.packages = [ wrapper ];
   home-manager.users.andrei.xdg.desktopEntries.chromium-tor = {
     name = "Chromium (Tor)";
     genericName = "Web Browser";
-    exec = "${wrapper} %U";
+    exec = "${wrapper}/bin/chromium-tor %U";
     icon = "chromium";
     terminal = false;
     categories = ["Network" "WebBrowser"];
     actions = {
       "new-window" = {
         name = "New Window";
-        exec = "${wrapper}";
+        exec = "${wrapper}/bin/chromium-tor";
       };
       "new-private-window" = {
         name = "New Incognito Window";
-        exec = "${wrapper} --incognito";
+        exec = "${wrapper}/bin/chromium-tor --incognito";
       };
     };
   };

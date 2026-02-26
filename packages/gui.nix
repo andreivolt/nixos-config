@@ -27,26 +27,19 @@ with pkgs;
   playerctl
   scrcpy
   slurp
-  swayimg
   swaynotificationcenter
-  telegram-desktop
   wasistlos
   wayland-pipewire-idle-inhibit
   wf-recorder
   wl-clipboard
   wlprop
   wtype
-  zathura
   sublime4
 ]
 ++ lib.optionals (isLinux && isx86_64) [
   beeper
-  discord
   input-leap
   puppeteer-cli
-
-  slack
-  spotify
   vscode
   waynergy
   ytmdesktop

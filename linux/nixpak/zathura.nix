@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, lib, inputs, ... }:
 let
   np = import ./lib.nix { inherit pkgs inputs; inherit (pkgs) lib; };
   inherit (np) mkNixPak guiRoBinds commonRoBinds commonDbusPolices;
@@ -20,17 +20,18 @@ let
     };
   };
 
-  wrapper = pkgs.writeShellScript "zathura-sandboxed" ''
+  wrapper = pkgs.writeShellScriptBin "zathura" ''
     arg="''${1#file://}"
     file="$(realpath "$arg" 2>/dev/null || echo "$arg")"
     export DOCUMENT_DIR="$(dirname "$file")"
     exec ${sandboxed.config.env}/bin/zathura "$@"
   '';
 in {
+  home-manager.users.andrei.home.packages = [ (lib.hiPrio wrapper) ];
   home-manager.users.andrei.xdg.desktopEntries.zathura = {
     name = "Zathura";
     comment = "A minimalistic document viewer";
-    exec = "${wrapper} %f";
+    exec = "${wrapper}/bin/zathura %f";
     icon = "org.pwmt.zathura";
     terminal = false;
     categories = ["Office" "Viewer"];

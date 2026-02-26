@@ -25,6 +25,7 @@ let
     };
   };
 in lib.mkIf isx86 {
+  home-manager.users.andrei.home.packages = [ sandboxed.config.env ];
   home-manager.users.andrei.xdg.desktopEntries.slack = {
     name = "Slack";
     exec = "${sandboxed.config.env}/bin/slack %U";
