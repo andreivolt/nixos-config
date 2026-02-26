@@ -20,6 +20,7 @@ in {
   systemd.services.mullvad-daemon.postStart = ''
     while ! ${pkgs.mullvad}/bin/mullvad status &>/dev/null; do sleep 1; done
     ${pkgs.mullvad}/bin/mullvad lan set allow
+    ${pkgs.mullvad}/bin/mullvad connect
   '';
 
   # Accept Tailscale exit node traffic in Mullvad's forward chain (policy drop).
