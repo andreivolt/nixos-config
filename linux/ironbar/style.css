@@ -106,31 +106,14 @@ button:hover, button:active {
 }
 
 .battery {
-	padding: 0 0.2em;
-}
-
-.battery .contents {
+	padding: 0 0.2em 0 0;
 	margin: 0;
-	padding: 0;
 }
 
 #cpu image,
 #memory image {
 	min-width: 6px;
 	min-height: 14px;
-}
-
-
-.battery:not(.profile-charging) image {
-	opacity: 0;
-	min-width: 0;
-	margin: 0;
-	padding: 0;
-}
-
-.battery label {
-	font-feature-settings: "tnum";
-	color: #b0aca4;
 }
 
 .clock label {
