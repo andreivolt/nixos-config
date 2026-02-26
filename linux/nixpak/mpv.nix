@@ -1,7 +1,7 @@
 { pkgs, lib, config, inputs, ... }:
 let
   np = import ./lib.nix { inherit pkgs inputs; inherit (pkgs) lib; };
-  inherit (np) mkNixPak guiRoBinds commonRoBinds;
+  inherit (np) mkNixPak guiRoBinds commonRoBinds commonDbusPolices;
 
   hmMpvScripts = config.home-manager.users.andrei.programs.mpv.scripts;
   mpvWithScripts = pkgs.mpv.override { scripts = hmMpvScripts; };
@@ -13,6 +13,10 @@ let
         network = true;
         bind.ro = [
           (sloth.concat' sloth.homeDir "/.config/mpv")
+          # yt-dlp needs its config, chromium cookie db, and gnome-keyring D-Bus access for YouTube auth
+          (sloth.concat' sloth.homeDir "/.config/yt-dlp")
+          (sloth.concat' sloth.homeDir "/.config/chromium/Local State")
+          (sloth.concat' sloth.homeDir "/.config/chromium/Default/Cookies")
           (sloth.env "MEDIA_DIR")
         ] ++ guiRoBinds sloth ++ commonRoBinds;
         bind.rw = [
@@ -21,6 +25,10 @@ let
         ];
         tmpfs = [ "/tmp" ];
         bind.dev = [ "/dev/dri" ];
+      };
+      dbus.enable = true;
+      dbus.policies = commonDbusPolices // {
+        "org.freedesktop.secrets" = "talk";
       };
       gpu.enable = true;
     };
