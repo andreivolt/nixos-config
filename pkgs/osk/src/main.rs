@@ -104,15 +104,18 @@ struct KeyDef {
     label: &'static str,
     code: u32,
     width: f32, // in units (1.0 = standard key)
-    force_shift: bool, // send with Shift held regardless of current state
+    mods: u32,  // modifier bitmask: 1=Shift, 128=AltGr
 }
 
 impl KeyDef {
     const fn new(label: &'static str, code: u32, width: f32) -> Self {
-        Self { label, code, width, force_shift: false }
+        Self { label, code, width, mods: 0 }
     }
     const fn shifted(label: &'static str, code: u32, width: f32) -> Self {
-        Self { label, code, width, force_shift: true }
+        Self { label, code, width, mods: 1 }
+    }
+    const fn altgr(label: &'static str, code: u32, width: f32) -> Self {
+        Self { label, code, width, mods: 128 }
     }
 }
 
@@ -238,42 +241,46 @@ static SHIFT_R3: &[KeyDef] = &[
 ];
 static SHIFT_LAYER: &[Row] = &[&*NUM_ROW, &*SHIFT_R0, &*SHIFT_R1, &*SHIFT_R2, &*SHIFT_R3];
 
-// Symbols layer — uses number row scancodes + shifted positions
+// Symbols layer — AOSP/SwiftKey standard layout
+// Row 1: common symbols
 static SYM_R0: &[KeyDef] = &[
-    KeyDef::new("1", KEY_1, 1.0),
-    KeyDef::new("2", KEY_2, 1.0),
-    KeyDef::new("3", KEY_3, 1.0),
-    KeyDef::new("4", KEY_4, 1.0),
-    KeyDef::new("5", KEY_5, 1.0),
-    KeyDef::new("6", KEY_6, 1.0),
-    KeyDef::new("7", KEY_7, 1.0),
-    KeyDef::new("8", KEY_8, 1.0),
-    KeyDef::new("9", KEY_9, 1.0),
-    KeyDef::new("0", KEY_0, 1.0),
+    KeyDef::altgr("@", KEY_0, 1.0),    // AltGr+0 on AZERTY
+    KeyDef::altgr("#", KEY_3, 1.0),    // AltGr+3
+    KeyDef::altgr("€", KEY_E, 1.0),    // AltGr+E
+    KeyDef::new("_", KEY_8, 1.0),      // 8 key unshifted = _
+    KeyDef::new("&", KEY_1, 1.0),      // 1 key unshifted = &
+    KeyDef::new("-", KEY_6, 1.0),      // 6 key unshifted = -
+    KeyDef::shifted("+", KEY_EQUAL, 1.0),
+    KeyDef::new("(", KEY_5, 1.0),      // 5 key unshifted = (
+    KeyDef::new(")", KEY_MINUS, 1.0),  // - key unshifted = )
+    KeyDef::shifted("/", KEY_DOT, 1.0), // Shift+KEY_DOT = /
 ];
+// Row 2: punctuation
 static SYM_R1: &[KeyDef] = &[
-    KeyDef::new("@", KEY_0, 1.0),   // AltGr+0 on AZERTY
-    KeyDef::new("#", KEY_3, 1.0),   // AltGr+3
-    KeyDef::new("€", KEY_E, 1.0),   // AltGr+E
-    KeyDef::new("_", KEY_8, 1.0),   // 8 key unshifted = _
-    KeyDef::new("&", KEY_1, 1.0),   // 1 key unshifted = &
-    KeyDef::new("-", KEY_6, 1.0),   // 6 key unshifted = -
-    KeyDef::new("+", KEY_EQUAL, 1.0),
-    KeyDef::new("(", KEY_5, 1.0),   // 5 key unshifted = (
-    KeyDef::new(")", KEY_MINUS, 1.0),
-    KeyDef::new("/", KEY_SLASH, 1.0),
+    KeyDef::new("*", KEY_BACKSLASH, 1.0),
+    KeyDef::new("\"", KEY_3, 1.0),     // 3 key unshifted = "
+    KeyDef::new("'", KEY_4, 1.0),      // 4 key unshifted = '
+    KeyDef::new(":", KEY_DOT, 1.0),    // KEY_DOT unshifted = :
+    KeyDef::new(";", KEY_COMMA, 1.0),  // KEY_COMMA unshifted = ;
+    KeyDef::new("!", KEY_SLASH, 1.0),  // KEY_SLASH unshifted = !
+    KeyDef::shifted("?", AZERTY_COMMA, 1.0), // Shift+KEY_M = ?
+    KeyDef::new("<", KEY_102ND, 1.0),
+    KeyDef::shifted(">", KEY_102ND, 1.0),
+    KeyDef::new("=", KEY_EQUAL, 1.0),
 ];
+// Row 3: brackets/special + arrows + backspace
 static SYM_R2: &[KeyDef] = &[
     KeyDef::new("?123", ACTION_SYM, 1.3),
-    KeyDef::new("*", KEY_BACKSLASH, 1.0),
-    KeyDef::new("\"", KEY_3, 1.0),
-    KeyDef::new("'", KEY_4, 1.0),
-    KeyDef::new(":", KEY_DOT, 1.0),
-    KeyDef::new(";", KEY_COMMA, 1.0),
-    KeyDef::new("!", KEY_SLASH, 1.0),
+    KeyDef::altgr("~", KEY_2, 1.0),    // AltGr+2
+    KeyDef::altgr("{", KEY_4, 1.0),    // AltGr+4
+    KeyDef::altgr("}", KEY_EQUAL, 1.0), // AltGr+=
+    KeyDef::altgr("[", KEY_5, 1.0),    // AltGr+5
+    KeyDef::altgr("]", KEY_MINUS, 1.0), // AltGr+-
+    KeyDef::altgr("\\", KEY_8, 1.0),   // AltGr+8
     KeyDef::new("↑", KEY_UP, 1.0),
     KeyDef::new("⌫", KEY_BACKSPACE, 2.3),
 ];
+// Row 4: modifiers + space + arrows + enter
 static SYM_R3: &[KeyDef] = &[
     KeyDef::new("ABC", ACTION_ABC, 1.3),
     KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
@@ -335,7 +342,7 @@ enum ModState {
 }
 
 // Long-press alternates
-// Each step is (scancode, modifier_bitmask) — 1=Shift, 64=AltGr
+// Each step is (scancode, modifier_bitmask) — 1=Shift, 128=AltGr(Mod5)
 // For dead key combos: send dead key, release, then send base key
 struct Alternate {
     label: &'static str,
@@ -794,7 +801,7 @@ fn render_keyboard(
         }
 
         // Draw hint label (first alternate) in top-right corner
-        if !is_special_key(kr.code) && !key_def.force_shift {
+        if !is_special_key(kr.code) && key_def.mods == 0 {
             let alts = get_alternates(key_def.label);
             if !alts.is_empty() {
                 let hint_size = font_size * 0.5;
@@ -1484,14 +1491,14 @@ impl OskState {
     }
 
     fn send_key_press_immediate(&mut self, key_def: &KeyDef, code: u32) {
-        if key_def.force_shift {
+        if key_def.mods != 0 {
             let has_compositor_mods = self.ctrl_state != ModState::Off
                 || self.alt_state != ModState::Off
                 || self.super_state != ModState::Off;
             if has_compositor_mods {
                 self.send_modifier(self.active_mods());
             } else {
-                self.send_modifier(self.active_mods() | 1);
+                self.send_modifier(self.active_mods() | key_def.mods);
             }
             self.send_key(code, true);
         } else {
@@ -1525,12 +1532,12 @@ impl OskState {
                 let code = self.key_rects[idx].code;
                 let row = self.key_rects[idx].row;
                 let col = self.key_rects[idx].col;
-                let force_shift = LAYERS[self.current_layer][row][col].force_shift;
-                if force_shift {
+                let key_mods = LAYERS[self.current_layer][row][col].mods;
+                if key_mods != 0 {
                     let has_compositor_mods = self.ctrl_state != ModState::Off
                         || self.alt_state != ModState::Off
                         || self.super_state != ModState::Off;
-                    self.send_modifier(if has_compositor_mods { self.active_mods() } else { self.active_mods() | 1 });
+                    self.send_modifier(if has_compositor_mods { self.active_mods() } else { self.active_mods() | key_mods });
                 } else {
                     self.send_modifier(self.active_mods());
                 }
@@ -1551,8 +1558,8 @@ impl OskState {
             if !matches!(code, ACTION_SHIFT | ACTION_SYM | ACTION_ABC | ACTION_CTRL | ACTION_ALT | ACTION_SUPER) {
                 let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
                 self.send_key(code, false);
-                if key_def.force_shift {
-                    // Clear one-shot mods and restore state after force_shift key
+                if key_def.mods != 0 {
+                    // Clear one-shot mods and restore state after forced-mod key
                     self.clear_oneshot_mods();
                     self.send_modifier(self.active_mods());
                 } else if code != KEY_BACKSPACE && code != KEY_SPACE && code != KEY_ENTER {
