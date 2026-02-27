@@ -1,22 +1,25 @@
 {
   lib,
-  rustPlatform,
+  craneLib,
   pkg-config,
   libxkbcommon,
   wayland,
   makeWrapper,
   dejavu_fonts,
 }:
-rustPlatform.buildRustPackage {
-  pname = "osk";
-  version = "0.1.0";
-
-  src = ./.;
-
-  cargoLock.lockFile = ./Cargo.lock;
-
-  nativeBuildInputs = [ pkg-config makeWrapper ];
-  buildInputs = [ libxkbcommon wayland ];
+let
+  src = craneLib.cleanCargoSource ./.;
+  commonArgs = {
+    inherit src;
+    pname = "osk";
+    version = "0.1.0";
+    nativeBuildInputs = [ pkg-config makeWrapper ];
+    buildInputs = [ libxkbcommon wayland ];
+  };
+  cargoArtifacts = craneLib.buildDepsOnly commonArgs;
+in
+craneLib.buildPackage (commonArgs // {
+  inherit cargoArtifacts;
 
   postFixup = ''
     wrapProgram $out/bin/osk \
@@ -29,4 +32,4 @@ rustPlatform.buildRustPackage {
     platforms = lib.platforms.linux;
     mainProgram = "osk";
   };
-}
+})
