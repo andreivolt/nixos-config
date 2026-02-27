@@ -50,6 +50,7 @@ with pkgs; with lib; [
   edir
   erdtree
   eslint
+  expect
   eza
   fastgron
   fd
