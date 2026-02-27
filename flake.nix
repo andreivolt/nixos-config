@@ -32,6 +32,10 @@
       url = "github:hyprwm/hyprland-plugins";
       inputs.hyprland.follows = "hyprland";
     };
+    hyprgrass = {
+      url = "github:horriblename/hyprgrass";
+      inputs.hyprland.follows = "hyprland";
+    };
     hyprsunset = {
       url = "github:hyprwm/hyprsunset";
       inputs.nixpkgs.follows = "hyprland/nixpkgs";
@@ -67,6 +71,7 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    crane.url = "github:ipetkov/crane";
     monolith = {
       url = "git+file:/home/andrei/dev/monolith";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -113,6 +118,7 @@
     disko,
     hyprland,
     hyprland-plugins,
+    hyprgrass,
     hyprsunset,
     nixos-apple-silicon,
     lan-mouse,
@@ -121,6 +127,7 @@
     uv2nix,
     pyproject-build-systems,
     rust-overlay,
+    crane,
     monolith,
     launcher,
     ff2mpv,
@@ -155,11 +162,61 @@
       config.allowUnfree = true;
       overlays = [
         rust-overlay.overlays.default
+        (final: prev: { craneLib = crane.mkLib final; })
         (import "${inputs.self}/pkgs")
         (final: prev: {
           unstable = inputs.nixpkgs-unstable.legacyPackages.${prev.stdenv.hostPlatform.system};
           mkPep723Script = mkPep723Script final;
         })
+        # PipeWire 1.6.0 + tg_owt + arrow-cpp overlays (commented - wait for nixpkgs-unstable)
+        # Fixes: zeroramp plugin, convolver latency for Asahi DSP, tg_owt PipeWire 1.6 API compat
+        # Re-enable when nixpkgs-unstable includes PipeWire >= 1.6.0 with updated tg_owt
+        # (final: prev: {
+        #   pipewire = prev.pipewire.overrideAttrs (old: {
+        #     version = "1.6.0";
+        #     src = prev.fetchFromGitLab {
+        #       domain = "gitlab.freedesktop.org";
+        #       owner = "pipewire";
+        #       repo = "pipewire";
+        #       rev = "1.6.0";
+        #       hash = "sha256-Xc5ouBvT8v0hA3lPfCjhCicoem0jk4knevj7LJJipJ4=";
+        #     };
+        #     mesonFlags = map (flag:
+        #       builtins.replaceStrings ["-Dsystemd="] ["-Dlibsystemd="] flag
+        #     ) old.mesonFlags ++ [
+        #       "-Dbluez5-codec-ldac-dec=disabled"
+        #       "-Dbluez5-plc-spandsp=disabled"
+        #       "-Donnxruntime=disabled"
+        #     ];
+        #   });
+        # })
+        # (final: prev: let
+        #   tg_owt_new = prev.callPackage
+        #     "${prev.path}/pkgs/applications/networking/instant-messengers/telegram/telegram-desktop/tg_owt.nix"
+        #     { stdenv = prev.stdenv; };
+        #   tg_owt_updated = tg_owt_new.overrideAttrs (old: {
+        #     version = "0-unstable-2025-12-12";
+        #     src = prev.fetchFromGitHub {
+        #       owner = "desktop-app";
+        #       repo = "tg_owt";
+        #       rev = "d888bc3f79b4aa80333d8903410fa439db5f6696";
+        #       hash = "sha256-ZiZ0HD4UNPJj1ZtoGroJRQBYeL/nwpp4B9GtXFcCA7M=";
+        #       fetchSubmodules = true;
+        #     };
+        #   });
+        # in {
+        #   telegram-desktop = prev.telegram-desktop.override {
+        #     unwrapped = prev.telegram-desktop.unwrapped.override {
+        #       tg_owt = tg_owt_updated;
+        #     };
+        #   };
+        # })
+        # (final: prev: {
+        #   arrow-cpp = prev.arrow-cpp.override {
+        #     enableS3 = false;
+        #     enableAzure = false;
+        #   };
+        # })
         # Update yt-dlp to fix YouTube live stream HLS 403 errors
         (final: prev: {
           yt-dlp = prev.yt-dlp.overrideAttrs (old: {
