@@ -23,23 +23,38 @@ in {
     ${pkgs.mullvad}/bin/mullvad connect
   '';
 
-  # Accept Tailscale exit node traffic in Mullvad's forward chain (policy drop).
-  # Mullvad recreates its nftables rules on connect, so this polls and re-inserts.
-  systemd.services.mullvad-tailscale-forward = {
-    description = "Maintain Tailscale forward rule in Mullvad nftables";
+  # Route Tailscale CGNAT traffic through Tailscale's table before Mullvad's VPN table.
+  # Without this, Mullvad's routing table (rule 5209) catches 100.64.0.0/10 and routes
+  # it through wg0-mullvad. The ct mark + type route rerouting approach doesn't work
+  # because conntrack SNAT bindings from previous routing decisions prevent rerouting.
+  networking.localCommands = ''
+    ip rule add to 100.64.0.0/10 lookup 52 priority 5200 2>/dev/null || true
+  '';
+
+  # Mullvad recreates its nftables rules on every connect, wiping custom rules from
+  # its inet mullvad table. Re-insert tailscale0 accept rules on each state change.
+  # Needed for: input (incoming Tailscale traffic), output (outgoing to Tailscale),
+  # and forward (exit node traffic through Mullvad tunnel).
+  systemd.services.mullvad-tailscale-rules = {
+    description = "Re-insert Tailscale rules in Mullvad nftables on state changes";
     after = [ "mullvad-daemon.service" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       Type = "simple";
-      ExecStart = pkgs.writeShellScript "mullvad-tailscale-forward" ''
-        while true; do
-          if ${pkgs.nftables}/bin/nft list chain inet mullvad forward &>/dev/null; then
-            if ! ${pkgs.nftables}/bin/nft list chain inet mullvad forward | grep -q tailscale0; then
-              ${pkgs.nftables}/bin/nft insert rule inet mullvad forward \
-                iifname "tailscale0" oifname "wg0-mullvad" accept
+      ExecStart = pkgs.writeShellScript "mullvad-tailscale-rules" ''
+        nft=${pkgs.nftables}/bin/nft
+        insert_if_missing() {
+          local chain=$1 match=$2 rule=$3
+          if $nft list chain inet mullvad "$chain" &>/dev/null; then
+            if ! $nft list chain inet mullvad "$chain" | grep -q "$match"; then
+              $nft insert rule inet mullvad "$chain" $rule
             fi
           fi
-          sleep 5
+        }
+        ${pkgs.mullvad}/bin/mullvad status listen | while read -r line; do
+          insert_if_missing input tailscale0 'iifname "tailscale0" accept'
+          insert_if_missing output tailscale0 'oif "tailscale0" accept'
+          insert_if_missing forward tailscale0 'iifname "tailscale0" oifname "wg0-mullvad" accept'
         done
       '';
       Restart = "always";
@@ -55,25 +70,14 @@ in {
     '')
   ];
 
-  # Allow Tailscale traffic to bypass Mullvad tunnel
-  # Marks packets to Tailscale's CGNAT range (100.64.0.0/10) with Mullvad's exclusion marks
-  # https://theorangeone.net/posts/tailscale-mullvad/
+  # Tailscale + Mullvad coexistence nftables rules
+  # The routing rule (localCommands above) handles routing Tailscale traffic correctly.
+  # The mullvad-tailscale-rules service handles Mullvad's firewall accept rules.
+  # This table handles exit node forwarding (MSS clamping, QUIC blocking, MASQUERADE).
   networking.nftables.enable = true;
   networking.nftables.tables.mullvad-tailscale = {
     family = "inet";
     content = ''
-      chain output {
-        type route hook output priority -100; policy accept;
-        ip daddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-      }
-      chain input {
-        type filter hook input priority -100; policy accept;
-        ip saddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-      }
-      chain prerouting {
-        type filter hook prerouting priority -50; policy accept;
-        iifname "wg0-mullvad" ip daddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
-      }
       chain forward {
         type filter hook forward priority mangle; policy accept;
         # Clamp TCP MSS for double WireGuard encapsulation (tailscale MTU 1280)
