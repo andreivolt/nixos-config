@@ -1149,9 +1149,8 @@ impl OskState {
         let data = unsafe { std::slice::from_raw_parts_mut(ptr as *mut u8, buf_size) };
 
         let mut pixmap = Pixmap::new(size, size).unwrap();
-        pixmap.fill(Color::from_rgba8(40, 40, 40, 200));
 
-        // Draw rounded background
+        // Draw rounded button
         draw_rounded_rect(&mut pixmap, 2.0, 2.0, size as f32 - 4.0, size as f32 - 4.0, 10.0,
             Color::from_rgba8(50, 50, 50, 230));
 
