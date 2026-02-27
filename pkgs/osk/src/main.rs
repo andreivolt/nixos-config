@@ -843,9 +843,6 @@ struct OskState {
     output_pixel_height: i32,
     kb_height: u32,
 
-    // Suppress auto-show briefly after compositor-mod combos (e.g. Super+R opens launcher)
-    suppress_auto_show_until: Option<std::time::Instant>,
-
     // Long-press alternates
     touch_down_time: Option<std::time::Instant>,
     long_press_active: bool,
@@ -874,7 +871,7 @@ impl OskState {
             width: 0,
             height: DEFAULT_KB_HEIGHT,
             visible: false,
-            auto_show_enabled: true,
+            auto_show_enabled: false, // starts disabled; SIGUSR2 (tablet mode) enables it
             current_layer: 0,
             shift_state: ModState::Off,
             ctrl_state: ModState::Off,
@@ -900,7 +897,6 @@ impl OskState {
             output_pixel_width: 0,
             output_pixel_height: 0,
             kb_height: DEFAULT_KB_HEIGHT,
-            suppress_auto_show_until: None,
             touch_down_time: None,
             long_press_active: false,
             long_press_key_idx: None,
@@ -1318,11 +1314,6 @@ impl OskState {
             let code = kr.code;
             if !matches!(code, ACTION_SHIFT | ACTION_SYM | ACTION_ABC | ACTION_CTRL | ACTION_ALT | ACTION_SUPER) {
                 let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
-                // If compositor-level mods were active, suppress auto-show briefly
-                // (e.g. Super+R opens launcher whose text field would trigger auto-show)
-                let had_compositor_mods = self.ctrl_state != ModState::Off
-                    || self.alt_state != ModState::Off
-                    || self.super_state != ModState::Off;
                 self.send_key(code, false);
                 if key_def.force_shift {
                     // Clear one-shot mods and restore state after force_shift key
@@ -1332,13 +1323,6 @@ impl OskState {
                     // Clear one-shot modifiers after typing a character
                     self.clear_oneshot_mods();
                     self.send_modifier(self.active_mods());
-                }
-                if had_compositor_mods {
-                    self.suppress_auto_show_until = Some(
-                        std::time::Instant::now() + std::time::Duration::from_millis(800)
-                    );
-                    // Hide keyboard since a compositor shortcut was just used
-                    self.hide();
                 }
             }
             self.cancel_long_press();
@@ -1653,12 +1637,7 @@ impl Dispatch<ZwpInputMethodV2, ()> for OskState {
         match event {
             zwp_input_method_v2::Event::Activate => {
                 if state.auto_show_enabled {
-                    // Suppress auto-show briefly after compositor-mod combos
-                    let suppressed = state.suppress_auto_show_until
-                        .map_or(false, |t| std::time::Instant::now() < t);
-                    if !suppressed {
-                        state.show(qh);
-                    }
+                    state.show(qh);
                 }
             }
             zwp_input_method_v2::Event::Deactivate => {
@@ -1709,6 +1688,73 @@ delegate_noop!(OskState: ignore ZwlrLayerShellV1);
 delegate_noop!(OskState: ignore ZwpVirtualKeyboardManagerV1);
 delegate_noop!(OskState: ignore ZwpInputMethodManagerV2);
 
+// Evdev input_event struct (matches linux/input.h)
+#[repr(C)]
+struct InputEvent {
+    tv_sec: libc::time_t,
+    tv_usec: libc::suseconds_t,
+    type_: u16,
+    code: u16,
+    value: i32,
+}
+
+const EV_SW: u16 = 0x05;
+const SW_TABLET_MODE: u16 = 1;
+
+// EVIOCGSW ioctl to read current switch state
+// ioctl number: _IOC(_IOC_READ, 'E', 0x1b, len)
+fn eviocgsw(fd: i32, buf: &mut [u8]) -> i32 {
+    let len = buf.len();
+    // _IOC_READ=2, type='E'=0x45, nr=0x1b
+    let req: libc::c_ulong = (2 << 30) | ((len as libc::c_ulong) << 16) | (0x45 << 8) | 0x1b;
+    unsafe { libc::ioctl(fd, req, buf.as_mut_ptr()) }
+}
+
+/// Find /dev/input/eventN with SW_TABLET_MODE capability, open it,
+/// and return (fd, initial_tablet_mode).
+fn open_tablet_mode_device() -> Option<(i32, bool)> {
+    let input_dir = match std::fs::read_dir("/sys/class/input") {
+        Ok(d) => d,
+        Err(_) => return None,
+    };
+    for entry in input_dir.flatten() {
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        if !name_str.starts_with("event") {
+            continue;
+        }
+        let sw_path = format!("/sys/class/input/{}/device/capabilities/sw", name_str);
+        let caps = match std::fs::read_to_string(&sw_path) {
+            Ok(s) => s.trim().to_string(),
+            Err(_) => continue,
+        };
+        // Parse hex capabilities, check for bit 1 (SW_TABLET_MODE)
+        let val = u64::from_str_radix(&caps, 16).unwrap_or(0);
+        if val & (1 << SW_TABLET_MODE) == 0 {
+            continue;
+        }
+        // Found a device with SW_TABLET_MODE
+        let dev_path = format!("/dev/input/{}", name_str);
+        let c_path = std::ffi::CString::new(dev_path.as_str()).unwrap();
+        let fd = unsafe { libc::open(c_path.as_ptr(), libc::O_RDONLY | libc::O_NONBLOCK | libc::O_CLOEXEC) };
+        if fd < 0 {
+            eprintln!("osk: cannot open {} for tablet mode: {}", dev_path, std::io::Error::last_os_error());
+            continue;
+        }
+        // Read initial switch state
+        let mut sw_state = [0u8; 4]; // enough for 32 switch bits
+        let initial_tablet = if eviocgsw(fd, &mut sw_state) >= 0 {
+            sw_state[0] & (1 << SW_TABLET_MODE) != 0
+        } else {
+            false
+        };
+        eprintln!("osk: tablet mode device {} (currently {})",
+            dev_path, if initial_tablet { "tablet" } else { "laptop" });
+        return Some((fd, initial_tablet));
+    }
+    None
+}
+
 fn main() {
     let start_hidden = std::env::args().any(|a| a == "--hidden");
 
@@ -1727,15 +1773,28 @@ fn main() {
     state.setup_virtual_keyboard(&qh);
     state.setup_input_method(&qh);
 
-    if !start_hidden {
-        state.show(&qh);
-    }
+    // Detect tablet mode from evdev SW_TABLET_MODE switch
+    let tablet_mode_fd = match open_tablet_mode_device() {
+        Some((fd, initial_tablet)) => {
+            state.auto_show_enabled = initial_tablet;
+            if initial_tablet && !start_hidden {
+                state.show(&qh);
+            }
+            Some(fd)
+        }
+        None => {
+            eprintln!("osk: no tablet mode switch found, auto-show stays disabled");
+            if !start_hidden {
+                state.show(&qh);
+            }
+            None
+        }
+    };
 
     event_queue.roundtrip(&mut state).unwrap();
 
-    // Setup signal pipe for SIGUSR1/SIGUSR2
+    // Setup signal pipe for SIGUSR1/SIGUSR2 (manual override)
     let (sig_read, sig_write) = nix::unistd::pipe().expect("pipe failed");
-    // Make write end non-blocking
     nix::fcntl::fcntl(sig_write.as_raw_fd(), nix::fcntl::FcntlArg::F_SETFL(nix::fcntl::OFlag::O_NONBLOCK)).ok();
 
     static SIG_WRITE_FD: std::sync::atomic::AtomicI32 = std::sync::atomic::AtomicI32::new(-1);
@@ -1759,13 +1818,10 @@ fn main() {
     let sig_fd = sig_read.as_raw_fd();
 
     loop {
-        // Flush outgoing wayland requests
         if let Err(e) = conn.flush() {
             eprintln!("osk: wayland flush error: {}", e);
-            // Continue on WouldBlock, break on real errors
         }
 
-        // Compute poll timeout for long-press timer
         let poll_timeout = if let Some(down_time) = state.touch_down_time {
             if !state.long_press_active {
                 let elapsed = std::time::Instant::now().duration_since(down_time).as_millis() as i32;
@@ -1777,13 +1833,22 @@ fn main() {
             -1
         };
 
-        // Poll both wayland fd and signal pipe
-        let mut fds = [
-            libc::pollfd { fd: wl_fd, events: libc::POLLIN, revents: 0 },
-            libc::pollfd { fd: sig_fd, events: libc::POLLIN, revents: 0 },
-        ];
+        // Poll wayland fd, signal pipe, and optionally tablet mode evdev
+        let (nfds, mut fds) = if let Some(tfd) = tablet_mode_fd {
+            (3, [
+                libc::pollfd { fd: wl_fd, events: libc::POLLIN, revents: 0 },
+                libc::pollfd { fd: sig_fd, events: libc::POLLIN, revents: 0 },
+                libc::pollfd { fd: tfd, events: libc::POLLIN, revents: 0 },
+            ])
+        } else {
+            (2, [
+                libc::pollfd { fd: wl_fd, events: libc::POLLIN, revents: 0 },
+                libc::pollfd { fd: sig_fd, events: libc::POLLIN, revents: 0 },
+                libc::pollfd { fd: -1, events: 0, revents: 0 }, // unused
+            ])
+        };
 
-        let ret = unsafe { libc::poll(fds.as_mut_ptr(), 2, poll_timeout) };
+        let ret = unsafe { libc::poll(fds.as_mut_ptr(), nfds as libc::nfds_t, poll_timeout) };
         if ret < 0 {
             let err = std::io::Error::last_os_error();
             if err.kind() == std::io::ErrorKind::Interrupted {
@@ -1793,7 +1858,7 @@ fn main() {
             break;
         }
 
-        // Handle signals
+        // Handle signals (manual override via SIGUSR1/SIGUSR2)
         if fds[1].revents & libc::POLLIN != 0 {
             let mut buf = [0u8; 16];
             let n = unsafe { libc::read(sig_read.as_raw_fd(), buf.as_mut_ptr() as *mut libc::c_void, buf.len()) };
@@ -1813,12 +1878,39 @@ fn main() {
             }
         }
 
+        // Handle tablet mode evdev events
+        if fds[2].revents & libc::POLLIN != 0 {
+            if let Some(tfd) = tablet_mode_fd {
+                let mut ev = InputEvent { tv_sec: 0, tv_usec: 0, type_: 0, code: 0, value: 0 };
+                let ev_size = std::mem::size_of::<InputEvent>();
+                loop {
+                    let n = unsafe {
+                        libc::read(tfd, &mut ev as *mut InputEvent as *mut libc::c_void, ev_size)
+                    };
+                    if n != ev_size as isize {
+                        break;
+                    }
+                    if ev.type_ == EV_SW && ev.code == SW_TABLET_MODE {
+                        if ev.value != 0 {
+                            // Entering tablet mode
+                            state.auto_show_enabled = true;
+                            eprintln!("osk: tablet mode on");
+                        } else {
+                            // Leaving tablet mode
+                            state.auto_show_enabled = false;
+                            state.hide();
+                            eprintln!("osk: tablet mode off");
+                        }
+                    }
+                }
+            }
+        }
+
         // Handle long-press timeout
         if let Some(down_time) = state.touch_down_time {
             if !state.long_press_active {
                 let elapsed = std::time::Instant::now().duration_since(down_time).as_millis();
                 if elapsed >= 400 && state.pressed_key.is_some() {
-                    // Release the original key press first
                     if let Some(idx) = state.pressed_key {
                         let code = state.key_rects[idx].code;
                         state.send_key(code, false);
@@ -1828,7 +1920,6 @@ fn main() {
                     if state.long_press_active {
                         state.needs_redraw = true;
                     } else {
-                        // No alternates for this key, cancel
                         state.touch_down_time = None;
                     }
                 }
@@ -1861,5 +1952,10 @@ fn main() {
         if state.needs_redraw && state.visible && state.configured {
             state.draw(&qh);
         }
+    }
+
+    // Clean up tablet mode fd
+    if let Some(tfd) = tablet_mode_fd {
+        unsafe { libc::close(tfd); }
     }
 }
