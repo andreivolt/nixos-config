@@ -25,6 +25,7 @@
     ./dac-toggle.nix
     ./touchscreen.nix
     ./hypr-autorotate.nix
+    ./osk.nix
     ./insync.nix
     ../../linux/zswap.nix
     ../../linux/glsl-screensaver.nix

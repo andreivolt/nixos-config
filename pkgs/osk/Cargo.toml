@@ -1,0 +1,21 @@
+[package]
+name = "osk"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+fontdue = "0.9"
+libc = "0.2"
+nix = { version = "0.29", features = ["signal", "fs", "poll"] }
+tiny-skia = "0.11"
+wayland-client = "0.31"
+wayland-protocols = { version = "0.32", features = ["client", "staging"] }
+wayland-protocols-wlr = { version = "0.3", features = ["client"] }
+wayland-protocols-misc = { version = "0.3", features = ["client"] }
+wayland-backend = { version = "0.3", features = ["client_system"] }
+xkbcommon = { version = "0.8", features = ["wayland"] }
+
+[profile.release]
+opt-level = "s"
+lto = true
+strip = true

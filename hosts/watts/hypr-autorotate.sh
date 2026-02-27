@@ -19,6 +19,13 @@ rotate() {
   hyprctl keyword monitor "eDP-1,transform,$transform"
   hyprctl keyword 'device[wacom-pen-and-multitouch-sensor-finger]:transform' "$transform"
   hyprctl keyword 'device[wacom-pen-and-multitouch-sensor-pen]:transform' "$transform"
+
+  # Tablet mode: show keyboard; laptop mode: hide
+  if [[ "$orientation" == "normal" ]]; then
+    pkill -SIGUSR1 -f '/bin/osk' 2>/dev/null
+  else
+    pkill -SIGUSR2 -f '/bin/osk' 2>/dev/null
+  fi
 }
 
 # Listen for Hyprland config reload events and re-apply orientation
