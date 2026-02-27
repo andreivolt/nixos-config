@@ -77,10 +77,22 @@ const KEY_SLASH: u32 = 53;
 const KEY_LEFTBRACE: u32 = 26;  // dead circumflex ^ (dead key)
 const KEY_APOSTROPHE: u32 = 40; // ù on AZERTY
 
+const KEY_LEFTCTRL: u32 = 29;
+const KEY_LEFTALT: u32 = 56;
+const KEY_TAB: u32 = 15;
+const KEY_ESC: u32 = 1;
+const KEY_UP: u32 = 103;
+const KEY_DOWN: u32 = 108;
+const KEY_LEFT: u32 = 105;
+const KEY_RIGHT: u32 = 106;
+
 // Special action codes (not real scancodes)
 const ACTION_SHIFT: u32 = 0xF001;
 const ACTION_SYM: u32 = 0xF002;
 const ACTION_ABC: u32 = 0xF003;
+const ACTION_CTRL: u32 = 0xF004;
+const ACTION_ALT: u32 = 0xF005;
+const ACTION_SUPER: u32 = 0xF006;
 
 struct KeyDef {
     label: &'static str,
@@ -152,12 +164,16 @@ static MAIN_R2: &[KeyDef] = &[
     KeyDef::new("⌫", KEY_BACKSPACE, 1.5),
 ];
 static MAIN_R3: &[KeyDef] = &[
-    KeyDef::new("?123", ACTION_SYM, 1.5),
-    KeyDef::new("Super", KEY_LEFTMETA, 1.0),
-    KeyDef::new(",", KEY_COMMA, 1.0),
-    KeyDef::new(" ", KEY_SPACE, 3.0),
-    KeyDef::new(".", KEY_DOT, 1.0),
-    KeyDef::new("⏎", KEY_ENTER, 1.5),
+    KeyDef::new("?123", ACTION_SYM, 1.2),
+    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
+    KeyDef::new("Alt", ACTION_ALT, 1.0),
+    KeyDef::new("Super", ACTION_SUPER, 1.0),
+    KeyDef::new(",", KEY_COMMA, 0.8),
+    KeyDef::new(" ", KEY_SPACE, 2.5),
+    KeyDef::new(".", KEY_DOT, 0.8),
+    KeyDef::new("←", KEY_LEFT, 0.8),
+    KeyDef::new("→", KEY_RIGHT, 0.8),
+    KeyDef::new("⏎", KEY_ENTER, 1.1),
 ];
 static MAIN_LAYER: &[Row] = &[&*NUM_ROW, &*MAIN_R0, &*MAIN_R1, &*MAIN_R2, &*MAIN_R3];
 
@@ -197,12 +213,16 @@ static SHIFT_R2: &[KeyDef] = &[
     KeyDef::new("⌫", KEY_BACKSPACE, 1.5),
 ];
 static SHIFT_R3: &[KeyDef] = &[
-    KeyDef::new("?123", ACTION_SYM, 1.5),
-    KeyDef::new("Super", KEY_LEFTMETA, 1.0),
-    KeyDef::new(",", KEY_COMMA, 1.0),
-    KeyDef::new(" ", KEY_SPACE, 3.0),
-    KeyDef::new(".", KEY_DOT, 1.0),
-    KeyDef::new("⏎", KEY_ENTER, 1.5),
+    KeyDef::new("?123", ACTION_SYM, 1.2),
+    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
+    KeyDef::new("Alt", ACTION_ALT, 1.0),
+    KeyDef::new("Super", ACTION_SUPER, 1.0),
+    KeyDef::new(",", KEY_COMMA, 0.8),
+    KeyDef::new(" ", KEY_SPACE, 2.5),
+    KeyDef::new(".", KEY_DOT, 0.8),
+    KeyDef::new("←", KEY_LEFT, 0.8),
+    KeyDef::new("→", KEY_RIGHT, 0.8),
+    KeyDef::new("⏎", KEY_ENTER, 1.1),
 ];
 static SHIFT_LAYER: &[Row] = &[&*NUM_ROW, &*SHIFT_R0, &*SHIFT_R1, &*SHIFT_R2, &*SHIFT_R3];
 
@@ -242,12 +262,16 @@ static SYM_R2: &[KeyDef] = &[
     KeyDef::new("⌫", KEY_BACKSPACE, 1.5),
 ];
 static SYM_R3: &[KeyDef] = &[
-    KeyDef::new("ABC", ACTION_ABC, 1.5),
-    KeyDef::new("Super", KEY_LEFTMETA, 1.0),
-    KeyDef::new(",", KEY_COMMA, 1.0),
-    KeyDef::new(" ", KEY_SPACE, 3.0),
-    KeyDef::new(".", KEY_DOT, 1.0),
-    KeyDef::new("⏎", KEY_ENTER, 1.5),
+    KeyDef::new("ABC", ACTION_ABC, 1.2),
+    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
+    KeyDef::new("Alt", ACTION_ALT, 1.0),
+    KeyDef::new("Super", ACTION_SUPER, 1.0),
+    KeyDef::new("Esc", KEY_ESC, 0.8),
+    KeyDef::new(" ", KEY_SPACE, 2.5),
+    KeyDef::new("Tab", KEY_TAB, 0.8),
+    KeyDef::new("↑", KEY_UP, 0.8),
+    KeyDef::new("↓", KEY_DOWN, 0.8),
+    KeyDef::new("⏎", KEY_ENTER, 1.1),
 ];
 static SYM_LAYER: &[Row] = &[&*NUM_ROW, &*SYM_R0, &*SYM_R1, &*SYM_R2, &*SYM_R3];
 
@@ -271,10 +295,19 @@ fn is_special_key(code: u32) -> bool {
         ACTION_SHIFT
             | ACTION_SYM
             | ACTION_ABC
+            | ACTION_CTRL
+            | ACTION_ALT
+            | ACTION_SUPER
             | KEY_BACKSPACE
             | KEY_ENTER
             | KEY_LEFTMETA
             | KEY_LEFTSHIFT
+            | KEY_UP
+            | KEY_DOWN
+            | KEY_LEFT
+            | KEY_RIGHT
+            | KEY_TAB
+            | KEY_ESC
     )
 }
 
@@ -532,12 +565,29 @@ fn dot_color() -> Color { Color::from_rgba8(180, 180, 180, 255) }
 fn popup_bg_color() -> Color { Color::from_rgba8(80, 80, 80, 255) }
 fn popup_selected_color() -> Color { Color::from_rgba8(120, 120, 120, 255) }
 
+struct ModStates {
+    shift: ModState,
+    ctrl: ModState,
+    alt: ModState,
+    super_: ModState,
+}
+
+fn mod_state_for_key(code: u32, mods: &ModStates) -> ModState {
+    match code {
+        ACTION_SHIFT => mods.shift,
+        ACTION_CTRL => mods.ctrl,
+        ACTION_ALT => mods.alt,
+        ACTION_SUPER => mods.super_,
+        _ => ModState::Off,
+    }
+}
+
 fn render_keyboard(
     pixmap: &mut Pixmap,
     rects: &[KeyRect],
     layer_idx: usize,
     pressed_key: Option<usize>,
-    shift_state: ModState,
+    mod_states: &ModStates,
     long_press_active: bool,
     long_press_key_idx: Option<usize>,
     long_press_alternates: &[AlternateRect],
@@ -551,10 +601,11 @@ fn render_keyboard(
 
     for (i, kr) in rects.iter().enumerate() {
         let key_def = &layer[kr.row][kr.col];
-        let is_shift = kr.code == ACTION_SHIFT;
+        let mod_st = mod_state_for_key(kr.code, mod_states);
+        let is_sticky = matches!(kr.code, ACTION_SHIFT | ACTION_CTRL | ACTION_ALT | ACTION_SUPER);
         let color = if Some(i) == pressed_key {
             key_pressed_color()
-        } else if is_shift && shift_state == ModState::Locked {
+        } else if is_sticky && mod_st == ModState::Locked {
             shift_locked_color()
         } else if is_special_key(kr.code) {
             special_key_color()
@@ -581,8 +632,8 @@ fn render_keyboard(
             font_size,
         );
 
-        // Draw dot indicator below shift icon for OneShot
-        if is_shift && shift_state == ModState::OneShot {
+        // Draw dot indicator for OneShot sticky modifiers
+        if is_sticky && mod_st == ModState::OneShot {
             let dot_cx = kr.x + kr.w / 2.0;
             let dot_cy = kr.y + kr.h * 0.82;
             let dot_r = 3.0;
@@ -656,7 +707,13 @@ struct OskState {
     auto_show_enabled: bool,
     current_layer: usize,
     shift_state: ModState,
+    ctrl_state: ModState,
+    alt_state: ModState,
+    super_state: ModState,
     last_shift_tap: Option<std::time::Instant>,
+    last_ctrl_tap: Option<std::time::Instant>,
+    last_alt_tap: Option<std::time::Instant>,
+    last_super_tap: Option<std::time::Instant>,
     pressed_key: Option<usize>,
     key_rects: Vec<KeyRect>,
 
@@ -679,6 +736,7 @@ struct OskState {
     // Display physical dimensions for DPI-aware sizing
     output_physical_width_mm: i32,
     output_pixel_width: i32,
+    output_pixel_height: i32,
     kb_height: u32,
 
     // Long-press alternates
@@ -712,7 +770,13 @@ impl OskState {
             auto_show_enabled: true,
             current_layer: 0,
             shift_state: ModState::Off,
+            ctrl_state: ModState::Off,
+            alt_state: ModState::Off,
+            super_state: ModState::Off,
             last_shift_tap: None,
+            last_ctrl_tap: None,
+            last_alt_tap: None,
+            last_super_tap: None,
             pressed_key: None,
             key_rects: Vec::new(),
             shm_pool: None,
@@ -727,6 +791,7 @@ impl OskState {
             touch_points: std::collections::HashMap::new(),
             output_physical_width_mm: 0,
             output_pixel_width: 0,
+            output_pixel_height: 0,
             kb_height: DEFAULT_KB_HEIGHT,
             touch_down_time: None,
             long_press_active: false,
@@ -740,7 +805,13 @@ impl OskState {
         if self.output_physical_width_mm > 0 && self.output_pixel_width > 0 {
             let key_height_px = TARGET_KEY_HEIGHT_MM * self.output_pixel_width as f32
                 / self.output_physical_width_mm as f32;
-            self.kb_height = (key_height_px as u32 * NUM_ROWS).max(200);
+            let mut h = (key_height_px as u32 * NUM_ROWS).max(200);
+            // Cap at 40% of screen height to avoid dominating landscape displays
+            if self.output_pixel_height > 0 {
+                let max_h = (self.output_pixel_height as u32 * 40) / 100;
+                h = h.min(max_h);
+            }
+            self.kb_height = h;
         } else {
             self.kb_height = DEFAULT_KB_HEIGHT;
         }
@@ -943,12 +1014,18 @@ impl OskState {
         self.key_rects = compute_key_rects(self.width, self.kb_height, self.current_layer);
         let pixmap = PixmapMut::from_bytes(data, self.width, self.height).unwrap();
         let mut owned_pixmap = pixmap.to_owned();
+        let mod_states = ModStates {
+            shift: self.shift_state,
+            ctrl: self.ctrl_state,
+            alt: self.alt_state,
+            super_: self.super_state,
+        };
         render_keyboard(
             &mut owned_pixmap,
             &self.key_rects,
             self.current_layer,
             self.pressed_key,
-            self.shift_state,
+            &mod_states,
             self.long_press_active,
             self.long_press_key_idx,
             &self.long_press_alternates,
@@ -987,43 +1064,81 @@ impl OskState {
         }
     }
 
+    // XKB modifier bitmask: Shift=1, Lock=2, Control=4, Mod1(Alt)=8, Mod4(Super)=64
+    fn active_mods(&self) -> u32 {
+        let mut m = 0u32;
+        if self.shift_state != ModState::Off { m |= 1; }
+        if self.ctrl_state != ModState::Off { m |= 4; }
+        if self.alt_state != ModState::Off { m |= 8; }
+        if self.super_state != ModState::Off { m |= 64; }
+        m
+    }
+
+    fn toggle_sticky(state: &mut ModState, last_tap: &mut Option<std::time::Instant>) {
+        let now = std::time::Instant::now();
+        *state = match *state {
+            ModState::Off => {
+                *last_tap = Some(now);
+                ModState::OneShot
+            }
+            ModState::OneShot => {
+                if last_tap.map_or(false, |t| now.duration_since(t).as_millis() < 400) {
+                    ModState::Locked
+                } else {
+                    *last_tap = Some(now);
+                    ModState::Off
+                }
+            }
+            ModState::Locked => ModState::Off,
+        };
+    }
+
+    fn clear_oneshot_mods(&mut self) {
+        if self.shift_state == ModState::OneShot { self.shift_state = ModState::Off; }
+        if self.ctrl_state == ModState::OneShot { self.ctrl_state = ModState::Off; }
+        if self.alt_state == ModState::OneShot { self.alt_state = ModState::Off; }
+        if self.super_state == ModState::OneShot { self.super_state = ModState::Off; }
+        // Update layer based on shift
+        self.current_layer = if self.shift_state != ModState::Off { 1 } else if self.current_layer == 1 { 0 } else { self.current_layer };
+    }
+
     fn handle_key_press(&mut self, key_idx: usize, _qh: &QueueHandle<Self>) {
         let kr = &self.key_rects[key_idx];
         let code = kr.code;
 
         match code {
             ACTION_SHIFT => {
-                let now = std::time::Instant::now();
-                self.shift_state = match self.shift_state {
-                    ModState::Off => {
-                        self.last_shift_tap = Some(now);
-                        ModState::OneShot
-                    }
-                    ModState::OneShot => {
-                        if self.last_shift_tap.map_or(false, |t| now.duration_since(t).as_millis() < 400) {
-                            ModState::Locked
-                        } else {
-                            self.last_shift_tap = Some(now);
-                            ModState::Off
-                        }
-                    }
-                    ModState::Locked => ModState::Off,
-                };
+                Self::toggle_sticky(&mut self.shift_state, &mut self.last_shift_tap);
                 let shift_on = self.shift_state != ModState::Off;
                 self.current_layer = if shift_on { 1 } else { 0 };
-                self.send_modifier(if shift_on { 1 } else { 0 });
+                self.send_modifier(self.active_mods());
+                self.needs_redraw = true;
+            }
+            ACTION_CTRL => {
+                Self::toggle_sticky(&mut self.ctrl_state, &mut self.last_ctrl_tap);
+                self.send_modifier(self.active_mods());
+                self.needs_redraw = true;
+            }
+            ACTION_ALT => {
+                Self::toggle_sticky(&mut self.alt_state, &mut self.last_alt_tap);
+                self.send_modifier(self.active_mods());
+                self.needs_redraw = true;
+            }
+            ACTION_SUPER => {
+                Self::toggle_sticky(&mut self.super_state, &mut self.last_super_tap);
+                self.send_modifier(self.active_mods());
                 self.needs_redraw = true;
             }
             ACTION_SYM => {
                 self.current_layer = 2;
                 self.shift_state = ModState::Off;
-                self.send_modifier(0);
+                self.send_modifier(self.active_mods());
                 self.needs_redraw = true;
             }
             ACTION_ABC => {
                 self.current_layer = 0;
                 self.shift_state = ModState::Off;
-                self.send_modifier(0);
+                self.send_modifier(self.active_mods());
                 self.needs_redraw = true;
             }
             _ => {
@@ -1038,12 +1153,10 @@ impl OskState {
                 }
                 if key_def.force_shift {
                     // Number row: temporarily engage Shift for digit output
-                    self.send_modifier(1);
-                    self.send_key(code, true);
-                } else if self.shift_state != ModState::Off {
-                    self.send_modifier(1);
+                    self.send_modifier(self.active_mods() | 1);
                     self.send_key(code, true);
                 } else {
+                    self.send_modifier(self.active_mods());
                     self.send_key(code, true);
                 }
             }
@@ -1077,22 +1190,17 @@ impl OskState {
         if let Some(idx) = self.pressed_key.take() {
             let kr = &self.key_rects[idx];
             let code = kr.code;
-            if !matches!(code, ACTION_SHIFT | ACTION_SYM | ACTION_ABC) {
+            if !matches!(code, ACTION_SHIFT | ACTION_SYM | ACTION_ABC | ACTION_CTRL | ACTION_ALT | ACTION_SUPER) {
                 let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
                 self.send_key(code, false);
                 if key_def.force_shift {
                     // Restore modifier state after force_shift key
-                    let mods = if self.shift_state != ModState::Off { 1 } else { 0 };
-                    self.send_modifier(mods);
-                } else if self.shift_state == ModState::OneShot
-                    && code != KEY_BACKSPACE && code != KEY_SPACE && code != KEY_ENTER
-                {
-                    // One-shot shift: return to main layer after typing one char
-                    self.shift_state = ModState::Off;
-                    self.current_layer = 0;
-                    self.send_modifier(0);
+                    self.send_modifier(self.active_mods());
+                } else if code != KEY_BACKSPACE && code != KEY_SPACE && code != KEY_ENTER {
+                    // Clear one-shot modifiers after typing a character
+                    self.clear_oneshot_mods();
+                    self.send_modifier(self.active_mods());
                 }
-                // Locked shift stays active until explicitly toggled off
             }
             self.cancel_long_press();
             self.needs_redraw = true;
@@ -1130,6 +1238,8 @@ impl OskState {
             });
         }
         self.long_press_active = true;
+        // Pre-select first alternate so releasing without drag inserts it
+        self.long_press_selected = Some(0);
     }
 
     fn send_alternate_sequence(&self, steps: &[(u32, u32)]) {
@@ -1145,10 +1255,8 @@ impl OskState {
                 self.send_modifier(0);
             }
         }
-        // Restore shift state
-        if self.shift_state != ModState::Off {
-            self.send_modifier(1);
-        }
+        // Restore active modifier state
+        self.send_modifier(self.active_mods());
     }
 
     fn cancel_long_press(&mut self) {
@@ -1442,8 +1550,9 @@ impl Dispatch<WlOutput, ()> for OskState {
             wl_output::Event::Geometry { physical_width, .. } => {
                 state.output_physical_width_mm = physical_width;
             }
-            wl_output::Event::Mode { width, .. } => {
+            wl_output::Event::Mode { width, height, .. } => {
                 state.output_pixel_width = width;
+                state.output_pixel_height = height;
             }
             wl_output::Event::Done => {
                 state.compute_kb_height();
