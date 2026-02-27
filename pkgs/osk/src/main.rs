@@ -75,7 +75,9 @@ const KEY_BACKSLASH: u32 = 43;
 const KEY_SLASH: u32 = 53;
 
 const KEY_LEFTBRACE: u32 = 26;  // dead circumflex ^ (dead key)
+const KEY_RIGHTBRACE: u32 = 27; // $ on AZERTY
 const KEY_APOSTROPHE: u32 = 40; // ù on AZERTY
+const KEY_102ND: u32 = 86;      // < > on AZERTY
 
 const KEY_LEFTCTRL: u32 = 29;
 const KEY_LEFTALT: u32 = 56;
@@ -279,6 +281,8 @@ static LAYERS: &[LayoutLayer] = &[MAIN_LAYER, SHIFT_LAYER, SYM_LAYER];
 
 const DEFAULT_KB_HEIGHT: u32 = 260;
 const TARGET_KEY_HEIGHT_MM: f32 = 9.0;
+const MIN_KEY_HEIGHT_MM: f32 = 7.0;
+const MAX_KEY_HEIGHT_MM: f32 = 11.0;
 const NUM_ROWS: u32 = 5;
 const KEY_MARGIN: f32 = 3.0;
 const KEY_RADIUS: f32 = 6.0;
@@ -329,8 +333,14 @@ struct Alternate {
 // Dead circumflex: KEY_LEFTBRACE (no mod), then base key
 // Dead diaeresis: Shift+KEY_LEFTBRACE, then base key
 // AZERTY direct keys: à=KEY_0, é=KEY_2, è=KEY_7, ù=KEY_APOSTROPHE, ç=KEY_9
+// AOSP/SwiftKey-style alternates for AZERTY French
+// Accented chars first, then hint symbol (row 2/3 symbols, row 1 bracket/special)
+// Modifier bitmasks: 1=Shift, 128=AltGr(Mod5)
+// Dead circumflex: KEY_LEFTBRACE (no mod) then base
+// Dead diaeresis: Shift+KEY_LEFTBRACE then base
 fn get_alternates(label: &str) -> &'static [Alternate] {
     match label {
+        // Row 1 — vowels with accents + symbol hints
         "a" | "A" => &[
             Alternate { label: "à", steps: &[(KEY_0, 0)] },
             Alternate { label: "â", steps: &[(KEY_LEFTBRACE, 0), (KEY_Q, 0)] },
@@ -350,26 +360,79 @@ fn get_alternates(label: &str) -> &'static [Alternate] {
         ],
         "o" | "O" => &[
             Alternate { label: "ô", steps: &[(KEY_LEFTBRACE, 0), (KEY_O, 0)] },
-            Alternate { label: "ö", steps: &[(KEY_LEFTBRACE, 1), (KEY_O, 0)] },
             Alternate { label: "œ", steps: &[(KEY_O, 128)] },
+            Alternate { label: "ö", steps: &[(KEY_LEFTBRACE, 1), (KEY_O, 0)] },
         ],
         "u" | "U" => &[
             Alternate { label: "ù", steps: &[(KEY_APOSTROPHE, 0)] },
             Alternate { label: "û", steps: &[(KEY_LEFTBRACE, 0), (KEY_U, 0)] },
             Alternate { label: "ü", steps: &[(KEY_LEFTBRACE, 1), (KEY_U, 0)] },
         ],
-        "c" | "C" => &[
-            Alternate { label: "ç", steps: &[(KEY_9, 0)] },
-            Alternate { label: "\"", steps: &[(KEY_3, 0)] },
-        ],
         "y" | "Y" => &[
             Alternate { label: "ÿ", steps: &[(KEY_LEFTBRACE, 1), (KEY_Y, 0)] },
         ],
+        "r" | "R" => &[
+            Alternate { label: "=", steps: &[(KEY_EQUAL, 0)] },
+        ],
+        "t" | "T" => &[
+            Alternate { label: "[", steps: &[(KEY_5, 128)] },
+        ],
+        "p" | "P" => &[
+            Alternate { label: "}", steps: &[(KEY_EQUAL, 128)] },
+        ],
+        "z" | "Z" => &[
+            Alternate { label: "\\", steps: &[(KEY_8, 128)] },
+        ],
+        // Row 2 — hint symbols
+        "q" | "Q" => &[
+            Alternate { label: "@", steps: &[(KEY_0, 128)] },
+        ],
+        "s" | "S" => &[
+            Alternate { label: "#", steps: &[(KEY_3, 128)] },
+        ],
+        "d" | "D" => &[
+            Alternate { label: "$", steps: &[(KEY_RIGHTBRACE, 0)] },
+        ],
         "f" | "F" => &[
+            Alternate { label: "%", steps: &[(KEY_APOSTROPHE, 1)] },
+        ],
+        "g" | "G" => &[
+            Alternate { label: "&", steps: &[(KEY_1, 0)] },
+        ],
+        "h" | "H" => &[
+            Alternate { label: "-", steps: &[(KEY_6, 0)] },
+        ],
+        "j" | "J" => &[
+            Alternate { label: "+", steps: &[(KEY_EQUAL, 1)] },
+        ],
+        "k" | "K" => &[
+            Alternate { label: "(", steps: &[(KEY_5, 0)] },
+        ],
+        "l" | "L" => &[
+            Alternate { label: ")", steps: &[(KEY_MINUS, 0)] },
+        ],
+        "m" | "M" => &[
+            Alternate { label: "?", steps: &[(50, 1)] }, // Shift+KEY_M = ? on AZERTY
+        ],
+        // Row 3 — hint symbols
+        "w" | "W" => &[
             Alternate { label: "*", steps: &[(KEY_BACKSLASH, 0)] },
         ],
+        "x" | "X" => &[
+            Alternate { label: "\"", steps: &[(KEY_3, 0)] },
+        ],
+        "c" | "C" => &[
+            Alternate { label: "ç", steps: &[(KEY_9, 0)] },
+            Alternate { label: "'", steps: &[(KEY_4, 0)] },
+        ],
+        "v" | "V" => &[
+            Alternate { label: ":", steps: &[(KEY_DOT, 0)] },
+        ],
+        "b" | "B" => &[
+            Alternate { label: ";", steps: &[(KEY_COMMA, 0)] },
+        ],
         "n" | "N" => &[
-            Alternate { label: "ñ", steps: &[(KEY_N, 128)] },
+            Alternate { label: "!", steps: &[(KEY_SLASH, 0)] },
         ],
         _ => &[],
     }
@@ -803,14 +866,16 @@ impl OskState {
 
     fn compute_kb_height(&mut self) {
         if self.output_physical_width_mm > 0 && self.output_pixel_width > 0 {
-            let key_height_px = TARGET_KEY_HEIGHT_MM * self.output_pixel_width as f32
-                / self.output_physical_width_mm as f32;
-            let mut h = (key_height_px as u32 * NUM_ROWS).max(200);
-            // Cap at 40% of screen height to avoid dominating landscape displays
-            if self.output_pixel_height > 0 {
-                let max_h = (self.output_pixel_height as u32 * 40) / 100;
-                h = h.min(max_h);
-            }
+            // Compute pixels-per-mm from the display
+            let px_per_mm = self.output_pixel_width as f32 / self.output_physical_width_mm as f32;
+            // Target key height: 9mm, but clamp to ergonomic range 7-11mm
+            let key_mm = TARGET_KEY_HEIGHT_MM.clamp(MIN_KEY_HEIGHT_MM, MAX_KEY_HEIGHT_MM);
+            let key_px = key_mm * px_per_mm;
+            let mut h = (key_px * NUM_ROWS as f32) as u32;
+            // Also cap total height to a physical max (55mm ≈ 5 rows × 11mm)
+            let max_kb_mm = MAX_KEY_HEIGHT_MM * NUM_ROWS as f32;
+            let max_kb_px = (max_kb_mm * px_per_mm) as u32;
+            h = h.min(max_kb_px).max(150);
             self.kb_height = h;
         } else {
             self.kb_height = DEFAULT_KB_HEIGHT;
