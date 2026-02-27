@@ -160,14 +160,15 @@ static MAIN_R1: &[KeyDef] = &[
     KeyDef::new("m", KEY_SEMICOLON, 1.0),
 ];
 static MAIN_R2: &[KeyDef] = &[
-    KeyDef::new("⇧", ACTION_SHIFT, 1.5),
+    KeyDef::new("⇧", ACTION_SHIFT, 1.3),
     KeyDef::new("w", KEY_Z, 1.0),
     KeyDef::new("x", KEY_X, 1.0),
     KeyDef::new("c", KEY_C, 1.0),
     KeyDef::new("v", KEY_V, 1.0),
     KeyDef::new("b", KEY_B, 1.0),
     KeyDef::new("n", KEY_N, 1.0),
-    KeyDef::new("⌫", KEY_BACKSPACE, 1.5),
+    KeyDef::new("'", KEY_4, 1.0),
+    KeyDef::new("⌫", KEY_BACKSPACE, 1.3),
 ];
 static MAIN_R3: &[KeyDef] = &[
     KeyDef::new("?123", ACTION_SYM, 1.2),
@@ -209,14 +210,15 @@ static SHIFT_R1: &[KeyDef] = &[
     KeyDef::new("M", KEY_SEMICOLON, 1.0),
 ];
 static SHIFT_R2: &[KeyDef] = &[
-    KeyDef::new("⇧", ACTION_SHIFT, 1.5),
+    KeyDef::new("⇧", ACTION_SHIFT, 1.3),
     KeyDef::new("W", KEY_Z, 1.0),
     KeyDef::new("X", KEY_X, 1.0),
     KeyDef::new("C", KEY_C, 1.0),
     KeyDef::new("V", KEY_V, 1.0),
     KeyDef::new("B", KEY_B, 1.0),
     KeyDef::new("N", KEY_N, 1.0),
-    KeyDef::new("⌫", KEY_BACKSPACE, 1.5),
+    KeyDef::new("'", KEY_4, 1.0),
+    KeyDef::new("⌫", KEY_BACKSPACE, 1.3),
 ];
 static SHIFT_R3: &[KeyDef] = &[
     KeyDef::new("?123", ACTION_SYM, 1.2),
@@ -437,6 +439,17 @@ fn get_alternates(label: &str) -> &'static [Alternate] {
         ],
         "n" | "N" => &[
             Alternate { label: "!", steps: &[(KEY_SLASH, 0)] },
+        ],
+        // Punctuation alternates
+        "." => &[
+            Alternate { label: "!", steps: &[(KEY_SLASH, 0)] },
+            Alternate { label: ",", steps: &[(AZERTY_COMMA, 0)] },
+            Alternate { label: "?", steps: &[(AZERTY_COMMA, 1)] },
+        ],
+        "," => &[
+            Alternate { label: "!", steps: &[(KEY_SLASH, 0)] },
+            Alternate { label: ".", steps: &[(KEY_COMMA, 1)] },
+            Alternate { label: "?", steps: &[(AZERTY_COMMA, 1)] },
         ],
         // Arrow key alternates
         "←" => &[
