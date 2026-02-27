@@ -445,7 +445,7 @@ fn get_alternates(label: &str) -> &'static [Alternate] {
             Alternate { label: ";", steps: &[(KEY_COMMA, 0)] },
         ],
         "n" | "N" => &[
-            Alternate { label: "!", steps: &[(KEY_SLASH, 0)] },
+            Alternate { label: "/", steps: &[(KEY_DOT, 1)] },
         ],
         // Punctuation alternates
         "." => &[
