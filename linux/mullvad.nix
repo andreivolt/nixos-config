@@ -24,43 +24,11 @@ in {
   '';
 
   # Route Tailscale CGNAT traffic through Tailscale's table before Mullvad's VPN table.
-  # Without this, Mullvad's routing table (rule 5209) catches 100.64.0.0/10 and routes
-  # it through wg0-mullvad. The ct mark + type route rerouting approach doesn't work
-  # because conntrack SNAT bindings from previous routing decisions prevent rerouting.
+  # Without this, Mullvad's routing table catches 100.64.0.0/10 and routes it through
+  # wg0-mullvad. Priority 5100 to come before Mullvad's rules (5198-5209 depending on host).
   networking.localCommands = ''
-    ip rule add to 100.64.0.0/10 lookup 52 priority 5200 2>/dev/null || true
+    ip rule add to 100.64.0.0/10 lookup 52 priority 5100 2>/dev/null || true
   '';
-
-  # Mullvad recreates its nftables rules on every connect, wiping custom rules from
-  # its inet mullvad table. Re-insert tailscale0 accept rules on each state change.
-  # Needed for: input (incoming Tailscale traffic), output (outgoing to Tailscale),
-  # and forward (exit node traffic through Mullvad tunnel).
-  systemd.services.mullvad-tailscale-rules = {
-    description = "Re-insert Tailscale rules in Mullvad nftables on state changes";
-    after = [ "mullvad-daemon.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = pkgs.writeShellScript "mullvad-tailscale-rules" ''
-        nft=${pkgs.nftables}/bin/nft
-        insert_if_missing() {
-          local chain=$1 match=$2 rule=$3
-          if $nft list chain inet mullvad "$chain" &>/dev/null; then
-            if ! $nft list chain inet mullvad "$chain" | grep -q "$match"; then
-              $nft insert rule inet mullvad "$chain" $rule
-            fi
-          fi
-        }
-        ${pkgs.mullvad}/bin/mullvad status listen | while read -r line; do
-          insert_if_missing input tailscale0 'iifname "tailscale0" accept'
-          insert_if_missing output tailscale0 'oif "tailscale0" accept'
-          insert_if_missing forward tailscale0 'iifname "tailscale0" oifname "wg0-mullvad" accept'
-        done
-      '';
-      Restart = "always";
-      RestartSec = 5;
-    };
-  };
 
   # zsh completions (mullvad-vpn doesn't propagate them from the mullvad CLI package)
   environment.systemPackages = [
@@ -70,14 +38,26 @@ in {
     '')
   ];
 
-  # Tailscale + Mullvad coexistence nftables rules
-  # The routing rule (localCommands above) handles routing Tailscale traffic correctly.
-  # The mullvad-tailscale-rules service handles Mullvad's firewall accept rules.
-  # This table handles exit node forwarding (MSS clamping, QUIC blocking, MASQUERADE).
+  # Tailscale + Mullvad coexistence nftables rules.
+  # ct mark rules run at priority -100 (before Mullvad's chains at priority 0).
+  # They set Mullvad's exclusion marks on Tailscale CGNAT traffic so Mullvad's own
+  # "ct mark 0x00000f41 accept" rules pass it through. Static table, no timing issues.
   networking.nftables.enable = true;
   networking.nftables.tables.mullvad-tailscale = {
     family = "inet";
     content = ''
+      chain output {
+        type route hook output priority -100; policy accept;
+        ip daddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
+      }
+      chain input {
+        type filter hook input priority -100; policy accept;
+        ip saddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
+      }
+      chain prerouting {
+        type filter hook prerouting priority -50; policy accept;
+        iifname "wg0-mullvad" ip daddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
+      }
       chain forward {
         type filter hook forward priority mangle; policy accept;
         # Clamp TCP MSS for double WireGuard encapsulation (tailscale MTU 1280)
@@ -86,8 +66,6 @@ in {
         # Block QUIC (UDP 443) to force TCP fallback — avoids PMTU black hole on return path
         iifname "tailscale0" oifname "wg0-mullvad" udp dport 443 drop;
       }
-      # MASQUERADE forwarded exit node traffic so Mullvad server accepts it
-      # (Mullvad only accepts traffic sourced from the assigned VPN IP)
       chain postrouting {
         type nat hook postrouting priority srcnat; policy accept;
         oifname "wg0-mullvad" ip saddr 100.64.0.0/10 masquerade;
