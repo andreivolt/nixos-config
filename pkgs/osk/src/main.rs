@@ -531,9 +531,32 @@ fn hit_test(rects: &[KeyRect], px: f32, py: f32) -> Option<usize> {
         .position(|r| px >= r.x && px < r.x + r.w && py >= r.y && py < r.y + r.h)
 }
 
+// Phosphor icon codepoints (Private Use Area)
+const ICON_SHIFT: char = '\u{e52e}';       // arrow-fat-up
+const ICON_BACKSPACE: char = '\u{e0ae}';   // backspace
+const ICON_ENTER: char = '\u{e044}';       // arrow-elbow-down-left
+const ICON_LEFT: char = '\u{e058}';        // arrow-left
+const ICON_RIGHT: char = '\u{e06c}';       // arrow-right
+const ICON_UP: char = '\u{e08e}';          // arrow-up
+const ICON_DOWN: char = '\u{e03e}';        // arrow-down
+
+fn icon_char_for_label(label: &str) -> Option<char> {
+    match label {
+        "⇧" => Some(ICON_SHIFT),
+        "⌫" => Some(ICON_BACKSPACE),
+        "⏎" => Some(ICON_ENTER),
+        "←" => Some(ICON_LEFT),
+        "→" => Some(ICON_RIGHT),
+        "↑" => Some(ICON_UP),
+        "↓" => Some(ICON_DOWN),
+        _ => None,
+    }
+}
+
 // Font rendering
 struct FontRenderer {
     font: fontdue::Font,
+    icon_font: fontdue::Font,
 }
 
 impl FontRenderer {
@@ -562,7 +585,12 @@ impl FontRenderer {
         let settings = fontdue::FontSettings::default();
         let font =
             fontdue::Font::from_bytes(font_data, settings).expect("failed to parse font");
-        Self { font }
+
+        let icon_data = include_bytes!("Phosphor.ttf");
+        let icon_font = fontdue::Font::from_bytes(icon_data as &[u8], fontdue::FontSettings::default())
+            .expect("failed to parse Phosphor icon font");
+
+        Self { font, icon_font }
     }
 
     fn render_text(&self, pixmap: &mut Pixmap, text: &str, cx: f32, cy: f32, size: f32, color: Color) {
@@ -626,6 +654,34 @@ impl FontRenderer {
 
     fn render_centered(&self, pixmap: &mut Pixmap, text: &str, cx: f32, cy: f32, size: f32) {
         self.render_text(pixmap, text, cx, cy, size, text_color());
+    }
+
+    fn render_icon(&self, pixmap: &mut Pixmap, icon: char, cx: f32, cy: f32, size: f32, color: Color) {
+        let (metrics, bitmap) = self.icon_font.rasterize(icon, size);
+        let gx = cx - metrics.width as f32 / 2.0;
+        let gy = cy - metrics.height as f32 / 2.0;
+
+        for row in 0..metrics.height {
+            for col in 0..metrics.width {
+                let alpha = bitmap[row * metrics.width + col];
+                if alpha == 0 { continue; }
+                let px = (gx + col as f32) as i32;
+                let py = (gy + row as f32) as i32;
+                if px < 0 || py < 0 || px >= pixmap.width() as i32 || py >= pixmap.height() as i32 {
+                    continue;
+                }
+                let idx = (py as u32 * pixmap.width() + px as u32) as usize * 4;
+                let data = pixmap.data_mut();
+                let a = alpha as f32 / 255.0;
+                let sr = color.red() * 255.0;
+                let sg = color.green() * 255.0;
+                let sb = color.blue() * 255.0;
+                data[idx] = (data[idx] as f32 * (1.0 - a) + sb * a) as u8;
+                data[idx + 1] = (data[idx + 1] as f32 * (1.0 - a) + sg * a) as u8;
+                data[idx + 2] = (data[idx + 2] as f32 * (1.0 - a) + sr * a) as u8;
+                data[idx + 3] = 255;
+            }
+        }
     }
 }
 
@@ -695,8 +751,25 @@ fn render_keyboard(
     long_press_selected: Option<usize>,
     font: &FontRenderer,
 ) {
-    // Fill background
-    pixmap.fill(bg_color());
+    // Clear to transparent, then draw background only behind keyboard area
+    pixmap.fill(Color::from_rgba8(0, 0, 0, 0));
+
+    // Compute effective keyboard bounds from key rects
+    if !rects.is_empty() {
+        let kb_left = rects.iter().map(|r| r.x).fold(f32::MAX, f32::min);
+        let kb_right = rects.iter().map(|r| r.x + r.w).fold(0.0f32, f32::max);
+        let kb_top = rects.iter().map(|r| r.y).fold(f32::MAX, f32::min);
+        let kb_bottom = rects.iter().map(|r| r.y + r.h).fold(0.0f32, f32::max);
+        draw_rounded_rect(
+            pixmap,
+            kb_left,
+            kb_top,
+            kb_right - kb_left,
+            kb_bottom - kb_top,
+            KEY_RADIUS * 2.0,
+            bg_color(),
+        );
+    }
 
     let layer = LAYERS[layer_idx];
 
@@ -725,13 +798,17 @@ fn render_keyboard(
         );
 
         let font_size = if key_def.label.len() > 3 { 14.0 } else { 20.0 };
-        font.render_centered(
-            pixmap,
-            key_def.label,
-            kr.x + kr.w / 2.0,
-            kr.y + kr.h / 2.0,
-            font_size,
-        );
+        if let Some(icon) = icon_char_for_label(key_def.label) {
+            font.render_icon(pixmap, icon, kr.x + kr.w / 2.0, kr.y + kr.h / 2.0, font_size * 1.2, text_color());
+        } else {
+            font.render_centered(
+                pixmap,
+                key_def.label,
+                kr.x + kr.w / 2.0,
+                kr.y + kr.h / 2.0,
+                font_size,
+            );
+        }
 
         // Draw hint label (first alternate) in top-right corner
         if !is_special_key(kr.code) && !key_def.force_shift {
@@ -787,13 +864,18 @@ fn render_keyboard(
                     color,
                 );
                 if ar.alt_idx < alts.len() {
-                    font.render_centered(
-                        pixmap,
-                        alts[ar.alt_idx].label,
-                        ar.x + ar.w / 2.0,
-                        ar.y + ar.h / 2.0,
-                        20.0,
-                    );
+                    let alt_label = alts[ar.alt_idx].label;
+                    if let Some(icon) = icon_char_for_label(alt_label) {
+                        font.render_icon(pixmap, icon, ar.x + ar.w / 2.0, ar.y + ar.h / 2.0, 24.0, text_color());
+                    } else {
+                        font.render_centered(
+                            pixmap,
+                            alt_label,
+                            ar.x + ar.w / 2.0,
+                            ar.y + ar.h / 2.0,
+                            20.0,
+                        );
+                    }
                 }
             }
         }

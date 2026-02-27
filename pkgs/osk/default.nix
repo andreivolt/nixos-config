@@ -8,7 +8,11 @@
   dejavu_fonts,
 }:
 let
-  src = craneLib.cleanCargoSource ./.;
+  src = lib.cleanSourceWith {
+    src = ./.;
+    filter = path: type:
+      (craneLib.filterCargoSources path type) || (lib.hasSuffix ".ttf" path);
+  };
   commonArgs = {
     inherit src;
     pname = "osk";
