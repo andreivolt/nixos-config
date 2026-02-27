@@ -78,6 +78,10 @@ const KEY_LEFTBRACE: u32 = 26;  // dead circumflex ^ (dead key)
 const KEY_RIGHTBRACE: u32 = 27; // $ on AZERTY
 const KEY_APOSTROPHE: u32 = 40; // ù on AZERTY
 const KEY_102ND: u32 = 86;      // < > on AZERTY
+// AZERTY bottom-row punctuation (Linux names differ from AZERTY output)
+const AZERTY_COMMA: u32 = 50;   // Linux KEY_M position: , unshifted, ? shifted
+// KEY_COMMA (51) = ; unshifted, . shifted on AZERTY
+// KEY_DOT (52) = : unshifted, / shifted on AZERTY
 
 const KEY_LEFTCTRL: u32 = 29;
 const KEY_LEFTALT: u32 = 56;
@@ -167,12 +171,12 @@ static MAIN_R2: &[KeyDef] = &[
 ];
 static MAIN_R3: &[KeyDef] = &[
     KeyDef::new("?123", ACTION_SYM, 1.2),
-    KeyDef::new("Esc", KEY_ESC, 0.8),
     KeyDef::new("Ctrl", ACTION_CTRL, 0.8),
     KeyDef::new("Alt", ACTION_ALT, 0.8),
-    KeyDef::new(",", KEY_COMMA, 0.6),
+    KeyDef::new("Super", ACTION_SUPER, 0.8),
+    KeyDef::new(",", AZERTY_COMMA, 0.6),
     KeyDef::new(" ", KEY_SPACE, 2.4),
-    KeyDef::new(".", KEY_DOT, 0.6),
+    KeyDef::shifted(".", KEY_COMMA, 0.6),
     KeyDef::new("←", KEY_LEFT, 0.7),
     KeyDef::new("→", KEY_RIGHT, 0.7),
     KeyDef::new("⏎", KEY_ENTER, 1.4),
@@ -216,12 +220,12 @@ static SHIFT_R2: &[KeyDef] = &[
 ];
 static SHIFT_R3: &[KeyDef] = &[
     KeyDef::new("?123", ACTION_SYM, 1.2),
-    KeyDef::new("Esc", KEY_ESC, 0.8),
     KeyDef::new("Ctrl", ACTION_CTRL, 0.8),
     KeyDef::new("Alt", ACTION_ALT, 0.8),
-    KeyDef::new(",", KEY_COMMA, 0.6),
+    KeyDef::new("Super", ACTION_SUPER, 0.8),
+    KeyDef::new(",", AZERTY_COMMA, 0.6),
     KeyDef::new(" ", KEY_SPACE, 2.4),
-    KeyDef::new(".", KEY_DOT, 0.6),
+    KeyDef::shifted(".", KEY_COMMA, 0.6),
     KeyDef::new("←", KEY_LEFT, 0.7),
     KeyDef::new("→", KEY_RIGHT, 0.7),
     KeyDef::new("⏎", KEY_ENTER, 1.4),
@@ -265,9 +269,9 @@ static SYM_R2: &[KeyDef] = &[
 ];
 static SYM_R3: &[KeyDef] = &[
     KeyDef::new("ABC", ACTION_ABC, 1.2),
-    KeyDef::new("Super", ACTION_SUPER, 0.9),
+    KeyDef::new("Esc", KEY_ESC, 0.8),
     KeyDef::new("Tab", KEY_TAB, 0.8),
-    KeyDef::new(" ", KEY_SPACE, 2.6),
+    KeyDef::new(" ", KEY_SPACE, 2.7),
     KeyDef::new("←", KEY_LEFT, 0.8),
     KeyDef::new("↑", KEY_UP, 0.7),
     KeyDef::new("↓", KEY_DOWN, 0.7),
@@ -418,9 +422,10 @@ fn get_alternates(label: &str) -> &'static [Alternate] {
             Alternate { label: "*", steps: &[(KEY_BACKSLASH, 0)] },
         ],
         "x" | "X" => &[
-            Alternate { label: "\"", steps: &[(KEY_3, 0)] },
+            Alternate { label: "$", steps: &[(KEY_RIGHTBRACE, 0)] },
         ],
         "c" | "C" => &[
+            Alternate { label: "\"", steps: &[(KEY_3, 0)] },
             Alternate { label: "ç", steps: &[(KEY_9, 0)] },
             Alternate { label: "'", steps: &[(KEY_4, 0)] },
         ],
@@ -838,6 +843,9 @@ struct OskState {
     output_pixel_height: i32,
     kb_height: u32,
 
+    // Suppress auto-show briefly after compositor-mod combos (e.g. Super+R opens launcher)
+    suppress_auto_show_until: Option<std::time::Instant>,
+
     // Long-press alternates
     touch_down_time: Option<std::time::Instant>,
     long_press_active: bool,
@@ -892,6 +900,7 @@ impl OskState {
             output_pixel_width: 0,
             output_pixel_height: 0,
             kb_height: DEFAULT_KB_HEIGHT,
+            suppress_auto_show_until: None,
             touch_down_time: None,
             long_press_active: false,
             long_press_key_idx: None,
@@ -1261,7 +1270,16 @@ impl OskState {
                 }
                 if key_def.force_shift {
                     // Number row: temporarily engage Shift for digit output
-                    self.send_modifier(self.active_mods() | 1);
+                    // But skip force_shift when compositor-level modifiers are active
+                    // so Super+2 sends Super+é (workspace switch) not Super+Shift+é (move)
+                    let has_compositor_mods = self.ctrl_state != ModState::Off
+                        || self.alt_state != ModState::Off
+                        || self.super_state != ModState::Off;
+                    if has_compositor_mods {
+                        self.send_modifier(self.active_mods());
+                    } else {
+                        self.send_modifier(self.active_mods() | 1);
+                    }
                     self.send_key(code, true);
                 } else {
                     self.send_modifier(self.active_mods());
@@ -1300,14 +1318,27 @@ impl OskState {
             let code = kr.code;
             if !matches!(code, ACTION_SHIFT | ACTION_SYM | ACTION_ABC | ACTION_CTRL | ACTION_ALT | ACTION_SUPER) {
                 let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
+                // If compositor-level mods were active, suppress auto-show briefly
+                // (e.g. Super+R opens launcher whose text field would trigger auto-show)
+                let had_compositor_mods = self.ctrl_state != ModState::Off
+                    || self.alt_state != ModState::Off
+                    || self.super_state != ModState::Off;
                 self.send_key(code, false);
                 if key_def.force_shift {
-                    // Restore modifier state after force_shift key
+                    // Clear one-shot mods and restore state after force_shift key
+                    self.clear_oneshot_mods();
                     self.send_modifier(self.active_mods());
                 } else if code != KEY_BACKSPACE && code != KEY_SPACE && code != KEY_ENTER {
                     // Clear one-shot modifiers after typing a character
                     self.clear_oneshot_mods();
                     self.send_modifier(self.active_mods());
+                }
+                if had_compositor_mods {
+                    self.suppress_auto_show_until = Some(
+                        std::time::Instant::now() + std::time::Duration::from_millis(800)
+                    );
+                    // Hide keyboard since a compositor shortcut was just used
+                    self.hide();
                 }
             }
             self.cancel_long_press();
@@ -1622,7 +1653,12 @@ impl Dispatch<ZwpInputMethodV2, ()> for OskState {
         match event {
             zwp_input_method_v2::Event::Activate => {
                 if state.auto_show_enabled {
-                    state.show(qh);
+                    // Suppress auto-show briefly after compositor-mod combos
+                    let suppressed = state.suppress_auto_show_until
+                        .map_or(false, |t| std::time::Instant::now() < t);
+                    if !suppressed {
+                        state.show(qh);
+                    }
                 }
             }
             zwp_input_method_v2::Event::Deactivate => {
