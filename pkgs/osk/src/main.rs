@@ -3,7 +3,7 @@ use std::os::unix::io::AsRawFd;
 use tiny_skia::{Color, FillRule, Paint, PathBuilder, Pixmap, PixmapMut, Rect, Transform};
 use wayland_client::protocol::wl_buffer::WlBuffer;
 use wayland_client::protocol::wl_compositor::WlCompositor;
-use wayland_client::protocol::wl_output::WlOutput;
+use wayland_client::protocol::wl_output::{self, WlOutput};
 use wayland_client::protocol::wl_pointer::{self, WlPointer};
 use wayland_client::protocol::wl_registry;
 use wayland_client::protocol::wl_seat::WlSeat;
@@ -74,6 +74,9 @@ const KEY_EQUAL: u32 = 13;
 const KEY_BACKSLASH: u32 = 43;
 const KEY_SLASH: u32 = 53;
 
+const KEY_LEFTBRACE: u32 = 26;  // dead circumflex ^ (dead key)
+const KEY_APOSTROPHE: u32 = 40; // ù on AZERTY
+
 // Special action codes (not real scancodes)
 const ACTION_SHIFT: u32 = 0xF001;
 const ACTION_SYM: u32 = 0xF002;
@@ -83,16 +86,35 @@ struct KeyDef {
     label: &'static str,
     code: u32,
     width: f32, // in units (1.0 = standard key)
+    force_shift: bool, // send with Shift held regardless of current state
 }
 
 impl KeyDef {
     const fn new(label: &'static str, code: u32, width: f32) -> Self {
-        Self { label, code, width }
+        Self { label, code, width, force_shift: false }
+    }
+    const fn shifted(label: &'static str, code: u32, width: f32) -> Self {
+        Self { label, code, width, force_shift: true }
     }
 }
 
 type Row = &'static [KeyDef];
 type LayoutLayer = &'static [Row];
+
+// Number row — shared across all layers
+// AZERTY: digits require Shift+number_key
+static NUM_ROW: &[KeyDef] = &[
+    KeyDef::shifted("1", KEY_1, 1.0),
+    KeyDef::shifted("2", KEY_2, 1.0),
+    KeyDef::shifted("3", KEY_3, 1.0),
+    KeyDef::shifted("4", KEY_4, 1.0),
+    KeyDef::shifted("5", KEY_5, 1.0),
+    KeyDef::shifted("6", KEY_6, 1.0),
+    KeyDef::shifted("7", KEY_7, 1.0),
+    KeyDef::shifted("8", KEY_8, 1.0),
+    KeyDef::shifted("9", KEY_9, 1.0),
+    KeyDef::shifted("0", KEY_0, 1.0),
+];
 
 // Main AZERTY layer
 static MAIN_R0: &[KeyDef] = &[
@@ -137,7 +159,7 @@ static MAIN_R3: &[KeyDef] = &[
     KeyDef::new(".", KEY_DOT, 1.0),
     KeyDef::new("⏎", KEY_ENTER, 1.5),
 ];
-static MAIN_LAYER: &[Row] = &[&*MAIN_R0, &*MAIN_R1, &*MAIN_R2, &*MAIN_R3];
+static MAIN_LAYER: &[Row] = &[&*NUM_ROW, &*MAIN_R0, &*MAIN_R1, &*MAIN_R2, &*MAIN_R3];
 
 // Shift layer
 static SHIFT_R0: &[KeyDef] = &[
@@ -182,7 +204,7 @@ static SHIFT_R3: &[KeyDef] = &[
     KeyDef::new(".", KEY_DOT, 1.0),
     KeyDef::new("⏎", KEY_ENTER, 1.5),
 ];
-static SHIFT_LAYER: &[Row] = &[&*SHIFT_R0, &*SHIFT_R1, &*SHIFT_R2, &*SHIFT_R3];
+static SHIFT_LAYER: &[Row] = &[&*NUM_ROW, &*SHIFT_R0, &*SHIFT_R1, &*SHIFT_R2, &*SHIFT_R3];
 
 // Symbols layer — uses number row scancodes + shifted positions
 static SYM_R0: &[KeyDef] = &[
@@ -227,11 +249,13 @@ static SYM_R3: &[KeyDef] = &[
     KeyDef::new(".", KEY_DOT, 1.0),
     KeyDef::new("⏎", KEY_ENTER, 1.5),
 ];
-static SYM_LAYER: &[Row] = &[&*SYM_R0, &*SYM_R1, &*SYM_R2, &*SYM_R3];
+static SYM_LAYER: &[Row] = &[&*NUM_ROW, &*SYM_R0, &*SYM_R1, &*SYM_R2, &*SYM_R3];
 
 static LAYERS: &[LayoutLayer] = &[MAIN_LAYER, SHIFT_LAYER, SYM_LAYER];
 
-const KB_HEIGHT: u32 = 260;
+const DEFAULT_KB_HEIGHT: u32 = 260;
+const TARGET_KEY_HEIGHT_MM: f32 = 9.0;
+const NUM_ROWS: u32 = 5;
 const KEY_MARGIN: f32 = 3.0;
 const KEY_RADIUS: f32 = 6.0;
 
@@ -254,6 +278,79 @@ fn is_special_key(code: u32) -> bool {
     )
 }
 
+#[derive(Clone, Copy, PartialEq)]
+enum ModState {
+    Off,
+    OneShot,
+    Locked,
+}
+
+// Long-press alternates
+// Each step is (scancode, modifier_bitmask) — 1=Shift, 64=AltGr
+// For dead key combos: send dead key, release, then send base key
+struct Alternate {
+    label: &'static str,
+    steps: &'static [(u32, u32)],
+}
+
+// Dead circumflex: KEY_LEFTBRACE (no mod), then base key
+// Dead diaeresis: Shift+KEY_LEFTBRACE, then base key
+// AZERTY direct keys: à=KEY_0, é=KEY_2, è=KEY_7, ù=KEY_APOSTROPHE, ç=KEY_9
+fn get_alternates(label: &str) -> &'static [Alternate] {
+    match label {
+        "a" | "A" => &[
+            Alternate { label: "à", steps: &[(KEY_0, 0)] },
+            Alternate { label: "â", steps: &[(KEY_LEFTBRACE, 0), (KEY_Q, 0)] },
+            Alternate { label: "ä", steps: &[(KEY_LEFTBRACE, 1), (KEY_Q, 0)] },
+            Alternate { label: "æ", steps: &[(KEY_Q, 128)] },
+        ],
+        "e" | "E" => &[
+            Alternate { label: "é", steps: &[(KEY_2, 0)] },
+            Alternate { label: "è", steps: &[(KEY_7, 0)] },
+            Alternate { label: "ê", steps: &[(KEY_LEFTBRACE, 0), (KEY_E, 0)] },
+            Alternate { label: "ë", steps: &[(KEY_LEFTBRACE, 1), (KEY_E, 0)] },
+            Alternate { label: "€", steps: &[(KEY_E, 128)] },
+        ],
+        "i" | "I" => &[
+            Alternate { label: "î", steps: &[(KEY_LEFTBRACE, 0), (KEY_I, 0)] },
+            Alternate { label: "ï", steps: &[(KEY_LEFTBRACE, 1), (KEY_I, 0)] },
+        ],
+        "o" | "O" => &[
+            Alternate { label: "ô", steps: &[(KEY_LEFTBRACE, 0), (KEY_O, 0)] },
+            Alternate { label: "ö", steps: &[(KEY_LEFTBRACE, 1), (KEY_O, 0)] },
+            Alternate { label: "œ", steps: &[(KEY_O, 128)] },
+        ],
+        "u" | "U" => &[
+            Alternate { label: "ù", steps: &[(KEY_APOSTROPHE, 0)] },
+            Alternate { label: "û", steps: &[(KEY_LEFTBRACE, 0), (KEY_U, 0)] },
+            Alternate { label: "ü", steps: &[(KEY_LEFTBRACE, 1), (KEY_U, 0)] },
+        ],
+        "c" | "C" => &[
+            Alternate { label: "ç", steps: &[(KEY_9, 0)] },
+            Alternate { label: "\"", steps: &[(KEY_3, 0)] },
+        ],
+        "y" | "Y" => &[
+            Alternate { label: "ÿ", steps: &[(KEY_LEFTBRACE, 1), (KEY_Y, 0)] },
+        ],
+        "f" | "F" => &[
+            Alternate { label: "*", steps: &[(KEY_BACKSLASH, 0)] },
+        ],
+        "n" | "N" => &[
+            Alternate { label: "ñ", steps: &[(KEY_N, 128)] },
+        ],
+        _ => &[],
+    }
+}
+
+// Computed rectangle for a long-press alternate popup item
+struct AlternateRect {
+    x: f32,
+    y: f32,
+    w: f32,
+    h: f32,
+    alt_idx: usize,
+}
+
 // Computed key rectangle for hit-testing
 struct KeyRect {
     x: f32,
@@ -265,10 +362,10 @@ struct KeyRect {
     col: usize,
 }
 
-fn compute_key_rects(width: u32, layer_idx: usize) -> Vec<KeyRect> {
+fn compute_key_rects(width: u32, kb_height: u32, layer_idx: usize) -> Vec<KeyRect> {
     let layer = LAYERS[layer_idx];
     let rows = layer.len();
-    let row_height = KB_HEIGHT as f32 / rows as f32;
+    let row_height = kb_height as f32 / rows as f32;
     let mut rects = Vec::new();
 
     for (ri, row) in layer.iter().enumerate() {
@@ -430,11 +527,21 @@ fn draw_rounded_rect(pixmap: &mut Pixmap, x: f32, y: f32, w: f32, h: f32, r: f32
     pixmap.fill_path(&path, &paint, FillRule::Winding, Transform::identity(), None);
 }
 
+fn shift_locked_color() -> Color { Color::from_rgba8(90, 90, 90, 255) }
+fn dot_color() -> Color { Color::from_rgba8(180, 180, 180, 255) }
+fn popup_bg_color() -> Color { Color::from_rgba8(80, 80, 80, 255) }
+fn popup_selected_color() -> Color { Color::from_rgba8(120, 120, 120, 255) }
+
 fn render_keyboard(
     pixmap: &mut Pixmap,
     rects: &[KeyRect],
     layer_idx: usize,
     pressed_key: Option<usize>,
+    shift_state: ModState,
+    long_press_active: bool,
+    long_press_key_idx: Option<usize>,
+    long_press_alternates: &[AlternateRect],
+    long_press_selected: Option<usize>,
     font: &FontRenderer,
 ) {
     // Fill background
@@ -444,8 +551,11 @@ fn render_keyboard(
 
     for (i, kr) in rects.iter().enumerate() {
         let key_def = &layer[kr.row][kr.col];
+        let is_shift = kr.code == ACTION_SHIFT;
         let color = if Some(i) == pressed_key {
             key_pressed_color()
+        } else if is_shift && shift_state == ModState::Locked {
+            shift_locked_color()
         } else if is_special_key(kr.code) {
             special_key_color()
         } else {
@@ -470,6 +580,55 @@ fn render_keyboard(
             kr.y + kr.h / 2.0,
             font_size,
         );
+
+        // Draw dot indicator below shift icon for OneShot
+        if is_shift && shift_state == ModState::OneShot {
+            let dot_cx = kr.x + kr.w / 2.0;
+            let dot_cy = kr.y + kr.h * 0.82;
+            let dot_r = 3.0;
+            let mut pb = PathBuilder::new();
+            pb.push_circle(dot_cx, dot_cy, dot_r);
+            if let Some(path) = pb.finish() {
+                let mut paint = Paint::default();
+                paint.set_color(dot_color());
+                paint.anti_alias = true;
+                pixmap.fill_path(&path, &paint, FillRule::Winding, Transform::identity(), None);
+            }
+        }
+    }
+
+    // Draw long-press popup
+    if long_press_active {
+        if let Some(key_idx) = long_press_key_idx {
+            let key_def = &layer[rects[key_idx].row][rects[key_idx].col];
+            let alts = get_alternates(key_def.label);
+
+            for ar in long_press_alternates {
+                let color = if long_press_selected == Some(ar.alt_idx) {
+                    popup_selected_color()
+                } else {
+                    popup_bg_color()
+                };
+                draw_rounded_rect(
+                    pixmap,
+                    ar.x + KEY_MARGIN / 2.0,
+                    ar.y + KEY_MARGIN / 2.0,
+                    ar.w - KEY_MARGIN,
+                    ar.h - KEY_MARGIN,
+                    KEY_RADIUS,
+                    color,
+                );
+                if ar.alt_idx < alts.len() {
+                    font.render_centered(
+                        pixmap,
+                        alts[ar.alt_idx].label,
+                        ar.x + ar.w / 2.0,
+                        ar.y + ar.h / 2.0,
+                        20.0,
+                    );
+                }
+            }
+        }
     }
 }
 
@@ -496,7 +655,8 @@ struct OskState {
     visible: bool,
     auto_show_enabled: bool,
     current_layer: usize,
-    shift_active: bool,
+    shift_state: ModState,
+    last_shift_tap: Option<std::time::Instant>,
     pressed_key: Option<usize>,
     key_rects: Vec<KeyRect>,
 
@@ -515,6 +675,18 @@ struct OskState {
 
     // Track active touch points for multi-touch
     touch_points: std::collections::HashMap<i32, (f64, f64)>,
+
+    // Display physical dimensions for DPI-aware sizing
+    output_physical_width_mm: i32,
+    output_pixel_width: i32,
+    kb_height: u32,
+
+    // Long-press alternates
+    touch_down_time: Option<std::time::Instant>,
+    long_press_active: bool,
+    long_press_key_idx: Option<usize>,
+    long_press_alternates: Vec<AlternateRect>,
+    long_press_selected: Option<usize>,
 }
 
 impl OskState {
@@ -535,11 +707,12 @@ impl OskState {
             touch: None,
             configured: false,
             width: 0,
-            height: KB_HEIGHT,
+            height: DEFAULT_KB_HEIGHT,
             visible: false,
             auto_show_enabled: true,
             current_layer: 0,
-            shift_active: false,
+            shift_state: ModState::Off,
+            last_shift_tap: None,
             pressed_key: None,
             key_rects: Vec::new(),
             shm_pool: None,
@@ -552,7 +725,26 @@ impl OskState {
             pointer_x: 0.0,
             pointer_y: 0.0,
             touch_points: std::collections::HashMap::new(),
+            output_physical_width_mm: 0,
+            output_pixel_width: 0,
+            kb_height: DEFAULT_KB_HEIGHT,
+            touch_down_time: None,
+            long_press_active: false,
+            long_press_key_idx: None,
+            long_press_alternates: Vec::new(),
+            long_press_selected: None,
         }
+    }
+
+    fn compute_kb_height(&mut self) {
+        if self.output_physical_width_mm > 0 && self.output_pixel_width > 0 {
+            let key_height_px = TARGET_KEY_HEIGHT_MM * self.output_pixel_width as f32
+                / self.output_physical_width_mm as f32;
+            self.kb_height = (key_height_px as u32 * NUM_ROWS).max(200);
+        } else {
+            self.kb_height = DEFAULT_KB_HEIGHT;
+        }
+        self.height = self.kb_height;
     }
 
     fn setup_surface(&mut self, qh: &QueueHandle<Self>) {
@@ -748,7 +940,7 @@ impl OskState {
         let data = unsafe { std::slice::from_raw_parts_mut(ptr as *mut u8, size) };
 
         // Render to pixmap
-        self.key_rects = compute_key_rects(self.width, self.current_layer);
+        self.key_rects = compute_key_rects(self.width, self.kb_height, self.current_layer);
         let pixmap = PixmapMut::from_bytes(data, self.width, self.height).unwrap();
         let mut owned_pixmap = pixmap.to_owned();
         render_keyboard(
@@ -756,6 +948,11 @@ impl OskState {
             &self.key_rects,
             self.current_layer,
             self.pressed_key,
+            self.shift_state,
+            self.long_press_active,
+            self.long_press_key_idx,
+            &self.long_press_alternates,
+            self.long_press_selected,
             &self.font,
         );
         data.copy_from_slice(owned_pixmap.data());
@@ -796,51 +993,179 @@ impl OskState {
 
         match code {
             ACTION_SHIFT => {
-                self.shift_active = !self.shift_active;
-                self.current_layer = if self.shift_active { 1 } else { 0 };
-                // Send shift modifier state
-                let mods = if self.shift_active { 1 } else { 0 }; // MOD_SHIFT = 1
-                self.send_modifier(mods);
+                let now = std::time::Instant::now();
+                self.shift_state = match self.shift_state {
+                    ModState::Off => {
+                        self.last_shift_tap = Some(now);
+                        ModState::OneShot
+                    }
+                    ModState::OneShot => {
+                        if self.last_shift_tap.map_or(false, |t| now.duration_since(t).as_millis() < 400) {
+                            ModState::Locked
+                        } else {
+                            self.last_shift_tap = Some(now);
+                            ModState::Off
+                        }
+                    }
+                    ModState::Locked => ModState::Off,
+                };
+                let shift_on = self.shift_state != ModState::Off;
+                self.current_layer = if shift_on { 1 } else { 0 };
+                self.send_modifier(if shift_on { 1 } else { 0 });
                 self.needs_redraw = true;
             }
             ACTION_SYM => {
                 self.current_layer = 2;
-                self.shift_active = false;
+                self.shift_state = ModState::Off;
                 self.send_modifier(0);
                 self.needs_redraw = true;
             }
             ACTION_ABC => {
                 self.current_layer = 0;
-                self.shift_active = false;
+                self.shift_state = ModState::Off;
                 self.send_modifier(0);
                 self.needs_redraw = true;
             }
             _ => {
                 self.pressed_key = Some(key_idx);
                 self.needs_redraw = true;
-                // Send shift state before key if shift is active
-                if self.shift_active {
-                    self.send_modifier(1);
+                // Record for long-press detection
+                let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
+                let has_alternates = !get_alternates(key_def.label).is_empty();
+                if has_alternates {
+                    self.touch_down_time = Some(std::time::Instant::now());
+                    self.long_press_key_idx = Some(key_idx);
                 }
-                self.send_key(code, true);
+                if key_def.force_shift {
+                    // Number row: temporarily engage Shift for digit output
+                    self.send_modifier(1);
+                    self.send_key(code, true);
+                } else if self.shift_state != ModState::Off {
+                    self.send_modifier(1);
+                    self.send_key(code, true);
+                } else {
+                    self.send_key(code, true);
+                }
             }
         }
     }
 
     fn handle_key_release(&mut self, _qh: &QueueHandle<Self>) {
+        if self.long_press_active {
+            // Long-press popup is showing — send selected alternate or cancel
+            if let (Some(sel), Some(key_idx)) = (self.long_press_selected, self.long_press_key_idx) {
+                let kr = &self.key_rects[key_idx];
+                let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
+                let alts = get_alternates(key_def.label);
+                if sel < alts.len() {
+                    // Release the original key first
+                    self.send_key(kr.code, false);
+                    self.send_modifier(0);
+                    // Send the alternate sequence
+                    self.send_alternate_sequence(alts[sel].steps);
+                }
+            } else if let Some(idx) = self.pressed_key {
+                // No alternate selected, just release the original key
+                self.send_key(self.key_rects[idx].code, false);
+            }
+            self.pressed_key = None;
+            self.cancel_long_press();
+            self.needs_redraw = true;
+            return;
+        }
+
         if let Some(idx) = self.pressed_key.take() {
-            let code = self.key_rects[idx].code;
+            let kr = &self.key_rects[idx];
+            let code = kr.code;
             if !matches!(code, ACTION_SHIFT | ACTION_SYM | ACTION_ABC) {
+                let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
                 self.send_key(code, false);
-                // Return to main layer after typing with shift (one-shot)
-                if self.shift_active && code != KEY_BACKSPACE && code != KEY_SPACE && code != KEY_ENTER {
-                    self.shift_active = false;
+                if key_def.force_shift {
+                    // Restore modifier state after force_shift key
+                    let mods = if self.shift_state != ModState::Off { 1 } else { 0 };
+                    self.send_modifier(mods);
+                } else if self.shift_state == ModState::OneShot
+                    && code != KEY_BACKSPACE && code != KEY_SPACE && code != KEY_ENTER
+                {
+                    // One-shot shift: return to main layer after typing one char
+                    self.shift_state = ModState::Off;
                     self.current_layer = 0;
                     self.send_modifier(0);
                 }
+                // Locked shift stays active until explicitly toggled off
             }
+            self.cancel_long_press();
             self.needs_redraw = true;
         }
+    }
+    fn compute_long_press_popup(&mut self) {
+        let idx = match self.long_press_key_idx {
+            Some(i) => i,
+            None => return,
+        };
+        let kr = &self.key_rects[idx];
+        let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
+        let alts = get_alternates(key_def.label);
+        if alts.is_empty() {
+            self.long_press_active = false;
+            return;
+        }
+
+        let alt_w = kr.w * 1.2;
+        let alt_h = kr.h;
+        let total_w = alt_w * alts.len() as f32;
+        // Center popup above the pressed key
+        let start_x = (kr.x + kr.w / 2.0 - total_w / 2.0).max(0.0);
+        let start_x = start_x.min((self.width as f32 - total_w).max(0.0));
+        let popup_y = (kr.y - alt_h - KEY_MARGIN).max(0.0);
+
+        self.long_press_alternates.clear();
+        for (i, _alt) in alts.iter().enumerate() {
+            self.long_press_alternates.push(AlternateRect {
+                x: start_x + i as f32 * alt_w,
+                y: popup_y,
+                w: alt_w,
+                h: alt_h,
+                alt_idx: i,
+            });
+        }
+        self.long_press_active = true;
+    }
+
+    fn send_alternate_sequence(&self, steps: &[(u32, u32)]) {
+        // Clear any current modifiers first
+        self.send_modifier(0);
+        for &(scancode, mods) in steps {
+            if mods != 0 {
+                self.send_modifier(mods);
+            }
+            self.send_key(scancode, true);
+            self.send_key(scancode, false);
+            if mods != 0 {
+                self.send_modifier(0);
+            }
+        }
+        // Restore shift state
+        if self.shift_state != ModState::Off {
+            self.send_modifier(1);
+        }
+    }
+
+    fn cancel_long_press(&mut self) {
+        self.touch_down_time = None;
+        self.long_press_active = false;
+        self.long_press_key_idx = None;
+        self.long_press_alternates.clear();
+        self.long_press_selected = None;
+    }
+
+    fn long_press_hit_test(&self, x: f32, _y: f32) -> Option<usize> {
+        for ar in &self.long_press_alternates {
+            if x >= ar.x && x < ar.x + ar.w {
+                return Some(ar.alt_idx);
+            }
+        }
+        None
     }
 }
 
@@ -929,7 +1254,7 @@ impl Dispatch<ZwlrLayerSurfaceV1, ()> for OskState {
             } => {
                 surface.ack_configure(serial);
                 state.width = width;
-                state.height = if height > 0 { height } else { KB_HEIGHT };
+                state.height = if height > 0 { height } else { state.kb_height };
                 state.configured = true;
                 state.needs_redraw = true;
                 state.draw(qh);
@@ -990,7 +1315,7 @@ impl Dispatch<WlPointer, ()> for OskState {
                             if let Some(idx) = hit_test(&state.key_rects, state.pointer_x, state.pointer_y) {
                                 state.handle_key_press(idx, qh);
                                 if state.needs_redraw {
-                                    state.key_rects = compute_key_rects(state.width, state.current_layer);
+                                    state.key_rects = compute_key_rects(state.width, state.kb_height, state.current_layer);
                                     state.draw(qh);
                                 }
                             }
@@ -1012,6 +1337,14 @@ impl Dispatch<WlPointer, ()> for OskState {
             } => {
                 state.pointer_x = surface_x as f32;
                 state.pointer_y = surface_y as f32;
+                if state.long_press_active {
+                    let prev = state.long_press_selected;
+                    state.long_press_selected = state.long_press_hit_test(surface_x as f32, surface_y as f32);
+                    if state.long_press_selected != prev {
+                        state.needs_redraw = true;
+                        state.draw(qh);
+                    }
+                }
             }
             _ => {}
         }
@@ -1033,7 +1366,7 @@ impl Dispatch<WlTouch, ()> for OskState {
                 if let Some(idx) = hit_test(&state.key_rects, x as f32, y as f32) {
                     state.handle_key_press(idx, qh);
                     if state.needs_redraw {
-                        state.key_rects = compute_key_rects(state.width, state.current_layer);
+                        state.key_rects = compute_key_rects(state.width, state.kb_height, state.current_layer);
                         state.draw(qh);
                     }
                 }
@@ -1047,6 +1380,14 @@ impl Dispatch<WlTouch, ()> for OskState {
             }
             wl_touch::Event::Motion { id, x, y, .. } => {
                 state.touch_points.insert(id, (x, y));
+                if state.long_press_active {
+                    let prev = state.long_press_selected;
+                    state.long_press_selected = state.long_press_hit_test(x as f32, y as f32);
+                    if state.long_press_selected != prev {
+                        state.needs_redraw = true;
+                        state.draw(qh);
+                    }
+                }
             }
             _ => {}
         }
@@ -1088,7 +1429,29 @@ delegate_noop!(OskState: ignore WlShm);
 delegate_noop!(OskState: ignore WlShmPool);
 delegate_noop!(OskState: ignore WlBuffer);
 delegate_noop!(OskState: ignore WlSurface);
-delegate_noop!(OskState: ignore WlOutput);
+impl Dispatch<WlOutput, ()> for OskState {
+    fn event(
+        state: &mut Self,
+        _: &WlOutput,
+        event: wl_output::Event,
+        _: &(),
+        _: &Connection,
+        _qh: &QueueHandle<Self>,
+    ) {
+        match event {
+            wl_output::Event::Geometry { physical_width, .. } => {
+                state.output_physical_width_mm = physical_width;
+            }
+            wl_output::Event::Mode { width, .. } => {
+                state.output_pixel_width = width;
+            }
+            wl_output::Event::Done => {
+                state.compute_kb_height();
+            }
+            _ => {}
+        }
+    }
+}
 delegate_noop!(OskState: ignore ZwlrLayerShellV1);
 delegate_noop!(OskState: ignore ZwpVirtualKeyboardManagerV1);
 delegate_noop!(OskState: ignore ZwpInputMethodManagerV2);
@@ -1149,13 +1512,25 @@ fn main() {
             // Continue on WouldBlock, break on real errors
         }
 
+        // Compute poll timeout for long-press timer
+        let poll_timeout = if let Some(down_time) = state.touch_down_time {
+            if !state.long_press_active {
+                let elapsed = std::time::Instant::now().duration_since(down_time).as_millis() as i32;
+                (400 - elapsed).max(0)
+            } else {
+                -1
+            }
+        } else {
+            -1
+        };
+
         // Poll both wayland fd and signal pipe
         let mut fds = [
             libc::pollfd { fd: wl_fd, events: libc::POLLIN, revents: 0 },
             libc::pollfd { fd: sig_fd, events: libc::POLLIN, revents: 0 },
         ];
 
-        let ret = unsafe { libc::poll(fds.as_mut_ptr(), 2, -1) };
+        let ret = unsafe { libc::poll(fds.as_mut_ptr(), 2, poll_timeout) };
         if ret < 0 {
             let err = std::io::Error::last_os_error();
             if err.kind() == std::io::ErrorKind::Interrupted {
@@ -1181,6 +1556,28 @@ fn main() {
                         state.pending_show = true;
                     }
                     _ => {}
+                }
+            }
+        }
+
+        // Handle long-press timeout
+        if let Some(down_time) = state.touch_down_time {
+            if !state.long_press_active {
+                let elapsed = std::time::Instant::now().duration_since(down_time).as_millis();
+                if elapsed >= 400 && state.pressed_key.is_some() {
+                    // Release the original key press first
+                    if let Some(idx) = state.pressed_key {
+                        let code = state.key_rects[idx].code;
+                        state.send_key(code, false);
+                        state.send_modifier(0);
+                    }
+                    state.compute_long_press_popup();
+                    if state.long_press_active {
+                        state.needs_redraw = true;
+                    } else {
+                        // No alternates for this key, cancel
+                        state.touch_down_time = None;
+                    }
                 }
             }
         }
