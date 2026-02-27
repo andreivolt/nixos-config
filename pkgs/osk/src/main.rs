@@ -167,15 +167,15 @@ static MAIN_R2: &[KeyDef] = &[
 ];
 static MAIN_R3: &[KeyDef] = &[
     KeyDef::new("?123", ACTION_SYM, 1.2),
-    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
-    KeyDef::new("Alt", ACTION_ALT, 1.0),
-    KeyDef::new("Super", ACTION_SUPER, 1.0),
-    KeyDef::new(",", KEY_COMMA, 0.8),
-    KeyDef::new(" ", KEY_SPACE, 2.5),
-    KeyDef::new(".", KEY_DOT, 0.8),
-    KeyDef::new("←", KEY_LEFT, 0.8),
-    KeyDef::new("→", KEY_RIGHT, 0.8),
-    KeyDef::new("⏎", KEY_ENTER, 1.1),
+    KeyDef::new("Esc", KEY_ESC, 0.8),
+    KeyDef::new("Ctrl", ACTION_CTRL, 0.8),
+    KeyDef::new("Alt", ACTION_ALT, 0.8),
+    KeyDef::new(",", KEY_COMMA, 0.6),
+    KeyDef::new(" ", KEY_SPACE, 2.4),
+    KeyDef::new(".", KEY_DOT, 0.6),
+    KeyDef::new("←", KEY_LEFT, 0.7),
+    KeyDef::new("→", KEY_RIGHT, 0.7),
+    KeyDef::new("⏎", KEY_ENTER, 1.4),
 ];
 static MAIN_LAYER: &[Row] = &[&*NUM_ROW, &*MAIN_R0, &*MAIN_R1, &*MAIN_R2, &*MAIN_R3];
 
@@ -216,15 +216,15 @@ static SHIFT_R2: &[KeyDef] = &[
 ];
 static SHIFT_R3: &[KeyDef] = &[
     KeyDef::new("?123", ACTION_SYM, 1.2),
-    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
-    KeyDef::new("Alt", ACTION_ALT, 1.0),
-    KeyDef::new("Super", ACTION_SUPER, 1.0),
-    KeyDef::new(",", KEY_COMMA, 0.8),
-    KeyDef::new(" ", KEY_SPACE, 2.5),
-    KeyDef::new(".", KEY_DOT, 0.8),
-    KeyDef::new("←", KEY_LEFT, 0.8),
-    KeyDef::new("→", KEY_RIGHT, 0.8),
-    KeyDef::new("⏎", KEY_ENTER, 1.1),
+    KeyDef::new("Esc", KEY_ESC, 0.8),
+    KeyDef::new("Ctrl", ACTION_CTRL, 0.8),
+    KeyDef::new("Alt", ACTION_ALT, 0.8),
+    KeyDef::new(",", KEY_COMMA, 0.6),
+    KeyDef::new(" ", KEY_SPACE, 2.4),
+    KeyDef::new(".", KEY_DOT, 0.6),
+    KeyDef::new("←", KEY_LEFT, 0.7),
+    KeyDef::new("→", KEY_RIGHT, 0.7),
+    KeyDef::new("⏎", KEY_ENTER, 1.4),
 ];
 static SHIFT_LAYER: &[Row] = &[&*NUM_ROW, &*SHIFT_R0, &*SHIFT_R1, &*SHIFT_R2, &*SHIFT_R3];
 
@@ -265,15 +265,14 @@ static SYM_R2: &[KeyDef] = &[
 ];
 static SYM_R3: &[KeyDef] = &[
     KeyDef::new("ABC", ACTION_ABC, 1.2),
-    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
-    KeyDef::new("Alt", ACTION_ALT, 1.0),
-    KeyDef::new("Super", ACTION_SUPER, 1.0),
-    KeyDef::new("Esc", KEY_ESC, 0.8),
-    KeyDef::new(" ", KEY_SPACE, 2.5),
+    KeyDef::new("Super", ACTION_SUPER, 0.9),
     KeyDef::new("Tab", KEY_TAB, 0.8),
-    KeyDef::new("↑", KEY_UP, 0.8),
-    KeyDef::new("↓", KEY_DOWN, 0.8),
-    KeyDef::new("⏎", KEY_ENTER, 1.1),
+    KeyDef::new(" ", KEY_SPACE, 2.6),
+    KeyDef::new("←", KEY_LEFT, 0.8),
+    KeyDef::new("↑", KEY_UP, 0.7),
+    KeyDef::new("↓", KEY_DOWN, 0.7),
+    KeyDef::new("→", KEY_RIGHT, 0.8),
+    KeyDef::new("⏎", KEY_ENTER, 1.3),
 ];
 static SYM_LAYER: &[Row] = &[&*NUM_ROW, &*SYM_R0, &*SYM_R1, &*SYM_R2, &*SYM_R3];
 
@@ -433,6 +432,13 @@ fn get_alternates(label: &str) -> &'static [Alternate] {
         ],
         "n" | "N" => &[
             Alternate { label: "!", steps: &[(KEY_SLASH, 0)] },
+        ],
+        // Arrow key alternates
+        "←" => &[
+            Alternate { label: "↑", steps: &[(KEY_UP, 0)] },
+        ],
+        "→" => &[
+            Alternate { label: "↓", steps: &[(KEY_DOWN, 0)] },
         ],
         _ => &[],
     }
@@ -985,6 +991,13 @@ impl OskState {
             return;
         }
         self.visible = true;
+        // Reset all modifier state to prevent stuck modifiers
+        self.shift_state = ModState::Off;
+        self.ctrl_state = ModState::Off;
+        self.alt_state = ModState::Off;
+        self.super_state = ModState::Off;
+        self.current_layer = 0;
+        self.send_modifier(0);
         if self.surface.is_none() {
             self.setup_surface(qh);
         }
