@@ -468,12 +468,26 @@ fn compute_key_rects(width: u32, kb_height: u32, layer_idx: usize) -> Vec<KeyRec
     let layer = LAYERS[layer_idx];
     let rows = layer.len();
     let row_height = kb_height as f32 / rows as f32;
-    let mut rects = Vec::new();
 
+    // Find max units across all rows to compute key aspect ratio cap
+    let max_units: f32 = layer.iter()
+        .map(|row| row.iter().map(|k| k.width).sum::<f32>())
+        .fold(0.0f32, f32::max);
+
+    // Cap unit_width so a 1.0-width key is at most 1.3× row_height (slightly wider than tall)
+    let max_unit_width = row_height * 1.3;
+    let uncapped_unit_width = width as f32 / max_units;
+    let unit_width = uncapped_unit_width.min(max_unit_width);
+    let effective_kb_width = unit_width * max_units;
+    let x_offset = (width as f32 - effective_kb_width) / 2.0;
+
+    let mut rects = Vec::new();
     for (ri, row) in layer.iter().enumerate() {
         let total_units: f32 = row.iter().map(|k| k.width).sum();
-        let unit_width = width as f32 / total_units;
-        let mut x = 0.0;
+        let row_width = unit_width * total_units;
+        // Center each row within the effective keyboard width
+        let row_x_offset = x_offset + (effective_kb_width - row_width) / 2.0;
+        let mut x = row_x_offset;
         let y = ri as f32 * row_height;
 
         for (ci, key) in row.iter().enumerate() {
@@ -533,8 +547,7 @@ impl FontRenderer {
         Self { font }
     }
 
-    fn render_centered(&self, pixmap: &mut Pixmap, text: &str, cx: f32, cy: f32, size: f32) {
-        // Measure total width
+    fn render_text(&self, pixmap: &mut Pixmap, text: &str, cx: f32, cy: f32, size: f32, color: Color) {
         let mut total_w = 0.0f32;
         let metrics: Vec<_> = text
             .chars()
@@ -554,13 +567,11 @@ impl FontRenderer {
             .collect();
 
         let start_x = cx - total_w / 2.0;
-        // Use first char metrics for baseline estimate
         let ascent = size * 0.75;
         let baseline_y = cy + ascent / 2.0;
 
         let mut pen_x = start_x;
-        for (i, (m, bmp)) in metrics.iter().zip(bitmaps.iter()).enumerate() {
-            let _ = i;
+        for (m, bmp) in metrics.iter().zip(bitmaps.iter()) {
             let gx = pen_x + m.xmin as f32;
             let gy = baseline_y - m.height as f32 - m.ymin as f32;
 
@@ -581,20 +592,22 @@ impl FontRenderer {
                     }
                     let idx = (py as u32 * pixmap.width() + px as u32) as usize * 4;
                     let data = pixmap.data_mut();
-                    // Alpha blend
                     let a = alpha as f32 / 255.0;
-                    let tc = text_color();
-                    let sr = tc.red() * 255.0;
-                    let sg = tc.green() * 255.0;
-                    let sb = tc.blue() * 255.0;
-                    data[idx] = (data[idx] as f32 * (1.0 - a) + sb * a) as u8; // B
-                    data[idx + 1] = (data[idx + 1] as f32 * (1.0 - a) + sg * a) as u8; // G
-                    data[idx + 2] = (data[idx + 2] as f32 * (1.0 - a) + sr * a) as u8; // R
-                    data[idx + 3] = 255; // A
+                    let sr = color.red() * 255.0;
+                    let sg = color.green() * 255.0;
+                    let sb = color.blue() * 255.0;
+                    data[idx] = (data[idx] as f32 * (1.0 - a) + sb * a) as u8;
+                    data[idx + 1] = (data[idx + 1] as f32 * (1.0 - a) + sg * a) as u8;
+                    data[idx + 2] = (data[idx + 2] as f32 * (1.0 - a) + sr * a) as u8;
+                    data[idx + 3] = 255;
                 }
             }
             pen_x += m.advance_width;
         }
+    }
+
+    fn render_centered(&self, pixmap: &mut Pixmap, text: &str, cx: f32, cy: f32, size: f32) {
+        self.render_text(pixmap, text, cx, cy, size, text_color());
     }
 }
 
@@ -631,6 +644,7 @@ fn draw_rounded_rect(pixmap: &mut Pixmap, x: f32, y: f32, w: f32, h: f32, r: f32
 
 fn shift_locked_color() -> Color { Color::from_rgba8(90, 90, 90, 255) }
 fn dot_color() -> Color { Color::from_rgba8(180, 180, 180, 255) }
+fn hint_color() -> Color { Color::from_rgba8(130, 130, 130, 255) }
 fn popup_bg_color() -> Color { Color::from_rgba8(80, 80, 80, 255) }
 fn popup_selected_color() -> Color { Color::from_rgba8(120, 120, 120, 255) }
 
@@ -700,6 +714,22 @@ fn render_keyboard(
             kr.y + kr.h / 2.0,
             font_size,
         );
+
+        // Draw hint label (first alternate) in top-right corner
+        if !is_special_key(kr.code) && !key_def.force_shift {
+            let alts = get_alternates(key_def.label);
+            if !alts.is_empty() {
+                let hint_size = font_size * 0.5;
+                font.render_text(
+                    pixmap,
+                    alts[0].label,
+                    kr.x + kr.w - KEY_MARGIN - hint_size * 0.6,
+                    kr.y + KEY_MARGIN + hint_size * 0.8,
+                    hint_size,
+                    hint_color(),
+                );
+            }
+        }
 
         // Draw dot indicator for OneShot sticky modifiers
         if is_sticky && mod_st == ModState::OneShot {
