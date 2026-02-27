@@ -26,14 +26,15 @@
     ];
   });
   mpv-current = pkgs.writeShellScriptBin "mpv-current" ''
-    echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket | ${pkgs.jq}/bin/jq -r .data
+    echo '{ "command": ["get_property", "path"] }' | ${pkgs.socat}/bin/socat - /tmp/mpv/socket | ${pkgs.jq}/bin/jq -r .data
   '';
   mpv-next = pkgs.writeShellScriptBin "mpv-next" ''
-    echo '{ "command": ["playlist-next"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket &>/dev/null
+    echo '{ "command": ["playlist-next"] }' | ${pkgs.socat}/bin/socat - /tmp/mpv/socket &>/dev/null
   '';
   mpv-prev = pkgs.writeShellScriptBin "mpv-prev" ''
-    echo '{ "command": ["playlist-prev"] }' | ${pkgs.socat}/bin/socat - /tmp/mpvsocket &>/dev/null
+    echo '{ "command": ["playlist-prev"] }' | ${pkgs.socat}/bin/socat - /tmp/mpv/socket &>/dev/null
   '';
+
 in {
   environment.systemPackages = lib.optionals isDarwin [ mpv-current mpv-next mpv-prev ];
 
@@ -60,13 +61,14 @@ in {
           (mkMpvScript "loading-spinner.lua" ./loading-spinner.lua)
           (mkMpvScript "open-in-browser.lua" ./open-in-browser.lua)
           (mkMpvScript "min-font-size.lua" ./min-font-size.lua)
+          (mkMpvScript "cast.lua" ./cast.lua)
         ] ++ lib.optionals pkgs.stdenv.isLinux (with pkgs.mpvScripts; [
           mpris
         ]);
 
         scriptOpts = {
           # removed visibility conditions from subtitles and speed controls
-          uosc.controls = "menu,gap,subtitles,<has_many_audio>audio,<has_many_video>video,<has_many_edition>editions,<stream>stream-quality,gap,space,speed,space,shuffle,loop-playlist,loop-file,gap,prev,items,next,gap,fullscreen";
+          uosc.controls = "menu,gap,subtitles,<has_many_audio>audio,<has_many_video>video,<has_many_edition>editions,<stream>stream-quality,gap,space,speed,space,shuffle,loop-playlist,loop-file,gap,prev,items,next,gap,fullscreen,gap,command:cast:script-message cast-to-watts?Cast to watts";
           thumbfast = {
             spawn_first = "yes";
             network = "yes";
@@ -98,7 +100,7 @@ in {
           osc = "no";
           term-osd-bar = "yes";
           audio-display = "no";
-          input-ipc-server = "/tmp/mpvsocket";
+          input-ipc-server = "/tmp/mpv/socket";
           watch-later-directory = "~/.local/state/mpv/watch_later";
           http-proxy = "http://127.0.0.1:1091";
           sid = "no";

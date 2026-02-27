@@ -2,7 +2,7 @@
 # The shared mpv module (../shared/mpv.nix) provides the base configuration.
 # This file can add Linux-only overrides if needed.
 {pkgs, ...}: {
-  imports = [../shared/mpv];
+  imports = [../shared/mpv ../shared/mpv/cast.nix];
 
   # Linux-specific additions (webtorrent)
   home-manager.sharedModules = [
