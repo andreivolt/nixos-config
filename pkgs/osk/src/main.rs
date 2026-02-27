@@ -1472,27 +1472,31 @@ impl OskState {
                 let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
                 let has_alternates = !get_alternates(key_def.label).is_empty();
                 if has_alternates {
+                    // Defer key send — wait to see if this becomes a long-press
                     self.touch_down_time = Some(std::time::Instant::now());
                     self.long_press_key_idx = Some(key_idx);
-                }
-                if key_def.force_shift {
-                    // Number row: temporarily engage Shift for digit output
-                    // But skip force_shift when compositor-level modifiers are active
-                    // so Super+2 sends Super+é (workspace switch) not Super+Shift+é (move)
-                    let has_compositor_mods = self.ctrl_state != ModState::Off
-                        || self.alt_state != ModState::Off
-                        || self.super_state != ModState::Off;
-                    if has_compositor_mods {
-                        self.send_modifier(self.active_mods());
-                    } else {
-                        self.send_modifier(self.active_mods() | 1);
-                    }
-                    self.send_key(code, true);
                 } else {
-                    self.send_modifier(self.active_mods());
-                    self.send_key(code, true);
+                    // No alternates — send immediately
+                    self.send_key_press_immediate(key_def, code);
                 }
             }
+        }
+    }
+
+    fn send_key_press_immediate(&mut self, key_def: &KeyDef, code: u32) {
+        if key_def.force_shift {
+            let has_compositor_mods = self.ctrl_state != ModState::Off
+                || self.alt_state != ModState::Off
+                || self.super_state != ModState::Off;
+            if has_compositor_mods {
+                self.send_modifier(self.active_mods());
+            } else {
+                self.send_modifier(self.active_mods() | 1);
+            }
+            self.send_key(code, true);
+        } else {
+            self.send_modifier(self.active_mods());
+            self.send_key(code, true);
         }
     }
 
@@ -1504,18 +1508,39 @@ impl OskState {
                 let key_def = &LAYERS[self.current_layer][kr.row][kr.col];
                 let alts = get_alternates(key_def.label);
                 if sel < alts.len() {
-                    // Release the original key first
-                    self.send_key(kr.code, false);
-                    self.send_modifier(0);
-                    // Send the alternate sequence
+                    // Send the alternate sequence (key was never sent)
                     self.send_alternate_sequence(alts[sel].steps);
                 }
-            } else if let Some(idx) = self.pressed_key {
-                // No alternate selected, just release the original key
-                self.send_key(self.key_rects[idx].code, false);
             }
             self.pressed_key = None;
             self.cancel_long_press();
+            self.needs_redraw = true;
+            return;
+        }
+
+        // If key was deferred (has alternates, released before long-press),
+        // send the key press + release now as a quick tap
+        if self.touch_down_time.is_some() {
+            if let Some(idx) = self.pressed_key {
+                let code = self.key_rects[idx].code;
+                let row = self.key_rects[idx].row;
+                let col = self.key_rects[idx].col;
+                let force_shift = LAYERS[self.current_layer][row][col].force_shift;
+                if force_shift {
+                    let has_compositor_mods = self.ctrl_state != ModState::Off
+                        || self.alt_state != ModState::Off
+                        || self.super_state != ModState::Off;
+                    self.send_modifier(if has_compositor_mods { self.active_mods() } else { self.active_mods() | 1 });
+                } else {
+                    self.send_modifier(self.active_mods());
+                }
+                self.send_key(code, true);
+                self.send_key(code, false);
+            }
+            self.pressed_key = None;
+            self.cancel_long_press();
+            self.clear_oneshot_mods();
+            self.send_modifier(self.active_mods());
             self.needs_redraw = true;
             return;
         }
@@ -2167,11 +2192,7 @@ fn main() {
             if !state.long_press_active {
                 let elapsed = std::time::Instant::now().duration_since(down_time).as_millis();
                 if elapsed >= 400 && state.pressed_key.is_some() {
-                    if let Some(idx) = state.pressed_key {
-                        let code = state.key_rects[idx].code;
-                        state.send_key(code, false);
-                        state.send_modifier(0);
-                    }
+                    // Key press was deferred — just show the popup, don't release anything
                     state.compute_long_press_popup();
                     if state.long_press_active {
                         state.needs_redraw = true;
