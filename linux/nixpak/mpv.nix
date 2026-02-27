@@ -6,9 +6,15 @@ let
   hmMpvScripts = config.home-manager.users.andrei.programs.mpv.scripts;
   mpvWithScripts = pkgs.mpv.override { scripts = hmMpvScripts; };
 
+  # cast.lua needs ssh and socat to send commands to watts
+  mpvWithCastDeps = pkgs.symlinkJoin {
+    name = "mpv-with-cast-deps";
+    paths = [ mpvWithScripts pkgs.openssh pkgs.socat ];
+  };
+
   sandboxed = mkNixPak {
     config = { sloth, ... }: {
-      app.package = mpvWithScripts;
+      app.package = mpvWithCastDeps;
       bubblewrap = {
         network = true;
         bind.ro = [
@@ -21,7 +27,9 @@ let
         ] ++ guiRoBinds sloth ++ commonRoBinds;
         bind.rw = [
           (sloth.concat' sloth.homeDir "/.local/state/mpv")
+          (sloth.concat' sloth.homeDir "/.ssh")
           (sloth.env "XDG_RUNTIME_DIR")
+          "/tmp/mpv"
         ];
         tmpfs = [ "/tmp" ];
         bind.dev = [ "/dev/dri" ];
@@ -35,7 +43,7 @@ let
   };
 
   wrapperBin = pkgs.writeShellScriptBin "mpv" ''
-    mkdir -p ~/.local/state/mpv
+    mkdir -p ~/.local/state/mpv /tmp/mpv
     export MEDIA_DIR="/tmp"
     for arg in "$@"; do
       case "$arg" in
