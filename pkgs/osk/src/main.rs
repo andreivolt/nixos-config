@@ -168,19 +168,21 @@ static MAIN_R2: &[KeyDef] = &[
     KeyDef::new("b", KEY_B, 1.0),
     KeyDef::new("n", KEY_N, 1.0),
     KeyDef::new("'", KEY_4, 1.0),
-    KeyDef::new("⌫", KEY_BACKSPACE, 1.3),
+    KeyDef::new("↑", KEY_UP, 1.0),
+    KeyDef::new("⌫", KEY_BACKSPACE, 2.3),
 ];
 static MAIN_R3: &[KeyDef] = &[
-    KeyDef::new("?123", ACTION_SYM, 1.2),
-    KeyDef::new("Ctrl", ACTION_CTRL, 0.8),
-    KeyDef::new("Alt", ACTION_ALT, 0.8),
-    KeyDef::new("Super", ACTION_SUPER, 0.8),
+    KeyDef::new("?123", ACTION_SYM, 1.3),
+    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
+    KeyDef::new("Alt", ACTION_ALT, 1.0),
+    KeyDef::new("Super", ACTION_SUPER, 1.0),
     KeyDef::new(",", AZERTY_COMMA, 0.6),
-    KeyDef::new(" ", KEY_SPACE, 2.4),
+    KeyDef::new(" ", KEY_SPACE, 1.8),
     KeyDef::shifted(".", KEY_COMMA, 0.6),
-    KeyDef::new("←", KEY_LEFT, 0.7),
-    KeyDef::new("→", KEY_RIGHT, 0.7),
-    KeyDef::new("⏎", KEY_ENTER, 1.4),
+    KeyDef::new("←", KEY_LEFT, 1.0),
+    KeyDef::new("↓", KEY_DOWN, 1.0),
+    KeyDef::new("→", KEY_RIGHT, 1.0),
+    KeyDef::new("⏎", KEY_ENTER, 1.3),
 ];
 static MAIN_LAYER: &[Row] = &[&*NUM_ROW, &*MAIN_R0, &*MAIN_R1, &*MAIN_R2, &*MAIN_R3];
 
@@ -218,19 +220,21 @@ static SHIFT_R2: &[KeyDef] = &[
     KeyDef::new("B", KEY_B, 1.0),
     KeyDef::new("N", KEY_N, 1.0),
     KeyDef::new("'", KEY_4, 1.0),
-    KeyDef::new("⌫", KEY_BACKSPACE, 1.3),
+    KeyDef::new("↑", KEY_UP, 1.0),
+    KeyDef::new("⌫", KEY_BACKSPACE, 2.3),
 ];
 static SHIFT_R3: &[KeyDef] = &[
-    KeyDef::new("?123", ACTION_SYM, 1.2),
-    KeyDef::new("Ctrl", ACTION_CTRL, 0.8),
-    KeyDef::new("Alt", ACTION_ALT, 0.8),
-    KeyDef::new("Super", ACTION_SUPER, 0.8),
+    KeyDef::new("?123", ACTION_SYM, 1.3),
+    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
+    KeyDef::new("Alt", ACTION_ALT, 1.0),
+    KeyDef::new("Super", ACTION_SUPER, 1.0),
     KeyDef::new(",", AZERTY_COMMA, 0.6),
-    KeyDef::new(" ", KEY_SPACE, 2.4),
+    KeyDef::new(" ", KEY_SPACE, 1.8),
     KeyDef::shifted(".", KEY_COMMA, 0.6),
-    KeyDef::new("←", KEY_LEFT, 0.7),
-    KeyDef::new("→", KEY_RIGHT, 0.7),
-    KeyDef::new("⏎", KEY_ENTER, 1.4),
+    KeyDef::new("←", KEY_LEFT, 1.0),
+    KeyDef::new("↓", KEY_DOWN, 1.0),
+    KeyDef::new("→", KEY_RIGHT, 1.0),
+    KeyDef::new("⏎", KEY_ENTER, 1.3),
 ];
 static SHIFT_LAYER: &[Row] = &[&*NUM_ROW, &*SHIFT_R0, &*SHIFT_R1, &*SHIFT_R2, &*SHIFT_R3];
 
@@ -260,24 +264,27 @@ static SYM_R1: &[KeyDef] = &[
     KeyDef::new("/", KEY_SLASH, 1.0),
 ];
 static SYM_R2: &[KeyDef] = &[
-    KeyDef::new("?123", ACTION_SYM, 1.5),
+    KeyDef::new("?123", ACTION_SYM, 1.3),
     KeyDef::new("*", KEY_BACKSLASH, 1.0),
     KeyDef::new("\"", KEY_3, 1.0),
     KeyDef::new("'", KEY_4, 1.0),
     KeyDef::new(":", KEY_DOT, 1.0),
     KeyDef::new(";", KEY_COMMA, 1.0),
     KeyDef::new("!", KEY_SLASH, 1.0),
-    KeyDef::new("⌫", KEY_BACKSPACE, 1.5),
+    KeyDef::new("↑", KEY_UP, 1.0),
+    KeyDef::new("⌫", KEY_BACKSPACE, 2.3),
 ];
 static SYM_R3: &[KeyDef] = &[
-    KeyDef::new("ABC", ACTION_ABC, 1.2),
-    KeyDef::new("Esc", KEY_ESC, 0.8),
-    KeyDef::new("Tab", KEY_TAB, 0.8),
-    KeyDef::new(" ", KEY_SPACE, 2.7),
-    KeyDef::new("←", KEY_LEFT, 0.8),
-    KeyDef::new("↑", KEY_UP, 0.7),
-    KeyDef::new("↓", KEY_DOWN, 0.7),
-    KeyDef::new("→", KEY_RIGHT, 0.8),
+    KeyDef::new("ABC", ACTION_ABC, 1.3),
+    KeyDef::new("Ctrl", ACTION_CTRL, 1.0),
+    KeyDef::new("Alt", ACTION_ALT, 1.0),
+    KeyDef::new("Super", ACTION_SUPER, 1.0),
+    KeyDef::new("Esc", KEY_ESC, 0.6),
+    KeyDef::new("Tab", KEY_TAB, 0.6),
+    KeyDef::new(" ", KEY_SPACE, 0.8),
+    KeyDef::new("←", KEY_LEFT, 1.0),
+    KeyDef::new("↓", KEY_DOWN, 1.0),
+    KeyDef::new("→", KEY_RIGHT, 1.0),
     KeyDef::new("⏎", KEY_ENTER, 1.3),
 ];
 static SYM_LAYER: &[Row] = &[&*NUM_ROW, &*SYM_R0, &*SYM_R1, &*SYM_R2, &*SYM_R3];
@@ -450,13 +457,6 @@ fn get_alternates(label: &str) -> &'static [Alternate] {
             Alternate { label: "!", steps: &[(KEY_SLASH, 0)] },
             Alternate { label: ".", steps: &[(KEY_COMMA, 1)] },
             Alternate { label: "?", steps: &[(AZERTY_COMMA, 1)] },
-        ],
-        // Arrow key alternates
-        "←" => &[
-            Alternate { label: "↑", steps: &[(KEY_UP, 0)] },
-        ],
-        "→" => &[
-            Alternate { label: "↓", steps: &[(KEY_DOWN, 0)] },
         ],
         _ => &[],
     }
@@ -751,25 +751,8 @@ fn render_keyboard(
     long_press_selected: Option<usize>,
     font: &FontRenderer,
 ) {
-    // Clear to transparent, then draw background only behind keyboard area
-    pixmap.fill(Color::from_rgba8(0, 0, 0, 0));
-
-    // Compute effective keyboard bounds from key rects
-    if !rects.is_empty() {
-        let kb_left = rects.iter().map(|r| r.x).fold(f32::MAX, f32::min);
-        let kb_right = rects.iter().map(|r| r.x + r.w).fold(0.0f32, f32::max);
-        let kb_top = rects.iter().map(|r| r.y).fold(f32::MAX, f32::min);
-        let kb_bottom = rects.iter().map(|r| r.y + r.h).fold(0.0f32, f32::max);
-        draw_rounded_rect(
-            pixmap,
-            kb_left,
-            kb_top,
-            kb_right - kb_left,
-            kb_bottom - kb_top,
-            KEY_RADIUS * 2.0,
-            bg_color(),
-        );
-    }
+    // Fill background
+    pixmap.fill(bg_color());
 
     let layer = LAYERS[layer_idx];
 
@@ -944,6 +927,16 @@ struct OskState {
     long_press_key_idx: Option<usize>,
     long_press_alternates: Vec<AlternateRect>,
     long_press_selected: Option<usize>,
+
+    // Toggle button (separate small layer surface)
+    toggle_surface: Option<WlSurface>,
+    toggle_layer_surface: Option<ZwlrLayerSurfaceV1>,
+    toggle_buffer: Option<WlBuffer>,
+    toggle_shm_pool: Option<WlShmPool>,
+    toggle_shm_fd: Option<std::os::unix::io::RawFd>,
+    toggle_configured: bool,
+    toggle_visible: bool,
+    pointer_on_toggle: bool,
 }
 
 impl OskState {
@@ -997,6 +990,31 @@ impl OskState {
             long_press_key_idx: None,
             long_press_alternates: Vec::new(),
             long_press_selected: None,
+            toggle_surface: None,
+            toggle_layer_surface: None,
+            toggle_buffer: None,
+            toggle_shm_pool: None,
+            toggle_shm_fd: None,
+            toggle_configured: false,
+            toggle_visible: false,
+            pointer_on_toggle: false,
+        }
+    }
+
+    fn compute_effective_width(&self) -> u32 {
+        // Compute the capped keyboard width based on key aspect ratio
+        let row_height = self.kb_height as f32 / NUM_ROWS as f32;
+        let max_unit_width = row_height * 1.3;
+        let max_units: f32 = LAYERS.iter()
+            .flat_map(|layer| layer.iter())
+            .map(|row| row.iter().map(|k| k.width).sum::<f32>())
+            .fold(0.0f32, f32::max);
+        let effective = (max_unit_width * max_units) as u32;
+        // Cap to output width if known
+        if self.output_pixel_width > 0 {
+            effective.min(self.output_pixel_width as u32)
+        } else {
+            effective
         }
     }
 
@@ -1033,8 +1051,9 @@ impl OskState {
             (),
         );
 
-        layer_surface.set_anchor(Anchor::Bottom | Anchor::Left | Anchor::Right);
-        layer_surface.set_size(0, self.height);
+        let effective_width = self.compute_effective_width();
+        layer_surface.set_anchor(Anchor::Bottom);
+        layer_surface.set_size(effective_width, self.height);
         layer_surface.set_exclusive_zone(self.height as i32);
         layer_surface.set_keyboard_interactivity(
             zwlr_layer_surface_v1::KeyboardInteractivity::None,
@@ -1044,6 +1063,103 @@ impl OskState {
 
         self.surface = Some(surface);
         self.layer_surface = Some(layer_surface);
+    }
+
+    fn show_toggle_button(&mut self, qh: &QueueHandle<Self>) {
+        if self.toggle_surface.is_some() { return; }
+        let compositor = match self.compositor.as_ref() { Some(c) => c, None => return };
+        let layer_shell = match self.layer_shell.as_ref() { Some(l) => l, None => return };
+
+        let surface = compositor.create_surface(qh, ());
+        let layer_surface = layer_shell.get_layer_surface(
+            &surface,
+            self.output.as_ref(),
+            Layer::Overlay,
+            "osk-toggle".to_string(),
+            qh,
+            (),
+        );
+
+        let btn_size = 48u32;
+        layer_surface.set_anchor(Anchor::Bottom | Anchor::Right);
+        layer_surface.set_size(btn_size, btn_size);
+        layer_surface.set_exclusive_zone(0);
+        layer_surface.set_margin(0, 8, 8, 0); // top, right, bottom, left
+        layer_surface.set_keyboard_interactivity(
+            zwlr_layer_surface_v1::KeyboardInteractivity::None,
+        );
+
+        surface.commit();
+        self.toggle_surface = Some(surface);
+        self.toggle_layer_surface = Some(layer_surface);
+        self.toggle_visible = true;
+    }
+
+    fn hide_toggle_button(&mut self) {
+        if let Some(ls) = self.toggle_layer_surface.take() { ls.destroy(); }
+        if let Some(s) = self.toggle_surface.take() { s.destroy(); }
+        if let Some(b) = self.toggle_buffer.take() { b.destroy(); }
+        if let Some(p) = self.toggle_shm_pool.take() { p.destroy(); }
+        if let Some(fd) = self.toggle_shm_fd.take() { unsafe { libc::close(fd); } }
+        self.toggle_configured = false;
+        self.toggle_visible = false;
+    }
+
+    fn draw_toggle_button(&mut self, qh: &QueueHandle<Self>) {
+        if !self.toggle_configured || self.toggle_surface.is_none() { return; }
+
+        let size = 48u32;
+        let stride = size * 4;
+        let buf_size = (stride * size) as usize;
+
+        // Create/recreate buffer
+        if self.toggle_buffer.is_none() {
+            let fd = unsafe {
+                libc::memfd_create(b"osk-toggle\0".as_ptr() as *const _, 0)
+            };
+            unsafe { libc::ftruncate(fd, buf_size as i64) };
+
+            let shm = self.shm.as_ref().unwrap();
+            let pool = shm.create_pool(
+                unsafe { std::os::fd::BorrowedFd::borrow_raw(fd) },
+                buf_size as i32, qh, (),
+            );
+            let buffer = pool.create_buffer(
+                0, size as i32, size as i32, stride as i32,
+                wayland_client::protocol::wl_shm::Format::Argb8888,
+                qh, (),
+            );
+            self.toggle_shm_fd = Some(fd);
+            self.toggle_shm_pool = Some(pool);
+            self.toggle_buffer = Some(buffer);
+        }
+
+        let fd = self.toggle_shm_fd.unwrap();
+        let ptr = unsafe {
+            libc::mmap(std::ptr::null_mut(), buf_size, libc::PROT_READ | libc::PROT_WRITE,
+                libc::MAP_SHARED, fd, 0)
+        };
+        let data = unsafe { std::slice::from_raw_parts_mut(ptr as *mut u8, buf_size) };
+
+        let mut pixmap = Pixmap::new(size, size).unwrap();
+        pixmap.fill(Color::from_rgba8(40, 40, 40, 200));
+
+        // Draw rounded background
+        draw_rounded_rect(&mut pixmap, 2.0, 2.0, size as f32 - 4.0, size as f32 - 4.0, 10.0,
+            Color::from_rgba8(50, 50, 50, 230));
+
+        // Draw keyboard icon (Phosphor U+E2D8)
+        const ICON_KEYBOARD: char = '\u{e2d8}';
+        self.font.render_icon(&mut pixmap, ICON_KEYBOARD, size as f32 / 2.0, size as f32 / 2.0, 28.0, text_color());
+
+        data.copy_from_slice(pixmap.data());
+        unsafe { libc::munmap(ptr, buf_size) };
+
+        let surface = self.toggle_surface.as_ref().unwrap();
+        let buffer = self.toggle_buffer.as_ref().unwrap();
+        surface.attach(Some(buffer), 0, 0);
+        surface.damage_buffer(0, 0, size as i32, size as i32);
+        surface.commit();
     }
 
     fn setup_virtual_keyboard(&mut self, qh: &QueueHandle<Self>) {
@@ -1572,6 +1688,7 @@ impl Dispatch<ZwlrLayerSurfaceV1, ()> for OskState {
         _: &Connection,
         qh: &QueueHandle<Self>,
     ) {
+        let is_toggle = state.toggle_layer_surface.as_ref().map_or(false, |t| t == surface);
         match event {
             zwlr_layer_surface_v1::Event::Configure {
                 serial,
@@ -1579,14 +1696,23 @@ impl Dispatch<ZwlrLayerSurfaceV1, ()> for OskState {
                 height,
             } => {
                 surface.ack_configure(serial);
-                state.width = width;
-                state.height = if height > 0 { height } else { state.kb_height };
-                state.configured = true;
-                state.needs_redraw = true;
-                state.draw(qh);
+                if is_toggle {
+                    state.toggle_configured = true;
+                    state.draw_toggle_button(qh);
+                } else {
+                    state.width = width;
+                    state.height = if height > 0 { height } else { state.kb_height };
+                    state.configured = true;
+                    state.needs_redraw = true;
+                    state.draw(qh);
+                }
             }
             zwlr_layer_surface_v1::Event::Closed => {
-                state.hide();
+                if is_toggle {
+                    state.hide_toggle_button();
+                } else {
+                    state.hide();
+                }
             }
             _ => {}
         }
@@ -1630,29 +1756,47 @@ impl Dispatch<WlPointer, ()> for OskState {
         qh: &QueueHandle<Self>,
     ) {
         match event {
+            wl_pointer::Event::Enter { surface, surface_x, surface_y, .. } => {
+                state.pointer_on_toggle = state.toggle_surface.as_ref().map_or(false, |t| *t == surface);
+                state.pointer_x = surface_x as f32;
+                state.pointer_y = surface_y as f32;
+            }
+            wl_pointer::Event::Leave { .. } => {
+                state.pointer_on_toggle = false;
+            }
             wl_pointer::Event::Button {
                 button,
                 state: WEnum::Value(button_state),
                 ..
             } => {
                 if button == 0x110 {
-                    match button_state {
-                        wl_pointer::ButtonState::Pressed => {
-                            if let Some(idx) = hit_test(&state.key_rects, state.pointer_x, state.pointer_y) {
-                                state.handle_key_press(idx, qh);
+                    if state.pointer_on_toggle {
+                        if button_state == wl_pointer::ButtonState::Pressed {
+                            if state.visible {
+                                state.hide();
+                            } else {
+                                state.show(qh);
+                            }
+                        }
+                    } else {
+                        match button_state {
+                            wl_pointer::ButtonState::Pressed => {
+                                if let Some(idx) = hit_test(&state.key_rects, state.pointer_x, state.pointer_y) {
+                                    state.handle_key_press(idx, qh);
+                                    if state.needs_redraw {
+                                        state.key_rects = compute_key_rects(state.width, state.kb_height, state.current_layer);
+                                        state.draw(qh);
+                                    }
+                                }
+                            }
+                            wl_pointer::ButtonState::Released => {
+                                state.handle_key_release(qh);
                                 if state.needs_redraw {
-                                    state.key_rects = compute_key_rects(state.width, state.kb_height, state.current_layer);
                                     state.draw(qh);
                                 }
                             }
+                            _ => {}
                         }
-                        wl_pointer::ButtonState::Released => {
-                            state.handle_key_release(qh);
-                            if state.needs_redraw {
-                                state.draw(qh);
-                            }
-                        }
-                        _ => {}
                     }
                 }
             }
@@ -1687,7 +1831,17 @@ impl Dispatch<WlTouch, ()> for OskState {
         qh: &QueueHandle<Self>,
     ) {
         match event {
-            wl_touch::Event::Down { id, x, y, .. } => {
+            wl_touch::Event::Down { id, surface, x, y, .. } => {
+                let is_toggle = state.toggle_surface.as_ref().map_or(false, |t| *t == surface);
+                if is_toggle {
+                    // Toggle keyboard on touch
+                    if state.visible {
+                        state.hide();
+                    } else {
+                        state.show(qh);
+                    }
+                    return;
+                }
                 state.touch_points.insert(id, (x, y));
                 if let Some(idx) = hit_test(&state.key_rects, x as f32, y as f32) {
                     state.handle_key_press(idx, qh);
@@ -1872,8 +2026,11 @@ fn main() {
     let tablet_mode_fd = match open_tablet_mode_device() {
         Some((fd, initial_tablet)) => {
             state.auto_show_enabled = initial_tablet;
-            if initial_tablet && !start_hidden {
-                state.show(&qh);
+            if initial_tablet {
+                state.show_toggle_button(&qh);
+                if !start_hidden {
+                    state.show(&qh);
+                }
             }
             Some(fd)
         }
@@ -1963,9 +2120,11 @@ fn main() {
                     libc::SIGUSR1 => {
                         state.auto_show_enabled = false;
                         state.hide();
+                        state.hide_toggle_button();
                     }
                     libc::SIGUSR2 => {
                         state.auto_show_enabled = true;
+                        state.show_toggle_button(&qh);
                         state.pending_show = true;
                     }
                     _ => {}
@@ -1989,11 +2148,13 @@ fn main() {
                         if ev.value != 0 {
                             // Entering tablet mode
                             state.auto_show_enabled = true;
+                            state.show_toggle_button(&qh);
                             eprintln!("osk: tablet mode on");
                         } else {
                             // Leaving tablet mode
                             state.auto_show_enabled = false;
                             state.hide();
+                            state.hide_toggle_button();
                             eprintln!("osk: tablet mode off");
                         }
                     }
