@@ -31,6 +31,7 @@ class MullvadState:
         self.lan_allowed = True
         self.recent = []
         self.city_labels = {}  # (country_code, city_code) -> (country_name, city_name)
+        self.countries = []  # [(code, name), ...] in relay list order
         self._parse_relay_list()
         self._load_recent()
 
@@ -42,10 +43,12 @@ class MullvadState:
                 m = re.match(r'^(\S.+?) \((\w+)\)', line)
                 if m:
                     current_country = (m.group(2), m.group(1))
+                    self.countries.append(current_country)
                     continue
                 m = re.match(r'^\t(\S.+?) \((\w+)\)', line)
                 if m:
-                    self.city_labels[(current_country[0], m.group(2))] = (current_country[1], m.group(1))
+                    city_code, city_name = m.group(2), m.group(1)
+                    self.city_labels[(current_country[0], city_code)] = (current_country[1], city_name)
         except Exception:
             pass
 
@@ -133,10 +136,13 @@ class MullvadState:
     def disconnect(self):
         subprocess.Popen(["mullvad", "disconnect"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    def set_location(self, country_code, city_code):
-        subprocess.run(["mullvad", "relay", "set", "location", country_code, city_code],
-                       capture_output=True)
-        self._add_recent(country_code, city_code)
+    def set_location(self, country_code, city_code=None):
+        cmd = ["mullvad", "relay", "set", "location", country_code]
+        if city_code:
+            cmd.append(city_code)
+        subprocess.run(cmd, capture_output=True)
+        if city_code:
+            self._add_recent(country_code, city_code)
         self.connect()
 
     def toggle_lan(self):
@@ -255,11 +261,16 @@ class MullvadMenu(dbus.service.Object):
     SWITCH_LOCATION = 30
     LAN_TOGGLE = 40
     RECENT_BASE = 100
+    RECENT_SEP = 99
+    COUNTRY_BASE = 1000
 
     def __init__(self, bus, state, notify_cb):
         self._state = state
         self._notify = notify_cb
         self._revision = 1
+        self._country_id_map = {}  # item_id -> country_code
+        for i, (code, _) in enumerate(self._state.countries):
+            self._country_id_map[self.COUNTRY_BASE + i] = code
         super().__init__(bus, MENU_PATH)
 
     def _bump(self):
@@ -313,12 +324,17 @@ class MullvadMenu(dbus.service.Object):
         location = self._make_item(self.LOCATION, loc_label, {"enabled": dbus.Boolean(False)})
         sep2 = self._make_separator(self.SEP2)
 
-        recent_items = []
+        switch_children = []
         for i, entry in enumerate(s.recent):
             label = s.location_label(entry[0], entry[1])
-            recent_items.append(self._make_item(self.RECENT_BASE + i, label))
-        switch_extra = {"children-display": dbus.String("submenu")} if recent_items else {"enabled": dbus.Boolean(False)}
-        switch_loc = self._make_item(self.SWITCH_LOCATION, "Switch Location", switch_extra, recent_items)
+            switch_children.append(self._make_item(self.RECENT_BASE + i, label))
+        if s.recent:
+            switch_children.append(self._make_separator(self.RECENT_SEP))
+        for ci, (country_code, country_name) in enumerate(s.countries):
+            switch_children.append(self._make_item(self.COUNTRY_BASE + ci, country_name))
+        switch_loc = self._make_item(
+            self.SWITCH_LOCATION, "Switch Location",
+            {"children-display": dbus.String("submenu")}, switch_children)
 
         lan_label = "LAN Sharing: Allowed" if s.lan_allowed else "LAN Sharing: Blocked"
         lan_toggle = self._make_item(self.LAN_TOGGLE, lan_label)
@@ -349,6 +365,10 @@ class MullvadMenu(dbus.service.Object):
             idx = item_id - self.RECENT_BASE
             entry = self._state.recent[idx]
             self._state.set_location(entry[0], entry[1])
+            self._notify()
+            self._bump()
+        elif item_id in self._country_id_map:
+            self._state.set_location(self._country_id_map[item_id])
             self._notify()
             self._bump()
 
