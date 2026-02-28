@@ -135,6 +135,7 @@ in {
       server = [
         "127.0.0.1#5354"
         "/tail.avolt.net/100.100.100.100"
+        "/pw.avolt.net/100.100.100.100"
       ];
       address = "/mafreebox.freebox.fr/192.168.1.254";
     };
