@@ -29,8 +29,7 @@ if [[ "$active_ws" == "special:dropdown" ]]; then
         [[ "$term_floating" != "true" ]] && batch+=";dispatch togglefloating address:${term_addr}"
 
         # Resize terminal to dropdown position
-        bar_h=$(hyprctl layers -j | jq -r --arg mon "$mon_name" '.[$mon].levels | to_entries | .[] | .value[] | select(.namespace=="waybar") | .h' 2>/dev/null)
-        bar_h=${bar_h:-40}
+        bar_h=$(hyprctl layers -j | jq -r --arg mon "$mon_name" '[.[$mon].levels[][] | select(.w > .h * 2 and .h > 0 and .h < 200)] | .[0].h // 0')
         drop_w=$eff_w
         drop_h=$((eff_h * 62 / 100))
         drop_x=$mon_x
@@ -59,8 +58,7 @@ else
     done < <(jq -r '.[] | select(.workspace.name == "special:dropdown") | [.address, .floating] | @tsv' <<< "$clients_json")
 
     # Size/position (full-width, 42% height, flush below bar)
-    bar_h=$(hyprctl layers -j | jq -r --arg mon "$mon_name" '.[$mon].levels | to_entries | .[] | .value[] | select(.namespace=="waybar") | .h' 2>/dev/null)
-    bar_h=${bar_h:-40}
+    bar_h=$(hyprctl layers -j | jq -r --arg mon "$mon_name" '[.[$mon].levels[][] | select(.w > .h * 2 and .h > 0 and .h < 200)] | .[0].h // 0')
     drop_w=$eff_w
     drop_h=$((eff_h * 62 / 100))
     drop_x=$mon_x
