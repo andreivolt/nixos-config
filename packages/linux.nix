@@ -28,6 +28,7 @@ in
   openssl.dev
   parted
   pciutils
+  powertop
   psmisc
   strace
   usbutils
