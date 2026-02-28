@@ -32,7 +32,7 @@
             --dir-cache-time 24h \
             --timeout 1h \
             --umask 002 \
-            --vfs-write-back 5s \
+            --vfs-write-back 0s \
             --allow-non-empty
         '';
         ExecStop = "${pkgs.fuse}/bin/fusermount -uz /home/andrei/drive";
