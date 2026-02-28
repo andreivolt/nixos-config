@@ -10,13 +10,12 @@ const RADIUS: f64 = ICON_SIZE as f64 * 0.4;
 const RING_WIDTH: f64 = 3.0;
 
 const COLOR_BG: (u8, u8, u8) = (0x3c, 0x3a, 0x36);
-const COLOR_CHARGING: (u8, u8, u8) = (0x8a, 0xaa, 0x8a);
 const COLOR_NORMAL: (u8, u8, u8) = (0x7a, 0x75, 0x6d);
 const COLOR_LOW: (u8, u8, u8) = (0xd6, 0x50, 0x4e);
-fn arc_color(pct: u32, charging: bool) -> (u8, u8, u8) {
-    if charging {
-        COLOR_CHARGING
-    } else if pct <= 20 {
+const COLOR_ICON: (u8, u8, u8) = (0xd4, 0xd0, 0xca);
+
+fn arc_color(pct: u32) -> (u8, u8, u8) {
+    if pct <= 20 {
         COLOR_LOW
     } else {
         COLOR_NORMAL
@@ -37,7 +36,7 @@ fn render_icon(pct: u32, charging: bool) -> Vec<(i32, i32, Vec<u8>)> {
         buf[off + 3] = b;
     };
 
-    let fill_color = arc_color(pct, charging);
+    let fill_color = arc_color(pct);
     let fill_angle = (pct as f64 / 100.0) * std::f64::consts::TAU;
 
     // Draw ring
@@ -68,6 +67,21 @@ fn render_icon(pct: u32, charging: bool) -> Vec<(i32, i32, Vec<u8>)> {
         }
     }
 
+    // Draw lightning bolt inside ring when charging
+    if charging {
+        let bolt: &[(usize, usize)] = &[
+            (10, 6), (11, 6),
+            (9, 7), (10, 7),
+            (8, 8), (9, 8), (10, 8), (11, 8),
+            (10, 9), (11, 9),
+            (9, 10), (10, 10),
+            (8, 11), (9, 11),
+        ];
+        for &(x, y) in bolt {
+            set_pixel(&mut buf, x, y, 255, COLOR_ICON.0, COLOR_ICON.1, COLOR_ICON.2);
+        }
+    }
+
     vec![(ICON_SIZE as i32, ICON_SIZE as i32, buf)]
 }
 
@@ -85,9 +99,9 @@ fn get_scale_factor() -> f64 {
         .unwrap_or(1.0)
 }
 
-fn render_pct_icon(pct: u32, charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
+fn render_pct_icon(pct: u32, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
     let text = format!("{}", pct);
-    let color = arc_color(pct, charging);
+    let color = arc_color(pct);
     let icon_w = (f64::from(PCT_ICON_LOGICAL) * scale).round() as i32;
     let icon_h = icon_w;
 
@@ -206,7 +220,7 @@ impl BatteryState {
 
     fn pct_icon(&self) -> Vec<(i32, i32, Vec<u8>)> {
         let r = self.inner.lock().unwrap();
-        render_pct_icon(r.pct, r.charging, self.scale)
+        render_pct_icon(r.pct, self.scale)
     }
 
     fn tooltip(&self) -> String {
