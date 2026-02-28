@@ -25,17 +25,17 @@
   ],
   "end": [
     {
-      "type": "tray",
-      "icon_size": 20,
-      "sort": ["cpu-monitor", "mem-monitor", "net-rx-monitor", "net-tx-monitor", "caffeine", "mullvad-tray", "nm-applet", "blueman", "battery-tray"]
-    },
-    {
       "type": "label",
       "class": "minimized",
       "name": "minimized",
       "label": "#minimized_count",
       "show_if": "#minimized_visible",
       "on_click_left": "/home/andrei/dev/nixos-config/linux/hyprland/scripts/restore-minimized.sh"
+    },
+    {
+      "type": "tray",
+      "icon_size": 20,
+      "sort": ["cpu-monitor", "mem-monitor", "net-rx-monitor", "net-tx-monitor", "caffeine", "mullvad-tray", "nm-applet", "blueman", "battery-tray"]
     },
     {
       "type": "battery",
