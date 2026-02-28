@@ -25,9 +25,9 @@ in {
 
   # Route Tailscale CGNAT traffic through Tailscale's table before Mullvad's VPN table.
   # Without this, Mullvad's routing table catches 100.64.0.0/10 and routes it through
-  # wg0-mullvad. Priority 5100 to come before Mullvad's rules (5198-5209 depending on host).
+  # wg0-mullvad. Mullvad uses priority 5099 so we need to be lower.
   networking.localCommands = ''
-    ip rule add to 100.64.0.0/10 lookup 52 priority 5100 2>/dev/null || true
+    ip rule add to 100.64.0.0/10 lookup 52 priority 5090 2>/dev/null || true
   '';
 
   # zsh completions (mullvad-vpn doesn't propagate them from the mullvad CLI package)
@@ -38,10 +38,10 @@ in {
     '')
   ];
 
-  # Tailscale + Mullvad coexistence nftables rules.
+  # Tailscale + Docker + Mullvad coexistence nftables rules.
   # ct mark rules run at priority -100 (before Mullvad's chains at priority 0).
-  # They set Mullvad's exclusion marks on Tailscale CGNAT traffic so Mullvad's own
-  # "ct mark 0x00000f41 accept" rules pass it through. Static table, no timing issues.
+  # They set Mullvad's exclusion marks on Tailscale CGNAT and Docker bridge traffic
+  # so Mullvad's own "ct mark 0x00000f41 accept" rules pass it through.
   networking.nftables.enable = true;
   networking.nftables.tables.mullvad-tailscale = {
     family = "inet";
@@ -57,6 +57,8 @@ in {
       chain prerouting {
         type filter hook prerouting priority -50; policy accept;
         iifname "wg0-mullvad" ip daddr 100.64.0.0/10 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
+        # Docker bridge subnets (172.16.0.0/12 covers default bridge + compose networks)
+        ip saddr 172.16.0.0/12 ct mark set 0x00000f41 meta mark set 0x6d6f6c65;
       }
       chain forward {
         type filter hook forward priority mangle; policy accept;
