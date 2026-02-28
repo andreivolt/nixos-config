@@ -6,7 +6,7 @@
 	font-size: 14px;
 }
 
-button, .item, .widget, .tray .item, .workspaces .item, .clock, .battery {
+button, .item, .widget, .tray .item, .workspaces .item, .clock {
 	box-shadow: none;
 	text-shadow: none;
 	-gtk-icon-shadow: none;
@@ -123,21 +123,12 @@ button:hover, button:active {
 	padding: 0 0.2em;
 }
 
-.battery,
-.battery:hover,
-.battery:active {
-	padding: 0 0.2em 0 0;
-	margin: 0;
-	background-color: transparent;
-}
-
 #cpu image,
 #memory image {
 	min-width: 6px;
 	min-height: 14px;
 }
 
-.battery label,
 .clock label {
 	font-feature-settings: "tnum";
 	font-weight: bold;

@@ -35,16 +35,7 @@
     {
       "type": "tray",
       "icon_size": 20,
-      "sort": ["cpu-monitor", "mem-monitor", "net-rx-monitor", "net-tx-monitor", "caffeine", "mullvad-tray", "nm-applet", "blueman", "battery-tray"]
-    },
-    {
-      "type": "battery",
-      "format": "{percentage}",
-      "show_icon": false,
-      "show_progress": false,
-      "profiles": {
-        "charging": { "when": { "percent": 100, "charging": true }, "format": "{percentage}" }
-      }
+      "sort": ["cpu-monitor", "mem-monitor", "net-rx-monitor", "net-tx-monitor", "caffeine", "mullvad-tray", "nm-applet", "blueman", "battery-tray", "battery-pct"]
     },
     {
       "type": "clock",

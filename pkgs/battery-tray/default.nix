@@ -3,6 +3,9 @@
   rustPlatform,
   pkg-config,
   dbus,
+  cairo,
+  pango,
+  glib,
 }:
 rustPlatform.buildRustPackage {
   pname = "battery-tray";
@@ -13,7 +16,7 @@ rustPlatform.buildRustPackage {
   cargoLock.lockFile = ./Cargo.lock;
 
   nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ dbus ];
+  buildInputs = [ dbus cairo pango glib ];
 
   meta = {
     description = "Battery tray icon with circular progress indicator";
