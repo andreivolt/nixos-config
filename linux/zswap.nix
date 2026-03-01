@@ -9,9 +9,15 @@
 { ... }: {
   zramSwap.enable = false;
 
+  # Load lz4 before zswap initializes (it's =m in Asahi kernel, so zswap
+  # silently falls back to slow zstd without this)
+  boot.initrd.kernelModules = [ "lz4" "lz4_compress" ];
+
   boot.kernelParams = [
     "zswap.enabled=1"
     "zswap.compressor=lz4"
+    "zswap.max_pool_percent=12"            # 12% (~1.9GB) instead of default 20% (~3.1GB) — reclaim 1.2GB RAM
+    "zswap.shrinker_enabled=1"             # proactively evict cold compressed pages to disk swap
   ];
 
   boot.kernel.sysctl = {
