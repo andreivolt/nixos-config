@@ -12,7 +12,7 @@
     serviceConfig = {
       Type = "simple";
       User = "andrei";
-      ExecStart = "${pkgs.autossh}/bin/autossh -M 0 -N -D 1080 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes ampere";
+      ExecStart = "${pkgs.autossh}/bin/autossh -M 0 -N -D 1080 -o ServerAliveInterval=30 -o ServerAliveCountMax=3 -o ExitOnForwardFailure=yes -o ControlMaster=no -o ControlPath=none ampere";
       Restart = "always";
       RestartSec = "10";
     };
