@@ -1,5 +1,14 @@
 local utils = require "mp.utils"
 local casting = false
+local saved_path = nil
+local saved_pos = 0
+
+local cast_bindings = {
+    "cast-pause", "cast-seek-back", "cast-seek-fwd", "cast-seek-fwd-big",
+    "cast-seek-back-big", "cast-seek-back-30", "cast-seek-fwd-30",
+    "cast-mute", "cast-vol-down", "cast-vol-up", "cast-fullscreen",
+    "cast-speed-down", "cast-speed-up", "cast-speed-reset", "cast-quit",
+}
 
 local function remote_cmd(json)
     utils.subprocess({
@@ -10,10 +19,24 @@ local function remote_cmd(json)
     })
 end
 
+local function exit_cast_mode()
+    if not casting then return end
+    casting = false
+    remote_cmd('{"command":["stop"]}')
+    for _, name in ipairs(cast_bindings) do
+        mp.remove_key_binding(name)
+    end
+    -- resume local playback
+    if saved_path then
+        mp.commandv("loadfile", saved_path, "replace", "-1", "start=" .. saved_pos)
+    end
+    mp.osd_message("stopped casting", 2)
+end
+
 local function enter_cast_mode()
     casting = true
     mp.commandv("set", "pause", "yes")
-    mp.osd_message("casting to watts", 3)
+    mp.osd_message("casting to watts — press q to stop", 3)
 
     mp.add_forced_key_binding("space", "cast-pause", function()
         remote_cmd('{"command":["cycle","pause"]}')
@@ -63,8 +86,13 @@ local function enter_cast_mode()
     end)
 end
 
--- triggered by uosc button or mpv-cast CLI via script-message
+-- toggle: cast if not casting, uncast if casting
 mp.register_script_message("cast-to-watts", function()
+    if casting then
+        exit_cast_mode()
+        return
+    end
+
     local url = mp.get_property("path")
     local pos = mp.get_property_number("time-pos", 0)
     if not url then
@@ -72,13 +100,22 @@ mp.register_script_message("cast-to-watts", function()
         return
     end
 
+    saved_path = url
+    saved_pos = math.floor(pos)
+
     mp.osd_message("casting to watts...", 1)
 
     local json = '{"command":["loadfile","' .. url .. '","replace","-1","start=' .. math.floor(pos) .. '"]}'
     remote_cmd(json)
+    remote_cmd('{"command":["set_property","fullscreen",true]}')
 
     enter_cast_mode()
 end)
 
--- also triggered by IPC from mpv-cast CLI
 mp.register_script_message("enter-cast-mode", enter_cast_mode)
+
+mp.register_event("shutdown", function()
+    if casting then
+        remote_cmd('{"command":["stop"]}')
+    end
+end)
