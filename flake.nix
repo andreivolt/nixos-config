@@ -96,6 +96,10 @@
       url = "github:andreivolt/sci-hub-now";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    redirect-domains = {
+      url = "github:andreivolt/redirect-domains";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nixpak = {
       url = "github:nixpak/nixpak";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -134,6 +138,7 @@
     dearrow,
     bypass-paywalls,
     sci-hub-now,
+    redirect-domains,
     nixpak,
     ironbar,
   }:

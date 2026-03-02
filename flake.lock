@@ -1431,6 +1431,26 @@
         "type": "github"
       }
     },
+    "redirect-domains": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772374445,
+        "narHash": "sha256-AZeqbMgfTpzKg4ND0WB1wM/jdwW3nxpr3r5N8kRXutY=",
+        "owner": "andreivolt",
+        "repo": "redirect-domains",
+        "rev": "e90d206ea51c49116e9c9ca37c6c7b133a577dcd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "redirect-domains",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "bypass-paywalls": "bypass-paywalls",
@@ -1457,6 +1477,7 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "pyproject-build-systems": "pyproject-build-systems_2",
         "pyproject-nix": "pyproject-nix_2",
+        "redirect-domains": "redirect-domains",
         "rust-overlay": "rust-overlay_3",
         "sci-hub-now": "sci-hub-now",
         "sops-nix": "sops-nix",
