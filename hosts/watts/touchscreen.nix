@@ -2,8 +2,11 @@
   pkgs,
   config,
   lib,
+  inputs,
   ...
-}: {
+}: let
+  hyprgrass = inputs.hyprgrass.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in {
   # Enable iio-sensor-proxy for accelerometer access
   hardware.sensor.iio.enable = true;
 
@@ -52,6 +55,21 @@
         name = wacom-pen-and-multitouch-sensor-pen
         output = eDP-1
       }
+
+      # Hyprgrass touchscreen gestures plugin
+      plugin = ${hyprgrass}/lib/libhyprgrass.so
+
+      plugin {
+        touch_gestures {
+          sensitivity = 4.0
+          long_press_delay = 400
+          resize_on_border_long_press = true
+        }
+      }
+
+      # Long-press to move/resize windows
+      hyprgrass-bindm = , longpress:2, movewindow
+      hyprgrass-bindm = , longpress:3, resizewindow
     '';
   };
 }
