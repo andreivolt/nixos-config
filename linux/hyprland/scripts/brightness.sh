@@ -1,12 +1,22 @@
 #!/usr/bin/env bash
 # Brightness control with DPMS support and wob OSD
+#
+# Backlight zones (Apple Silicon, max=509):
+#   raw 0:    dimmest visible level; pressing down triggers DPMS off
+#   raw 1-2:  dead zone (visually identical to 0, skipped in both directions)
+#   raw 3+:   normal range with perceptual (exponential) steps
+#
+# DPMS wake: Hyprland auto-wakes DPMS on keypress before our script runs,
+# so we can't detect "was DPMS off". Instead, DPMS-off sets raw to 0.
+# First up from raw 0 sets raw 1 (same visual = dim level shown).
+# Second up sees raw<3 and jumps to 3 (first distinct brightness).
 
 WOB_SOCK="$XDG_RUNTIME_DIR/wob.sock"
 DDC_BUS_CACHE="/tmp/ddc-bus"
 DDC_BRIGHTNESS_CACHE="/tmp/ddc-brightness"
 DDC_LOCK="/tmp/ddc-lock"
-BACKLIGHT_STEP=1
 DDC_STEP=5
+DEAD_ZONE_END=3  # first raw value visually distinct from 0
 
 BRIGHTNESS_LEVELS=(0 1 2 4 6 8 10 12 14 16 18 21 23 25 27 29 31 33 35 68 100)
 
@@ -25,6 +35,10 @@ has_backlight() {
 
 get_backlight_percent() {
     brightnessctl -m 2>/dev/null | cut -d',' -f4 | tr -d '%'
+}
+
+get_backlight_raw() {
+    brightnessctl g 2>/dev/null
 }
 
 get_ddc_bus() {
@@ -67,23 +81,19 @@ set_ddc_brightness() {
 
 MONITOR_INFO=$(hyprctl monitors -j)
 FOCUSED_MONITOR=$(echo "$MONITOR_INFO" | jq -r '.[] | select(.focused == true) | .name')
-DPMS_STATUS=$(echo "$MONITOR_INFO" | jq -r '.[0].dpmsStatus')
 USE_BACKLIGHT=$([[ "$FOCUSED_MONITOR" == eDP* ]] && has_backlight && echo 1)
 
 case "$1" in
     up)
-        if [[ "$DPMS_STATUS" == "false" ]]; then
-            hyprctl dispatch dpms on
-            if [[ -n "$USE_BACKLIGHT" ]]; then
-                send_wob "$(get_backlight_percent)"
-            else
-                send_wob "$(get_ddc_brightness)"
-            fi
-            exit 0
-        fi
-
         if [[ -n "$USE_BACKLIGHT" ]]; then
-            brightnessctl -q s "${BACKLIGHT_STEP}%+"
+            raw=$(get_backlight_raw)
+            if ((raw == 0)); then
+                brightnessctl -q s 1  # mark dim level as visited
+            elif ((raw < DEAD_ZONE_END)); then
+                brightnessctl -q s "$DEAD_ZONE_END"
+            else
+                brightnessctl -e -q s 1%+
+            fi
             send_wob "$(get_backlight_percent)"
         else
             acquire_ddc_lock || exit 0
@@ -96,12 +106,17 @@ case "$1" in
 
     down)
         if [[ -n "$USE_BACKLIGHT" ]]; then
-            current=$(get_backlight_percent)
-            if [[ "$current" -le "$BACKLIGHT_STEP" ]]; then
-                brightnessctl -q s 1%
+            raw=$(get_backlight_raw)
+            if ((raw <= 1)); then
+                brightnessctl -q s 0
                 { sleep 0.2 && hyprctl dispatch dpms off; } &
+            elif ((raw <= DEAD_ZONE_END)); then
+                brightnessctl -q s 0
+                send_wob 0
             else
-                brightnessctl -q s "${BACKLIGHT_STEP}%-"
+                brightnessctl -e -q s 1%-
+                new=$(get_backlight_raw)
+                ((new > 0 && new < DEAD_ZONE_END)) && brightnessctl -q s "$DEAD_ZONE_END"
                 send_wob "$(get_backlight_percent)"
             fi
         else
