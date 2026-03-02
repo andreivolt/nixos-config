@@ -16,8 +16,8 @@
         Type = "notify";
         # Clean up stale mount point before starting
         ExecStartPre = [
-          "-${pkgs.fuse}/bin/fusermount -uz /home/andrei/drive"
-          "${pkgs.coreutils}/bin/mkdir -p /home/andrei/drive"
+          "-/run/wrappers/bin/fusermount3 -uz /home/andrei/drive"
+          "-${pkgs.coreutils}/bin/mkdir -p /home/andrei/drive"
         ];
         ExecStart = ''
           ${pkgs.rclone}/bin/rclone mount gdrive: /home/andrei/drive \
@@ -35,9 +35,8 @@
             --vfs-write-back 0s \
             --allow-non-empty
         '';
-        ExecStop = "${pkgs.fuse}/bin/fusermount -uz /home/andrei/drive";
-        # Cleanup even if process was killed
-        ExecStopPost = "-${pkgs.fuse}/bin/fusermount -uz /home/andrei/drive";
+        ExecStop = "-/run/wrappers/bin/fusermount3 -uz /home/andrei/drive";
+        ExecStopPost = "-/run/wrappers/bin/fusermount3 -uz /home/andrei/drive";
         Restart = "always";
         RestartSec = 5;
       };
