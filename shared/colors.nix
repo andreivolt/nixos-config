@@ -12,7 +12,7 @@
   # UI chrome - refined grays with warmth
   ui = {
     bg = "#0a0a0aee";         # Near-black with slight warmth
-    bgAlt = "#1a1816";        # Dark warm gray
+    bgAlt = "#1a1a1a";        # Dark pure gray
     bgElevated = "#252220";   # Elevated surfaces
     fg = "#d4d0ca";           # Warm off-white (not pure white)
     fgDim = "#7a756d";        # Muted warm gray
