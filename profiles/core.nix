@@ -7,6 +7,7 @@
   ...
 }: {
   imports = [
+    ../shared/local-ca.nix
     ../shared/bat
     ../shared/btop.nix
     ../shared/cargo.nix
@@ -39,6 +40,7 @@
     ../shared/wezterm
     ../shared/zsh
     ../linux/docker.nix
+    ../linux/caddy-proxy.nix
   ];
 
   console.keyMap = "fr";
