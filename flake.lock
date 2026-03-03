@@ -1347,6 +1347,29 @@
         "type": "github"
       }
     },
+    "osk": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772564501,
+        "narHash": "sha256-PouF/nx7R7HzTqI89I8muiAgA3P1Qck2NOZsH1X2Gg4=",
+        "ref": "refs/heads/master",
+        "rev": "8a61d28efb5734a2ac89e4fbf2cceb06476affac",
+        "revCount": 19,
+        "type": "git",
+        "url": "file:/home/andrei/dev/osk"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:/home/andrei/dev/osk"
+      }
+    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat",
@@ -1530,6 +1553,7 @@
         "nixpak": "nixpak",
         "nixpkgs": "nixpkgs_5",
         "nixpkgs-unstable": "nixpkgs-unstable",
+        "osk": "osk",
         "pyproject-build-systems": "pyproject-build-systems_2",
         "pyproject-nix": "pyproject-nix_2",
         "redirect-domains": "redirect-domains",

@@ -116,6 +116,11 @@
       url = "github:andreivolt/ironbar/window-rewrite";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    osk = {
+      url = "git+file:/home/andrei/dev/osk";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.crane.follows = "crane";
+    };
   };
 
   outputs = inputs @ {
@@ -151,6 +156,7 @@
     refined-hacker-news,
     nixpak,
     ironbar,
+    osk,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
