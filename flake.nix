@@ -100,6 +100,10 @@
       url = "github:andreivolt/redirect-domains";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    refined-hacker-news = {
+      url = "git+file:/home/andrei/dev/refined-hacker-news";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nixpak = {
       url = "github:nixpak/nixpak";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -139,6 +143,7 @@
     bypass-paywalls,
     sci-hub-now,
     redirect-domains,
+    refined-hacker-news,
     nixpak,
     ironbar,
   }:

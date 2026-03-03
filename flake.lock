@@ -1451,6 +1451,25 @@
         "type": "github"
       }
     },
+    "refined-hacker-news": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "dirtyRev": "ace3030519aceead739402f8b414386215186e22-dirty",
+        "dirtyShortRev": "ace3030-dirty",
+        "lastModified": 1772556718,
+        "narHash": "sha256-p4VFtMyunJ3SrWnhclY8FiGKgGe340tuxUgKAeMRxwc=",
+        "type": "git",
+        "url": "file:/home/andrei/dev/refined-hacker-news"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:/home/andrei/dev/refined-hacker-news"
+      }
+    },
     "root": {
       "inputs": {
         "bypass-paywalls": "bypass-paywalls",
@@ -1478,6 +1497,7 @@
         "pyproject-build-systems": "pyproject-build-systems_2",
         "pyproject-nix": "pyproject-nix_2",
         "redirect-domains": "redirect-domains",
+        "refined-hacker-news": "refined-hacker-news",
         "rust-overlay": "rust-overlay_3",
         "sci-hub-now": "sci-hub-now",
         "sops-nix": "sops-nix",

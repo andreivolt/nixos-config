@@ -6,5 +6,6 @@
     { package = inputs.bypass-paywalls.packages.${pkgs.system}.default; key = ./keys/bypass-paywalls.pem; }
     { package = inputs.sci-hub-now.packages.${pkgs.system}.default; key = ./keys/sci-hub-now.pem; }
     { package = inputs.redirect-domains.packages.${pkgs.system}.default; key = ./keys/redirect-domains.pem; }
+    { package = inputs.refined-hacker-news.packages.${pkgs.system}.default; key = ./keys/refined-hacker-news.pem; }
   ];
 }
