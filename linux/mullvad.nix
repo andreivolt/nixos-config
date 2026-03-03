@@ -24,11 +24,41 @@ in {
   '';
 
   # Route Tailscale CGNAT traffic through Tailscale's table before Mullvad's VPN table.
-  # Without this, Mullvad's routing table catches 100.64.0.0/10 and routes it through
-  # wg0-mullvad. Mullvad uses priority 5099 so we need to be lower.
-  networking.localCommands = ''
-    ip rule add to 100.64.0.0/10 lookup 52 priority 5090 2>/dev/null || true
-  '';
+  # Without this, the initial routing for Tailscale IPs goes through Mullvad's table
+  # (wg0-mullvad), giving responses the wrong source IP (Mullvad VPN IP instead of
+  # Tailscale IP). This causes conntrack NAT tuple collisions that silently drop packets.
+  # Mullvad dynamically positions its ip rules just before any existing rules, so a
+  # static priority gets leapfrogged on reconnect. This service watches Mullvad state
+  # and re-inserts our rule right before Mullvad's routing rule after each change.
+  systemd.services.tailscale-routing-fix = {
+    description = "Keep Tailscale routing rule before Mullvad";
+    after = [ "mullvad-daemon.service" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.iproute2 pkgs.mullvad pkgs.gawk ];
+    serviceConfig = {
+      Type = "simple";
+      Restart = "always";
+      RestartSec = 3;
+      ExecStart = pkgs.writeShellScript "tailscale-routing-fix" ''
+        insert_rule() {
+          # find first Mullvad rule (suppress_prefixlength) and insert before it
+          local mullvad_first
+          mullvad_first=$(ip rule show | awk '/suppress_prefixlength/{split($0,a,":"); print a[1]; exit}')
+          [ -z "$mullvad_first" ] && return
+          local our_prio=$((mullvad_first - 1))
+          # clean stale rules we added previously
+          ip rule show | awk -F: '/to 100\.64\.0\.0\/10 lookup 52/{p=$1+0; if(p<5100) print p}' | \
+            while read -r p; do ip rule del to 100.64.0.0/10 lookup 52 priority "$p" 2>/dev/null; done
+          ip rule add to 100.64.0.0/10 lookup 52 priority "$our_prio"
+        }
+        insert_rule
+        mullvad status listen | while read -r _; do
+          sleep 1
+          insert_rule
+        done
+      '';
+    };
+  };
 
   # zsh completions (mullvad-vpn doesn't propagate them from the mullvad CLI package)
   environment.systemPackages = [
