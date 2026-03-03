@@ -55,10 +55,6 @@ in {
           "numeric_glob_sort"
         ];
 
-        profileExtra = ''
-          # conditionals that need shell evaluation
-          [[ -f ~/.local/ca-certificates/combined-ca-bundle.pem ]] && export CURL_CA_BUNDLE=~/.local/ca-certificates/combined-ca-bundle.pem
-        '';
 
         initContent = ''
           export GPG_TTY="$(tty)"

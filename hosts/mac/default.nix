@@ -6,6 +6,7 @@
   ...
 }: {
   imports = [
+    ../../shared/local-ca.nix
     ../../shared/sops.nix
     ../../shared/sops-home.nix
     ../../shared/ssh-client.nix

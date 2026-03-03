@@ -83,7 +83,6 @@ $env.EDITOR = "nvim"
 $env.PAGER = "nvim-pager"
 $env.BROWSER = "chromium"
 
-$env.CURL_CA_BUNDLE = "~/.local/ca-certificates/combined-ca-bundle.pem"
 
 $env.XDG_CACHE_HOME = "~/.cache"
 $env.XDG_CONFIG_HOME = "~/.config"

@@ -94,7 +94,7 @@ with pkgs; with lib; [
   lsof
   mediainfo
   mitmproxy
-  mkcert
+
   (moreutils.overrideAttrs (old: {
     postInstall = ''
       ${old.postInstall or ""}
