@@ -104,6 +104,10 @@ button:hover, button:active {
 	border-radius: 0;
 }
 
+.tray .item image {
+	-gtk-icon-size: 20px;
+}
+
 .tray .item:hover,
 .tray .item:active {
 	background-color: transparent;
