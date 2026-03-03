@@ -76,6 +76,10 @@
       url = "git+file:/home/andrei/dev/monolith";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    dictate = {
+      url = "git+file:/home/andrei/dev/dictate";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     launcher = {
       url = "git+file:/home/andrei/dev/launcher";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -137,6 +141,7 @@
     rust-overlay,
     crane,
     monolith,
+    dictate,
     launcher,
     ff2mpv,
     dearrow,

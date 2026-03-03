@@ -7,7 +7,6 @@ in
 [
   andrei.battery-tray
   andrei.caffeine
-  andrei.dictate
   andrei.lan-mouse-toggle
   andrei.screen
   andrei.sysrec

@@ -85,6 +85,21 @@
     },
     "crane_2": {
       "locked": {
+        "lastModified": 1772080396,
+        "narHash": "sha256-84W9UNtSk9DNMh43WBkOjpkbfODlmg+RDi854PnNgLE=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "8525580bc0316c39dbfa18bd09a1331e98c9e463",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
+    "crane_3": {
+      "locked": {
         "lastModified": 1768873933,
         "narHash": "sha256-CfyzdaeLNGkyAHp3kT5vjvXhA1pVVK7nyDziYxCPsNk=",
         "owner": "ipetkov",
@@ -119,6 +134,26 @@
         "owner": "andreivolt",
         "repo": "DeArrow",
         "type": "github"
+      }
+    },
+    "dictate": {
+      "inputs": {
+        "crane": "crane_2",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "dirtyRev": "916808bf28cd54936bd54120a185710094119475-dirty",
+        "dirtyShortRev": "916808b-dirty",
+        "lastModified": 1772547315,
+        "narHash": "sha256-lwV3EksjYu+WjZZ04uOqwOahBqUIe95k9VdX6UWSBPY=",
+        "type": "git",
+        "url": "file:/home/andrei/dev/dictate"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:/home/andrei/dev/dictate"
       }
     },
     "disko": {
@@ -1000,7 +1035,7 @@
     },
     "launcher": {
       "inputs": {
-        "crane": "crane_2",
+        "crane": "crane_3",
         "flake-utils": "flake-utils_2",
         "nixpkgs": [
           "nixpkgs-unstable"
@@ -1475,6 +1510,7 @@
         "bypass-paywalls": "bypass-paywalls",
         "crane": "crane",
         "dearrow": "dearrow",
+        "dictate": "dictate",
         "disko": "disko",
         "ff2mpv": "ff2mpv",
         "hammerspoon-spoons": "hammerspoon-spoons",

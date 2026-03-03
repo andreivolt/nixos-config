@@ -68,6 +68,7 @@
     ../linux/wob.nix
     ../linux/screen-share.nix
     ../linux/wasistlos-clipboard.nix
+    ../linux/dictate
   ];
 
   # GUI-specific hardware
