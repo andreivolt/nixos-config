@@ -3,6 +3,7 @@
   imports = [
     inputs.impermanence.nixosModules.impermanence
     ./btrfs-wipe.nix
+    ../linux/backup-persist.nix
   ];
 
   fileSystems."/persist".neededForBoot = true;
