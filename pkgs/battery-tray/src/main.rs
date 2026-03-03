@@ -1,88 +1,27 @@
 use std::sync::{Arc, Mutex};
-use tokio::time::{interval, Duration};
 use zbus::object_server::SignalEmitter;
 use zbus::{interface, Connection};
 
 const SNI_PATH: &str = "/StatusNotifierItem";
-const ICON_SIZE: usize = 20;
-const CENTER: f64 = ICON_SIZE as f64 / 2.0;
-const RADIUS: f64 = ICON_SIZE as f64 * 0.4;
-const RING_WIDTH: f64 = 3.0;
+const UPOWER_BATTERY: &str = "/org/freedesktop/UPower/devices/battery_macsmc_battery";
+const ICON_SIZE: i32 = 22;
+const FONT_SIZE: f64 = 10.0;
 
-const COLOR_BG: (u8, u8, u8) = (0x3c, 0x3a, 0x36);
-const COLOR_NORMAL: (u8, u8, u8) = (0x7a, 0x75, 0x6d);
-const COLOR_LOW: (u8, u8, u8) = (0xd6, 0x50, 0x4e);
-const COLOR_ICON: (u8, u8, u8) = (0xd4, 0xd0, 0xca);
+const COLOR_NORMAL: (u8, u8, u8) = (0xaa, 0xaa, 0xaa);
+const COLOR_WARNING: (u8, u8, u8) = (0xf0, 0xc6, 0x74);
+const COLOR_LOW: (u8, u8, u8) = (0xde, 0x93, 0x5f);
+const COLOR_CRITICAL: (u8, u8, u8) = (0xcc, 0x66, 0x66);
 
-fn arc_color(pct: u32) -> (u8, u8, u8) {
-    if pct <= 20 {
+fn text_color(pct: u32) -> (u8, u8, u8) {
+    if pct <= 10 {
+        COLOR_CRITICAL
+    } else if pct <= 20 {
         COLOR_LOW
+    } else if pct <= 30 {
+        COLOR_WARNING
     } else {
         COLOR_NORMAL
     }
-}
-
-const PCT_ICON_LOGICAL: i32 = 20;
-const PCT_FONT_LOGICAL: f64 = 14.0;
-
-fn render_icon(pct: u32, charging: bool) -> Vec<(i32, i32, Vec<u8>)> {
-    let mut buf = vec![0u8; ICON_SIZE * ICON_SIZE * 4];
-
-    let set_pixel = |buf: &mut Vec<u8>, x: usize, y: usize, a: u8, r: u8, g: u8, b: u8| {
-        let off = (y * ICON_SIZE + x) * 4;
-        buf[off] = a;
-        buf[off + 1] = r;
-        buf[off + 2] = g;
-        buf[off + 3] = b;
-    };
-
-    let fill_color = arc_color(pct);
-    let fill_angle = (pct as f64 / 100.0) * std::f64::consts::TAU;
-
-    // Draw ring
-    for y in 0..ICON_SIZE {
-        for x in 0..ICON_SIZE {
-            let dx = x as f64 + 0.5 - CENTER;
-            let dy = y as f64 + 0.5 - CENTER;
-            let dist = (dx * dx + dy * dy).sqrt();
-
-            let inner = RADIUS - RING_WIDTH / 2.0;
-            let outer = RADIUS + RING_WIDTH / 2.0;
-
-            if dist >= inner && dist <= outer {
-                // Angle from 12 o'clock, clockwise
-                let angle = (dx.atan2(-dy) + std::f64::consts::TAU) % std::f64::consts::TAU;
-
-                // Anti-aliasing at edges
-                let edge_inner = (dist - inner).min(1.0).max(0.0);
-                let edge_outer = (outer - dist).min(1.0).max(0.0);
-                let alpha = (edge_inner * edge_outer * 255.0) as u8;
-
-                if angle <= fill_angle {
-                    set_pixel(&mut buf, x, y, alpha, fill_color.0, fill_color.1, fill_color.2);
-                } else {
-                    set_pixel(&mut buf, x, y, alpha, COLOR_BG.0, COLOR_BG.1, COLOR_BG.2);
-                }
-            }
-        }
-    }
-
-    // Draw lightning bolt inside ring when charging
-    if charging {
-        let bolt: &[(usize, usize)] = &[
-            (10, 6), (11, 6),
-            (9, 7), (10, 7),
-            (8, 8), (9, 8), (10, 8), (11, 8),
-            (10, 9), (11, 9),
-            (9, 10), (10, 10),
-            (8, 11), (9, 11),
-        ];
-        for &(x, y) in bolt {
-            set_pixel(&mut buf, x, y, 255, COLOR_ICON.0, COLOR_ICON.1, COLOR_ICON.2);
-        }
-    }
-
-    vec![(ICON_SIZE as i32, ICON_SIZE as i32, buf)]
 }
 
 fn get_scale_factor() -> f64 {
@@ -99,35 +38,33 @@ fn get_scale_factor() -> f64 {
         .unwrap_or(1.0)
 }
 
-fn render_pct_icon(pct: u32, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
-    let text = format!("{}", pct);
-    let color = arc_color(pct);
-    let icon_w = (f64::from(PCT_ICON_LOGICAL) * scale).round() as i32;
-    let icon_h = icon_w;
+fn render_icon(text: &str, color: (u8, u8, u8), charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
+    let size = (f64::from(ICON_SIZE) * scale).round() as i32;
+    let center = f64::from(size) / 2.0;
+    let radius = center - 1.0 * scale;
 
-    let mut surface =
-        cairo::ImageSurface::create(cairo::Format::ARgb32, icon_w, icon_h).unwrap();
+    let mut surface = cairo::ImageSurface::create(cairo::Format::ARgb32, size, size).unwrap();
     let cr = cairo::Context::new(&surface).unwrap();
 
-    let layout = pangocairo::functions::create_layout(&cr);
-    let mut font_desc = pango::FontDescription::new();
-    font_desc.set_family("Inter Tight");
-    font_desc.set_weight(pango::Weight::Bold);
-    let mut px = PCT_FONT_LOGICAL * scale;
-    font_desc.set_absolute_size(px * f64::from(pango::SCALE));
-    layout.set_font_description(Some(&font_desc));
-    layout.set_text(&text);
-
-    while layout.pixel_size().0 > icon_w && px > 8.0 {
-        px -= 0.5;
-        font_desc.set_absolute_size(px * f64::from(pango::SCALE));
-        layout.set_font_description(Some(&font_desc));
+    if charging {
+        cr.arc(center, center, radius, 0.0, 2.0 * std::f64::consts::PI);
+        cr.set_source_rgba(0.5, 0.5, 0.5, 0.8);
+        cr.set_line_width(2.0 * scale);
+        cr.stroke().unwrap();
     }
+
+    let layout = pangocairo::functions::create_layout(&cr);
+    let mut font = pango::FontDescription::new();
+    font.set_family("Inter Tight");
+    font.set_weight(pango::Weight::Bold);
+    font.set_absolute_size(FONT_SIZE * scale * f64::from(pango::SCALE));
+    layout.set_font_description(Some(&font));
+    layout.set_text(text);
 
     let (text_w, text_h) = layout.pixel_size();
     cr.move_to(
-        (f64::from(icon_w) - f64::from(text_w)) / 2.0,
-        (f64::from(icon_h) - f64::from(text_h)) / 2.0,
+        (f64::from(size) - f64::from(text_w)) / 2.0,
+        (f64::from(size) - f64::from(text_h)) / 2.0,
     );
     cr.set_source_rgba(
         f64::from(color.0) / 255.0,
@@ -142,53 +79,100 @@ fn render_pct_icon(pct: u32, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
     let stride = surface.stride() as usize;
     let data = surface.data().unwrap();
 
-    let mut buf = vec![0u8; (icon_w * icon_h * 4) as usize];
-    for y in 0..icon_h as usize {
-        for x in 0..icon_w as usize {
+    let mut buf = vec![0u8; (size * size * 4) as usize];
+    for y in 0..size as usize {
+        for x in 0..size as usize {
             let src = y * stride + x * 4;
-            let dst = (y * icon_w as usize + x) * 4;
+            let dst = (y * size as usize + x) * 4;
             let a = data[src + 3];
             if a > 0 {
+                let r = ((data[src + 2] as u32 * 255) / a as u32).min(255) as u8;
+                let g = ((data[src + 1] as u32 * 255) / a as u32).min(255) as u8;
+                let b = ((data[src] as u32 * 255) / a as u32).min(255) as u8;
                 buf[dst] = a;
-                buf[dst + 1] = color.0;
-                buf[dst + 2] = color.1;
-                buf[dst + 3] = color.2;
+                buf[dst + 1] = r;
+                buf[dst + 2] = g;
+                buf[dst + 3] = b;
             }
         }
     }
 
-    vec![(icon_w, icon_h, buf)]
+    vec![(size, size, buf)]
 }
 
-fn read_sysfs(path: &str) -> Option<String> {
-    std::fs::read_to_string(path).ok().map(|s| s.trim().to_string())
+// UPower State: 1=Charging, 2=Discharging, 3=Empty, 4=FullyCharged, 5=PendingCharge, 6=PendingDischarge
+fn is_charging(state: u32) -> bool {
+    matches!(state, 1 | 5)
 }
 
 struct BatteryReading {
     pct: u32,
     charging: bool,
-    time_to_full: u32,
-    time_to_empty: u32,
+    time_to_full: i64,
+    time_to_empty: i64,
 }
 
-fn read_battery() -> BatteryReading {
-    let pct = read_sysfs("/sys/class/power_supply/macsmc-battery/capacity")
-        .and_then(|s| s.parse().ok())
+async fn read_battery(system_conn: &Connection) -> BatteryReading {
+    let pct = system_conn
+        .call_method(
+            Some("org.freedesktop.UPower"),
+            UPOWER_BATTERY,
+            Some("org.freedesktop.DBus.Properties"),
+            "Get",
+            &("org.freedesktop.UPower.Device", "Percentage"),
+        )
+        .await
+        .ok()
+        .and_then(|r| r.body().deserialize::<zbus::zvariant::OwnedValue>().ok())
+        .and_then(|v| <f64>::try_from(v).ok())
+        .unwrap_or(0.0) as u32;
+
+    let state = system_conn
+        .call_method(
+            Some("org.freedesktop.UPower"),
+            UPOWER_BATTERY,
+            Some("org.freedesktop.DBus.Properties"),
+            "Get",
+            &("org.freedesktop.UPower.Device", "State"),
+        )
+        .await
+        .ok()
+        .and_then(|r| r.body().deserialize::<zbus::zvariant::OwnedValue>().ok())
+        .and_then(|v| <u32>::try_from(v).ok())
         .unwrap_or(0);
-    let charging = read_sysfs("/sys/class/power_supply/macsmc-ac/online")
-        .and_then(|s| s.parse::<u32>().ok())
-        .map(|v| v == 1)
-        .unwrap_or(false);
-    let time_to_full = read_sysfs("/sys/class/power_supply/macsmc-battery/time_to_full_now")
-        .and_then(|s| s.parse().ok())
+
+    let time_to_full = system_conn
+        .call_method(
+            Some("org.freedesktop.UPower"),
+            UPOWER_BATTERY,
+            Some("org.freedesktop.DBus.Properties"),
+            "Get",
+            &("org.freedesktop.UPower.Device", "TimeToFull"),
+        )
+        .await
+        .ok()
+        .and_then(|r| r.body().deserialize::<zbus::zvariant::OwnedValue>().ok())
+        .and_then(|v| <i64>::try_from(v).ok())
         .unwrap_or(0);
-    let time_to_empty = read_sysfs("/sys/class/power_supply/macsmc-battery/time_to_empty_now")
-        .and_then(|s| s.parse().ok())
+
+    let time_to_empty = system_conn
+        .call_method(
+            Some("org.freedesktop.UPower"),
+            UPOWER_BATTERY,
+            Some("org.freedesktop.DBus.Properties"),
+            "Get",
+            &("org.freedesktop.UPower.Device", "TimeToEmpty"),
+        )
+        .await
+        .ok()
+        .and_then(|r| r.body().deserialize::<zbus::zvariant::OwnedValue>().ok())
+        .and_then(|v| <i64>::try_from(v).ok())
         .unwrap_or(0);
-    BatteryReading { pct, charging, time_to_full, time_to_empty }
+
+    BatteryReading { pct, charging: is_charging(state), time_to_full, time_to_empty }
 }
 
-fn format_duration(secs: u32) -> String {
+fn format_duration(secs: i64) -> String {
     let h = secs / 3600;
     let m = (secs % 3600) / 60;
     if h > 0 {
@@ -205,22 +189,11 @@ struct BatteryState {
 }
 
 impl BatteryState {
-    fn new(scale: f64) -> Self {
-        Self { inner: Arc::new(Mutex::new(read_battery())), scale }
-    }
-
-    fn update(&self) {
-        *self.inner.lock().unwrap() = read_battery();
-    }
-
-    fn icon(&self) -> Vec<(i32, i32, Vec<u8>)> {
+    fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> {
         let r = self.inner.lock().unwrap();
-        render_icon(r.pct, r.charging)
-    }
-
-    fn pct_icon(&self) -> Vec<(i32, i32, Vec<u8>)> {
-        let r = self.inner.lock().unwrap();
-        render_pct_icon(r.pct, self.scale)
+        let color = text_color(r.pct);
+        let text = format!("{}", r.pct);
+        render_icon(&text, color, r.charging, self.scale)
     }
 
     fn tooltip(&self) -> String {
@@ -239,96 +212,34 @@ impl BatteryState {
     }
 }
 
-struct SniIcon {
+struct Sni {
     state: BatteryState,
 }
 
 #[interface(name = "org.kde.StatusNotifierItem")]
-impl SniIcon {
+impl Sni {
     #[zbus(property)]
-    fn category(&self) -> &str {
-        "SystemServices"
-    }
+    fn category(&self) -> &str { "SystemServices" }
     #[zbus(property)]
-    fn id(&self) -> &str {
-        "battery-tray"
-    }
+    fn id(&self) -> &str { "battery-tray" }
     #[zbus(property)]
-    fn title(&self) -> &str {
-        "Battery"
-    }
+    fn title(&self) -> &str { "Battery" }
     #[zbus(property)]
-    fn status(&self) -> &str {
-        "Active"
-    }
+    fn status(&self) -> &str { "Active" }
     #[zbus(property)]
-    fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> {
-        self.state.icon()
-    }
+    fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> { self.state.icon_pixmap() }
     #[zbus(property)]
-    fn item_is_menu(&self) -> bool {
-        false
-    }
+    fn item_is_menu(&self) -> bool { false }
     #[zbus(property)]
     fn tool_tip(&self) -> (String, Vec<(i32, i32, Vec<u8>)>, String, String) {
         (String::new(), vec![], self.state.tooltip(), String::new())
     }
-
     fn activate(&self, _x: i32, _y: i32) {}
     fn secondary_activate(&self, _x: i32, _y: i32) {}
     fn context_menu(&self, _x: i32, _y: i32) {}
     fn scroll(&self, _delta: i32, _orientation: &str) {}
-
     #[zbus(signal, name = "NewIcon")]
     async fn new_icon(emitter: &SignalEmitter<'_>) -> zbus::Result<()>;
-
-    #[zbus(signal, name = "NewToolTip")]
-    async fn new_tool_tip(emitter: &SignalEmitter<'_>) -> zbus::Result<()>;
-}
-
-struct SniPct {
-    state: BatteryState,
-}
-
-#[interface(name = "org.kde.StatusNotifierItem")]
-impl SniPct {
-    #[zbus(property)]
-    fn category(&self) -> &str {
-        "SystemServices"
-    }
-    #[zbus(property)]
-    fn id(&self) -> &str {
-        "battery-pct"
-    }
-    #[zbus(property)]
-    fn title(&self) -> &str {
-        "Battery"
-    }
-    #[zbus(property)]
-    fn status(&self) -> &str {
-        "Active"
-    }
-    #[zbus(property)]
-    fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> {
-        self.state.pct_icon()
-    }
-    #[zbus(property)]
-    fn item_is_menu(&self) -> bool {
-        false
-    }
-    #[zbus(property)]
-    fn tool_tip(&self) -> (String, Vec<(i32, i32, Vec<u8>)>, String, String) {
-        (String::new(), vec![], self.state.tooltip(), String::new())
-    }
-
-    fn activate(&self, _x: i32, _y: i32) {}
-    fn secondary_activate(&self, _x: i32, _y: i32) {}
-    fn context_menu(&self, _x: i32, _y: i32) {}
-    fn scroll(&self, _delta: i32, _orientation: &str) {}
-
-    #[zbus(signal, name = "NewIcon")]
-    async fn new_icon(emitter: &SignalEmitter<'_>) -> zbus::Result<()>;
-
     #[zbus(signal, name = "NewToolTip")]
     async fn new_tool_tip(emitter: &SignalEmitter<'_>) -> zbus::Result<()>;
 }
@@ -348,56 +259,57 @@ async fn register_sni(conn: &Connection, bus_name: &str) {
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let scale = get_scale_factor();
-    let state = BatteryState::new(scale);
 
-    let conn_icon = Connection::session().await?;
-    let bus_name_icon = "org.kde.StatusNotifierItem-battery-tray";
-    conn_icon.object_server().at(SNI_PATH, SniIcon { state: state.clone() }).await?;
-    conn_icon.request_name(bus_name_icon).await?;
-    register_sni(&conn_icon, bus_name_icon).await;
+    let system_conn = Connection::system().await?;
+    let initial = read_battery(&system_conn).await;
+    let state = BatteryState {
+        inner: Arc::new(Mutex::new(initial)),
+        scale,
+    };
 
-    let conn_pct = Connection::session().await?;
-    let bus_name_pct = "org.kde.StatusNotifierItem-battery-pct";
-    conn_pct.object_server().at(SNI_PATH, SniPct { state: state.clone() }).await?;
-    conn_pct.request_name(bus_name_pct).await?;
-    register_sni(&conn_pct, bus_name_pct).await;
+    let session_conn = Connection::session().await?;
+    let bus_name = "org.kde.StatusNotifierItem-battery-tray";
+    session_conn.object_server().at(SNI_PATH, Sni { state: state.clone() }).await?;
+    session_conn.request_name(bus_name).await?;
+    register_sni(&session_conn, bus_name).await;
 
-    let rule = zbus::MatchRule::builder()
+    // watch for SNI watcher restarts
+    let watcher_rule = zbus::MatchRule::builder()
         .msg_type(zbus::message::Type::Signal)
         .interface("org.freedesktop.DBus")?
         .member("NameOwnerChanged")?
         .path("/org/freedesktop/DBus")?
         .build();
     let mut watcher_stream =
-        zbus::MessageStream::for_match_rule(rule, &conn_icon, Some(16)).await?;
+        zbus::MessageStream::for_match_rule(watcher_rule, &session_conn, Some(16)).await?;
 
-    let iface_icon = conn_icon
-        .object_server()
-        .interface::<_, SniIcon>(SNI_PATH)
-        .await?;
-    let iface_pct = conn_pct
-        .object_server()
-        .interface::<_, SniPct>(SNI_PATH)
-        .await?;
+    // watch UPower battery property changes on system bus
+    let upower_rule = zbus::MatchRule::builder()
+        .msg_type(zbus::message::Type::Signal)
+        .interface("org.freedesktop.DBus.Properties")?
+        .member("PropertiesChanged")?
+        .path(UPOWER_BATTERY)?
+        .build();
+    let mut upower_stream =
+        zbus::MessageStream::for_match_rule(upower_rule, &system_conn, Some(16)).await?;
 
-    let mut tick = interval(Duration::from_secs(30));
+    let iface = session_conn
+        .object_server()
+        .interface::<_, Sni>(SNI_PATH)
+        .await?;
 
     loop {
         tokio::select! {
-            _ = tick.tick() => {
-                state.update();
-                let e = iface_icon.signal_emitter();
-                let _ = SniIcon::new_icon(&e).await;
-                let _ = SniIcon::new_tool_tip(&e).await;
-                let e = iface_pct.signal_emitter();
-                let _ = SniPct::new_icon(&e).await;
-                let _ = SniPct::new_tool_tip(&e).await;
+            Some(Ok(_)) = futures_util::StreamExt::next(&mut upower_stream) => {
+                *state.inner.lock().unwrap() = read_battery(&system_conn).await;
+                let e = iface.signal_emitter();
+                let _ = Sni::new_icon(&e).await;
+                let _ = Sni::new_tool_tip(&e).await;
             }
             Some(Ok(msg)) = futures_util::StreamExt::next(&mut watcher_stream) => {
                 if let Ok(body) = msg.body().deserialize::<(String, String, String)>() {
                     if body.0 == "org.kde.StatusNotifierWatcher" && !body.2.is_empty() {
-                        register_sni(&conn_icon, bus_name_icon).await;
-                        register_sni(&conn_pct, bus_name_pct).await;
+                        register_sni(&session_conn, bus_name).await;
                     }
                 }
             }
