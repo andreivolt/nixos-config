@@ -10,6 +10,7 @@
     ../shared/local-ca.nix
     ../shared/bat
     ../shared/btop.nix
+    ../shared/caps-escape.nix
     ../shared/cargo.nix
     ../shared/curl.nix
     ../shared/dircolors.nix
@@ -48,17 +49,6 @@
   console.earlySetup = true;
   console.font = "ter-132n";
   console.packages = [pkgs.terminus_font];
-
-  # Caps -> Escape at kernel level (works in console and Wayland)
-  services.udev.extraHwdb = ''
-    # HID keyboards (USB, internal Apple, etc.)
-    evdev:input:*
-     KEYBOARD_KEY_70039=key_esc
-
-    # AT/PS2 keyboards (ThinkPad internal, etc.)
-    evdev:atkbd:*
-     KEYBOARD_KEY_3a=key_esc
-  '';
 
   hardware.bluetooth.enable = true;
   hardware.enableRedistributableFirmware = true;
