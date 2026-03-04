@@ -91,6 +91,10 @@ in {
           notify_on_cmd_finish = "unfocused";
           enable_audio_bell = "no";
 
+          # Scrolling
+          pixel_scroll = "yes";
+          momentum_scroll = "0.96";
+
           # Scrollbar
           scrollbar_width = 1.25;
           scrollbar_hover_width = 2;
