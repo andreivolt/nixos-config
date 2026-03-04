@@ -10,6 +10,7 @@ let
   mpvWithCastDeps = pkgs.symlinkJoin {
     name = "mpv-with-cast-deps";
     paths = [ mpvWithScripts pkgs.openssh pkgs.socat ];
+    meta.mainProgram = "mpv";
   };
 
   sandboxed = mkNixPak {
