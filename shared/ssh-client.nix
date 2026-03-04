@@ -10,12 +10,12 @@ in {
       enable = true;
       enableDefaultConfig = false;
       includes = lib.optionals isDarwin [ "~/.orbstack/ssh/config" ];
-      controlMaster = "auto";
-      controlPath = "~/.ssh/control-%r@%h:%p";
-      controlPersist = "10m";
       matchBlocks = {
         "*" = {
           compression = true;
+          controlMaster = "auto";
+          controlPath = "~/.ssh/control-%r@%h:%p";
+          controlPersist = "10m";
         };
       } // lib.optionalAttrs isLinuxWorkstation {
         phone = {
