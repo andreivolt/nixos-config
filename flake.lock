@@ -144,11 +144,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772631209,
-        "narHash": "sha256-H/yvrWhqGZ0EjqWwvRQqA0CQYeDtOfA65uO/3Ww5B5w=",
+        "lastModified": 1772632611,
+        "narHash": "sha256-WAUNEUf5tw28JQnhE06kTZWOOYp7BGkoFlk4svRzeUI=",
         "ref": "refs/heads/main",
-        "rev": "1b1660ceb6597229eb0640916595459dd747696b",
-        "revCount": 14,
+        "rev": "9442bf8183366918e7154d46e63cc2eed299c98f",
+        "revCount": 16,
         "type": "git",
         "url": "file:/home/andrei/dev/dictate"
       },
