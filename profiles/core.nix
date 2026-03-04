@@ -36,6 +36,7 @@
     ../shared/rubocop.nix
     ../shared/rustfmt.nix
     ../shared/ssh.nix
+    ../shared/tailscale.nix
     ../shared/tmux.nix
     ../shared/wezterm
     ../shared/zsh
@@ -92,29 +93,6 @@
     enable = true;
     settings.PasswordAuthentication = false;
   };
-  services.tailscale = {
-    enable = true;
-    extraUpFlags = ["--operator=andrei" "--login-server=https://hs.avolt.net" "--advertise-exit-node"];
-  };
-  boot.kernel.sysctl = {
-    "net.ipv4.ip_forward" = true;
-    "net.ipv6.conf.all.forwarding" = true;
-  };
-  # UDP GRO forwarding for better Tailscale exit node throughput
-  # https://tailscale.com/kb/1320/performance-best-practices#ethtool-configuration
-  systemd.services.tailscale-gro = {
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = pkgs.writeShellScript "tailscale-gro" ''
-        dev=$(${pkgs.iproute2}/bin/ip -o route get 1.1.1.1 | ${pkgs.gawk}/bin/awk '{print $5}')
-        ${pkgs.ethtool}/bin/ethtool -K "$dev" rx-udp-gro-forwarding on rx-gro-list off 2>/dev/null || true
-      '';
-    };
-  };
-  networking.firewall.trustedInterfaces = ["tailscale0"];
-
   environment.etc."mailcap".text = "*/*; xdg-open '%s'";
   environment.variables.LC_TIME = "C.UTF-8";
   environment.systemPackages =
