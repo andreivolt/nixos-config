@@ -3,6 +3,8 @@
   # Asahi has no hibernate/suspend-to-disk support, so UPower's default
   # HybridSleep action silently fails on critical battery. Use PowerOff instead.
   services.upower.criticalPowerAction = "PowerOff";
+  services.upower.percentageLow = 20;
+  services.upower.percentageCritical = 15;
   services.upower.percentageAction = 10;
   systemd.tmpfiles.rules = [
     "w /sys/class/power_supply/macsmc-battery/charge_control_end_threshold - - - - 80"

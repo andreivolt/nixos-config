@@ -1,9 +1,5 @@
-use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
-use tokio::io::{AsyncBufReadExt, BufReader};
 use tokio::process::Command;
-use tokio::sync::mpsc;
-use tokio::time::{sleep, Duration};
+use tokio::time::{interval, Duration};
 use zbus::{interface, Connection};
 
 const SNI_PATH: &str = "/StatusNotifierItem";
@@ -35,16 +31,11 @@ fn render_icon() -> Vec<(i32, i32, Vec<u8>)> {
 }
 
 async fn check_mic() -> bool {
-    let output = Command::new("pw-cli")
-        .args(["ls", "Node"])
-        .output()
-        .await;
-    let Ok(o) = output else { return false };
+    let Ok(o) = Command::new("pw-cli").args(["ls", "Node"]).output().await else {
+        return false;
+    };
     let text = String::from_utf8_lossy(&o.stdout);
 
-    // Parse pw-cli output into node blocks, check for client input streams
-    // (nodes with both Stream/Input/Audio and application.name)
-    // This excludes hardware effect nodes like audio_effect.j413-mic
     let mut is_input = false;
     let mut has_app = false;
     for line in text.lines() {
@@ -70,39 +61,21 @@ struct StatusNotifierItem;
 #[interface(name = "org.kde.StatusNotifierItem")]
 impl StatusNotifierItem {
     #[zbus(property)]
-    fn category(&self) -> &str {
-        "Hardware"
-    }
+    fn category(&self) -> &str { "Hardware" }
     #[zbus(property)]
-    fn id(&self) -> &str {
-        "mic-indicator"
-    }
+    fn id(&self) -> &str { "mic-indicator" }
     #[zbus(property)]
-    fn title(&self) -> &str {
-        "Microphone"
-    }
+    fn title(&self) -> &str { "Microphone" }
     #[zbus(property)]
-    fn status(&self) -> &str {
-        "Active"
-    }
+    fn status(&self) -> &str { "Active" }
     #[zbus(property)]
-    fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> {
-        render_icon()
-    }
+    fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> { render_icon() }
     #[zbus(property)]
-    fn item_is_menu(&self) -> bool {
-        false
-    }
+    fn item_is_menu(&self) -> bool { false }
     #[zbus(property)]
     fn tool_tip(&self) -> (String, Vec<(i32, i32, Vec<u8>)>, String, String) {
-        (
-            String::new(),
-            vec![],
-            "Microphone in use".into(),
-            String::new(),
-        )
+        (String::new(), vec![], "Microphone in use".into(), String::new())
     }
-
     fn activate(&self, _x: i32, _y: i32) {}
     fn secondary_activate(&self, _x: i32, _y: i32) {}
     fn context_menu(&self, _x: i32, _y: i32) {}
@@ -121,96 +94,36 @@ async fn register_sni(conn: &Connection) {
         .await;
 }
 
-async fn show(conn: &Connection) {
-    let _ = conn
-        .request_name(BUS_NAME)
-        .await;
-    register_sni(conn).await;
-}
-
-async fn hide(conn: &Connection) {
-    let _ = conn
-        .release_name(BUS_NAME)
-        .await;
-}
-
-async fn run_pw_monitor(tx: mpsc::Sender<()>) {
-    loop {
-        let child = Command::new("pw-mon")
-            .stdout(std::process::Stdio::piped())
-            .stderr(std::process::Stdio::null())
-            .spawn();
-
-        if let Ok(mut child) = child {
-            if let Some(stdout) = child.stdout.take() {
-                let reader = BufReader::new(stdout);
-                let mut lines = reader.lines();
-                while let Ok(Some(line)) = lines.next_line().await {
-                    if line.contains("added") || line.contains("removed") {
-                        let _ = tx.send(()).await;
-                    }
-                }
-            }
-            let _ = child.wait().await;
-        }
-
-        sleep(Duration::from_secs(1)).await;
-    }
+/// Create a new D-Bus connection with the SNI object and register it.
+/// Dropping the returned Connection unregisters the item from the tray.
+async fn show() -> Option<Connection> {
+    let conn = Connection::session().await.ok()?;
+    conn.object_server().at(SNI_PATH, StatusNotifierItem).await.ok()?;
+    conn.request_name(BUS_NAME).await.ok()?;
+    register_sni(&conn).await;
+    Some(conn)
 }
 
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let visible = Arc::new(AtomicBool::new(false));
+    let mut sni_conn: Option<Connection> = None;
 
-    let conn = Connection::session().await?;
-    conn.object_server().at(SNI_PATH, StatusNotifierItem).await?;
-
-    // Set initial state
     if check_mic().await {
-        show(&conn).await;
-        visible.store(true, Ordering::Relaxed);
+        sni_conn = show().await;
     }
 
-    // Re-register when StatusNotifierWatcher restarts
-    let conn2 = conn.clone();
-    let visible2 = visible.clone();
-    let rule = zbus::MatchRule::builder()
-        .msg_type(zbus::message::Type::Signal)
-        .interface("org.freedesktop.DBus")?
-        .member("NameOwnerChanged")?
-        .path("/org/freedesktop/DBus")?
-        .build();
-    let mut watcher_stream =
-        zbus::MessageStream::for_match_rule(rule, &conn, Some(16)).await?;
-
-    let (tx, mut rx) = mpsc::channel(16);
-    tokio::spawn(run_pw_monitor(tx));
+    let mut tick = interval(Duration::from_secs(2));
 
     loop {
-        tokio::select! {
-            Some(()) = rx.recv() => {
-                sleep(Duration::from_millis(100)).await;
-                while rx.try_recv().is_ok() {}
+        tick.tick().await;
 
-                let was = visible.load(Ordering::Relaxed);
-                let is = check_mic().await;
-                if is && !was {
-                    show(&conn).await;
-                    visible.store(true, Ordering::Relaxed);
-                } else if !is && was {
-                    hide(&conn).await;
-                    visible.store(false, Ordering::Relaxed);
-                }
-            }
-            Some(Ok(msg)) = futures_util::StreamExt::next(&mut watcher_stream) => {
-                if let Ok(body) = msg.body().deserialize::<(String, String, String)>() {
-                    if body.0 == "org.kde.StatusNotifierWatcher" && !body.2.is_empty() {
-                        if visible2.load(Ordering::Relaxed) {
-                            register_sni(&conn2).await;
-                        }
-                    }
-                }
-            }
+        let is = check_mic().await;
+        let was = sni_conn.is_some();
+
+        if is && !was {
+            sni_conn = show().await;
+        } else if !is && was {
+            drop(sni_conn.take());
         }
     }
 }
