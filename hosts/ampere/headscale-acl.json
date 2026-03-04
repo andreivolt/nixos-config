@@ -1,7 +1,12 @@
 {
+  "groups": {
+    "group:admin": ["andrei@"],
+    "group:fly": ["fly@"],
+    "group:api": ["yt-dlp-api@"]
+  },
   "acls": [
-    {"action": "accept", "src": ["andrei"], "dst": ["*:*"]},
-    {"action": "accept", "src": ["fly"], "dst": ["yt-dlp-api:*"]},
-    {"action": "accept", "src": ["yt-dlp-api"], "dst": ["*:*"]}
+    {"action": "accept", "src": ["group:admin"], "dst": ["*:*"]},
+    {"action": "accept", "src": ["group:fly"], "dst": ["group:api:*"]},
+    {"action": "accept", "src": ["group:api"], "dst": ["*:*"]}
   ]
 }
