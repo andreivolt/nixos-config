@@ -121,6 +121,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
       inputs.crane.follows = "crane";
     };
+    yt-dlp-api = {
+      url = "git+file:/home/andrei/dev/yt-dlp-api";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.crane.follows = "crane";
+    };
   };
 
   outputs = inputs @ {
@@ -157,6 +162,7 @@
     nixpak,
     ironbar,
     osk,
+    yt-dlp-api,
   }:
   let
     # Helper to build PEP-723 inline scripts using uv2nix
@@ -359,6 +365,7 @@
         hyprland.nixosModules.default
         sops-nix.nixosModules.sops
         launcher.nixosModules.default
+        yt-dlp-api.nixosModules.default
         {
           services.launcher.enable = true;
           systemd.user.services = let ui = import ./shared/ui.nix; fontEnv = {

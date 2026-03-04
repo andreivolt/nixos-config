@@ -40,6 +40,8 @@ let
     "giphy/api_key"
     "github/token"
     "google/client_id"
+    "headscale/authkey"
+    "headscale/fly_authkey"
     "google/client_secret"
     "lastfm/api_key"
     "lastfm/api_secret"

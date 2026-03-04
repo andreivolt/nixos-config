@@ -32,6 +32,7 @@
     ./ddc.nix
     ./v4l2loopback.nix
     ./distributed-builds.nix
+    ./yt-dlp-api.nix
     ./throttled.nix
     ./screensaver.nix
     ../../linux/intel

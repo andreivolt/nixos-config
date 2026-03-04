@@ -85,11 +85,11 @@
     },
     "crane_2": {
       "locked": {
-        "lastModified": 1772080396,
-        "narHash": "sha256-84W9UNtSk9DNMh43WBkOjpkbfODlmg+RDi854PnNgLE=",
+        "lastModified": 1772560058,
+        "narHash": "sha256-NuVKdMBJldwUXgghYpzIWJdfeB7ccsu1CC7B+NfSoZ8=",
         "owner": "ipetkov",
         "repo": "crane",
-        "rev": "8525580bc0316c39dbfa18bd09a1331e98c9e463",
+        "rev": "db590d9286ed5ce22017541e36132eab4e8b3045",
         "type": "github"
       },
       "original": {
@@ -144,10 +144,10 @@
         ]
       },
       "locked": {
-        "dirtyRev": "916808bf28cd54936bd54120a185710094119475-dirty",
-        "dirtyShortRev": "916808b-dirty",
-        "lastModified": 1772547315,
-        "narHash": "sha256-lwV3EksjYu+WjZZ04uOqwOahBqUIe95k9VdX6UWSBPY=",
+        "dirtyRev": "35e8f1f91ff44d54b064d380e0e10c43c58214b9-dirty",
+        "dirtyShortRev": "35e8f1f-dirty",
+        "lastModified": 1772587453,
+        "narHash": "sha256-nWkNSOOw9Mk+rtgUTX0wX01cNtHXF8OyFeXu3Irhf78=",
         "type": "git",
         "url": "file:/home/andrei/dev/dictate"
       },
@@ -1561,7 +1561,8 @@
         "rust-overlay": "rust-overlay_3",
         "sci-hub-now": "sci-hub-now",
         "sops-nix": "sops-nix",
-        "uv2nix": "uv2nix_2"
+        "uv2nix": "uv2nix_2",
+        "yt-dlp-api": "yt-dlp-api"
       }
     },
     "rust-analyzer-src": {
@@ -1842,6 +1843,29 @@
         "owner": "hyprwm",
         "repo": "xdg-desktop-portal-hyprland",
         "type": "github"
+      }
+    },
+    "yt-dlp-api": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772593707,
+        "narHash": "sha256-DSx5MPKe+/NgMbjnXN37VvaWSD8m/YaxNotdtHf8fBg=",
+        "ref": "refs/heads/main",
+        "rev": "9fc281935a83cd3e691d3773305922331121c02b",
+        "revCount": 1,
+        "type": "git",
+        "url": "file:/home/andrei/dev/yt-dlp-api"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:/home/andrei/dev/yt-dlp-api"
       }
     }
   },

@@ -1,0 +1,7 @@
+{
+  "acls": [
+    {"action": "accept", "src": ["andrei"], "dst": ["*:*"]},
+    {"action": "accept", "src": ["fly"], "dst": ["yt-dlp-api:*"]},
+    {"action": "accept", "src": ["yt-dlp-api"], "dst": ["*:*"]}
+  ]
+}

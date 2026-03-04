@@ -68,8 +68,7 @@
       # Ephemeral node cleanup
       ephemeral_node_inactivity_timeout = "30m";
 
-      # Policy/ACLs - default allow all (null = no policy file)
-      policy.path = null;
+      policy.path = ./headscale-acl.json;
     };
   };
 

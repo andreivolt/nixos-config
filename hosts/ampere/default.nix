@@ -59,6 +59,7 @@
   users.users.andrei.hashedPasswordFile = lib.mkForce "/etc/passwords/andrei";
 
   # Sops config (no /persist on this host, secrets per-module)
+  sops.defaultSopsFile = ../../secrets/ampere.yaml;
   sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
 
   # ACME for SSL certificates
