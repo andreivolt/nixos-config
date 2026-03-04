@@ -4,6 +4,7 @@
   imports = [
     ./battery.nix
     ./shutdown-sound-fix.nix
+    ./wifi-suspend.nix
   ];
 
   hardware.asahi.setupAsahiSound = true;
