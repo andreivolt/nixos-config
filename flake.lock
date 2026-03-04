@@ -144,10 +144,11 @@
         ]
       },
       "locked": {
-        "dirtyRev": "35e8f1f91ff44d54b064d380e0e10c43c58214b9-dirty",
-        "dirtyShortRev": "35e8f1f-dirty",
-        "lastModified": 1772587453,
-        "narHash": "sha256-nWkNSOOw9Mk+rtgUTX0wX01cNtHXF8OyFeXu3Irhf78=",
+        "lastModified": 1772631209,
+        "narHash": "sha256-H/yvrWhqGZ0EjqWwvRQqA0CQYeDtOfA65uO/3Ww5B5w=",
+        "ref": "refs/heads/main",
+        "rev": "1b1660ceb6597229eb0640916595459dd747696b",
+        "revCount": 14,
         "type": "git",
         "url": "file:/home/andrei/dev/dictate"
       },
