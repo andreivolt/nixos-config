@@ -1,6 +1,9 @@
-# Battery charge threshold for Apple Silicon Macs
-# Limits charging to 80% for battery longevity
+# Battery and power management for Apple Silicon Macs
 { pkgs, ... }: {
+  # Asahi has no hibernate/suspend-to-disk support, so UPower's default
+  # HybridSleep action silently fails on critical battery. Use PowerOff instead.
+  services.upower.criticalPowerAction = "PowerOff";
+  services.upower.percentageAction = 10;
   systemd.tmpfiles.rules = [
     "w /sys/class/power_supply/macsmc-battery/charge_control_end_threshold - - - - 80"
   ];
