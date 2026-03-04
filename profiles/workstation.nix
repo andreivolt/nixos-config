@@ -20,6 +20,8 @@
 
     # Services
     ../linux/mullvad.nix
+    ../linux/mullvad-proxies.nix
+    ../linux/mullvad-tailscale-dns.nix
     ../linux/tor.nix
     ../linux/socks-proxy.nix
 
