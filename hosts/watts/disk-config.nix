@@ -90,8 +90,12 @@
       timeout = 3;
     };
 
+    # Hibernate: resume from encrypted Btrfs swapfile
+    boot.resumeDevice = "/dev/mapper/cryptroot";
+
     # Kernel parameters for better SSD performance and power management
     boot.kernelParams = [
+      "resume_offset=60302592"
       "quiet"
       "splash"
       "rd.systemd.show_status=false"
