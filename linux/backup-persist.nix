@@ -4,6 +4,11 @@ let
   excludes = [
     "var/lib/docker/"
     "nix-build/"
+    "var/lib/systemd/coredump/"
+    "var/lib/roon-server/RoonServer/Cache/"
+    "var/lib/roon-server/RoonServer/SentryCache/"
+    "var/lib/roon-server/*/Logs/"
+    "var/lib/bluetooth/*/cache/"
   ];
   excludeFlags = lib.concatMapStrings (e: " --exclude ${lib.escapeShellArg e}") excludes;
 in
