@@ -14,6 +14,6 @@
   };
 
   chromium.loadExtensions = [
-    inputs.monolith.packages.${pkgs.system}.chrome-extension
+    inputs.monolith.packages.${pkgs.stdenv.hostPlatform.system}.chrome-extension
   ];
 }

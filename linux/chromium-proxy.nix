@@ -16,7 +16,7 @@ let
   '';
   pacBase64 = builtins.readFile (derivation {
     name = "proxy-pac-b64";
-    system = pkgs.system;
+    system = pkgs.stdenv.hostPlatform.system;
     builder = "${pkgs.bash}/bin/bash";
     args = [ "-c" "${pkgs.coreutils}/bin/base64 -w0 < ${pacFile} > $out" ];
   });
