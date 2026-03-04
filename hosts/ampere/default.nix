@@ -7,6 +7,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
+    ./distributed-builds.nix
     ./headscale.nix
     ./livekit.nix
     ./vaultwarden.nix
