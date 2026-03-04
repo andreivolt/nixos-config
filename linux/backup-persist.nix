@@ -9,6 +9,7 @@ let
     "var/lib/roon-server/RoonServer/SentryCache/"
     "var/lib/roon-server/*/Logs/"
     "var/lib/bluetooth/*/cache/"
+    "var/lib/roon-server/RoonServer/Database/Registry/RoonApi/browsesession_*"
   ];
   excludeFlags = lib.concatMapStrings (e: " --exclude ${lib.escapeShellArg e}") excludes;
 in
