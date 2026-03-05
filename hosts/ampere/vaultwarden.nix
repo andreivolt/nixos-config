@@ -66,4 +66,5 @@
 
   # Allow nginx to read DNS-01 ACME certs
   users.users.nginx.extraGroups = ["acme"];
+
 }

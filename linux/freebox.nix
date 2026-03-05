@@ -3,6 +3,9 @@
 {
   environment.systemPackages = [ pkgs.cifs-utils ];
 
+  # Resolve Freebox router admin to LAN IP
+  services.dnsmasq.settings.address = [ "/mafreebox.freebox.fr/192.168.1.254" ];
+
   fileSystems."/mnt/freebox" = {
     device = "//mafreebox.freebox.fr/Disque dur";
     fsType = "cifs";

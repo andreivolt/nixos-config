@@ -25,4 +25,10 @@
   };
 
   networking.firewall.trustedInterfaces = ["tailscale0"];
+
+  # Route tailnet Magic DNS (*.tail.avolt.net) through Tailscale's resolver
+  services.dnsmasq.settings.server = [
+    "/tail.avolt.net/100.100.100.100"  # Magic DNS for tailnet hostnames
+    "/pw.avolt.net/100.100.100.100"    # Vaultwarden (tailnet-only)
+  ];
 }
