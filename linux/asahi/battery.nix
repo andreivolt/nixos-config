@@ -1,8 +1,6 @@
 # Battery and power management for Apple Silicon Macs
 { pkgs, ... }: {
-  # Asahi has no hibernate/suspend-to-disk support, so UPower's default
-  # HybridSleep action silently fails on critical battery. Use PowerOff instead.
-  services.upower.criticalPowerAction = "PowerOff";
+  services.upower.criticalPowerAction = "Suspend";
   services.upower.percentageLow = 20;
   services.upower.percentageCritical = 15;
   services.upower.percentageAction = 10;
