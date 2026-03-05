@@ -98,7 +98,7 @@ fn render_icon(pct: u32, charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)>
 
         let layout = pangocairo::functions::create_layout(&cr);
         let mut font = pango::FontDescription::new();
-        font.set_family("Inter Tight");
+        font.set_family(env!("FONT_FAMILY"));
         font.set_weight(pango::Weight::Bold);
         font.set_absolute_size(FONT_SIZE * scale * f64::from(pango::SCALE));
         layout.set_font_description(Some(&font));

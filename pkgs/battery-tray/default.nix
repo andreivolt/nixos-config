@@ -1,19 +1,14 @@
-{
-  lib,
-  rustPlatform,
-  pkg-config,
-  dbus,
-  cairo,
-  pango,
-  glib,
-}:
-rustPlatform.buildRustPackage {
+{ lib, rustPlatform, pkg-config, dbus, cairo, pango, glib }:
+let ui = import ../../shared/ui.nix;
+in rustPlatform.buildRustPackage {
   pname = "battery-tray";
   version = "0.1.0";
 
   src = ./.;
 
   cargoLock.lockFile = ./Cargo.lock;
+
+  env.FONT_FAMILY = ui.fontFamily;
 
   nativeBuildInputs = [ pkg-config ];
   buildInputs = [ dbus cairo pango glib ];
