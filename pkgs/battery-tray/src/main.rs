@@ -4,7 +4,7 @@ use zbus::{interface, Connection};
 
 const SNI_PATH: &str = "/StatusNotifierItem";
 const UPOWER_BATTERY: &str = "/org/freedesktop/UPower/devices/battery_macsmc_battery";
-const ICON_SIZE: i32 = 22;
+const ICON_SIZE: i32 = 20;
 const FONT_SIZE: f64 = 10.0;
 
 const COLOR_NORMAL: (u8, u8, u8) = (0xaa, 0xaa, 0xaa);

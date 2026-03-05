@@ -10,7 +10,7 @@ use zbus::{interface, Connection};
 
 const SNI_PATH: &str = "/StatusNotifierItem";
 const BUS_NAME: &str = "org.kde.StatusNotifierItem-mic-indicator";
-const ICON_SIZE: i32 = 22;
+const ICON_SIZE: i32 = 20;
 const DOT_RADIUS: f64 = 7.0;
 const DOT_COLOR: (u8, u8, u8) = (0xff, 0x9f, 0x0a);
 
