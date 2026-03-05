@@ -94,7 +94,7 @@ fn render_icon(pct: u32, charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)>
 
     if pct < 100 {
         let text = format!("{}", pct);
-        let text_color = if charging { (0, 0, 0) } else { color };
+        let text_color = if charging { (0, 0, 0) } else { COLOR_NORMAL };
 
         let layout = pangocairo::functions::create_layout(&cr);
         let mut font = pango::FontDescription::new();
