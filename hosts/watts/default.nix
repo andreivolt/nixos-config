@@ -35,6 +35,7 @@
     ./yt-dlp-api.nix
     ./throttled.nix
     ./screensaver.nix
+    ./dpms.nix
     ../../linux/intel
   ];
 
