@@ -38,44 +38,9 @@ fn get_scale_factor() -> f64 {
         .unwrap_or(1.0)
 }
 
-fn render_icon(text: &str, color: (u8, u8, u8), charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
-    let size = (f64::from(ICON_SIZE) * scale).round() as i32;
-    let center = f64::from(size) / 2.0;
-    let radius = center - 1.0 * scale;
-
-    let mut surface = cairo::ImageSurface::create(cairo::Format::ARgb32, size, size).unwrap();
-    let cr = cairo::Context::new(&surface).unwrap();
-
-    if charging {
-        cr.arc(center, center, radius, 0.0, 2.0 * std::f64::consts::PI);
-        cr.set_source_rgba(0.5, 0.5, 0.5, 0.8);
-        cr.set_line_width(2.0 * scale);
-        cr.stroke().unwrap();
-    }
-
-    let layout = pangocairo::functions::create_layout(&cr);
-    let mut font = pango::FontDescription::new();
-    font.set_family("Inter Tight");
-    font.set_weight(pango::Weight::Bold);
-    font.set_absolute_size(FONT_SIZE * scale * f64::from(pango::SCALE));
-    layout.set_font_description(Some(&font));
-    layout.set_text(text);
-
-    let (text_w, text_h) = layout.pixel_size();
-    cr.move_to(
-        (f64::from(size) - f64::from(text_w)) / 2.0,
-        (f64::from(size) - f64::from(text_h)) / 2.0,
-    );
-    cr.set_source_rgba(
-        f64::from(color.0) / 255.0,
-        f64::from(color.1) / 255.0,
-        f64::from(color.2) / 255.0,
-        1.0,
-    );
-    pangocairo::functions::show_layout(&cr, &layout);
-
-    drop(cr);
+fn surface_to_pixmap(surface: &mut cairo::ImageSurface) -> Vec<(i32, i32, Vec<u8>)> {
     surface.flush();
+    let size = surface.width();
     let stride = surface.stride() as usize;
     let data = surface.data().unwrap();
 
@@ -100,54 +65,56 @@ fn render_icon(text: &str, color: (u8, u8, u8), charging: bool, scale: f64) -> V
     vec![(size, size, buf)]
 }
 
-fn render_filled_circle(color: (u8, u8, u8), charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
-    let size = (f64::from(ICON_SIZE) * scale).round() as i32;
-    let center = f64::from(size) / 2.0;
-    let radius = center - 1.0 * scale;
-
-    let mut surface = cairo::ImageSurface::create(cairo::Format::ARgb32, size, size).unwrap();
-    let cr = cairo::Context::new(&surface).unwrap();
-
-    if charging {
-        cr.arc(center, center, radius, 0.0, 2.0 * std::f64::consts::PI);
-        cr.set_source_rgba(0.5, 0.5, 0.5, 0.8);
-        cr.set_line_width(2.0 * scale);
-        cr.stroke().unwrap();
-    }
-
-    cr.arc(center, center, 3.5 * scale, 0.0, 2.0 * std::f64::consts::PI);
+fn set_color(cr: &cairo::Context, color: (u8, u8, u8)) {
     cr.set_source_rgba(
         f64::from(color.0) / 255.0,
         f64::from(color.1) / 255.0,
         f64::from(color.2) / 255.0,
         1.0,
     );
-    cr.fill().unwrap();
+}
 
-    drop(cr);
-    surface.flush();
-    let stride = surface.stride() as usize;
-    let data = surface.data().unwrap();
+fn render_icon(pct: u32, charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)> {
+    let size = (f64::from(ICON_SIZE) * scale).round() as i32;
+    let center = f64::from(size) / 2.0;
+    let radius = center - 1.0 * scale;
+    let color = text_color(pct);
 
-    let mut buf = vec![0u8; (size * size * 4) as usize];
-    for y in 0..size as usize {
-        for x in 0..size as usize {
-            let src = y * stride + x * 4;
-            let dst = (y * size as usize + x) * 4;
-            let a = data[src + 3];
-            if a > 0 {
-                let r = ((data[src + 2] as u32 * 255) / a as u32).min(255) as u8;
-                let g = ((data[src + 1] as u32 * 255) / a as u32).min(255) as u8;
-                let b = ((data[src] as u32 * 255) / a as u32).min(255) as u8;
-                buf[dst] = a;
-                buf[dst + 1] = r;
-                buf[dst + 2] = g;
-                buf[dst + 3] = b;
-            }
-        }
+    let mut surface = cairo::ImageSurface::create(cairo::Format::ARgb32, size, size).unwrap();
+    let cr = cairo::Context::new(&surface).unwrap();
+
+    cr.arc(center, center, radius, 0.0, 2.0 * std::f64::consts::PI);
+    set_color(&cr, color);
+    if charging {
+        cr.fill().unwrap();
+    } else {
+        cr.set_line_width(1.5 * scale);
+        cr.stroke().unwrap();
     }
 
-    vec![(size, size, buf)]
+    if pct < 100 {
+        let text = format!("{}", pct);
+        let text_color = if charging { (0, 0, 0) } else { color };
+
+        let layout = pangocairo::functions::create_layout(&cr);
+        let mut font = pango::FontDescription::new();
+        font.set_family("Inter Tight");
+        font.set_weight(pango::Weight::Bold);
+        font.set_absolute_size(FONT_SIZE * scale * f64::from(pango::SCALE));
+        layout.set_font_description(Some(&font));
+        layout.set_text(&text);
+
+        let (text_w, text_h) = layout.pixel_size();
+        cr.move_to(
+            (f64::from(size) - f64::from(text_w)) / 2.0,
+            (f64::from(size) - f64::from(text_h)) / 2.0,
+        );
+        set_color(&cr, text_color);
+        pangocairo::functions::show_layout(&cr, &layout);
+    }
+
+    drop(cr);
+    surface_to_pixmap(&mut surface)
 }
 
 // UPower State: 1=Charging, 2=Discharging, 3=Empty, 4=FullyCharged, 5=PendingCharge, 6=PendingDischarge
@@ -211,13 +178,7 @@ struct BatteryState {
 impl BatteryState {
     fn icon_pixmap(&self) -> Vec<(i32, i32, Vec<u8>)> {
         let r = self.inner.lock().unwrap();
-        let color = text_color(r.pct);
-        if r.pct >= 100 {
-            render_filled_circle(color, r.charging, self.scale)
-        } else {
-            let text = format!("{}", r.pct);
-            render_icon(&text, color, r.charging, self.scale)
-        }
+        render_icon(r.pct, r.charging, self.scale)
     }
 
     fn tooltip(&self) -> String {
