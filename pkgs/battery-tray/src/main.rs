@@ -144,13 +144,8 @@ async fn get_upower_property<T: TryFrom<zbus::zvariant::OwnedValue>>(conn: &Conn
 }
 
 async fn read_battery(system_conn: &Connection) -> BatteryReading {
-    let energy: f64 = get_upower_property(system_conn, "Energy").await.unwrap_or(0.0);
-    let energy_full: f64 = get_upower_property(system_conn, "EnergyFull").await.unwrap_or(0.0);
-    let pct = if energy_full > 0.0 {
-        ((energy / energy_full) * 100.0).round() as u32
-    } else {
-        0
-    };
+    let pct: f64 = get_upower_property(system_conn, "Percentage").await.unwrap_or(0.0);
+    let pct = pct.round() as u32;
 
     let state: u32 = get_upower_property(system_conn, "State").await.unwrap_or(0);
     let time_to_full: i64 = get_upower_property(system_conn, "TimeToFull").await.unwrap_or(0);
