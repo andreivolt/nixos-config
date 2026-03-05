@@ -6,7 +6,7 @@ writeShellApplication {
   name = "twscrape";
   runtimeInputs = [uv];
   text = ''
-    ACCOUNT_DB="$HOME/Google Drive/My Drive/twscrape/accounts.db"
+    ACCOUNT_DB="$HOME/drive/twscrape/accounts.db"
 
     if [[ ! -f "$ACCOUNT_DB" ]]; then
         echo "error: account database not found at $ACCOUNT_DB" >&2

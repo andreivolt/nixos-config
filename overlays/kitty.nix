@@ -1,10 +1,10 @@
-# Build kitty from master for momentum scrolling + pixel scrolling
+# Build kitty from fork with graphical progress bar for OSC 9;4
 inputs: final: prev: let
   kittySrc = prev.fetchFromGitHub {
-    owner = "kovidgoyal";
+    owner = "andreivolt";
     repo = "kitty";
-    rev = "a5322c06d1612535cad782d10efa9732b87cb1b6";
-    hash = "sha256-+HuMFLHU8HnRYeeEc5O5rtLHEAKOat+P+i7VClLDRrA=";
+    rev = "3ddaf56";
+    hash = "sha256-bQ4szhYw6nkTRtZ2cXfO/p22coI4rbPzYO783NTS3M8=";
   };
 in {
   kitty = prev.kitty.overrideAttrs (old: {

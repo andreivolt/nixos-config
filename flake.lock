@@ -144,11 +144,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772632611,
-        "narHash": "sha256-WAUNEUf5tw28JQnhE06kTZWOOYp7BGkoFlk4svRzeUI=",
+        "lastModified": 1772724243,
+        "narHash": "sha256-9iz9ZgUwQ6boMr/yS4/4VcE+D7rSPJYC+L1aZINR9GY=",
         "ref": "refs/heads/main",
-        "rev": "9442bf8183366918e7154d46e63cc2eed299c98f",
-        "revCount": 16,
+        "rev": "a6e9f1c1b32a471b3159de51b1f98994b57df5e1",
+        "revCount": 61,
         "type": "git",
         "url": "file:/home/andrei/dev/dictate"
       },
@@ -999,11 +999,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771791028,
-        "narHash": "sha256-ic7++D9UInx7s1uWZGFmtS4UBqmOB6PuvJb4ZJdm30s=",
+        "lastModified": 1772715021,
+        "narHash": "sha256-c+KHz6bxTyw1KwVjrL2w8EqXNQLJH6YI4hc7dEfyl2w=",
         "owner": "andreivolt",
         "repo": "ironbar",
-        "rev": "505725c0ac894b6e10c4f98f31b071df998681c2",
+        "rev": "f7f0da8e49e4defd4fa78acc68b44f9fb55e6963",
         "type": "github"
       },
       "original": {
@@ -1128,7 +1128,7 @@
         "dirtyRev": "05a0050f2b3afa4e06b6db42d21f4206906c0c32-dirty",
         "dirtyShortRev": "05a0050-dirty",
         "lastModified": 1771701163,
-        "narHash": "sha256-uhSSaFGn3SVbiu3Y8yNJdrfJsItAKC27470Krajwy8M=",
+        "narHash": "sha256-Ikb9YBGSmGpawL8lOZeXHpR0HXpAEO2vR2U3jNKEsHo=",
         "type": "git",
         "url": "file:/home/andrei/dev/monolith"
       },

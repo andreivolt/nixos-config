@@ -1,6 +1,7 @@
 # Battery and power management for Apple Silicon Macs
-{ pkgs, ... }: {
+{ pkgs, lib, ... }: {
   services.upower.criticalPowerAction = "Suspend";
+  services.upower.allowRiskyCriticalPowerAction = lib.mkForce true;
   services.upower.percentageLow = 20;
   services.upower.percentageCritical = 15;
   services.upower.percentageAction = 10;

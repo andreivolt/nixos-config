@@ -4,6 +4,7 @@ use zbus::{interface, Connection};
 
 const SNI_PATH: &str = "/StatusNotifierItem";
 const UPOWER_BATTERY: &str = "/org/freedesktop/UPower/devices/battery_macsmc_battery";
+const UPOWER_AC: &str = "/org/freedesktop/UPower/devices/line_power_macsmc_ac";
 const ICON_SIZE: i32 = 20;
 const FONT_SIZE: f64 = 10.0;
 
@@ -129,10 +130,10 @@ struct BatteryReading {
     time_to_empty: i64,
 }
 
-async fn get_upower_property<T: TryFrom<zbus::zvariant::OwnedValue>>(conn: &Connection, prop: &str) -> Option<T> {
+async fn get_upower_property<T: TryFrom<zbus::zvariant::OwnedValue>>(conn: &Connection, path: &str, prop: &str) -> Option<T> {
     conn.call_method(
         Some("org.freedesktop.UPower"),
-        UPOWER_BATTERY,
+        path,
         Some("org.freedesktop.DBus.Properties"),
         "Get",
         &("org.freedesktop.UPower.Device", prop),
@@ -144,14 +145,16 @@ async fn get_upower_property<T: TryFrom<zbus::zvariant::OwnedValue>>(conn: &Conn
 }
 
 async fn read_battery(system_conn: &Connection) -> BatteryReading {
-    let pct: f64 = get_upower_property(system_conn, "Percentage").await.unwrap_or(0.0);
+    let pct: f64 = get_upower_property(system_conn, UPOWER_BATTERY, "Percentage").await.unwrap_or(0.0);
     let pct = pct.round() as u32;
 
-    let state: u32 = get_upower_property(system_conn, "State").await.unwrap_or(0);
-    let time_to_full: i64 = get_upower_property(system_conn, "TimeToFull").await.unwrap_or(0);
-    let time_to_empty: i64 = get_upower_property(system_conn, "TimeToEmpty").await.unwrap_or(0);
+    let state: u32 = get_upower_property(system_conn, UPOWER_BATTERY, "State").await.unwrap_or(0);
+    let ac_online: bool = get_upower_property(system_conn, UPOWER_AC, "Online").await.unwrap_or(false);
+    let charging = is_charging(state) || ac_online;
+    let time_to_full: i64 = get_upower_property(system_conn, UPOWER_BATTERY, "TimeToFull").await.unwrap_or(0);
+    let time_to_empty: i64 = get_upower_property(system_conn, UPOWER_BATTERY, "TimeToEmpty").await.unwrap_or(0);
 
-    BatteryReading { pct, charging: is_charging(state), time_to_full, time_to_empty }
+    BatteryReading { pct, charging, time_to_full, time_to_empty }
 }
 
 fn format_duration(secs: i64) -> String {
@@ -270,21 +273,59 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .member("PropertiesChanged")?
         .path(UPOWER_BATTERY)?
         .build();
-    let mut upower_stream =
+    let upower_stream =
         zbus::MessageStream::for_match_rule(upower_rule, &system_conn, Some(16)).await?;
+
+    // watch AC adapter — UPower delays battery State on plug-in by ~3s, but AC Online changes instantly
+    let ac_rule = zbus::MatchRule::builder()
+        .msg_type(zbus::message::Type::Signal)
+        .interface("org.freedesktop.DBus.Properties")?
+        .member("PropertiesChanged")?
+        .path(UPOWER_AC)?
+        .build();
+    let ac_stream =
+        zbus::MessageStream::for_match_rule(ac_rule, &system_conn, Some(16)).await?;
 
     let iface = session_conn
         .object_server()
         .interface::<_, Sni>(SNI_PATH)
         .await?;
 
+    let mut last_charging = state.inner.lock().unwrap().charging;
+    // after plug-in, suppress false readings for this duration (USB-C PD negotiation causes transient disconnects)
+    let mut suppress_uncharge_until: Option<tokio::time::Instant> = None;
+    let mut upower_events = futures_util::stream::select(upower_stream, ac_stream);
+
     loop {
         tokio::select! {
-            Some(Ok(_)) = futures_util::StreamExt::next(&mut upower_stream) => {
-                *state.inner.lock().unwrap() = read_battery(&system_conn).await;
-                let e = iface.signal_emitter();
-                let _ = Sni::new_icon(&e).await;
-                let _ = Sni::new_tool_tip(&e).await;
+            Some(Ok(_)) = futures_util::StreamExt::next(&mut upower_events) => {
+                let reading = read_battery(&system_conn).await;
+                if reading.charging && !last_charging {
+                    // plug-in: commit immediately, suppress PD negotiation bounces for 2s
+                    last_charging = true;
+                    suppress_uncharge_until = Some(tokio::time::Instant::now() + tokio::time::Duration::from_secs(2));
+                    *state.inner.lock().unwrap() = reading;
+                    let e = iface.signal_emitter();
+                    let _ = Sni::new_icon(&e).await;
+                    let _ = Sni::new_tool_tip(&e).await;
+                } else if !reading.charging && last_charging {
+                    let suppressed = suppress_uncharge_until.map_or(false, |t| tokio::time::Instant::now() < t);
+                    if !suppressed {
+                        // real unplug: instant
+                        last_charging = false;
+                        suppress_uncharge_until = None;
+                        *state.inner.lock().unwrap() = reading;
+                        let e = iface.signal_emitter();
+                        let _ = Sni::new_icon(&e).await;
+                        let _ = Sni::new_tool_tip(&e).await;
+                    }
+                } else {
+                    // same charging state: update percentage/tooltip
+                    *state.inner.lock().unwrap() = reading;
+                    let e = iface.signal_emitter();
+                    let _ = Sni::new_icon(&e).await;
+                    let _ = Sni::new_tool_tip(&e).await;
+                }
             }
             Some(Ok(msg)) = futures_util::StreamExt::next(&mut watcher_stream) => {
                 if let Ok(body) = msg.body().deserialize::<(String, String, String)>() {
