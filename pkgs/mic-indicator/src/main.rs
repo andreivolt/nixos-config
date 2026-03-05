@@ -1,5 +1,11 @@
-use tokio::process::Command;
-use tokio::time::{interval, Duration};
+use std::cell::RefCell;
+use std::collections::HashSet;
+use std::rc::Rc;
+
+use pipewire as pw;
+use pw::main_loop::MainLoopBox;
+use pw::context::ContextBox;
+use tokio::sync::watch;
 use zbus::{interface, Connection};
 
 const SNI_PATH: &str = "/StatusNotifierItem";
@@ -28,32 +34,6 @@ fn render_icon() -> Vec<(i32, i32, Vec<u8>)> {
         }
     }
     vec![(ICON_SIZE, ICON_SIZE, buf)]
-}
-
-async fn check_mic() -> bool {
-    let Ok(o) = Command::new("pw-cli").args(["ls", "Node"]).output().await else {
-        return false;
-    };
-    let text = String::from_utf8_lossy(&o.stdout);
-
-    let mut is_input = false;
-    let mut has_app = false;
-    for line in text.lines() {
-        if line.starts_with('\t') && line.contains("type PipeWire:Interface:Node") {
-            if is_input && has_app {
-                return true;
-            }
-            is_input = false;
-            has_app = false;
-        }
-        if line.contains("media.class") && line.contains("Stream/Input/Audio") {
-            is_input = true;
-        }
-        if line.contains("application.name") {
-            has_app = true;
-        }
-    }
-    is_input && has_app
 }
 
 struct StatusNotifierItem;
@@ -94,8 +74,6 @@ async fn register_sni(conn: &Connection) {
         .await;
 }
 
-/// Create a new D-Bus connection with the SNI object and register it.
-/// Dropping the returned Connection unregisters the item from the tray.
 async fn show() -> Option<Connection> {
     let conn = Connection::session().await.ok()?;
     conn.object_server().at(SNI_PATH, StatusNotifierItem).await.ok()?;
@@ -104,26 +82,63 @@ async fn show() -> Option<Connection> {
     Some(conn)
 }
 
+fn pipewire_monitor(tx: watch::Sender<bool>) {
+    pw::init();
+
+    let mainloop = MainLoopBox::new(None).expect("PipeWire MainLoop");
+    let context = ContextBox::new(&mainloop.loop_(), None).expect("PipeWire Context");
+    let core = context.connect(None).expect("PipeWire connect");
+    let registry = core.get_registry().expect("PipeWire registry");
+
+    let streams: Rc<RefCell<HashSet<u32>>> = Rc::new(RefCell::new(HashSet::new()));
+    let tx = Rc::new(tx);
+
+    let sa = streams.clone();
+    let ta = tx.clone();
+    let sr = streams.clone();
+    let tr = tx.clone();
+
+    let _listener = registry
+        .add_listener_local()
+        .global(move |global| {
+            if let Some(props) = &global.props {
+                if props.get("media.class") == Some("Stream/Input/Audio")
+                    && props.get("application.name").is_some()
+                {
+                    sa.borrow_mut().insert(global.id);
+                    let _ = ta.send(true);
+                }
+            }
+        })
+        .global_remove(move |id| {
+            let mut s = sr.borrow_mut();
+            if s.remove(&id) && s.is_empty() {
+                let _ = tr.send(false);
+            }
+        })
+        .register();
+
+    mainloop.run();
+
+    unsafe { pw::deinit(); }
+}
+
 #[tokio::main(flavor = "current_thread")]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let (tx, mut rx) = watch::channel(false);
+
+    std::thread::spawn(move || pipewire_monitor(tx));
+
     let mut sni_conn: Option<Connection> = None;
 
-    if check_mic().await {
-        sni_conn = show().await;
-    }
-
-    let mut tick = interval(Duration::from_secs(2));
-
     loop {
-        tick.tick().await;
+        rx.changed().await?;
+        let recording = *rx.borrow();
 
-        let is = check_mic().await;
-        let was = sni_conn.is_some();
-
-        if is && !was {
+        if recording && sni_conn.is_none() {
             sni_conn = show().await;
-        } else if !is && was {
-            drop(sni_conn.take());
+        } else if !recording && sni_conn.is_some() {
+            sni_conn = None;
         }
     }
 }

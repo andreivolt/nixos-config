@@ -1,19 +1,16 @@
 {
-  lib,
-  rustPlatform,
+  craneLib,
   pkg-config,
+  rustPlatform,
   dbus,
+  pipewire,
+  lib,
 }:
-rustPlatform.buildRustPackage {
-  pname = "mic-indicator";
-  version = "0.1.0";
+craneLib.buildPackage {
+  src = craneLib.cleanCargoSource ./.;
 
-  src = ./.;
-
-  cargoLock.lockFile = ./Cargo.lock;
-
-  nativeBuildInputs = [ pkg-config ];
-  buildInputs = [ dbus ];
+  nativeBuildInputs = [ pkg-config rustPlatform.bindgenHook ];
+  buildInputs = [ dbus pipewire ];
 
   meta = {
     description = "macOS-style orange dot tray indicator when microphone is recording";
