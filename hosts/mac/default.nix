@@ -15,7 +15,7 @@
     ../../shared/btop.nix
     ../../shared/cargo.nix
     ../../shared/curl.nix
-    ../../shared/dircolors.nix
+    ../../shared/dircolors
     ../../shared/direnv.nix
     ../../shared/dnsmasq.nix
     ../../shared/fonts.nix

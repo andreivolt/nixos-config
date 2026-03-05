@@ -13,7 +13,7 @@
     ../shared/caps-escape.nix
     ../shared/cargo.nix
     ../shared/curl.nix
-    ../shared/dircolors.nix
+    ../shared/dircolors
     ../shared/direnv.nix
     ../shared/delta.nix
     ../shared/dnsmasq.nix
