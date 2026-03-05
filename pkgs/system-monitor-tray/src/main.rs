@@ -14,6 +14,7 @@ const COLOR_HIGH: (u8, u8, u8) = (0xd6, 0x50, 0x50);
 const COLOR_WARN: (u8, u8, u8) = (0xd4, 0x9a, 0x4e);
 const COLOR_MED: (u8, u8, u8) = (0x9a, 0x8e, 0x6a);
 const COLOR_LOW: (u8, u8, u8) = (0x58, 0x58, 0x56);
+const COLOR_FILL: (u8, u8, u8) = (0x30, 0x30, 0x30);
 
 fn level_color(pct: u32) -> (u8, u8, u8) {
     if pct >= 80 {
@@ -73,6 +74,10 @@ fn render_sparkline(history: &VecDeque<u32>) -> Vec<(i32, i32, Vec<u8>)> {
         let cur_y = pct_to_y(h, pct);
         let (r, g, b) = level_color(pct);
         draw_connected_line(&mut buf, w, h, x, cur_y, prev_y, r, g, b);
+        let fill_start = cur_y.max(prev_y.unwrap_or(cur_y)) + 1;
+        for y in fill_start..h {
+            set_pixel(&mut buf, w, x, y, COLOR_FILL.0, COLOR_FILL.1, COLOR_FILL.2);
+        }
         prev_y = Some(cur_y);
     }
 
