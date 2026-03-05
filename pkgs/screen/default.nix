@@ -6,7 +6,7 @@ writeShellScriptBin "screen" ''
   # Find Hyprland socket for SSH sessions
   if [[ -z "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
     export XDG_RUNTIME_DIR="''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-    HYPRLAND_INSTANCE_SIGNATURE=$(ls "$XDG_RUNTIME_DIR/hypr/" 2>/dev/null | head -1)
+    HYPRLAND_INSTANCE_SIGNATURE=$(ls -t "$XDG_RUNTIME_DIR/hypr/" 2>/dev/null | head -1)
     export HYPRLAND_INSTANCE_SIGNATURE
   fi
 
