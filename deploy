@@ -1,40 +1,41 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env bb
 
-REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
-FLAKE="$REPO_DIR"
+(require '[babashka.process :as p]
+         '[clojure.java.io :as io]
+         '[clojure.string :as str])
 
-cleanup() {
-  pkill -P $$ 2>/dev/null
-  kill $(jobs -p) 2>/dev/null
-}
-trap cleanup EXIT INT TERM
+(def repo-dir (-> *file* io/file .getParentFile .getCanonicalPath))
+(def flake repo-dir)
+(def local-host (str/trim (:out (p/sh "hostname"))))
 
-RED=$'\033[0;31m'
-GREEN=$'\033[0;32m'
-BLUE=$'\033[0;34m'
-NC=$'\033[0m'
+(def red "\033[0;31m")
+(def green "\033[0;32m")
+(def blue "\033[0;34m")
+(def nc "\033[0m")
 
-prefix() {
-  local color=$1 name=$2
-  while IFS= read -r line; do
-    printf '%s[%s]%s %s\n' "$color" "$name" "$NC" "$line"
-  done
-}
+(defn prefix-stream [stream color name]
+  (future
+    (with-open [rdr (io/reader stream)]
+      (doseq [line (line-seq rdr)]
+        (println (str color "[" name "]" nc " " line))))))
 
-echo "==> Pulling latest changes..."
-git -C "$REPO_DIR" pull
+(defn rebuild [{:keys [name build-host color]}]
+  (let [args (cond-> ["nixos-rebuild" "switch" "--flake" (str flake "#" name) "--sudo"]
+               (not= name local-host) (into ["--target-host" name "--build-host" build-host]))
+        proc (apply p/process {:out :stream :err :stream} args)
+        f-out (prefix-stream (:out proc) color name)
+        f-err (prefix-stream (:err proc) color name)]
+    {:proc proc :futures [f-out f-err]}))
 
-nixos-rebuild switch --flake "$FLAKE#riva" --target-host riva --build-host riva --sudo 2>&1 | prefix "$GREEN" "riva" &
-pid_riva=$!
+(println "==> Pulling latest changes...")
+(p/shell {:dir repo-dir} "git" "pull")
 
-nixos-rebuild switch --flake "$FLAKE#watts" --target-host watts --build-host watts --sudo 2>&1 | prefix "$BLUE" "watts" &
-pid_watts=$!
+(let [riva (rebuild {:name "riva" :build-host "riva" :color green})
+      watts (rebuild {:name "watts" :build-host "watts" :color blue})
+      _ @(p/check (:proc watts))
+      ampere (rebuild {:name "ampere" :build-host "watts" :color red})]
+  @(p/check (:proc riva))
+  @(p/check (:proc ampere))
+  (run! deref (mapcat :futures [riva watts ampere])))
 
-wait $pid_watts
-nixos-rebuild switch --flake "$FLAKE#ampere" --target-host ampere --build-host watts --sudo 2>&1 | prefix "$RED" "ampere" &
-pid_ampere=$!
-
-wait $pid_riva $pid_ampere
-
-echo "==> Done!"
+(println "==> Done!")
