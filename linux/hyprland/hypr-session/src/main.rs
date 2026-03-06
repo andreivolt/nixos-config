@@ -14,7 +14,7 @@ struct Session {
     windows: Vec<Window>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
 struct Window {
     #[serde(rename = "type")]
     win_type: String,
@@ -39,6 +39,23 @@ struct Window {
     kitty_pid: Option<u32>,
     #[serde(skip_serializing_if = "Option::is_none")]
     meta: Option<HashMap<String, String>>,
+}
+
+impl From<&HyprClient> for Window {
+    fn from(c: &HyprClient) -> Self {
+        Window {
+            class: c.class.clone(),
+            title: c.title.clone(),
+            workspace: c.workspace.name.clone(),
+            position: c.at.clone(),
+            size: c.size.clone(),
+            floating: c.floating,
+            pinned: c.pinned,
+            fullscreen: c.fullscreen,
+            monitor: c.monitor,
+            ..Default::default()
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -280,44 +297,21 @@ fn do_save() -> usize {
 
                     windows.push(Window {
                         win_type: "kitty".into(),
-                        class: c.class.clone(),
-                        title: c.title.clone(),
-                        workspace: c.workspace.name.clone(),
-                        position: c.at.clone(),
-                        size: c.size.clone(),
-                        floating: c.floating,
-                        pinned: c.pinned,
-                        fullscreen: c.fullscreen,
-                        monitor: c.monitor,
-                        pid: None,
-                        cmdline: None,
-                        cwd: None,
                         tabs: Some(tabs_with_meta),
                         kitty_pid: Some(pid),
-                        meta: None,
+                        ..Window::from(c)
                     });
                 }
             }
         } else {
             let pid = c.pid;
-            let m = prev_meta.get(&pid.to_string()).cloned();
             windows.push(Window {
                 win_type: "generic".into(),
-                class: c.class.clone(),
-                title: c.title.clone(),
-                workspace: c.workspace.name.clone(),
-                position: c.at.clone(),
-                size: c.size.clone(),
-                floating: c.floating,
-                pinned: c.pinned,
-                fullscreen: c.fullscreen,
-                monitor: c.monitor,
                 pid: Some(pid),
                 cmdline: proc_cmdline(pid),
                 cwd: proc_cwd(pid),
-                tabs: None,
-                kitty_pid: None,
-                meta: m,
+                meta: prev_meta.get(&pid.to_string()).cloned(),
+                ..Window::from(c)
             });
         }
     }
@@ -576,8 +570,15 @@ fn main() {
             set_meta_for_pid(pid, key, value);
             eprintln!("Meta set for PID {}", pid);
         }
+        Some("claude-hook") => {
+            let input: Value = serde_json::from_reader(std::io::stdin()).unwrap_or_default();
+            if let Some(sid) = input.get("session_id").and_then(|v| v.as_str()) {
+                let ppid = std::os::unix::process::parent_id();
+                set_meta_for_pid(&ppid.to_string(), "claude-session-id", sid);
+            }
+        }
         _ => {
-            eprintln!("Usage: hypr-session <watch|restore|show|meta>");
+            eprintln!("Usage: hypr-session <watch|restore|show|meta|claude-hook>");
             std::process::exit(1);
         }
     }

@@ -63,59 +63,10 @@ in {
     };
   }];
 
-  home-manager.users.andrei = { config, lib, ... }: let
-    hyprSession = pkgs.rustPlatform.buildRustPackage {
-      pname = "hypr-session";
-      version = "0.1.0";
-      src = ./hypr-session;
-      cargoLock.lockFile = ./hypr-session/Cargo.lock;
-    };
-  in {
-    systemd.user.services.hypr-session-watch = {
-      Unit = {
-        Description = "Hyprland session watcher";
-        After = [ "hyprland-session.target" "hypr-session-restore.service" ];
-        BindsTo = [ "hyprland-session.target" ];
-      };
-      Service = {
-        Environment = "PATH=${lib.makeBinPath [ pkgs.kitty hyprlandPkgs.hyprland ]}:/run/current-system/sw/bin";
-        ExecStart = "${hyprSession}/bin/hypr-session watch";
-        Restart = "on-failure";
-        RestartSec = 5;
-      };
-      Install.WantedBy = [ "hyprland-session.target" ];
-    };
-
-    systemd.user.services.hypr-session-restore = {
-      Unit = {
-        Description = "Restore Hyprland session";
-        After = [ "hyprland-session.target" ];
-        Wants = [ "hyprland-session.target" ];
-      };
-      Service = {
-        Type = "oneshot";
-        Environment = "PATH=${lib.makeBinPath [ pkgs.kitty hyprlandPkgs.hyprland ]}:/run/current-system/sw/bin";
-        ExecStart = "${hyprSession}/bin/hypr-session restore";
-      };
-      Install.WantedBy = [ "hyprland-session.target" ];
-    };
-
-    home.file.".claude/settings.json".text = let
-      hook = pkgs.writeShellScript "hypr-session-claude-hook" ''
-        SESSION_ID=$(${pkgs.jq}/bin/jq -r '.session_id // empty')
-        if [ -n "$SESSION_ID" ]; then
-          ${hyprSession}/bin/hypr-session meta "$PPID" claude-session-id "$SESSION_ID" 2>/dev/null
-        fi
-      '';
-    in builtins.toJSON {
-      permissions.defaultMode = "plan";
-      hooks.UserPromptSubmit = [{
-        hooks = [{ command = "${hook}"; type = "command"; }];
-        matcher = "";
-      }];
-      skipDangerousModePermissionPrompt = true;
-      effortLevel = "high";
-    };
+  home-manager.users.andrei = { config, lib, ... }: {
+    imports = [
+      (import ./hypr-session { inherit config lib pkgs hyprlandPkgs; })
+    ];
 
     # Symlink config files from repo (out-of-store for live editing)
     home.file.".config/hypr/hyprlock.conf".source =
