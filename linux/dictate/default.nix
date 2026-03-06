@@ -1,4 +1,4 @@
-{ config, inputs, ... }:
+{ config, inputs, lib, ... }:
 
 {
   imports = [
@@ -10,5 +10,11 @@
     enable = true;
     user = "andrei";
     environmentFile = config.sops.templates."dictate.env".path;
+  };
+
+  # Wait for tray host (ironbar) before starting
+  systemd.user.services.dictate = {
+    after = [ "tray.target" ];
+    requires = [ "tray.target" ];
   };
 }
