@@ -3,7 +3,10 @@
 let
   hyprlandPkgs = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system} // {
     hyprland = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland.overrideAttrs (oldAttrs: {
-      patches = (oldAttrs.patches or []) ++ [ ../../pkgs/hyprland-null-format-name.patch ];
+      patches = (oldAttrs.patches or []) ++ [
+        ../../pkgs/hyprland-null-format-name.patch
+        ../../pkgs/hyprland-special-above-pinned.patch
+      ];
     });
   };
   hyprlandPlugins = inputs.hyprland-plugins.packages.${pkgs.stdenv.hostPlatform.system};

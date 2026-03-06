@@ -1,0 +1,42 @@
+diff --git a/src/render/Renderer.cpp b/src/render/Renderer.cpp
+index abecb2f..0472b65 100644
+--- a/src/render/Renderer.cpp
++++ b/src/render/Renderer.cpp
+@@ -1003,18 +1003,7 @@ void CHyprRenderer::renderAllClientsForWorkspace(PHLMONITOR pMonitor, PHLWORKSPA
+         }
+     }
+ 
+-    // special
+-    for (auto const& ws : g_pCompositor->getWorkspaces()) {
+-        if (ws->m_alpha->value() <= 0.F || !ws->m_isSpecialWorkspace)
+-            continue;
+-
+-        if (ws->m_hasFullscreenWindow)
+-            renderWorkspaceWindowsFullscreen(pMonitor, ws.lock(), time);
+-        else
+-            renderWorkspaceWindows(pMonitor, ws.lock(), time);
+-    }
+-
+-    // pinned always above
++    // pinned above regular windows, but below special workspaces
+     for (auto const& w : g_pCompositor->m_windows) {
+         if (w->isHidden() && !w->m_isMapped && !w->m_fadingOut)
+             continue;
+@@ -1029,6 +1018,17 @@ void CHyprRenderer::renderAllClientsForWorkspace(PHLMONITOR pMonitor, PHLWORKSPA
+         renderWindow(w, pMonitor, time, true, RENDER_PASS_ALL);
+     }
+ 
++    // special (rendered above pinned so dropdowns/scratchpads are visible)
++    for (auto const& ws : g_pCompositor->getWorkspaces()) {
++        if (ws->m_alpha->value() <= 0.F || !ws->m_isSpecialWorkspace)
++            continue;
++
++        if (ws->m_hasFullscreenWindow)
++            renderWorkspaceWindowsFullscreen(pMonitor, ws.lock(), time);
++        else
++            renderWorkspaceWindows(pMonitor, ws.lock(), time);
++    }
++
+     EMIT_HOOK_EVENT("render", RENDER_POST_WINDOWS);
+ 
+     // Render surfaces above windows for monitor
