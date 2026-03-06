@@ -266,9 +266,6 @@ fn do_save() -> usize {
         if SKIP_CLASSES.contains(&c.class.as_str()) {
             continue;
         }
-        if c.workspace.name.starts_with("special:") {
-            continue;
-        }
 
         if c.class == "kitty" {
             let pid = c.pid;
@@ -495,9 +492,14 @@ fn launch_window(win: &Window) {
             } else {
                 None
             };
+            let class_flag = if win.class != "kitty" {
+                format!(" --class {}", shell_quote(&win.class))
+            } else {
+                String::new()
+            };
             let mut kitty_cmd = match &socket_path {
-                Some(sp) => format!("kitty --listen-on unix:{} --directory {}", sp, shell_quote(&first_tw.cwd)),
-                None => format!("kitty --directory {}", shell_quote(&first_tw.cwd)),
+                Some(sp) => format!("kitty{} --listen-on unix:{} --directory {}", class_flag, sp, shell_quote(&first_tw.cwd)),
+                None => format!("kitty{} --directory {}", class_flag, shell_quote(&first_tw.cwd)),
             };
             if !fg.is_empty() {
                 kitty_cmd.push(' ');
