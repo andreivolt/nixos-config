@@ -25,7 +25,8 @@
     ../shared/gh.nix
     ../shared/gitlab.nix
     ../shared/nix.nix
-    ../shared/nixbuild-net.nix
+    ../shared/garnix.nix
+    # ../shared/nixbuild-net.nix
     ../shared/npm.nix
     ../shared/npm-tools.nix
     ../shared/uv-tools.nix
