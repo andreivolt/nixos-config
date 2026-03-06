@@ -1,6 +1,10 @@
 { pkgs, ... }:
 
 let
+  dropdownStart = pkgs.writeShellScript "dropdown-start" ''
+    ${pkgs.hyprland}/bin/hyprctl clients -j | ${pkgs.jq}/bin/jq -e '.[] | select(.class == "dropdown")' > /dev/null 2>&1 && exit 0
+    exec ${pkgs.kitty}/bin/kitty --class dropdown
+  '';
   dropdownGuard = pkgs.writeShellApplication {
     name = "hyprland-dropdown-guard";
     runtimeInputs = with pkgs; [ hyprland jq socat ];
@@ -35,11 +39,11 @@ in
       Unit = {
         Description = "Dropdown terminal";
         PartOf = [ "hyprland-session.target" ];
-        After = [ "hyprland-session.target" ];
+        After = [ "hyprland-session.target" "hypr-session-restore.service" ];
       };
       Service = {
         Type = "simple";
-        ExecStart = "${pkgs.kitty}/bin/kitty --class dropdown";
+        ExecStart = "${dropdownStart}";
         Restart = "always";
         RestartSec = 1;
       };
