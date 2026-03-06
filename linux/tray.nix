@@ -103,6 +103,7 @@
       Description = "Microphone recording tray indicator";
       After = ["tray.target" "pipewire.service"];
       Requires = ["tray.target"];
+      BindsTo = ["pipewire.service"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
