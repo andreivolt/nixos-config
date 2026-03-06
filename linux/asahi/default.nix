@@ -2,7 +2,7 @@
 # Works for all Apple Silicon Macs running Asahi Linux
 { lib, ... }: {
   imports = [
-    ./battery.nix
+    ./charge-limit.nix
     ./shutdown-sound-fix.nix
     ./wifi-suspend.nix
   ];

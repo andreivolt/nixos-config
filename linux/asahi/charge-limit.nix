@@ -1,10 +1,5 @@
-# Battery and power management for Apple Silicon Macs
-{ pkgs, lib, ... }: {
-  services.upower.criticalPowerAction = "Suspend";
-  services.upower.allowRiskyCriticalPowerAction = lib.mkForce true;
-  services.upower.percentageLow = 20;
-  services.upower.percentageCritical = 15;
-  services.upower.percentageAction = 10;
+# Limit battery charge to 80% on Apple Silicon Macs
+{ pkgs, ... }: {
   systemd.tmpfiles.rules = [
     "w /sys/class/power_supply/macsmc-battery/charge_control_end_threshold - - - - 80"
   ];
