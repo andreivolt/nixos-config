@@ -101,7 +101,7 @@
   systemd.user.services.mic-indicator = {
     Unit = {
       Description = "Microphone recording tray indicator";
-      After = ["tray.target"];
+      After = ["tray.target" "pipewire.service"];
       Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
