@@ -9,7 +9,6 @@
 
     wifi.backend = "iwd";
 
-    wifi.powersave = true;
   };
 
   users.users.andrei.extraGroups = ["networkmanager"];
