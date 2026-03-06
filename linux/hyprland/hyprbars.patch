@@ -1,17 +1,17 @@
 --- a/barDeco.cpp
 +++ b/barDeco.cpp
 @@ -40,6 +40,7 @@
- 
+
      m_pTextTex    = makeShared<CTexture>();
      m_pButtonsTex = makeShared<CTexture>();
 +    m_pBarBgTex   = makeShared<CTexture>();
- 
+
      g_pAnimationManager->createAnimation(CHyprColor{**PCOLOR}, m_cRealBarColor, g_pConfigManager->getAnimationPropertyConfig("border"), pWindow, AVARDAMAGE_NONE);
      m_cRealBarColor->setUpdateCallback([&](auto) { damageEntire(); });
 @@ -411,6 +412,18 @@
                                                           std::round(((bufferSize.x - scaledBorderSize) / 2.0 - layoutWidth / PANGO_SCALE / 2.0));
      const int yOffset = std::round((bufferSize.y / 2.0 - layoutHeight / PANGO_SCALE / 2.0));
- 
+
 +    // draw text shadow first if enabled
 +    static auto* const PTEXTSHADOW = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:text_shadow_size")->getDataStaticPtr();
 +    static auto* const PTEXTSHADOWCOLOR = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:text_shadow_color")->getDataStaticPtr();
@@ -26,17 +26,15 @@
 +    cairo_set_source_rgba(CAIRO, COLOR.r, COLOR.g, COLOR.b, COLOR.a);
      cairo_move_to(CAIRO, xOffset, yOffset);
      pango_cairo_show_layout(CAIRO, layout);
- 
-@@ -565,6 +578,78 @@
+
+@@ -565,6 +578,53 @@
      }
  }
- 
+
 +void CHyprBar::renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& color, int rounding, const std::optional<CHyprColor>& forcedSepColor) {
-+    // extend surface below the bar to cover the window's rounded top corners
 +    const int barH = (int)std::ceil(bufferSize.y);
-+    const int overlapH = (int)(rounding * scale);
 +    const int surfaceW = (int)std::ceil(bufferSize.x);
-+    const int surfaceH = barH + overlapH;
++    const int surfaceH = barH;
 +    const auto CAIROSURFACE = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, surfaceW, surfaceH);
 +    const auto CAIRO = cairo_create(CAIROSURFACE);
 +
@@ -45,33 +43,10 @@
 +    cairo_paint(CAIRO);
 +    cairo_restore(CAIRO);
 +
-+    // create path with rounded top corners only
-+    const double r = rounding * scale;
-+    const double w = surfaceW;
-+    const double h = surfaceH;
-+    cairo_new_path(CAIRO);
-+    cairo_move_to(CAIRO, r, 0);
-+    cairo_line_to(CAIRO, w - r, 0);
-+    cairo_arc(CAIRO, w - r, r, r, -M_PI/2, 0);  // top-right
-+    cairo_line_to(CAIRO, w, h);
-+    cairo_line_to(CAIRO, 0, h);
-+    cairo_line_to(CAIRO, 0, r);
-+    cairo_arc(CAIRO, r, r, r, M_PI, 3*M_PI/2);  // top-left
-+    cairo_close_path(CAIRO);
-+
-+    // solid color fill
++    // fill with bar color
 +    cairo_set_source_rgba(CAIRO, color.b, color.g, color.r, color.a);
-+    cairo_fill_preserve(CAIRO);
-+    cairo_new_path(CAIRO);
-+
-+    // clear the middle of the overlap area (only fill corners to cover window rounding gaps)
-+    if (overlapH > 0) {
-+        cairo_save(CAIRO);
-+        cairo_set_operator(CAIRO, CAIRO_OPERATOR_CLEAR);
-+        cairo_rectangle(CAIRO, r, barH, w - 2 * r, overlapH);
-+        cairo_fill(CAIRO);
-+        cairo_restore(CAIRO);
-+    }
++    cairo_rectangle(CAIRO, 0, 0, surfaceW, surfaceH);
++    cairo_fill(CAIRO);
 +
 +    // draw separator line at bottom
 +    static auto* const PSEPARATOR = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:bar_separator_size")->getDataStaticPtr();
@@ -105,23 +80,21 @@
 +
  void CHyprBar::draw(PHLMONITOR pMonitor, const float& a) {
      static auto* const PENABLED = (Hyprlang::INT* const*)HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprbars:enabled")->getDataStaticPtr();
- 
-@@ -633,8 +718,9 @@
- 
+
+@@ -633,8 +693,7 @@
+
      const auto BARBUF = DECOBOX.size() * pMonitor->m_scale;
- 
+
 -    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w,
 -                              DECOBOX.h + ROUNDING * 3 /* to fill the bottom cuz we can't disable rounding there */};
-+    const auto BORDEROVERLAP = PWINDOW->getRealBorderSize();
-+    const auto OVERLAP = std::max(0, (int)ROUNDING - (int)BORDEROVERLAP);
-+    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w, DECOBOX.h + OVERLAP};
- 
++    CBox       titleBarBox = {DECOBOX.x - pMonitor->m_position.x, DECOBOX.y - pMonitor->m_position.y, DECOBOX.w, DECOBOX.h};
+
      titleBarBox.translate(PWINDOW->m_floatingOffset).scale(pMonitor->m_scale).round();
- 
-@@ -643,37 +729,19 @@
- 
+
+@@ -643,37 +702,13 @@
+
      g_pHyprOpenGL->scissor(titleBarBox);
- 
+
 -    if (ROUNDING) {
 -        // the +1 is a shit garbage temp fix until renderRect supports an alpha matte
 -        CBox windowBox = {PWINDOW->m_realPosition->value().x + PWINDOW->m_floatingOffset.x - pMonitor->m_position.x + 1,
@@ -147,30 +120,24 @@
 -
 -        glStencilFunc(GL_NOTEQUAL, 1, -1);
 -        glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-+    // render blur pass first if enabled
-+    const auto scaledOverlap = (int)(OVERLAP * pMonitor->m_scale);
-+    CBox bgBox = {titleBarBox.x, titleBarBox.y, (int)std::ceil(BARBUF.x), (int)std::ceil(BARBUF.y) + scaledOverlap};
++    CBox bgBox = {titleBarBox.x, titleBarBox.y, (int)std::ceil(BARBUF.x), (int)std::ceil(BARBUF.y)};
 +    if (SHOULDBLUR) {
-+        // use a taller box so bottom rounding gets clipped by scissor
-+        const auto blurRounding = ROUNDING * pMonitor->m_scale;
-+        CBox blurBox = {bgBox.x, bgBox.y, bgBox.w, bgBox.h + blurRounding};
-+        g_pHyprOpenGL->renderRect(blurBox, CHyprColor(0, 0, 0, 0), {.round = blurRounding, .blur = true, .blurA = a});
++        g_pHyprOpenGL->renderRect(bgBox, CHyprColor(0, 0, 0, 0), {.blur = true, .blurA = a});
      }
- 
+
 -    if (SHOULDBLUR)
 -        g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower(), .blur = true, .blurA = a});
 -    else
 -        g_pHyprOpenGL->renderRect(titleBarBox, color, {.round = scaledRounding, .roundingPower = m_pWindow->roundingPower()});
-+    // render bar background with rounded top corners only (via Cairo texture)
-+    renderBarBackground(BARBUF, pMonitor->m_scale, color, OVERLAP, m_bForcedSeparatorColor);
++    renderBarBackground(BARBUF, pMonitor->m_scale, color, 0, m_bForcedSeparatorColor);
 +    g_pHyprOpenGL->renderTexture(m_pBarBgTex, bgBox, {.a = 1.0f});
- 
+
      // render title
      if (**PENABLETITLE && (m_szLastTitle != PWINDOW->m_title || m_bWindowSizeChanged || m_pTextTex->m_texID == 0 || m_bTitleColorChanged)) {
-@@ -681,15 +749,6 @@
+@@ -681,15 +716,6 @@
          renderBarTitle(BARBUF, pMonitor->m_scale);
      }
- 
+
 -    if (ROUNDING) {
 -        // cleanup stencil
 -        glClearStencil(0);
@@ -183,19 +150,19 @@
      CBox textBox = {titleBarBox.x, titleBarBox.y, (int)BARBUF.x, (int)BARBUF.y};
      if (**PENABLETITLE)
          g_pHyprOpenGL->renderTexture(m_pTextTex, textBox, {.a = a});
-@@ -732,7 +791,7 @@
+@@ -732,7 +758,7 @@
  }
- 
+
  eDecorationLayer CHyprBar::getDecorationLayer() {
 -    return DECORATION_LAYER_UNDER;
 +    return DECORATION_LAYER_OVER;
  }
- 
+
  uint64_t CHyprBar::getDecorationFlags() {
-@@ -762,9 +821,10 @@
+@@ -762,9 +788,10 @@
      auto       prevHidden           = m_hidden;
      auto       prevForcedTitleColor = m_bForcedTitleColor;
- 
+
 -    m_bForcedBarColor   = std::nullopt;
 -    m_bForcedTitleColor = std::nullopt;
 -    m_hidden            = false;
@@ -203,26 +170,26 @@
 +    m_bForcedTitleColor     = std::nullopt;
 +    m_bForcedSeparatorColor = std::nullopt;
 +    m_hidden                = false;
- 
+
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->nobarRuleIdx))
          m_hidden = truthy(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->nobarRuleIdx)->effect);
-@@ -772,6 +832,8 @@
+@@ -772,6 +799,8 @@
          m_bForcedBarColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->barColorRuleIdx)->effect).value_or(0));
      if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->titleColorRuleIdx))
          m_bForcedTitleColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->titleColorRuleIdx)->effect).value_or(0));
 +    if (PWINDOW->m_ruleApplicator->m_otherProps.props.contains(g_pGlobalState->separatorColorRuleIdx))
 +        m_bForcedSeparatorColor = CHyprColor(configStringToInt(PWINDOW->m_ruleApplicator->m_otherProps.props.at(g_pGlobalState->separatorColorRuleIdx)->effect).value_or(0));
- 
+
      if (prevHidden != m_hidden)
          g_pDecorationPositioner->repositionDeco(this);
 --- a/barDeco.hpp
 +++ b/barDeco.hpp
 @@ -55,6 +55,7 @@
- 
+
      SP<CTexture>              m_pTextTex;
      SP<CTexture>              m_pButtonsTex;
 +    SP<CTexture>              m_pBarBgTex;
- 
+
      bool                      m_bWindowSizeChanged = false;
      bool                      m_hidden             = false;
 @@ -64,6 +65,7 @@
@@ -230,9 +197,9 @@
      std::optional<CHyprColor> m_bForcedBarColor;
      std::optional<CHyprColor> m_bForcedTitleColor;
 +    std::optional<CHyprColor> m_bForcedSeparatorColor;
- 
+
      Time::steady_tp           m_lastMouseDown = Time::steadyNow();
- 
+
 @@ -76,6 +78,8 @@
      void                      renderText(SP<CTexture> out, const std::string& text, const CHyprColor& color, const Vector2D& bufferSize, const float scale, const int fontSize);
      void                      renderBarButtons(const Vector2D& bufferSize, const float scale);
@@ -240,7 +207,7 @@
 +    void                      renderBarBackground(const Vector2D& bufferSize, const float scale, const CHyprColor& color, int rounding, const std::optional<CHyprColor>& forcedSepColor);
 +    bool                      hasSeparator();
      void                      damageOnButtonHover();
- 
+
      bool                      inputIsValid();
 --- a/globals.hpp
 +++ b/globals.hpp
@@ -250,14 +217,14 @@
      uint32_t                  titleColorRuleIdx = 0;
 +    uint32_t                  separatorColorRuleIdx = 0;
  };
- 
+
  inline UP<SGlobalState> g_pGlobalState;
 --- a/main.cpp
 +++ b/main.cpp
 @@ -122,10 +122,11 @@
          throw std::runtime_error("[hb] Version mismatch");
      }
- 
+
 -    g_pGlobalState                    = makeUnique<SGlobalState>();
 -    g_pGlobalState->nobarRuleIdx      = Desktop::Rule::windowEffects()->registerEffect("hyprbars:no_bar");
 -    g_pGlobalState->barColorRuleIdx   = Desktop::Rule::windowEffects()->registerEffect("hyprbars:bar_color");
@@ -267,12 +234,12 @@
 +    g_pGlobalState->barColorRuleIdx       = Desktop::Rule::windowEffects()->registerEffect("hyprbars:bar_color");
 +    g_pGlobalState->titleColorRuleIdx     = Desktop::Rule::windowEffects()->registerEffect("hyprbars:title_color");
 +    g_pGlobalState->separatorColorRuleIdx = Desktop::Rule::windowEffects()->registerEffect("hyprbars:separator_color");
- 
+
      static auto P = HyprlandAPI::registerCallbackDynamic(PHANDLE, "openWindow", [&](void* self, SCallbackInfo& info, std::any data) { onNewWindow(self, data); });
      // static auto P2 = HyprlandAPI::registerCallbackDynamic(PHANDLE, "closeWindow", [&](void* self, SCallbackInfo& info, std::any data) { onCloseWindow(self, data); });
 @@ -133,6 +134,10 @@
                                                            [&](void* self, SCallbackInfo& info, std::any data) { onUpdateWindowRules(std::any_cast<PHLWINDOW>(data)); });
- 
+
      HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_color", Hyprlang::INT{*configStringToInt("rgba(33333388)")});
 +    HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_separator_size", Hyprlang::INT{0});
 +    HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_separator_color", Hyprlang::INT{*configStringToInt("rgba(00000033)")});
@@ -282,7 +249,7 @@
      HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:col.text", Hyprlang::INT{*configStringToInt("rgba(ffffffff)")});
      HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprbars:bar_text_size", Hyprlang::INT{10});
 @@ -174,5 +179,6 @@
- 
+
      Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->barColorRuleIdx);
      Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->titleColorRuleIdx);
 +    Desktop::Rule::windowEffects()->unregisterEffect(g_pGlobalState->separatorColorRuleIdx);
