@@ -488,23 +488,27 @@ fn launch_window(win: &Window) {
 
             // Launch kitty with first tab's first window
             let fg = resolve_cmdline(first_tw);
-            static COUNTER: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
-            let n = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-            let socket_path = format!("/tmp/kitty-restore-{}-{}", std::process::id(), n);
-            let mut kitty_cmd = format!(
-                "kitty --listen-on unix:{} --directory {}",
-                socket_path, shell_quote(&first_tw.cwd)
-            );
+            let socket_path = if has_extra {
+                static COUNTER: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
+                let n = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                Some(format!("/tmp/kitty-restore-{}-{}", std::process::id(), n))
+            } else {
+                None
+            };
+            let mut kitty_cmd = match &socket_path {
+                Some(sp) => format!("kitty --listen-on unix:{} --directory {}", sp, shell_quote(&first_tw.cwd)),
+                None => format!("kitty --directory {}", shell_quote(&first_tw.cwd)),
+            };
             if !fg.is_empty() {
                 kitty_cmd.push(' ');
                 kitty_cmd.push_str(&cmdline_to_sh(&fg));
             }
             hypr_exec(&win.workspace, &kitty_cmd);
 
-            if !has_extra {
-                return;
-            }
-
+            let socket_path = match socket_path {
+                Some(sp) => sp,
+                None => return,
+            };
             let socket = format!("unix:{}", socket_path);
 
             // Additional windows in first tab
