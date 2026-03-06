@@ -403,10 +403,29 @@ fn cmdline_to_sh(cmdline: &[String]) -> String {
     cmdline.iter().map(|s| shell_quote(s)).collect::<Vec<_>>().join(" ")
 }
 
+fn unwrap_cmdline(cmdline: &[String]) -> Vec<String> {
+    // Unwrap kitten run-shell wrappers (from kitty --hold)
+    if let Some(first) = cmdline.first() {
+        if first.ends_with("/kitten") || first == "kitten" {
+            if cmdline.get(1).map(|s| s.as_str()) == Some("run-shell") {
+                // Real command starts after the last --flag argument
+                let cmd_start = cmdline[2..]
+                    .iter()
+                    .position(|a| !a.starts_with("--"))
+                    .map(|i| i + 2)
+                    .unwrap_or(cmdline.len());
+                return cmdline[cmd_start..].to_vec();
+            }
+        }
+    }
+    cmdline.to_vec()
+}
+
 fn enrich_cmdline(cmdline: &[String], meta: Option<&HashMap<String, String>>) -> Vec<String> {
+    let cmdline = unwrap_cmdline(cmdline);
     if let Some(sid) = meta.and_then(|m| m.get("claude-session-id")) {
         if let Some(base) = cmdline.first() {
-            if base.ends_with("claude") {
+            if base.ends_with("claude") || base.ends_with("/claude") {
                 let args: Vec<String> = cmdline[1..]
                     .iter()
                     .filter(|a| *a != "-r" && *a != "--resume")
@@ -418,7 +437,7 @@ fn enrich_cmdline(cmdline: &[String], meta: Option<&HashMap<String, String>>) ->
             }
         }
     }
-    cmdline.to_vec()
+    cmdline
 }
 
 const SELF_RESTORE_APPS: &[&str] = &["chromium-browser", "firefox"];
@@ -431,31 +450,75 @@ fn hypr_exec(workspace: &str, cmd: &str) {
         .output();
 }
 
+fn resolve_cmdline(tw: &TabWindow) -> Vec<String> {
+    let fg = enrich_cmdline(&tw.cmdline, tw.meta.as_ref());
+    let is_shell = fg
+        .first()
+        .map(|s| s.ends_with("/zsh") || s.ends_with("/bash") || s.ends_with("/fish"))
+        .unwrap_or(false);
+    if is_shell { vec![] } else { fg }
+}
+
+fn kitty_remote_launch(socket: &str, launch_type: &str, tw: &TabWindow) {
+    let fg = resolve_cmdline(tw);
+    if fg.is_empty() {
+        eprintln!("    remote {}: shell in {}", launch_type, tw.cwd);
+    } else {
+        eprintln!("    remote {}: {} in {}", launch_type, tw.cwd, cmdline_to_sh(&fg));
+    }
+    let _ = Command::new("kitty")
+        .args(["@", "--to", socket, "launch", "--type", launch_type, "--cwd", &tw.cwd])
+        .args(&fg)
+        .output();
+}
+
 fn launch_window(win: &Window) {
     match win.win_type.as_str() {
         "kitty" => {
-            let tab = win.tabs.as_ref().and_then(|t| t.first());
-            let tw = tab.and_then(|t| t.windows.first());
-            if let Some(tw) = tw {
-                let fg = enrich_cmdline(&tw.cmdline, tw.meta.as_ref());
-                let is_shell = fg
-                    .first()
-                    .map(|s| s.ends_with("/zsh") || s.ends_with("/bash") || s.ends_with("/fish"))
-                    .unwrap_or(false);
-                if is_shell {
-                    hypr_exec(
-                        &win.workspace,
-                        &format!("kitty --directory {}", shell_quote(&tw.cwd)),
-                    );
-                } else {
-                    hypr_exec(
-                        &win.workspace,
-                        &format!(
-                            "kitty --directory {} {}",
-                            shell_quote(&tw.cwd),
-                            cmdline_to_sh(&fg)
-                        ),
-                    );
+            let tabs = match win.tabs.as_ref() {
+                Some(t) if !t.is_empty() => t,
+                _ => return,
+            };
+            let first_tw = match tabs[0].windows.first() {
+                Some(tw) => tw,
+                None => return,
+            };
+
+            let has_extra = tabs[0].windows.len() > 1 || tabs.len() > 1;
+
+            // Launch kitty with first tab's first window
+            let fg = resolve_cmdline(first_tw);
+            static COUNTER: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
+            let n = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            let socket_path = format!("/tmp/kitty-restore-{}-{}", std::process::id(), n);
+            let mut kitty_cmd = format!(
+                "kitty --listen-on unix:{} --directory {}",
+                socket_path, shell_quote(&first_tw.cwd)
+            );
+            if !fg.is_empty() {
+                kitty_cmd.push(' ');
+                kitty_cmd.push_str(&cmdline_to_sh(&fg));
+            }
+            hypr_exec(&win.workspace, &kitty_cmd);
+
+            if !has_extra {
+                return;
+            }
+
+            let socket = format!("unix:{}", socket_path);
+
+            // Additional windows in first tab
+            for tw in &tabs[0].windows[1..] {
+                kitty_remote_launch(&socket, "window", tw);
+            }
+
+            // Additional tabs
+            for tab in &tabs[1..] {
+                if let Some(first) = tab.windows.first() {
+                    kitty_remote_launch(&socket, "tab", first);
+                    for tw in &tab.windows[1..] {
+                        kitty_remote_launch(&socket, "window", tw);
+                    }
                 }
             }
         }
