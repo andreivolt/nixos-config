@@ -1,6 +1,13 @@
 # Shared laptop optimizations for portable workstations
 # Imported by: hosts/watts, hosts/riva
-{...}: {
+{ lib, ... }: {
+  # Suspend on critical battery
+  services.upower.criticalPowerAction = "Suspend";
+  services.upower.allowRiskyCriticalPowerAction = lib.mkForce true;
+  services.upower.percentageLow = 20;
+  services.upower.percentageCritical = 15;
+  services.upower.percentageAction = 10;
+
   # Battery monitoring notifications
   home-manager.sharedModules = [
     {
