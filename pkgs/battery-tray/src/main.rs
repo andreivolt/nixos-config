@@ -8,21 +8,33 @@ const UPOWER_AC: &str = "/org/freedesktop/UPower/devices/line_power_macsmc_ac";
 const ICON_SIZE: i32 = 20;
 const FONT_SIZE: f64 = 10.0;
 
-const COLOR_NORMAL: (u8, u8, u8) = (0xaa, 0xaa, 0xaa);
-const COLOR_WARNING: (u8, u8, u8) = (0xf0, 0xc6, 0x74);
-const COLOR_LOW: (u8, u8, u8) = (0xde, 0x93, 0x5f);
-const COLOR_CRITICAL: (u8, u8, u8) = (0xcc, 0x66, 0x66);
+fn lerp_color(c0: (u8, u8, u8), c1: (u8, u8, u8), t: f64) -> (u8, u8, u8) {
+    let t = t.clamp(0.0, 1.0);
+    (
+        (c0.0 as f64 + t * (c1.0 as f64 - c0.0 as f64)).round() as u8,
+        (c0.1 as f64 + t * (c1.1 as f64 - c0.1 as f64)).round() as u8,
+        (c0.2 as f64 + t * (c1.2 as f64 - c0.2 as f64)).round() as u8,
+    )
+}
 
 fn text_color(pct: u32) -> (u8, u8, u8) {
-    if pct <= 10 {
-        COLOR_CRITICAL
-    } else if pct <= 20 {
-        COLOR_LOW
-    } else if pct <= 30 {
-        COLOR_WARNING
-    } else {
-        COLOR_NORMAL
+    const STOPS: &[(f64, (u8, u8, u8))] = &[
+        (0.0, (0xcc, 0x66, 0x66)),   // red
+        (25.0, (0xde, 0x93, 0x5f)),  // orange
+        (50.0, (0xf0, 0xc6, 0x74)),  // yellow
+        (100.0, (0xaa, 0xaa, 0xaa)), // gray
+    ];
+    let p = pct as f64;
+    let mut i = 0;
+    while i + 1 < STOPS.len() && STOPS[i + 1].0 <= p {
+        i += 1;
     }
+    if i + 1 >= STOPS.len() {
+        return STOPS[STOPS.len() - 1].1;
+    }
+    let (p0, c0) = STOPS[i];
+    let (p1, c1) = STOPS[i + 1];
+    lerp_color(c0, c1, (p - p0) / (p1 - p0))
 }
 
 fn get_scale_factor() -> f64 {
@@ -95,7 +107,7 @@ fn render_icon(pct: u32, charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)>
 
     if pct < 100 {
         let text = format!("{}", pct);
-        let text_color = if charging { (0, 0, 0) } else { COLOR_NORMAL };
+        let text_color = if charging { (0, 0, 0) } else { (0xaa, 0xaa, 0xaa) };
 
         let layout = pangocairo::functions::create_layout(&cr);
         let mut font = pango::FontDescription::new();
