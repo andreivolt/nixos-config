@@ -456,17 +456,34 @@ fn resolve_cmdline(tw: &TabWindow) -> Vec<String> {
     if is_shell { vec![] } else { fg }
 }
 
-fn kitty_remote_launch(socket: &str, launch_type: &str, tw: &TabWindow) {
-    let fg = resolve_cmdline(tw);
-    if fg.is_empty() {
-        eprintln!("    remote {}: shell in {}", launch_type, tw.cwd);
-    } else {
-        eprintln!("    remote {}: {} in {}", launch_type, tw.cwd, cmdline_to_sh(&fg));
+fn write_kitty_session(tabs: &[Tab]) -> PathBuf {
+    static COUNTER: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
+    let n = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let path = std::env::temp_dir().join(format!("kitty-session-{}-{}.conf", std::process::id(), n));
+
+    let mut lines = Vec::new();
+    for (ti, tab) in tabs.iter().enumerate() {
+        for (wi, tw) in tab.windows.iter().enumerate() {
+            let fg = resolve_cmdline(tw);
+            if ti == 0 && wi == 0 {
+                lines.push(format!("cd {}", tw.cwd));
+            } else if wi == 0 {
+                lines.push(format!("new_tab"));
+                lines.push(format!("cd {}", tw.cwd));
+                lines.push("launch".to_string());
+            } else {
+                lines.push(format!("cd {}", tw.cwd));
+                lines.push("launch".to_string());
+            }
+            if !fg.is_empty() {
+                // Escape for kitty session send_text (newline = \r)
+                lines.push(format!("send_text {}\r", cmdline_to_sh(&fg)));
+            }
+        }
     }
-    let _ = Command::new("kitty")
-        .args(["@", "--to", socket, "launch", "--type", launch_type, "--cwd", &tw.cwd])
-        .args(&fg)
-        .output();
+
+    fs::write(&path, lines.join("\n")).expect("write kitty session file");
+    path
 }
 
 fn launch_window(win: &Window) {
@@ -476,57 +493,18 @@ fn launch_window(win: &Window) {
                 Some(t) if !t.is_empty() => t,
                 _ => return,
             };
-            let first_tw = match tabs[0].windows.first() {
-                Some(tw) => tw,
-                None => return,
-            };
-
-            let has_extra = tabs[0].windows.len() > 1 || tabs.len() > 1;
-
-            // Launch kitty with first tab's first window
-            let fg = resolve_cmdline(first_tw);
-            let socket_path = if has_extra {
-                static COUNTER: std::sync::atomic::AtomicU32 = std::sync::atomic::AtomicU32::new(0);
-                let n = COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
-                Some(format!("/tmp/kitty-restore-{}-{}", std::process::id(), n))
-            } else {
-                None
-            };
+            let session_file = write_kitty_session(tabs);
             let class_flag = if win.class != "kitty" {
                 format!(" --class {}", shell_quote(&win.class))
             } else {
                 String::new()
             };
-            let mut kitty_cmd = match &socket_path {
-                Some(sp) => format!("kitty{} --listen-on unix:{} --directory {}", class_flag, sp, shell_quote(&first_tw.cwd)),
-                None => format!("kitty{} --directory {}", class_flag, shell_quote(&first_tw.cwd)),
-            };
-            if !fg.is_empty() {
-                kitty_cmd.push(' ');
-                kitty_cmd.push_str(&cmdline_to_sh(&fg));
-            }
+            let kitty_cmd = format!(
+                "kitty{} --session {}",
+                class_flag,
+                shell_quote(&session_file.to_string_lossy())
+            );
             hypr_exec(&win.workspace, &kitty_cmd);
-
-            let socket_path = match socket_path {
-                Some(sp) => sp,
-                None => return,
-            };
-            let socket = format!("unix:{}", socket_path);
-
-            // Additional windows in first tab
-            for tw in &tabs[0].windows[1..] {
-                kitty_remote_launch(&socket, "window", tw);
-            }
-
-            // Additional tabs
-            for tab in &tabs[1..] {
-                if let Some(first) = tab.windows.first() {
-                    kitty_remote_launch(&socket, "tab", first);
-                    for tw in &tab.windows[1..] {
-                        kitty_remote_launch(&socket, "window", tw);
-                    }
-                }
-            }
         }
         "generic" => {
             if SELF_RESTORE_APPS.contains(&win.class.as_str()) {
