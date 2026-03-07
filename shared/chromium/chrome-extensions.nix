@@ -5,7 +5,6 @@
   "kehjfphhkfppnnjhdfhanmehkegdppho" # YouTube Row Fixer
   "fpnmgdkabkmnadcjpehmlllkndpkmiak" # Wayback Machine
   "nffaoalbilbmmfgbnbgppjihopabppdk" # Video Speed Controller
-  "dhdgffkkebhmkfjojejmpbldmpobfkfo" # Tampermonkey
   "clngdbkpkpeebahjckkjfobafhncgmne" # Stylus
   "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock for YouTube
   "mpiodijhokgodhhofbcjdecpffjipkle" # SingleFile

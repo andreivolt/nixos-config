@@ -7,5 +7,6 @@
     { package = inputs.sci-hub-now.packages.${pkgs.stdenv.hostPlatform.system}.default; key = ./keys/sci-hub-now.pem; }
     { package = inputs.redirect-domains.packages.${pkgs.stdenv.hostPlatform.system}.default; key = ./keys/redirect-domains.pem; }
     { package = inputs.refined-hacker-news.packages.${pkgs.stdenv.hostPlatform.system}.default; key = ./keys/refined-hacker-news.pem; }
+    { package = inputs.userscripts.packages.${pkgs.stdenv.hostPlatform.system}.default; key = ./keys/userscripts.pem; }
   ];
 }

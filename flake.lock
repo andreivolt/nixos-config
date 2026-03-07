@@ -1562,6 +1562,7 @@
         "rust-overlay": "rust-overlay_3",
         "sci-hub-now": "sci-hub-now",
         "sops-nix": "sops-nix",
+        "userscripts": "userscripts",
         "uv2nix": "uv2nix_2",
         "yt-dlp-api": "yt-dlp-api"
       }
@@ -1755,6 +1756,26 @@
         "owner": "nix-systems",
         "repo": "default-darwin",
         "type": "github"
+      }
+    },
+    "userscripts": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772896149,
+        "narHash": "sha256-sy+/VKAovtOXRtEuqbzwu2PG4SjYqtI1+teLILo/WuM=",
+        "ref": "refs/heads/main",
+        "rev": "ecec6bd374c9ab0ce58e7e49cb6f8dabeb35be25",
+        "revCount": 3,
+        "type": "git",
+        "url": "file:/home/andrei/dev/userscripts"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:/home/andrei/dev/userscripts"
       }
     },
     "uv2nix": {

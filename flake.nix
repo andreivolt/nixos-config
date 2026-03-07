@@ -108,6 +108,10 @@
       url = "git+file:/home/andrei/dev/refined-hacker-news";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    userscripts = {
+      url = "git+file:/home/andrei/dev/userscripts";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     nixpak = {
       url = "github:nixpak/nixpak";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -159,6 +163,7 @@
     sci-hub-now,
     redirect-domains,
     refined-hacker-news,
+    userscripts,
     nixpak,
     ironbar,
     osk,
