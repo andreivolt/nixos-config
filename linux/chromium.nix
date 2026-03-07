@@ -18,7 +18,7 @@ in {
         "--force-font-family-sans-serif=Inter"
       ];
 
-    # Google API keys for Chromium sign-in/sync
+    # Google API keys for Chromium (image search, translate, sync, etc.)
     environment.sessionVariables = lib.mkIf isLinux {
       GOOGLE_API_KEY = "AIzaSyBOti4mM-6x9WDnZIjIeyEU21OpBXqWBgw";
       GOOGLE_DEFAULT_CLIENT_ID = "77185425430.apps.googleusercontent.com";
