@@ -35,16 +35,17 @@
     },
     "bypass-paywalls": {
       "inputs": {
+        "nix-crx": "nix-crx",
         "nixpkgs": [
           "nixpkgs-unstable"
         ]
       },
       "locked": {
-        "lastModified": 1771022989,
-        "narHash": "sha256-jSUqxFvGbdr7PgwdJswGiskmoTKWfgHZ0Wegl4wHF0k=",
+        "lastModified": 1772900962,
+        "narHash": "sha256-drbWCvXQZBNm2JeFLAheL8koHCB0O5Kpq5ydWFSvQPk=",
         "owner": "andreivolt",
         "repo": "bypass-paywalls",
-        "rev": "fa337eadde9029fa2ee330f993abd4d478fa7ca4",
+        "rev": "84249ba20d076193282cd9040920d7da5716ed4e",
         "type": "github"
       },
       "original": {
@@ -118,16 +119,17 @@
         "flake-utils": "flake-utils",
         "locales": "locales",
         "maze-utils": "maze-utils",
+        "nix-crx": "nix-crx_2",
         "nixpkgs": [
           "nixpkgs-unstable"
         ]
       },
       "locked": {
-        "lastModified": 1770043535,
-        "narHash": "sha256-eXUXdsn35XYMXpD+dXsOXOFyDxPWmUDxLkpoyn5+WGw=",
+        "lastModified": 1772900963,
+        "narHash": "sha256-3UngYdYrmBIiEtZNphloPl/WxqZ4KF4Ci8llXJhc7Sw=",
         "owner": "andreivolt",
         "repo": "DeArrow",
-        "rev": "d14c3a1c6f66d81058e1482a3a56ef02dc41df2b",
+        "rev": "cce2c91bbdeaf866570661709b3e68e39ffccbaf",
         "type": "github"
       },
       "original": {
@@ -202,16 +204,17 @@
     },
     "ff2mpv": {
       "inputs": {
+        "nix-crx": "nix-crx_3",
         "nixpkgs": [
           "nixpkgs-unstable"
         ]
       },
       "locked": {
-        "lastModified": 1771180692,
-        "narHash": "sha256-jCkCrvRCOG7PJjJmo3x1q1jMT7P+FvZsWwhnkVwd88Q=",
+        "lastModified": 1772900963,
+        "narHash": "sha256-4IhatT2nAgmgpa6TBGDF9RFQMZyNz6D8cl4ypq4jGKo=",
         "owner": "andreivolt",
         "repo": "ff2mpv",
-        "rev": "0619a54a5192c12c840b712257427ecf98d01023",
+        "rev": "65fe2e6e3145eef9ad4d3b114d2ec4843ad200e2",
         "type": "github"
       },
       "original": {
@@ -1159,6 +1162,111 @@
         "type": "github"
       }
     },
+    "nix-crx": {
+      "locked": {
+        "lastModified": 1772900767,
+        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "type": "github"
+      }
+    },
+    "nix-crx_2": {
+      "locked": {
+        "lastModified": 1772900767,
+        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "type": "github"
+      }
+    },
+    "nix-crx_3": {
+      "locked": {
+        "lastModified": 1772900767,
+        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "type": "github"
+      }
+    },
+    "nix-crx_4": {
+      "locked": {
+        "lastModified": 1772900767,
+        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "type": "github"
+      }
+    },
+    "nix-crx_5": {
+      "locked": {
+        "lastModified": 1772900767,
+        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "type": "github"
+      }
+    },
+    "nix-crx_6": {
+      "locked": {
+        "lastModified": 1772900767,
+        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "type": "github"
+      }
+    },
+    "nix-crx_7": {
+      "locked": {
+        "lastModified": 1772900767,
+        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andreivolt",
+        "repo": "nix-crx",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -1492,16 +1600,17 @@
     },
     "redirect-domains": {
       "inputs": {
+        "nix-crx": "nix-crx_4",
         "nixpkgs": [
           "nixpkgs-unstable"
         ]
       },
       "locked": {
-        "lastModified": 1772374445,
-        "narHash": "sha256-AZeqbMgfTpzKg4ND0WB1wM/jdwW3nxpr3r5N8kRXutY=",
+        "lastModified": 1772900963,
+        "narHash": "sha256-teUCvhJRvyE+THYlOZ6BV7uouxusO7fKb5yVQQWv78E=",
         "owner": "andreivolt",
         "repo": "redirect-domains",
-        "rev": "e90d206ea51c49116e9c9ca37c6c7b133a577dcd",
+        "rev": "dfbd638fe84069e0cae822e5138618ebd3a1b63a",
         "type": "github"
       },
       "original": {
@@ -1512,15 +1621,17 @@
     },
     "refined-hacker-news": {
       "inputs": {
+        "nix-crx": "nix-crx_5",
         "nixpkgs": [
           "nixpkgs-unstable"
         ]
       },
       "locked": {
-        "dirtyRev": "ace3030519aceead739402f8b414386215186e22-dirty",
-        "dirtyShortRev": "ace3030-dirty",
-        "lastModified": 1772556718,
-        "narHash": "sha256-p4VFtMyunJ3SrWnhclY8FiGKgGe340tuxUgKAeMRxwc=",
+        "lastModified": 1772900969,
+        "narHash": "sha256-JEQft3mPA0iOVimNkDSUz/H3sl3YXnYxysr9ufy8buc=",
+        "ref": "refs/heads/main",
+        "rev": "c018396ef395032a2adc4b145fd67f6022abd39f",
+        "revCount": 360,
         "type": "git",
         "url": "file:/home/andrei/dev/refined-hacker-news"
       },
@@ -1645,16 +1756,17 @@
     },
     "sci-hub-now": {
       "inputs": {
+        "nix-crx": "nix-crx_6",
         "nixpkgs": [
           "nixpkgs-unstable"
         ]
       },
       "locked": {
-        "lastModified": 1771023154,
-        "narHash": "sha256-v93H7QC97uilMD1RT3+Srzuyn2wUJuFFGlqBHU3Yh+I=",
+        "lastModified": 1772900962,
+        "narHash": "sha256-r/w0dV3uXeuKfJO5+++NWjw/MUNOPLcLrtx4RVYibAw=",
         "owner": "andreivolt",
         "repo": "sci-hub-now",
-        "rev": "225873a7d1f5168484665be0db8a0e3e538c18eb",
+        "rev": "f22a5b2dd391e446ec16c727d47ae4a0e25335a0",
         "type": "github"
       },
       "original": {
@@ -1760,16 +1872,17 @@
     },
     "userscripts": {
       "inputs": {
+        "nix-crx": "nix-crx_7",
         "nixpkgs": [
           "nixpkgs-unstable"
         ]
       },
       "locked": {
-        "lastModified": 1772896149,
-        "narHash": "sha256-sy+/VKAovtOXRtEuqbzwu2PG4SjYqtI1+teLILo/WuM=",
+        "lastModified": 1772900963,
+        "narHash": "sha256-E66Ke7pSxTLEkfE2UHRTu4dZqs4jCdUrFuviD1wGSkI=",
         "ref": "refs/heads/main",
-        "rev": "ecec6bd374c9ab0ce58e7e49cb6f8dabeb35be25",
-        "revCount": 3,
+        "rev": "eafbf05cd4ef660bc46095d1d7d4fca4cfff04ed",
+        "revCount": 9,
         "type": "git",
         "url": "file:/home/andrei/dev/userscripts"
       },
