@@ -101,7 +101,7 @@ fn render_icon(pct: u32, charging: bool, scale: f64) -> Vec<(i32, i32, Vec<u8>)>
     if charging {
         cr.fill().unwrap();
     } else {
-        cr.set_line_width(1.5 * scale);
+        cr.set_line_width(1.0 * scale);
         cr.stroke().unwrap();
     }
 
