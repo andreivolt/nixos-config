@@ -19,11 +19,11 @@ fn lerp(a: u8, b: u8, t: f32) -> u8 {
 fn intensity_color(pct: u32) -> (u8, u8, u8) {
     let t = (pct.min(100) as f32) / 100.0;
     let stops: &[(f32, u8, u8, u8)] = &[
-        (0.00, 88, 88, 86),
-        (0.25, 140, 140, 60),
-        (0.45, 200, 170, 50),
-        (0.65, 210, 130, 40),
-        (0.80, 214, 60, 50),
+        (0.00, 70, 70, 70),
+        (0.40, 100, 100, 90),
+        (0.55, 200, 170, 50),
+        (0.70, 210, 130, 40),
+        (0.85, 214, 60, 50),
         (1.00, 180, 40, 140),
     ];
     for i in 1..stops.len() {
@@ -49,12 +49,12 @@ fn set_pixel(buf: &mut [u8], x: usize, y: usize, r: u8, g: u8, b: u8) {
 fn render_dual_bars(left_pct: u32, right_pct: u32) -> Vec<(i32, i32, Vec<u8>)> {
     let mut buf = vec![0u8; W * H * 4];
 
-    // Bar backgrounds (left: cols 0-8, gap: 9-10, right: cols 11-19)
+    // Bar backgrounds (left: cols 0-7, gap: 8-11, right: cols 12-19)
     for y in 0..BAR_H {
-        for x in 0..=8 {
+        for x in 0..=7 {
             set_pixel(&mut buf, x, y, BG.0, BG.1, BG.2);
         }
-        for x in 11..=19 {
+        for x in 12..=19 {
             set_pixel(&mut buf, x, y, BG.0, BG.1, BG.2);
         }
     }
@@ -68,7 +68,7 @@ fn render_dual_bars(left_pct: u32, right_pct: u32) -> Vec<(i32, i32, Vec<u8>)> {
     if lf > 0 {
         let (r, g, b) = intensity_color(left_pct);
         for y in (BAR_H - lf)..BAR_H {
-            for x in 0..=8 {
+            for x in 0..=7 {
                 set_pixel(&mut buf, x, y, r, g, b);
             }
         }
@@ -83,7 +83,7 @@ fn render_dual_bars(left_pct: u32, right_pct: u32) -> Vec<(i32, i32, Vec<u8>)> {
     if rf > 0 {
         let (r, g, b) = intensity_color(right_pct);
         for y in (BAR_H - rf)..BAR_H {
-            for x in 11..=19 {
+            for x in 12..=19 {
                 set_pixel(&mut buf, x, y, r, g, b);
             }
         }
