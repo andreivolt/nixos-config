@@ -52,11 +52,11 @@ button:hover, button:active {
 
 .workspaces .item:hover {
 	background-color: transparent;
-	box-shadow: inset 0 -2px 0 #7a756d;
+	box-shadow: inset 0 -1px 0 #7a756d;
 }
 
 .workspaces .item.focused {
-	box-shadow: inset 0 -2px 0 #d4d0ca;
+	box-shadow: inset 0 -1px 0 #d4d0ca;
 }
 
 .workspaces .item.focused label {
@@ -64,7 +64,6 @@ button:hover, button:active {
 }
 
 .workspaces .window-icons {
-	margin-left: 0.2em;
 	opacity: 0.5;
 }
 
