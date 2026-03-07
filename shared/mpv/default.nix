@@ -62,6 +62,7 @@ in {
           (mkMpvScript "open-in-browser.lua" ./open-in-browser.lua)
           (mkMpvScript "min-font-size.lua" ./min-font-size.lua)
           (mkMpvScript "cast.lua" ./cast.lua)
+          (mkMpvScript "reload-on-stall.lua" ./reload-on-stall.lua)
         ] ++ lib.optionals pkgs.stdenv.isLinux (with pkgs.mpvScripts; [
           mpris
         ]);
@@ -109,6 +110,10 @@ in {
           sub-shadow-offset = 2;
           volume-max = 100;
           msg-level = "all=warn,ffmpeg=fatal";
+
+          # transparent reconnect for brief network blips (reload-on-stall.lua handles longer outages)
+          # http_error=5xx because tinyproxy returns 500 when upstream unreachable
+          stream-lavf-o = "reconnect_on_network_error=1,reconnect_on_http_error=5xx,reconnect_streamed=1,reconnect_delay_max=30";
         };
 
         bindings = let
