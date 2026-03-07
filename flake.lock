@@ -125,11 +125,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772900963,
-        "narHash": "sha256-3UngYdYrmBIiEtZNphloPl/WxqZ4KF4Ci8llXJhc7Sw=",
+        "lastModified": 1772906658,
+        "narHash": "sha256-SylKvuugYrvuNTKz9VHFG/kHx4baH9joQMEwb3fOaLM=",
         "owner": "andreivolt",
         "repo": "DeArrow",
-        "rev": "cce2c91bbdeaf866570661709b3e68e39ffccbaf",
+        "rev": "fdc7f9ec266e7c31485954cf70dfc8ecc0fb94d8",
         "type": "github"
       },
       "original": {
@@ -1179,11 +1179,11 @@
     },
     "nix-crx_2": {
       "locked": {
-        "lastModified": 1772900767,
-        "narHash": "sha256-fqMNUKA0jSPK4X4Z6U1KRt2uLx8nGpVqV3HuTnvjlZk=",
+        "lastModified": 1772901197,
+        "narHash": "sha256-AzNVcVk3yrBauZia0RVCVJHS0ybhbJwsnIceVLx75uA=",
         "owner": "andreivolt",
         "repo": "nix-crx",
-        "rev": "b762b1c21a4ae4b4bff36f5791d721fbebf45920",
+        "rev": "6eba52247ea6004de7a287fb30d8262ba494c682",
         "type": "github"
       },
       "original": {
