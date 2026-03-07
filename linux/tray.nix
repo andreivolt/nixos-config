@@ -18,64 +18,32 @@
     Install.WantedBy = ["hyprland-session.target"];
   };
 
-  systemd.user.services.cpu-monitor-tray = {
+  systemd.user.services.cpu-mem-monitor-tray = {
     Unit = {
-      Description = "CPU sparkline tray icon";
+      Description = "CPU/Memory dual-bar tray icon";
       After = ["tray.target"];
       Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray cpu";
+      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray cpu-mem";
       Restart = "on-failure";
       RestartSec = 1;
     };
     Install.WantedBy = ["hyprland-session.target"];
   };
 
-  systemd.user.services.mem-monitor-tray = {
+  systemd.user.services.net-monitor-tray = {
     Unit = {
-      Description = "Memory sparkline tray icon";
+      Description = "Network up/down dual-bar tray icon";
       After = ["tray.target"];
       Requires = ["tray.target"];
       PartOf = ["hyprland-session.target"];
     };
     Service = {
       Type = "simple";
-      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray mem";
-      Restart = "on-failure";
-      RestartSec = 1;
-    };
-    Install.WantedBy = ["hyprland-session.target"];
-  };
-
-  systemd.user.services.net-rx-monitor-tray = {
-    Unit = {
-      Description = "Network download sparkline tray icon";
-      After = ["tray.target"];
-      Requires = ["tray.target"];
-      PartOf = ["hyprland-session.target"];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray net-rx";
-      Restart = "on-failure";
-      RestartSec = 1;
-    };
-    Install.WantedBy = ["hyprland-session.target"];
-  };
-
-  systemd.user.services.net-tx-monitor-tray = {
-    Unit = {
-      Description = "Network upload sparkline tray icon";
-      After = ["tray.target"];
-      Requires = ["tray.target"];
-      PartOf = ["hyprland-session.target"];
-    };
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray net-tx";
+      ExecStart = "${pkgs.andrei.system-monitor-tray}/bin/system-monitor-tray net";
       Restart = "on-failure";
       RestartSec = 1;
     };

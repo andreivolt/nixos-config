@@ -16,7 +16,7 @@ rustPlatform.buildRustPackage {
   buildInputs = [ dbus ];
 
   meta = {
-    description = "CPU/memory system tray icon with dual vertical bars";
+    description = "Dual-bar system tray monitor (cpu-mem / net)";
     platforms = lib.platforms.linux;
     mainProgram = "system-monitor-tray";
   };
