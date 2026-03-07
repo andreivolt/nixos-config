@@ -2,7 +2,7 @@
 let
   p = config.sops.placeholder;
 in {
-  sops.secrets."garnix/token" = { owner = "andrei"; };
+  sops.secrets."garnix/token" = { sopsFile = ../secrets/secrets.yaml; owner = "andrei"; };
 
   sops.templates."garnix-netrc" = {
     content = ''
