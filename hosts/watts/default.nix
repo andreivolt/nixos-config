@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   config,
   inputs,
@@ -39,7 +40,7 @@
   ];
 
   # HybridSleep on critical battery: instant resume from RAM, disk fallback if power dies
-  services.upower.criticalPowerAction = "HybridSleep";
+  services.upower.criticalPowerAction = lib.mkForce "HybridSleep";
 
   networking.hostName = "watts";
   system.stateVersion = "23.11";
